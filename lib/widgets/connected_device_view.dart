@@ -1,0 +1,467 @@
+import 'dart:async';
+
+import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pg_scrcpy/models/adb_devices.dart';
+import 'package:pg_scrcpy/models/result/wireless_connect_result.dart';
+import 'package:pg_scrcpy/providers/adb_provider.dart';
+import 'package:pg_scrcpy/providers/toast_providers.dart';
+import 'package:pg_scrcpy/utils/adb_utils.dart';
+import 'package:pg_scrcpy/widgets/device_icon_hx.dart';
+import 'package:pg_scrcpy/widgets/section_button.dart';
+import 'package:pg_scrcpy/widgets/simple_toast/simple_toast_item.dart';
+import 'package:string_extensions/string_extensions.dart';
+
+import '../utils/const.dart';
+import 'device_icon.dart';
+
+class ConnectedDevicesView extends ConsumerStatefulWidget {
+  const ConnectedDevicesView({super.key});
+
+  @override
+  ConsumerState<ConnectedDevicesView> createState() =>
+      _ConnectedDevicesViewState();
+}
+
+class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
+  Timer? t;
+  bool wifiAdb = false;
+  bool loading = false;
+  bool error = false;
+  double currentPage = 1;
+  double currentWirelessPage = 0;
+
+  PageController page = PageController(initialPage: 1);
+  PageController wirelessPage = PageController(initialPage: 0);
+  TextEditingController ip = TextEditingController(text: '192.168.');
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    t?.cancel();
+    page.dispose();
+    wirelessPage.dispose();
+    ip.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final adbDevices = ref.watch(adbProvider);
+    final wirelessHx = ref.watch(wirelessDevicesHistoryProvider);
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+      child: SizedBox(
+        height: 148,
+        width: appWidth,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                _buildSectionTitle(),
+                const Spacer(),
+                _buildHxButton(wirelessHx),
+                _buildWirelessConnectToggle(context)
+              ],
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                height: 108,
+                width: appWidth,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                ),
+                child: Stack(
+                  children: [
+                    PageView(
+                      scrollDirection: Axis.vertical,
+                      controller: page,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: [
+                        _connectWirelessDevicePage(context, wirelessHx),
+                        _deviceListPage(adbDevices, context),
+                      ],
+                    ),
+                    if (loading)
+                      Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onPrimary
+                                  .withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: const Center(
+                                child: CircularProgressIndicator())),
+                      )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _connectWirelessDevicePage(BuildContext context, List<AdbDevices> hx) {
+    final connected = ref.watch(adbProvider);
+    return PageView(
+      physics: const NeverScrollableScrollPhysics(),
+      controller: wirelessPage,
+      children: [
+        _enterIpPage(context),
+        _deviceHxPage(context, hx, connected),
+      ],
+    );
+  }
+
+  Padding _deviceHxPage(
+      BuildContext context, List<AdbDevices> hx, List<AdbDevices> connected) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
+        child: SizedBox.expand(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: hx
+                  .map(
+                    (e) => DeviceHistoryIcon(
+                        device: e,
+                        hxOntap: () async {
+                          ip.text = e.id;
+                          error = false;
+                          if (connected.where((d) => d.id == e.id).isEmpty) {
+                            _connect();
+                            await wirelessPage.previousPage(
+                                duration: const Duration(milliseconds: 100),
+                                curve: Curves.linear);
+
+                            currentWirelessPage = wirelessPage.page!;
+                          } else {
+                            await page.nextPage(
+                              duration: 100.milliseconds,
+                              curve: Curves.linear,
+                            );
+
+                            currentPage = page.page!;
+                            currentWirelessPage = 0;
+                          }
+
+                          setState(() {});
+                        }),
+                  )
+                  .toList(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Padding _enterIpPage(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6),
+          color: Theme.of(context).colorScheme.onPrimary,
+        ),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Developer option > Wireless debugging > IP & Port'),
+              _enterIpTextBox(context)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildWirelessConnectToggle(BuildContext context) {
+    return SectionButton(
+      tooltipmessage:
+          currentPage == 0 ? 'Connected devices' : 'Connect wireless ADB',
+      icondata: currentPage == 0 ? Icons.close : Icons.wifi_rounded,
+      ontap: () async {
+        if (currentPage == 0) {
+          await page.nextPage(
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.linear,
+          );
+        } else {
+          await page.previousPage(
+            duration: const Duration(milliseconds: 100),
+            curve: Curves.linear,
+          );
+        }
+
+        setState(() {
+          currentPage = page.page!;
+          currentWirelessPage = 0;
+        });
+      },
+    );
+  }
+
+  Widget _buildSectionTitle() {
+    String title = '';
+
+    if (currentPage == 1) {
+      title = 'Connected devices';
+    }
+
+    if (currentPage == 0 && currentWirelessPage == 0) {
+      title = 'Connect wireless ADB';
+    }
+
+    if (currentPage == 0 && currentWirelessPage == 1) {
+      title = 'Wireless device history';
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Text(
+        title,
+        style:
+            TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
+      ),
+    );
+  }
+
+  AnimatedSwitcher _deviceListPage(
+      List<AdbDevices> adbDevices, BuildContext context) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 200),
+      child: adbDevices.isEmpty
+          ? Container(
+              margin: const EdgeInsets.all(4),
+              height: double.maxFinite,
+              width: double.maxFinite,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onPrimary,
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: const Center(child: Text('No ADB devices detected')),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: SizedBox.expand(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    children: adbDevices
+                        .map((e) => DeviceIcon(
+                              device: e,
+                              key: ValueKey(e.id),
+                            ))
+                        .toList(),
+                  ),
+                ),
+              ),
+            ),
+    );
+  }
+
+  Widget _enterIpTextBox(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Tooltip(
+            message: 'Default to 5555 if no port specifed',
+            child: Icon(Icons.info),
+          ),
+          const SizedBox(width: 10),
+          const Text('IP:Port: '),
+          Container(
+            height: 40,
+            width: 200,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              color: Theme.of(context).colorScheme.primaryContainer,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: TextField(
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp("[0-9.:]")),
+                  ],
+                  controller: ip,
+                  onSubmitted: (t) => _connect(),
+                  onChanged: (a) {
+                    setState(() => error = false);
+                  },
+                  textAlign: TextAlign.center,
+                  decoration: const InputDecoration.collapsed(hintText: ''),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          error
+              ? const Tooltip(
+                  message: 'Failed to connect',
+                  child: Icon(Icons.error_rounded, color: Colors.redAccent),
+                )
+              : IconButton(
+                  onPressed: _connect,
+                  icon: const Icon(
+                    Icons.send_rounded,
+                  ),
+                )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHxButton(List<AdbDevices> hx) {
+    if (hx.isNotEmpty) {
+      return SectionButton(
+        tooltipmessage: currentWirelessPage == 1
+            ? 'Connect wireless ADB'
+            : 'Wireless device history',
+        icondata: currentWirelessPage == 1
+            ? Icons.arrow_back_rounded
+            : Icons.history_rounded,
+        ontap: () async {
+          if (currentWirelessPage == 0.0) {
+            await page.animateToPage(
+              0,
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.linear,
+            );
+            await wirelessPage.nextPage(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.linear,
+            );
+          } else {
+            await wirelessPage.previousPage(
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.linear,
+            );
+          }
+
+          setState(() {
+            currentPage = page.page!;
+            currentWirelessPage = wirelessPage.page!;
+          });
+        },
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+
+  Future<void> _connect() async {
+    setState(() {
+      loading = true;
+    });
+    WiFiResult wiFiResult = await AdbUtils.connectWifiDebugging(ip: ip.text);
+    error = !wiFiResult.success;
+    String message = wiFiResult.errorMessage;
+
+    if (error == false) {
+      await AdbUtils.saveWirelessDeviceHistory(ref, ip.text);
+      final toConnect = _getLatestConnectedDevice();
+      ref.read(selectedDeviceProvider.notifier).state = toConnect;
+      await page.animateToPage(
+        1,
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.linear,
+      );
+
+      setState(() {
+        currentPage = 1;
+        ip.text = '192.168.';
+        loading = false;
+      });
+    } else {
+      setState(() {
+        loading = false;
+      });
+      if (message.contains('authenticate')) {
+        bool done = await showDialog(
+              // ignore: use_build_context_synchronously
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  title: const Text('Check your phone'),
+                  content: const Text('Allow debugging.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                      child: const Text('Done'),
+                    )
+                  ],
+                );
+              },
+            ) ??
+            false;
+
+        if (done) {
+          setState(() {
+            error = false;
+          });
+          await _connect();
+        } else {
+          ref.read(toastProvider.notifier).addToast(
+                SimpleToastItem(
+                  message: message.capitalizeFirst.trim(),
+                  toastStyle: SimpleToastStyle.error,
+                  key: UniqueKey(),
+                ),
+              );
+        }
+      } else {
+        ref.read(toastProvider.notifier).addToast(
+              SimpleToastItem(
+                message: message.capitalizeFirst.trim(),
+                toastStyle: SimpleToastStyle.error,
+                key: UniqueKey(),
+              ),
+            );
+      }
+    }
+  }
+
+  AdbDevices _getLatestConnectedDevice() {
+    return ref.read(adbProvider).firstWhere((d) {
+      if (!ip.text.contains(':')) {
+        return d.id == ip.text.append(':5555');
+      } else if (d.id.contains(':5555')) {
+        return d.id == ip.text.replaceAll(RegExp(r':\d+$'), ':5555');
+      } else {
+        return d.id == ip.text;
+      }
+    });
+  }
+}

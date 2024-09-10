@@ -1,0 +1,147 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_context_menu/flutter_context_menu.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pg_scrcpy/providers/adb_provider.dart';
+import 'package:pg_scrcpy/utils/adb_utils.dart';
+
+import '../models/adb_devices.dart';
+
+class DeviceHistoryIcon extends ConsumerStatefulWidget {
+  final AdbDevices? device;
+
+  final Function()? hxOntap;
+  const DeviceHistoryIcon({super.key, required this.device, this.hxOntap});
+
+  @override
+  ConsumerState<DeviceHistoryIcon> createState() => _DeviceHistoryIconState();
+}
+
+class _DeviceHistoryIconState extends ConsumerState<DeviceHistoryIcon> {
+  bool edit = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedDevice = ref.watch(selectedDeviceProvider);
+    final isConnected = ref
+        .watch(adbProvider)
+        .where((d) => d.id == widget.device!.id)
+        .isNotEmpty;
+
+    final device = ref.watch(savedAdbDevicesProvider).firstWhere(
+        (d) => d.serialNo == widget.device!.serialNo,
+        orElse: () => widget.device!);
+
+    return GestureDetector(
+      onSecondaryTapDown: (details) {
+        showContextMenu(
+          context,
+          contextMenu: ContextMenu(
+            position: Offset((details.globalPosition.dx + 2),
+                (details.globalPosition.dy + 2)),
+            entries: _buildContextmenuEntries(),
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.only(right: 4),
+        child: Tooltip(
+          message: widget.device?.id ?? '',
+          verticalOffset: 50,
+          waitDuration: const Duration(milliseconds: 200),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                focusColor: Theme.of(context).colorScheme.onPrimary,
+                onTap: widget.hxOntap,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: (selectedDevice != null &&
+                              (selectedDevice.id) == widget.device!.id)
+                          ? Theme.of(context).colorScheme.onPrimary
+                          : Colors.transparent),
+                  height: 100,
+                  width: 100,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              widget.device!.id.contains('.')
+                                  ? const Icon(Icons.wifi)
+                                  : const Icon(Icons.usb),
+                              Icon(Icons.phone_android_rounded,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          FittedBox(
+                            child: Row(
+                              children: [
+                                Text(
+                                  device.name?.toUpperCase() ??
+                                      device.modelName.toUpperCase().toString(),
+                                ),
+                                if (isConnected)
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 2),
+                                    child: Icon(
+                                      Icons.check_circle,
+                                      color: Colors.green,
+                                      size: 12,
+                                    ),
+                                  )
+                              ],
+                            ),
+                          ),
+                          FittedBox(
+                            child: Text(
+                              widget.device!.id,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<ContextMenuEntry> _buildContextmenuEntries() {
+    return [
+      MenuItem(
+        icon: Icons.remove,
+        label: 'Remove from history',
+        onSelected: () {
+          final hx = [...ref.read(wirelessDevicesHistoryProvider)];
+          hx.remove(widget.device!);
+
+          ref.read(wirelessDevicesHistoryProvider.notifier).state = hx;
+          AdbUtils.saveWirelessHistory(hx);
+        },
+      ),
+    ];
+  }
+}

@@ -1,0 +1,118 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pg_scrcpy/models/adb_devices.dart';
+import 'package:pg_scrcpy/providers/adb_provider.dart';
+import 'package:pg_scrcpy/providers/scrcpy_provider.dart';
+
+import '../utils/const.dart';
+
+class DisconnectDialog extends ConsumerStatefulWidget {
+  final AdbDevices device;
+  const DisconnectDialog({super.key, required this.device});
+
+  @override
+  ConsumerState<DisconnectDialog> createState() => _DisconnectDialogState();
+}
+
+class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
+  bool loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    TextStyle? style = Theme.of(context).textTheme.titleSmall;
+    final buttonStyle = ButtonStyle(
+        shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))));
+    final runningInstance = ref
+        .watch(scrcpyInstanceProvider)
+        .where((inst) => inst.device == widget.device);
+
+    final device = ref.watch(savedAdbDevicesProvider).firstWhere(
+        (d) => d.serialNo == widget.device.serialNo,
+        orElse: () => widget.device);
+
+    return loading
+        ? const Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: 30,
+                  width: 30,
+                  child: CircularProgressIndicator.adaptive(),
+                ),
+                SizedBox(height: 20),
+                Material(child: Text('Closing')),
+              ],
+            ),
+          )
+        : AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            title: Text(
+                'Disconnect ${device.name?.toUpperCase() ?? device.modelName.toUpperCase()}?'),
+            content: ConstrainedBox(
+              constraints:
+                  const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (runningInstance.isNotEmpty)
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      margin: const EdgeInsets.all(4),
+                      child: ListTile(
+                        title: Text(
+                          '${device.name?.toUpperCase() ?? device.modelName.toUpperCase()} has ${runningInstance.length} running server(s)',
+                          style: style,
+                        ),
+                        subtitle: const Text(
+                          'Disconnecting will kill the server(s)',
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            actions: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    style: buttonStyle,
+                    onPressed: () {
+                      Navigator.pop(context, true);
+                    },
+                    child: const Text('Yes'),
+                  ),
+                  const SizedBox(width: 10),
+                  TextButton(
+                    autofocus: true,
+                    style: buttonStyle,
+                    onPressed: () {
+                      Navigator.pop(context, false);
+                    },
+                    child: const Text('No'),
+                  ),
+                ],
+              )
+            ],
+          );
+  }
+}

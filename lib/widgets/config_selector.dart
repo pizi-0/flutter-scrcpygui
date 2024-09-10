@@ -1,0 +1,244 @@
+import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:pg_scrcpy/models/adb_devices.dart';
+import 'package:pg_scrcpy/providers/adb_provider.dart';
+import 'package:pg_scrcpy/providers/config_provider.dart';
+import 'package:pg_scrcpy/screens/config_screen/config_screen.dart';
+import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
+import 'package:pg_scrcpy/widgets/section_button.dart';
+
+import '../models/scrcpy_related/scrcpy_config.dart';
+import '../utils/const.dart';
+import 'config_visualizer.dart';
+import 'custom_filename_input.dart';
+import 'start_stop_button.dart';
+
+class ConfigSelector extends ConsumerStatefulWidget {
+  const ConfigSelector({super.key});
+
+  @override
+  ConsumerState<ConfigSelector> createState() => _ConfigSelectorState();
+}
+
+class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
+  ScrcpyConfig selectedConfig = defaultMirror;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedDevice = ref.watch(selectedDeviceProvider);
+    final allConfigs = ref.watch(configsProvider);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: SizedBox(
+        width: appWidth,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          height: selectedDevice == null ? 0 : 206,
+          child: SingleChildScrollView(
+            physics: const NeverScrollableScrollPhysics(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _sectionTitle(context, allConfigs, selectedDevice),
+                Container(
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.inversePrimary,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _buildDropdown(context, allConfigs),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const CustomFileName(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  CustomDropdown<ScrcpyConfig> _buildDropdown(
+      BuildContext context, List<ScrcpyConfig> allConfigs) {
+    return CustomDropdown.search(
+      //decoration
+      decoration: CustomDropdownDecoration(
+        searchFieldDecoration: SearchFieldDecoration(
+          fillColor: Theme.of(context).colorScheme.inversePrimary,
+        ),
+        expandedBorderRadius: BorderRadius.circular(6),
+        closedBorderRadius: BorderRadius.circular(6),
+        // expandedBorder: Border.all(
+        //     color: Theme.of(context).colorScheme.inversePrimary, width: 5),
+        listItemDecoration: ListItemDecoration(
+          selectedColor: Theme.of(context).colorScheme.onPrimary,
+        ),
+        closedFillColor: Theme.of(context).colorScheme.onPrimary,
+        expandedFillColor: Theme.of(context).colorScheme.onPrimary,
+        expandedBorder: Border.all(
+            color: Theme.of(context).colorScheme.inversePrimary, width: 4),
+      ),
+      listItemPadding: const EdgeInsets.all(0),
+      itemsListPadding: const EdgeInsets.only(right: 4),
+      //items
+      headerBuilder: (context, selectedItem, enabled) => Row(
+        children: [
+          Text(selectedItem.configName),
+          const Spacer(),
+          ConfigVisualizer(conf: selectedItem)
+        ],
+      ),
+      listItemBuilder: (context, item, isSelected, onItemSelect) => Container(
+        decoration: BoxDecoration(
+          border: Border(
+            bottom:
+                BorderSide(color: Theme.of(context).colorScheme.inversePrimary),
+          ),
+        ),
+        height: 60,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              if (item.configName.toLowerCase() == 'new')
+                const Row(
+                  children: [
+                    Icon(Icons.add_circle_outline_rounded),
+                    SizedBox(width: 10),
+                  ],
+                ),
+              Text(item.configName.toLowerCase() == 'new'
+                  ? 'Create new config'
+                  : item.configName),
+              const Spacer(),
+              if (item != newConfig) ConfigVisualizer(conf: item),
+            ],
+          ),
+        ),
+      ),
+      initialItem: selectedConfig,
+      items: allConfigs,
+      onChanged: (config) {
+        setState(() {
+          selectedConfig = config!;
+        });
+        ref.read(selectedConfigProvider.notifier).state = config!;
+
+        if (config == newConfig) {
+          Navigator.push(
+            context,
+            PageTransition(
+              child: const ConfigScreen(),
+              type: PageTransitionType.rightToLeft,
+            ),
+          ).then(
+            (value) => setState(() {
+              selectedConfig = ref.read(selectedConfigProvider);
+            }),
+          );
+        }
+      },
+    );
+  }
+
+  Row _sectionTitle(BuildContext context, List<ScrcpyConfig> allConfigs,
+      AdbDevices? selectedDevice) {
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            'Config',
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.onPrimaryContainer),
+          ),
+        ),
+        const Spacer(),
+        Row(
+          children: [
+            SectionButton(
+              tooltipmessage: 'Edit config',
+              icondata: Icons.edit,
+              ontap: !defaultConfigs.contains(selectedConfig)
+                  ? () async {
+                      final res = ScrcpyUtils.checkForIncompatibleFlags(ref);
+
+                      bool proceed = res.where((r) => !r.ok).isEmpty;
+
+                      if (proceed == false) {
+                        proceed = (await showDialog(
+                              context: context,
+                              builder: (context) => OverrideDialog(
+                                  isEdit: true,
+                                  offendingFlags:
+                                      res.where((r) => !r.ok).toList()),
+                            )) ??
+                            false;
+                      }
+
+                      if (proceed == true) {
+                        ref.read(configToEditProvider.notifier).state =
+                            selectedConfig;
+
+                        Navigator.push(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          PageTransition(
+                            child: const ConfigScreen(),
+                            type: PageTransitionType.rightToLeft,
+                          ),
+                        ).then(
+                          (value) => setState(() {
+                            selectedConfig = ref.read(selectedConfigProvider);
+                            ref.read(configToEditProvider.notifier).state =
+                                null;
+                          }),
+                        );
+                      }
+                    }
+                  : null,
+            ),
+            SectionButton(
+              tooltipmessage: 'Delete config',
+              icondata: Icons.delete,
+              ontap: !defaultConfigs.contains(selectedConfig)
+                  ? () {
+                      ref
+                          .read(configsProvider.notifier)
+                          .removeConfig(selectedConfig);
+
+                      selectedConfig = allConfigs[1];
+
+                      final toSave = ref
+                          .read(configsProvider)
+                          .where((e) => !defaultConfigs.contains(e))
+                          .toList();
+
+                      ScrcpyUtils.saveConfigs(toSave);
+                    }
+                  : null,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
