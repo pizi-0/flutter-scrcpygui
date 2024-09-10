@@ -10,6 +10,6 @@ A gui for [Scrcpy](https://github.com/Genymobile/scrcpy), made with Flutter.
 
 ## Preview
 
-| Main-Dark  | Main-Light | Running instance |
-| ------------- | ------------- | ------------- |
-| ![alt text](screenshot/1-maindark.png "Main-dark")  | ![alt text](screenshot/2-mainlight.png "Main-dark")  | ![alt text](screenshot/3-runninginstance.png "Main-dark") |
+| Main-Dark  | Main-Light | Running instance | Settings | Config
+| ------------- | ------------- | ------------- | ------------- | -------------
+| ![alt text](screenshot/1-maindark.png)  | ![alt text](screenshot/2-mainlight.png)  | ![alt text](screenshot/3-runninginstance.png) | ![alt text](screenshot/4-settings.png) | ![alt text](screenshot/5-config.png)
