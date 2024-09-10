@@ -1,6 +1,6 @@
-# pg_scrcpy
+# Flutter Scrcpy-GUI
 
-A new Flutter project.
+A gui for [Scrcpy](https://github.com/Genymobile/scrcpy), made with Flutter.
 
 ## Getting Started
 
