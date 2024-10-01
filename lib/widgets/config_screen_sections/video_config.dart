@@ -133,8 +133,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
         } else {
           ref.read(selectedConfigProvider.notifier).update((state) => state =
               state.copyWith(
-                  videoOptions:
-                      state.videoOptions.copyWith(maxFPS: int.parse(value))));
+                  videoOptions: state.videoOptions
+                      .copyWith(maxFPS: double.parse(value))));
         }
       },
     );

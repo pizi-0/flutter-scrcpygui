@@ -9,7 +9,7 @@ class SVideoOptions {
   final String videoEncoder;
   final double resolutionScale;
   final int videoBitrate;
-  final int maxFPS;
+  final double maxFPS;
   final int displayId;
 
   SVideoOptions({
@@ -28,7 +28,7 @@ class SVideoOptions {
     String? videoEncoder,
     double? resolutionScale,
     int? videoBitrate,
-    int? maxFPS,
+    double? maxFPS,
     int? displayId,
   }) {
     return SVideoOptions(
@@ -61,7 +61,7 @@ class SVideoOptions {
       videoEncoder: map['videoEncoder'] as String,
       resolutionScale: map['resolutionScale'] as double,
       videoBitrate: map['videoBitrate'] as int,
-      maxFPS: map['maxFPS'] as int,
+      maxFPS: map['maxFPS'].toDouble(),
       displayId: map['displayId'] as int,
     );
   }
