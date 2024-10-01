@@ -47,7 +47,7 @@ static void my_application_activate(GApplication* application) {
     gtk_window_set_title(window, "pg_scrcpy");
   }
 
-  gtk_window_set_default_size(window, 500, 643);
+  gtk_window_set_default_size(window, 400, 543);
   gtk_widget_show(GTK_WIDGET(window));
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
