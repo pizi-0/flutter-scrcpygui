@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_flag_check_result.dart';
 import 'package:pg_scrcpy/providers/adb_provider.dart';
 import 'package:pg_scrcpy/providers/scrcpy_provider.dart';
+import 'package:pg_scrcpy/screens/running_instance/running_instance_screen.dart';
 import 'package:pg_scrcpy/utils/const.dart';
 import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
 
@@ -187,6 +191,36 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
             ? Row(
                 children: [
                   const Spacer(),
+                  if (runningInstance.isNotEmpty && Platform.isLinux)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Material(
+                        color: Theme.of(context).colorScheme.primaryContainer,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                  child: const RunningInstanceScreen(),
+                                  type: PageTransitionType.bottomToTop),
+                            );
+                          },
+                          child: SizedBox(
+                            height: 40,
+                            child: Center(
+                                child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Text(
+                                  'Running servers (${runningInstance.length})'),
+                            )),
+                          ),
+                        ),
+                      ),
+                    ),
+                  const SizedBox(
+                    width: 10,
+                  ),
                   running
                       ? Tooltip(
                           message: 'New instance',

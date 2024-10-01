@@ -51,13 +51,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
             child: SizedBox(
               width: appWidth,
               child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ThemeSection(),
-                    DataSection(),
-                  ],
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ThemeSection(),
+                      DataSection(),
+                    ],
+                  ),
                 ),
               ),
             ),

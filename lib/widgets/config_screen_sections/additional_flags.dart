@@ -18,6 +18,13 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
   TextEditingController add = TextEditingController();
 
   @override
+  void initState() {
+    final config = ref.read(selectedConfigProvider);
+    add.text = config.additionalFlags;
+    super.initState();
+  }
+
+  @override
   void dispose() {
     add.dispose();
     super.dispose();
@@ -59,6 +66,7 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
+                      controller: add,
                       decoration: const InputDecoration.collapsed(
                         hintText: '--flag1 --flag-2 --flag-3=\'3 oh 3\'',
                         hintStyle: TextStyle(

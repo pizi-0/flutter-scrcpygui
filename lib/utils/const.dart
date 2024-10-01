@@ -69,7 +69,7 @@ final ScrcpyConfig defaultMirror = ScrcpyConfig(
 );
 
 final ScrcpyConfig newConfig = ScrcpyConfig(
-  configName: 'New',
+  configName: 'New config',
   scrcpyMode: ScrcpyMode.both,
   isRecording: false,
   videoOptions: SVideoOptions(

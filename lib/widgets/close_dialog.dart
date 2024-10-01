@@ -17,7 +17,7 @@ class CloseDialog extends ConsumerStatefulWidget {
 
 class _CloseDialogState extends ConsumerState<CloseDialog> {
   bool nameExist = false;
-  List<String> name = ['New', 'Default (Mirror)', 'Default (Record)'];
+  List<String> name = ['New config', 'Default (Mirror)', 'Default (Record)'];
   bool notAllowed = false;
 
   late TextEditingController nameController;
@@ -29,10 +29,12 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
 
     nameController = TextEditingController(
         text: name.contains(selectedConfig.configName)
-            ? 'New config'
+            ? 'My config'
             : selectedConfig.configName);
-    nameExist =
-        allConfigs.where((e) => e.configName == nameController.text).isNotEmpty;
+    nameExist = allConfigs
+        .where((e) =>
+            e.configName.toLowerCase() == nameController.text.toLowerCase())
+        .isNotEmpty;
     super.initState();
   }
 
@@ -51,6 +53,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
         .firstWhere((i) => i.device.serialNo == selectedDevice!.serialNo);
 
     return AlertDialog(
+      insetPadding: const EdgeInsets.all(16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
         side: BorderSide(
@@ -151,7 +154,9 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                 nameExist =
                     allConfigs.where((e) => e.configName == value).isNotEmpty;
 
-                notAllowed = name.contains(value);
+                notAllowed = name
+                    .where((e) => e.toLowerCase() == value.toLowerCase())
+                    .isNotEmpty;
 
                 setState(() {});
               },

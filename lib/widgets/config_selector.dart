@@ -118,16 +118,14 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
-              if (item.configName.toLowerCase() == 'new')
+              if (item == newConfig)
                 const Row(
                   children: [
                     Icon(Icons.add_circle_outline_rounded),
                     SizedBox(width: 10),
                   ],
                 ),
-              Text(item.configName.toLowerCase() == 'new'
-                  ? 'Create new config'
-                  : item.configName),
+              Text(item == newConfig ? 'Create new config' : item.configName),
               const Spacer(),
               if (item != newConfig) ConfigVisualizer(conf: item),
             ],

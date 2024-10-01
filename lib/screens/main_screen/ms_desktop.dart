@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pg_scrcpy/widgets/instance_list.dart';
 import 'package:pg_scrcpy/widgets/start_stop_button.dart';
 
 import '../../utils/const.dart';
@@ -35,13 +34,15 @@ class _DesktopMainScreenState extends State<DesktopMainScreen> {
                     width: MediaQuery.sizeOf(context).width,
                     child: const SizedBox(
                       width: appWidth,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ConnectedDevicesView(),
-                          ConfigSelector(),
-                          InstanceList(),
-                        ],
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ConnectedDevicesView(),
+                            ConfigSelector(),
+                          ],
+                        ),
                       ),
                     ),
                   ),

@@ -93,10 +93,11 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(selectedConfigProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
+    final allConfig = ref.watch(configsProvider);
 
-    final device = ref.watch(savedAdbDevicesProvider).firstWhere(
-        (d) => d.serialNo == selectedDevice!.serialNo,
-        orElse: () => selectedDevice!);
+    // final device = ref.watch(savedAdbDevicesProvider).firstWhere(
+    //     (d) => d.serialNo == selectedDevice!.serialNo,
+    //     orElse: () => selectedDevice!);
 
     return PopScope(
       canPop: false,
@@ -110,9 +111,9 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
             onPressed: () => _handleOnClose(),
             icon: const Icon(Icons.close_rounded),
           ),
-          title: Text(defaultConfigs.contains(selectedConfig)
-              ? 'New config'
-              : selectedConfig.configName),
+          title: Text(allConfig.contains(selectedConfig)
+              ? selectedConfig.configName
+              : '${selectedConfig.configName} *'),
         ),
         body: ref
                 .watch(infoProvider)
@@ -131,35 +132,37 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
                 child: SingleChildScrollView(
                   child: SizedBox(
                     width: appWidth + 50,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: appWidth,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text('( * ) ').fontSize(11),
-                                Text(
-                                  'Device-specific. Only work on other devices with similar options.\nCurrently selected: ${device.name?.toUpperCase() ?? device.modelName.toUpperCase()}',
-                                ).fontSize(11).expanded(),
-                              ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            // width: appWidth,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: const Text('* Device-specific')
+                                  .fontSize(10)
+                                  .italic(),
                             ),
                           ),
-                        ),
-                        const ModeConfig(),
-                        const VideoConfig(),
-                        const AudioConfig(),
-                        const DeviceConfig(),
-                        const WindowConfig(),
-                        const AdditionalFlagsConfig(),
-                        const SizedBox(height: 30),
-                        const Divider(indent: 30, endIndent: 30),
-                        const PreviewAndTest(),
-                        const SizedBox(height: 50),
-                      ],
+                          const ModeConfig(),
+                          const VideoConfig(),
+                          const AudioConfig(),
+                          const DeviceConfig(),
+                          const WindowConfig(),
+                          const AdditionalFlagsConfig(),
+                          const SizedBox(height: 30),
+                          const Divider(indent: 30, endIndent: 30),
+                          const PreviewAndTest(),
+                          const SizedBox(height: 50),
+                        ],
+                      ),
                     ),
                   ),
                 ),

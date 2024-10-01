@@ -203,7 +203,8 @@ class ConfigUserInput extends StatelessWidget {
                         child: Center(
                           child: TextField(
                             inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
+                              FilteringTextInputFormatter.allow(
+                                  RegExp(r'[0-9,\.]'))
                             ],
                             textAlign: TextAlign.center,
                             controller: controller,
