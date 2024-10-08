@@ -81,6 +81,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         ref.read(configsProvider.notifier).addConfig(c);
       }
 
+      ref.read(selectedConfigProvider.notifier).state =
+          await ScrcpyUtils.getLastUsedConfig();
+
       final pid = await AppUtils.getAppPid();
 
       ref.read(appPidProvider.notifier).update((state) => state = pid);

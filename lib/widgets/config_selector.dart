@@ -23,10 +23,11 @@ class ConfigSelector extends ConsumerStatefulWidget {
 }
 
 class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
-  ScrcpyConfig selectedConfig = defaultMirror;
+  late ScrcpyConfig selectedConfig;
 
   @override
   void initState() {
+    selectedConfig = ref.read(selectedConfigProvider);
     super.initState();
   }
 

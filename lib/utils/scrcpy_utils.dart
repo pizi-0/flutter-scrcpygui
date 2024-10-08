@@ -11,6 +11,7 @@ import 'package:pg_scrcpy/providers/adb_provider.dart';
 import 'package:pg_scrcpy/providers/config_provider.dart';
 import 'package:pg_scrcpy/providers/scrcpy_provider.dart';
 import 'package:pg_scrcpy/providers/toast_providers.dart';
+import 'package:pg_scrcpy/utils/const.dart';
 import 'package:pg_scrcpy/widgets/simple_toast/simple_toast_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -50,6 +51,20 @@ class ScrcpyUtils {
     }
 
     return saved;
+  }
+
+  static Future<void> saveLastUsedConfig(ScrcpyConfig config) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setString('lastused', config.toJson());
+  }
+
+  static Future<ScrcpyConfig> getLastUsedConfig() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final res = prefs.getString('lastused') ?? defaultMirror.toJson();
+
+    return ScrcpyConfig.fromJson(res);
   }
 
   static Future<void> saveConfigs(List<ScrcpyConfig> conf) async {
@@ -190,6 +205,8 @@ class ScrcpyUtils {
             ),
           );
     }
+
+    await ScrcpyUtils.saveLastUsedConfig(ref.read(selectedConfigProvider));
   }
 
   static Future<ScrcpyRunningInstance> newInstance(WidgetRef ref) async {
