@@ -98,7 +98,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                 padding: const EdgeInsets.all(20.0),
                 child: Center(
                   child: SelectableText(
-                      'scrcpy ${ScrcpyCommand.buildCommand(selectedConfig, info, selectedDevice!, customName: nameController.text).toString().replaceAll(',', '').replaceAll('[', '').replaceAll(']', '')}'),
+                      'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, info, selectedDevice!, customName: nameController.text).toString().replaceAll(',', '').replaceAll('[', '').replaceAll(']', '')}'),
                 ),
               ),
             ),

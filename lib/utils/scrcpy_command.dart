@@ -1,19 +1,26 @@
 import 'dart:io';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pg_scrcpy/models/adb_devices.dart';
 import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_config.dart';
 import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_info.dart';
 import 'package:string_extensions/string_extensions.dart';
 
+import '../providers/adb_provider.dart';
+
 class ScrcpyCommand {
   static List<String> buildCommand(
-      ScrcpyConfig config, ScrcpyInfo info, AdbDevices device,
+      WidgetRef ref, ScrcpyConfig config, ScrcpyInfo info, AdbDevices device,
       {String? customName}) {
     String command = '';
 
+    final d = ref
+        .watch(savedAdbDevicesProvider)
+        .firstWhere((d) => d.serialNo == device.serialNo, orElse: () => device);
+
     command = command
-            .append('-s ${device.id}')
+            .append('-s ${d.id}')
             .append(config.scrcpyMode.command) // Both / video / audio
             .append(_displayId(config)) // display id
             .append(_videoCodec(config)) // video codec
@@ -38,8 +45,9 @@ class ScrcpyCommand {
     // recording, savepath, video/audio format
     var comm = command.split(' ') +
         [
-          "--window-title='${customName ?? config.configName}'",
-          _recordingFormat(config, customName ?? config.configName),
+          "--window-title='[${d.name?.toUpperCase() ?? d.id}] ${customName ?? config.configName}'",
+          _recordingFormat(config,
+              '[${d.name?.toUpperCase() ?? d.id}] ${customName ?? config.configName}'),
           config.additionalFlags,
         ];
 

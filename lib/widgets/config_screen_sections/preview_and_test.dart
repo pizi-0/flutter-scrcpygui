@@ -95,7 +95,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SelectableText(
-                      'scrcpy ${ScrcpyCommand.buildCommand(selectedConfig, info, selectedDevice!).join(' ')}',
+                      'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, info, selectedDevice!).join(' ')}',
                     ),
                   ),
                 ),

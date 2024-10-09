@@ -113,9 +113,12 @@ class ScrcpyUtils {
         .watch(infoProvider)
         .firstWhere((i) => i.device.serialNo == selectedDevice!.serialNo);
 
+    final d = ref.watch(savedAdbDevicesProvider).firstWhere(
+        (d) => d.serialNo == selectedDevice!.serialNo,
+        orElse: () => selectedDevice!);
     List<String> comm = [];
     String customName = customInstanceName == ''
-        ? selectedConfig.configName
+        ? '[${d.name?.toUpperCase() ?? d.id}] ${selectedConfig.configName}'
         : customInstanceName;
 
     if (runningInstance.where((r) => r.instanceName == customName).isNotEmpty) {
@@ -148,7 +151,8 @@ class ScrcpyUtils {
       }
     }
 
-    comm = ScrcpyCommand.buildCommand(selectedConfig, info, selectedDevice!,
+    comm = ScrcpyCommand.buildCommand(
+        ref, selectedConfig, info, selectedDevice!,
         customName: customName);
 
     final process = await Process.start(
