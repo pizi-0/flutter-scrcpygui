@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
@@ -11,6 +12,9 @@ import 'package:pg_scrcpy/providers/scrcpy_provider.dart';
 import 'package:pg_scrcpy/screens/running_instance/running_instance_screen.dart';
 import 'package:pg_scrcpy/utils/const.dart';
 import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
+
+import '../providers/toast_providers.dart';
+import 'simple_toast/simple_toast_item.dart';
 
 class StartButton extends ConsumerStatefulWidget {
   final Icon icon;
@@ -174,6 +178,37 @@ class MainScreenFAB extends ConsumerStatefulWidget {
 
 class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
   bool loading = false;
+  Timer? runningTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+        (t) => runningTimer = Timer.periodic(1.seconds, (t) => _pollRunning()));
+  }
+
+  _pollRunning() async {
+    await Future.delayed(500.milliseconds);
+    if (mounted) {
+      final res = await ScrcpyUtils.getRunningScrcpy(ref.read(appPidProvider));
+      final running = ref.read(scrcpyInstanceProvider);
+
+      for (var i in running) {
+        if (!res.contains(i.scrcpyPID)) {
+          if (mounted) {
+            ref.read(toastProvider.notifier).addToast(
+                  SimpleToastItem(
+                    message:
+                        'Server: ${i.instanceName} (${i.scrcpyPID}) killed',
+                    key: UniqueKey(),
+                  ),
+                );
+            ref.read(scrcpyInstanceProvider.notifier).removeInstance(i);
+          }
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
