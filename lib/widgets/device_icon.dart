@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,7 +6,9 @@ import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_info.dart';
 import 'package:pg_scrcpy/providers/adb_provider.dart';
 import 'package:pg_scrcpy/providers/info_provider.dart';
 import 'package:pg_scrcpy/providers/poll_provider.dart';
+import 'package:pg_scrcpy/providers/scrcpy_provider.dart';
 import 'package:pg_scrcpy/utils/adb_utils.dart';
+import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
 import 'package:pg_scrcpy/widgets/disconnect_dialog.dart';
 
 import '../models/adb_devices.dart';
@@ -71,6 +74,10 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
   Widget build(BuildContext context) {
     super.build(context);
     final selectedDevice = ref.watch(selectedDeviceProvider);
+    final deviceServers = ref
+        .watch(scrcpyInstanceProvider)
+        .where((ins) => ins.device.id == widget.device!.id)
+        .toList();
 
     final device = ref.watch(savedAdbDevicesProvider).firstWhere(
         (d) => d.serialNo == widget.device!.serialNo,
@@ -109,10 +116,22 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                            color: (selectedDevice != null &&
-                                    (selectedDevice.id) == widget.device!.id)
-                                ? Theme.of(context).colorScheme.onPrimary
-                                : Colors.transparent),
+                          color: (selectedDevice != null &&
+                                  (selectedDevice.id) == widget.device!.id)
+                              ? Theme.of(context).colorScheme.onPrimary
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .onPrimary
+                                  .withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(10),
+                          //   border: Border.all(
+                          //     color: Theme.of(context)
+                          //         .colorScheme
+                          //         .onPrimary
+                          //         .withOpacity(0.5),
+                          //     width: 2,
+                          //   ),
+                        ),
                         height: 100,
                         width: 100,
                         child: Center(
@@ -176,6 +195,28 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                     borderRadius: BorderRadius.circular(6),
                   ),
                   child: const Center(child: Icon(Icons.timer_rounded)),
+                ),
+              if (deviceServers.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Container(
+                      height: 20,
+                      width: 20,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: selectedDevice == widget.device
+                            ? Theme.of(context).colorScheme.inversePrimary
+                            : Theme.of(context)
+                                .colorScheme
+                                .onPrimary
+                                .withOpacity(0.2),
+                      ),
+                      child: Center(
+                          child: Text('${deviceServers.length}').fontSize(10)),
+                    ),
+                  ),
                 )
             ],
           ),
@@ -219,9 +260,32 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
 
   List<ContextMenuEntry> _buildContextmenuEntries() {
     final isWireless = widget.device!.id.contains(':');
+    final deviceServers = ref
+        .watch(scrcpyInstanceProvider)
+        .where((ins) => ins.device.serialNo == widget.device!.serialNo)
+        .toList();
+
+    final appPID = ref.watch(appPidProvider);
 
     if (isWireless) {
       return [
+        if (deviceServers.isNotEmpty)
+          MenuItem.submenu(
+            icon: Icons.close_rounded,
+            label: 'Kill Servers',
+            items: [
+              ...deviceServers.map((s) => MenuItem(
+                    label: s.instanceName,
+                    onSelected: () async {
+                      await ScrcpyUtils.killServer(s, appPID);
+                      ref
+                          .read(scrcpyInstanceProvider.notifier)
+                          .removeInstance(s);
+                    },
+                  ))
+            ],
+          ),
+        if (deviceServers.isNotEmpty) const MenuDivider(),
         MenuItem(
           label: 'Disconnect',
           icon: Icons.link_off_rounded,
@@ -266,6 +330,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
             ref.read(shouldPollAdb.notifier).state = true;
           },
         ),
+        const MenuDivider(),
         MenuItem(
           label: 'Rename',
           icon: Icons.edit_rounded,
@@ -280,6 +345,23 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
       ];
     } else {
       return [
+        if (deviceServers.isNotEmpty)
+          MenuItem.submenu(
+            icon: Icons.close_rounded,
+            label: 'Kill Servers',
+            items: [
+              ...deviceServers.map((s) => MenuItem(
+                    label: s.instanceName,
+                    onSelected: () async {
+                      await ScrcpyUtils.killServer(s, appPID);
+                      ref
+                          .read(scrcpyInstanceProvider.notifier)
+                          .removeInstance(s);
+                    },
+                  ))
+            ],
+          ),
+        if (deviceServers.isNotEmpty) const MenuDivider(),
         MenuItem(
           label: 'Rename',
           icon: Icons.edit_rounded,
