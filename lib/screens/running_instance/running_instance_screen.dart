@@ -49,7 +49,7 @@ class _RunningInstanceScreenState extends ConsumerState<RunningInstanceScreen> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(4.0),
                         child: ListView.separated(
                           separatorBuilder: (context, index) => const Padding(
                               padding: EdgeInsets.only(bottom: 8)),
