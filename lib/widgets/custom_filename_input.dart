@@ -58,7 +58,7 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
                       child: Container(
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.onPrimary,
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(6),
                         ),
                         child: Center(
                           child: Padding(
@@ -67,17 +67,21 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
                             child: Row(
                               children: [
                                 Expanded(
-                                  child: TextField(
-                                    controller: name,
-                                    onChanged: (a) {
-                                      ref
-                                          .read(customNameProvider.notifier)
-                                          .state = a;
-                                    },
-                                    decoration: InputDecoration.collapsed(
-                                        hintText: selectedConfig.isRecording
-                                            ? 'Custom name'
-                                            : 'Title'),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: TextField(
+                                      controller: name,
+                                      onChanged: (a) {
+                                        ref
+                                            .read(customNameProvider.notifier)
+                                            .state = a;
+                                      },
+                                      decoration: InputDecoration.collapsed(
+                                          hintText: selectedConfig.isRecording
+                                              ? 'Custom name'
+                                              : 'Title'),
+                                    ),
                                   ),
                                 ),
                                 name.text.isNotEmpty

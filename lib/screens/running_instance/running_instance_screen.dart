@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pg_scrcpy/utils/const.dart';
 
 import '../../providers/scrcpy_provider.dart';
 import '../../providers/toast_providers.dart';
@@ -34,35 +35,54 @@ class _RunningInstanceScreenState extends ConsumerState<RunningInstanceScreen> {
               icon: const Icon(Icons.close),
             ),
           ),
-          body: ListView.separated(
-            separatorBuilder: (context, index) =>
-                const Padding(padding: EdgeInsets.only(bottom: 4)),
-            shrinkWrap: true,
-            primary: false,
-            itemCount: runningInstance.length,
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: InstanceListItem(
-                  instance: runningInstance[index],
-                  close: () async {
-                    final appPID = ref.read(appPidProvider);
-                    await ScrcpyUtils.killServer(
-                        runningInstance[index], appPID);
-                    ref.read(toastProvider.notifier).addToast(
-                          SimpleToastItem(
-                            message:
-                                'Server: ${runningInstance[index].instanceName} (${runningInstance[index].scrcpyPID}) killed',
-                            key: UniqueKey(),
-                          ),
-                        );
-                    ref
-                        .read(scrcpyInstanceProvider.notifier)
-                        .removeInstance(runningInstance[index]);
-                  },
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: appWidth),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.inversePrimary,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListView.separated(
+                          separatorBuilder: (context, index) => const Padding(
+                              padding: EdgeInsets.only(bottom: 8)),
+                          shrinkWrap: true,
+                          primary: false,
+                          itemCount: runningInstance.length,
+                          itemBuilder: (context, index) {
+                            return InstanceListItem(
+                              instance: runningInstance[index],
+                              close: () async {
+                                final appPID = ref.read(appPidProvider);
+                                await ScrcpyUtils.killServer(
+                                    runningInstance[index], appPID);
+                                ref.read(toastProvider.notifier).addToast(
+                                      SimpleToastItem(
+                                        message:
+                                            'Server: ${runningInstance[index].instanceName} (${runningInstance[index].scrcpyPID}) killed',
+                                        key: UniqueKey(),
+                                      ),
+                                    );
+                                ref
+                                    .read(scrcpyInstanceProvider.notifier)
+                                    .removeInstance(runningInstance[index]);
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              );
-            },
+              ),
+            ],
           ),
         ),
       ),

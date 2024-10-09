@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pg_scrcpy/providers/adb_provider.dart';
@@ -41,6 +42,10 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
         shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))));
 
+    final noWin = runningInstance
+        .where((ins) => ins.config.windowOptions.noWindow)
+        .toList();
+
     return loading
         ? const Center(
             child: Column(
@@ -57,6 +62,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
             ),
           )
         : AlertDialog(
+            insetPadding: const EdgeInsets.all(16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -68,13 +74,21 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  if (noWin.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        '*Servers with no window will be killed regardless. (${noWin.length} servers)',
+                        style: style,
+                      ).italic().fontSize(11),
+                    ),
                   if (runningInstance.isNotEmpty)
                     Container(
+                      margin: const EdgeInsets.only(bottom: 4),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: Theme.of(context).colorScheme.inversePrimary,
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      margin: const EdgeInsets.all(4),
                       child: ListTile(
                         trailing: Checkbox(
                             value: instance,
@@ -92,32 +106,12 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                         ),
                       ),
                     ),
-                  if (runningInstance
-                      .where((ins) => ins.config.windowOptions.noWindow)
-                      .isNotEmpty)
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      margin: const EdgeInsets.all(4),
-                      child: ListTile(
-                        title: Text(
-                          'Servers with no window will be killed regardless',
-                          style: style,
-                        ),
-                        subtitle: Text(
-                          '${runningInstance.where((ins) => ins.config.windowOptions.noWindow).length} server(s)',
-                        ),
-                      ),
-                    ),
                   if (wifiDevices.isNotEmpty)
                     Container(
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onPrimary,
+                        color: Theme.of(context).colorScheme.inversePrimary,
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      margin: const EdgeInsets.all(4),
                       child: ListTile(
                         trailing: Checkbox(
                             value: wifi,
