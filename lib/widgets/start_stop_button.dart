@@ -226,39 +226,11 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
             ? Row(
                 children: [
                   const Spacer(),
-                  if (runningInstance.isNotEmpty && Platform.isLinux)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Material(
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                  child: const RunningInstanceScreen(),
-                                  type: PageTransitionType.bottomToTop),
-                            );
-                          },
-                          child: SizedBox(
-                            height: 40,
-                            child: Center(
-                                child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Text(
-                                  'Running servers (${runningInstance.length})'),
-                            )),
-                          ),
-                        ),
-                      ),
-                    ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  running
-                      ? Tooltip(
-                          message: 'New instance',
+                  if (running && Platform.isLinux)
+                    Row(
+                      children: [
+                        Tooltip(
+                          message: 'Stop all servers',
                           child: StartButton(
                             onTap: () async {
                               await ScrcpyUtils.newInstance(ref);
@@ -269,39 +241,60 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
                                   duration: const Duration(milliseconds: 1000),
                                   curve: Curves.ease);
                             },
-                            icon: Icon(
-                              Icons.add_rounded,
-                              color: Theme.of(context).brightness ==
-                                      Brightness.light
-                                  ? Colors.black
-                                  : Colors.white,
+                            icon: const Icon(
+                              Icons.stop_rounded,
+                              color: Colors.white,
                             ),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primaryContainer,
+                            backgroundColor: Colors.red,
                           ),
-                        )
-                      : const SizedBox.shrink(),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Material(
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                      child: const RunningInstanceScreen(),
+                                      type: PageTransitionType.bottomToTop),
+                                );
+                              },
+                              child: SizedBox(
+                                height: 40,
+                                child: Center(
+                                    child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0),
+                                  child: Text(
+                                      'Running servers (${runningInstance.length})'),
+                                )),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   const SizedBox(
                     width: 10,
                   ),
                   Tooltip(
                     message: runningInstance.isEmpty
                         ? 'Start server'
-                        : 'Stop all servers',
+                        : 'New instance',
                     child: StartButton(
                       onTap: () async {
-                        await ScrcpyUtils.runCommand(ref);
-                        await Future.delayed(const Duration(milliseconds: 200));
-                        widget.scroll.animateTo(
-                            widget.scroll.position.extentTotal,
-                            duration: const Duration(milliseconds: 1000),
-                            curve: Curves.ease);
+                        await ScrcpyUtils.newInstance(ref);
                       },
-                      backgroundColor: running
-                          ? Colors.redAccent
-                          : Theme.of(context).colorScheme.primaryContainer,
+                      backgroundColor:
+                          Theme.of(context).colorScheme.primaryContainer,
                       icon: Icon(
-                        running ? Icons.stop_rounded : Icons.play_arrow_rounded,
+                        running ? Icons.add_rounded : Icons.play_arrow_rounded,
                         color: running
                             ? Colors.white
                             : Theme.of(context).brightness == Brightness.light
