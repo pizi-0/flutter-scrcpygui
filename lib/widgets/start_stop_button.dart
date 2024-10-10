@@ -13,6 +13,7 @@ import 'package:pg_scrcpy/screens/running_instance/running_instance_screen.dart'
 import 'package:pg_scrcpy/utils/const.dart';
 import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
 
+import '../providers/theme_provider.dart';
 import '../providers/toast_providers.dart';
 import 'simple_toast/simple_toast_item.dart';
 
@@ -32,8 +33,10 @@ class _StartButtonState extends ConsumerState<StartButton> {
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(appThemeProvider);
+
     return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(settings.widgetRadius),
       child: SizedBox(
         width: 40,
         height: 40,
@@ -51,7 +54,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
                 backgroundColor: WidgetStatePropertyAll(widget.backgroundColor),
                 shape: WidgetStatePropertyAll(
                   RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(settings.widgetRadius),
                   ),
                 ),
               ),
@@ -117,8 +120,10 @@ class _StopButtonState extends ConsumerState<StopButton> {
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(appThemeProvider);
+
     return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(settings.widgetRadius),
       child: SizedBox(
         width: 40,
         height: 40,
@@ -136,7 +141,7 @@ class _StopButtonState extends ConsumerState<StopButton> {
                 backgroundColor: WidgetStatePropertyAll(widget.backgroundColor),
                 shape: WidgetStatePropertyAll(
                   RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(settings.widgetRadius),
                   ),
                 ),
               ),
@@ -216,6 +221,7 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
   Widget build(BuildContext context) {
     final runningInstance = ref.watch(scrcpyInstanceProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
+    final settings = ref.watch(appThemeProvider);
 
     bool running = runningInstance.isNotEmpty;
 
@@ -248,7 +254,8 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
                           width: 10,
                         ),
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius:
+                              BorderRadius.circular(settings.widgetRadius),
                           child: Material(
                             color:
                                 Theme.of(context).colorScheme.primaryContainer,
@@ -315,10 +322,13 @@ class OverrideDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(appThemeProvider);
+
     return SizedBox(
       width: appWidth,
       child: AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(settings.widgetRadius)),
         title: isEdit
             ? const Text('Edit disabled:')
             : const Text('Incompatible flags:'),

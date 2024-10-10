@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pg_scrcpy/providers/theme_provider.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_enum.dart';
 
 const double _minWidth = 100;
 
-class ConfigDropdownEnum<T extends StringEnum> extends StatelessWidget {
+class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
   final List<T> items;
   final String label;
   final T? initialValue;
@@ -23,11 +25,13 @@ class ConfigDropdownEnum<T extends StringEnum> extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(appThemeProvider);
+
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
       ),
       height: 40,
       child: Padding(
@@ -47,13 +51,15 @@ class ConfigDropdownEnum<T extends StringEnum> extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.inversePrimary,
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius:
+                        BorderRadius.circular(settings.widgetRadius * 0.8),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: DropdownButton(
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius:
+                            BorderRadius.circular(settings.widgetRadius * 0.8),
                         style: Theme.of(context).textTheme.bodyMedium,
                         focusColor: Theme.of(context).colorScheme.onPrimary,
                         value: initialValue,
@@ -79,7 +85,7 @@ class ConfigDropdownEnum<T extends StringEnum> extends StatelessWidget {
   }
 }
 
-class ConfigDropdownOthers extends StatelessWidget {
+class ConfigDropdownOthers extends ConsumerWidget {
   final List<DropdownMenuItem> items;
   final String label;
   final Object? initialValue;
@@ -96,11 +102,12 @@ class ConfigDropdownOthers extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(appThemeProvider);
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
       ),
       height: 40,
       child: Padding(
@@ -127,7 +134,8 @@ class ConfigDropdownOthers extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.inversePrimary,
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius:
+                        BorderRadius.circular(settings.widgetRadius * 0.8),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: Padding(
@@ -150,7 +158,7 @@ class ConfigDropdownOthers extends StatelessWidget {
   }
 }
 
-class ConfigUserInput extends StatelessWidget {
+class ConfigUserInput extends ConsumerWidget {
   final String label;
   final TextEditingController controller;
   final String unit;
@@ -167,11 +175,12 @@ class ConfigUserInput extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(appThemeProvider);
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
       ),
       height: 40,
       child: Padding(
@@ -198,7 +207,8 @@ class ConfigUserInput extends StatelessWidget {
                       child: Container(
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.inversePrimary,
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(
+                              settings.widgetRadius * 0.8),
                         ),
                         child: Center(
                           child: TextField(
@@ -235,7 +245,7 @@ class ConfigUserInput extends StatelessWidget {
   }
 }
 
-class ConfigCustom extends StatelessWidget {
+class ConfigCustom extends ConsumerWidget {
   final String label;
   final Widget child;
   final BoxConstraints? boxConstraints;
@@ -250,11 +260,12 @@ class ConfigCustom extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(appThemeProvider);
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(6),
+        borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
       ),
       height: 40,
       child: Padding(
@@ -277,7 +288,8 @@ class ConfigCustom extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: childBackgroundColor ??
                         Theme.of(context).colorScheme.inversePrimary,
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius:
+                        BorderRadius.circular(settings.widgetRadius * 0.8),
                   ),
                   child: child,
                 ),

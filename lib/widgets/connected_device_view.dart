@@ -14,6 +14,7 @@ import 'package:pg_scrcpy/widgets/section_button.dart';
 import 'package:pg_scrcpy/widgets/simple_toast/simple_toast_item.dart';
 import 'package:string_extensions/string_extensions.dart';
 
+import '../providers/theme_provider.dart';
 import '../utils/const.dart';
 import 'device_icon.dart';
 
@@ -55,6 +56,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
   Widget build(BuildContext context) {
     final adbDevices = ref.watch(adbProvider);
     final wirelessHx = ref.watch(wirelessDevicesHistoryProvider);
+    final settings = ref.watch(appThemeProvider);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
@@ -74,12 +76,12 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
               ],
             ),
             ClipRRect(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(settings.widgetRadius),
               child: Container(
                 height: 108,
                 width: appWidth,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(settings.widgetRadius),
                   color: Theme.of(context).colorScheme.inversePrimary,
                 ),
                 child: Stack(
@@ -90,7 +92,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
                       physics: const NeverScrollableScrollPhysics(),
                       children: [
                         _connectWirelessDevicePage(context, wirelessHx),
-                        _deviceListPage(adbDevices, context),
+                        _deviceListPage(ref, adbDevices, context),
                       ],
                     ),
                     if (loading)
@@ -102,7 +104,8 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
                                   .colorScheme
                                   .onPrimary
                                   .withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(
+                                  settings.widgetRadius * 0.8),
                             ),
                             child: const Center(
                                 child: CircularProgressIndicator())),
@@ -123,19 +126,20 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
       physics: const NeverScrollableScrollPhysics(),
       controller: wirelessPage,
       children: [
-        _enterIpPage(context),
-        _deviceHxPage(context, hx, connected),
+        _enterIpPage(ref, context),
+        _deviceHxPage(ref, context, hx, connected),
       ],
     );
   }
 
-  Padding _deviceHxPage(
-      BuildContext context, List<AdbDevices> hx, List<AdbDevices> connected) {
+  Padding _deviceHxPage(WidgetRef ref, BuildContext context,
+      List<AdbDevices> hx, List<AdbDevices> connected) {
+    final settings = ref.watch(appThemeProvider);
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
           color: Theme.of(context).colorScheme.onPrimary,
         ),
         child: SizedBox.expand(
@@ -178,12 +182,13 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
     );
   }
 
-  Padding _enterIpPage(BuildContext context) {
+  Padding _enterIpPage(WidgetRef ref, BuildContext context) {
+    final settings = ref.watch(appThemeProvider);
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(6),
+          borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
           color: Theme.of(context).colorScheme.onPrimary,
         ),
         child: Center(
@@ -191,7 +196,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text('Developer option > Wireless debugging > IP & Port'),
-              _enterIpTextBox(context)
+              _enterIpTextBox(ref, context)
             ],
           ),
         ),
@@ -251,7 +256,9 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
   }
 
   AnimatedSwitcher _deviceListPage(
-      List<AdbDevices> adbDevices, BuildContext context) {
+      WidgetRef ref, List<AdbDevices> adbDevices, BuildContext context) {
+    final settings = ref.watch(appThemeProvider);
+
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
       child: adbDevices.isEmpty
@@ -261,7 +268,8 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
               width: double.maxFinite,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.onPrimary,
-                borderRadius: BorderRadius.circular(6),
+                borderRadius:
+                    BorderRadius.circular(settings.widgetRadius * 0.8),
               ),
               child: const Center(child: Text('No ADB devices detected')),
             )
@@ -285,7 +293,8 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
     );
   }
 
-  Widget _enterIpTextBox(BuildContext context) {
+  Widget _enterIpTextBox(WidgetRef ref, BuildContext context) {
+    final settings = ref.watch(appThemeProvider);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -301,7 +310,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
             height: 40,
             width: 200,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
               color: Theme.of(context).colorScheme.primaryContainer,
             ),
             child: Padding(
@@ -378,6 +387,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
   }
 
   Future<void> _connect() async {
+    final settings = ref.watch(appThemeProvider);
     setState(() {
       loading = true;
     });
@@ -411,7 +421,8 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
               builder: (context) {
                 return AlertDialog(
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                      borderRadius:
+                          BorderRadius.circular(settings.widgetRadius)),
                   title: const Text('Check your phone'),
                   content: const Text('Allow debugging.'),
                   actions: [

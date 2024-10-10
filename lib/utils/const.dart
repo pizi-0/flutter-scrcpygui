@@ -15,9 +15,6 @@ final List<ScrcpyConfig> defaultConfigs = [
   defaultRecord,
 ];
 
-final BorderRadius innerRadiusAll = BorderRadius.circular(5);
-final BorderRadius outerRadiusAll = BorderRadius.circular(10);
-
 const double appWidth = 450;
 
 const List<DropdownMenuItem> yesno = [

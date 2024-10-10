@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pg_scrcpy/models/scrcpy_related/available_flags.dart';
 import 'package:pg_scrcpy/providers/config_provider.dart';
 
+import '../../providers/theme_provider.dart';
 import '../../utils/const.dart';
 
 class AdditionalFlagsConfig extends ConsumerStatefulWidget {
@@ -32,6 +33,8 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(appThemeProvider);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -45,7 +48,7 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
         Container(
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.inversePrimary,
-            borderRadius: outerRadiusAll,
+            borderRadius: BorderRadius.circular(settings.widgetRadius),
           ),
           width: appWidth,
           child: Padding(
@@ -58,10 +61,12 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
                   padding: EdgeInsets.only(left: 8.0),
                   child: Text('Add additional flags'),
                 ),
+                const SizedBox(height: 4),
                 Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.onPrimary,
-                    borderRadius: innerRadiusAll,
+                    borderRadius:
+                        BorderRadius.circular(settings.widgetRadius * 0.8),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),

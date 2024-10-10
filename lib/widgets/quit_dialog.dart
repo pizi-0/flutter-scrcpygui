@@ -7,6 +7,7 @@ import 'package:pg_scrcpy/providers/adb_provider.dart';
 import 'package:pg_scrcpy/providers/scrcpy_provider.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '../providers/theme_provider.dart';
 import '../utils/adb_utils.dart';
 import '../utils/const.dart';
 import '../utils/scrcpy_utils.dart';
@@ -38,9 +39,10 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
     TextStyle? style = Theme.of(context).textTheme.titleSmall;
     final runningInstance = ref.watch(scrcpyInstanceProvider);
     final wifiDevices = ref.watch(adbProvider).where((e) => e.id.contains(':'));
+    final settings = ref.watch(appThemeProvider);
     final buttonStyle = ButtonStyle(
-        shape: WidgetStatePropertyAll(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(6))));
+        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8))));
 
     final noWin = runningInstance
         .where((ins) => ins.config.windowOptions.noWindow)
@@ -64,7 +66,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
         : AlertDialog(
             insetPadding: const EdgeInsets.all(16),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(settings.widgetRadius),
             ),
             title: const Text('Quit?'),
             content: ConstrainedBox(
@@ -87,7 +89,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                       margin: const EdgeInsets.only(bottom: 4),
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.inversePrimary,
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius:
+                            BorderRadius.circular(settings.widgetRadius * 0.8),
                       ),
                       child: ListTile(
                         trailing: Checkbox(
@@ -110,7 +113,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                     Container(
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.inversePrimary,
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius:
+                            BorderRadius.circular(settings.widgetRadius * 0.8),
                       ),
                       child: ListTile(
                         trailing: Checkbox(

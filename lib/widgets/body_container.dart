@@ -1,14 +1,18 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:pg_scrcpy/providers/theme_provider.dart';
 
-class BodyContainer extends StatelessWidget {
+class BodyContainer extends ConsumerWidget {
   final List<Widget> children;
   final String? headerTitle;
   const BodyContainer({super.key, required this.children, this.headerTitle});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(appThemeProvider);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: Column(
@@ -23,11 +27,12 @@ class BodyContainer extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onPrimaryContainer),
               ),
             ),
-          Container(
+          AnimatedContainer(
+            duration: 200.milliseconds,
             width: double.maxFinite,
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.inversePrimary,
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(settings.widgetRadius),
             ),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
@@ -42,7 +47,7 @@ class BodyContainer extends StatelessWidget {
   }
 }
 
-class BodyContainerItem extends StatelessWidget {
+class BodyContainerItem extends ConsumerWidget {
   final String title;
   final Widget? leading;
   final Widget? trailing;
@@ -54,13 +59,16 @@ class BodyContainerItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settings = ref.watch(appThemeProvider);
+
+    return AnimatedContainer(
+      duration: 200.milliseconds,
       height: 50,
       width: double.maxFinite,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(6),
+        color: Theme.of(context).colorScheme.onPrimary,
+        borderRadius: BorderRadius.circular(settings.widgetRadius * 0.85),
       ),
       margin: const EdgeInsets.only(bottom: 4),
       child: Padding(

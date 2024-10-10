@@ -14,6 +14,7 @@ import 'package:pg_scrcpy/widgets/start_stop_button.dart';
 
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
 import '../providers/adb_provider.dart';
+import '../providers/theme_provider.dart';
 import '../utils/const.dart';
 import '../utils/scrcpy_utils.dart';
 
@@ -29,6 +30,7 @@ class _InstanceListState extends ConsumerState<InstanceList> {
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(appThemeProvider);
     final runningInstance = ref.watch(scrcpyInstanceProvider);
     if (runningInstance.length <= 1) {
       collapse = false;
@@ -38,7 +40,7 @@ class _InstanceListState extends ConsumerState<InstanceList> {
       padding: const EdgeInsets.only(bottom: 0),
       child: AnimatedContainer(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(settings.widgetRadius),
         ),
         clipBehavior: Clip.hardEdge,
         duration: const Duration(milliseconds: 300),
@@ -86,7 +88,7 @@ class _InstanceListState extends ConsumerState<InstanceList> {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(settings.widgetRadius),
                     color: Theme.of(context).colorScheme.primaryContainer,
                   ),
                   width: appWidth,
@@ -213,6 +215,7 @@ class _InstanceListItemState extends ConsumerState<InstanceListItem> {
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(appThemeProvider);
     final device = ref.watch(savedAdbDevicesProvider).firstWhere(
         (d) => d.serialNo == widget.instance.device.serialNo,
         orElse: () => widget.instance.device);
@@ -220,7 +223,7 @@ class _InstanceListItemState extends ConsumerState<InstanceListItem> {
       width: appWidth,
       height: 106,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(settings.widgetRadius),
           color: Theme.of(context).colorScheme.onPrimary),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -267,28 +270,6 @@ class _InstanceListItemState extends ConsumerState<InstanceListItem> {
                       ),
                       backgroundColor: Colors.transparent,
                     ),
-                    // const SizedBox(height: 5),
-                    // TextButton(
-                    //   style: ButtonStyle(
-                    //     padding: const WidgetStatePropertyAll(EdgeInsets.all(0)),
-                    //     shape: WidgetStatePropertyAll(
-                    //       RoundedRectangleBorder(
-                    //         borderRadius: BorderRadius.circular(6),
-                    //         side: BorderSide(
-                    //             color: Theme.of(context).colorScheme.inversePrimary,
-                    //             width: 4),
-                    //       ),
-                    //     ),
-                    //   ),
-                    //   onPressed: () {
-                    //     Navigator.push(
-                    //         context,
-                    //         PageTransition(
-                    //             child: LogScreen(pid: widget.instance.scrcpyPID),
-                    //             type: PageTransitionType.rightToLeft));
-                    //   },
-                    //   child: const Text('Log'),
-                    // )
                   ],
                 ),
               ],

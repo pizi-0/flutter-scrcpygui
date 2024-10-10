@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../providers/theme_provider.dart';
 import '../utils/const.dart';
 
-class MirroringConfigView extends StatefulWidget {
+class MirroringConfigView extends ConsumerStatefulWidget {
   const MirroringConfigView({super.key});
 
   @override
-  State<MirroringConfigView> createState() => _MirroringConfigViewState();
+  ConsumerState<MirroringConfigView> createState() =>
+      _MirroringConfigViewState();
 }
 
-class _MirroringConfigViewState extends State<MirroringConfigView> {
+class _MirroringConfigViewState extends ConsumerState<MirroringConfigView> {
   List<String> mirrorMode = ['both', 'audio', 'video'];
   late String currentMirrorMode = mirrorMode[0];
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(appThemeProvider);
+
     return Center(
       child: SizedBox(
         width: appWidth,
@@ -34,7 +39,7 @@ class _MirroringConfigViewState extends State<MirroringConfigView> {
                 Container(
                   height: 100,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(settings.widgetRadius),
                     color: Theme.of(context).colorScheme.secondaryContainer,
                   ),
                   child: const Padding(

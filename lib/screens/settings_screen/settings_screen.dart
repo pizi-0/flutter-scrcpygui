@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -79,6 +80,14 @@ class ThemeSection extends ConsumerStatefulWidget {
 }
 
 class _ThemeSectionState extends ConsumerState<ThemeSection> {
+  late double radius;
+
+  @override
+  void initState() {
+    radius = ref.read(appThemeProvider).widgetRadius;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -132,10 +141,62 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               height: 20,
               width: 100,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
+                borderRadius:
+                    BorderRadius.circular(appTheme.widgetRadius * 0.8),
                 border: Border.all(color: Colors.black),
                 color: appTheme.color,
               ),
+            ),
+          ),
+        ),
+        BodyContainerItem(
+          title: 'Corner radius',
+          trailing: SliderTheme(
+            data: SliderThemeData(
+              trackShape: CustomTrackShape(),
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  tooltip: 'Default: 10',
+                  onPressed: () async {
+                    ref
+                        .read(appThemeProvider.notifier)
+                        .setWidgetRadius(defaultTheme.widgetRadius);
+
+                    setState(() {
+                      radius = defaultTheme.widgetRadius;
+                    });
+
+                    final theme = ref.read(appThemeProvider);
+                    await AppUtils.saveAppTheme(theme);
+                  },
+                  icon: const Icon(Icons.refresh_rounded),
+                ),
+                SizedBox(
+                  width: 150,
+                  child: Slider(
+                    divisions: 15,
+                    min: 0,
+                    max: 15,
+                    value: radius,
+                    onChangeEnd: (value) async {
+                      final theme = ref.read(appThemeProvider);
+                      await AppUtils.saveAppTheme(theme);
+                    },
+                    onChanged: (v) {
+                      radius = v;
+                      setState(() {});
+                      ref.read(appThemeProvider.notifier).setWidgetRadius(v);
+                    },
+                  ),
+                ),
+                SizedBox(
+                    width: 30,
+                    child: Text(radius.toInt().toString()).alignAtCenterRight())
+              ],
             ),
           ),
         )
@@ -191,11 +252,13 @@ class _MyColorPickerState extends ConsumerState<MyColorPicker> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final settings = ref.watch(appThemeProvider);
+
     return Center(
       child: Container(
         decoration: BoxDecoration(
           color: colorScheme.surface,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
           // border:
           //     Border.all(color: ref.watch(appThemeProvider).color, width: 2),
         ),
@@ -232,5 +295,22 @@ class _MyColorPickerState extends ConsumerState<MyColorPicker> {
         ),
       ),
     );
+  }
+}
+
+class CustomTrackShape extends RoundedRectSliderTrackShape {
+  @override
+  Rect getPreferredRect({
+    required RenderBox parentBox,
+    Offset offset = Offset.zero,
+    required SliderThemeData sliderTheme,
+    bool isEnabled = false,
+    bool isDiscrete = false,
+  }) {
+    final trackHeight = sliderTheme.trackHeight;
+    final trackLeft = offset.dx;
+    final trackTop = offset.dy + (parentBox.size.height - trackHeight!) / 2;
+    final trackWidth = parentBox.size.width;
+    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }

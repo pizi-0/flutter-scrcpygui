@@ -4,6 +4,7 @@ import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_info.dart';
 import 'package:pg_scrcpy/providers/adb_provider.dart';
 import 'package:pg_scrcpy/providers/config_provider.dart';
 import 'package:pg_scrcpy/providers/info_provider.dart';
+import 'package:pg_scrcpy/providers/theme_provider.dart';
 
 import '../../models/scrcpy_related/scrcpy_config.dart';
 import '../../models/scrcpy_related/scrcpy_enum.dart';
@@ -46,6 +47,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(selectedConfigProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
+    final settings = ref.watch(appThemeProvider);
+
     final ScrcpyInfo info = ref
         .watch(infoProvider)
         .firstWhere((i) => i.device.serialNo == selectedDevice!.serialNo);
@@ -68,7 +71,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
             Container(
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.inversePrimary,
-                  borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(settings.widgetRadius)),
               width: appWidth,
               child: Padding(
                 padding: const EdgeInsets.all(4.0),

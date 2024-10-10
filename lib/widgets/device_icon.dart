@@ -12,6 +12,7 @@ import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
 import 'package:pg_scrcpy/widgets/disconnect_dialog.dart';
 
 import '../models/adb_devices.dart';
+import '../providers/theme_provider.dart';
 import '../providers/toast_providers.dart';
 import 'simple_toast/simple_toast_item.dart';
 
@@ -73,6 +74,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final settings = ref.watch(appThemeProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final deviceServers = ref
         .watch(scrcpyInstanceProvider)
@@ -105,7 +107,8 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                 verticalOffset: 50,
                 waitDuration: const Duration(milliseconds: 200),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius:
+                      BorderRadius.circular(settings.widgetRadius * 0.8),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
@@ -123,7 +126,8 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                                   .colorScheme
                                   .onPrimary
                                   .withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(
+                              settings.widgetRadius * 0.8),
                           //   border: Border.all(
                           //     color: Theme.of(context)
                           //         .colorScheme
@@ -192,7 +196,8 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                         .colorScheme
                         .onPrimary
                         .withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(6),
+                    borderRadius:
+                        BorderRadius.circular(settings.widgetRadius * 0.8),
                   ),
                   child: const Center(child: Icon(Icons.timer_rounded)),
                 ),
@@ -205,7 +210,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                       height: 20,
                       width: 20,
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
+                        borderRadius: BorderRadius.circular(4),
                         color: selectedDevice == widget.device
                             ? Theme.of(context).colorScheme.inversePrimary
                             : Theme.of(context)

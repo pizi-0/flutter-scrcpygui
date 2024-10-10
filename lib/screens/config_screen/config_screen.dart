@@ -9,6 +9,7 @@ import 'package:pg_scrcpy/providers/adb_provider.dart';
 import 'package:pg_scrcpy/providers/config_provider.dart';
 import 'package:pg_scrcpy/providers/info_provider.dart';
 import 'package:pg_scrcpy/providers/scrcpy_provider.dart';
+import 'package:pg_scrcpy/providers/theme_provider.dart';
 import 'package:pg_scrcpy/widgets/config_screen_sections/additional_flags.dart';
 import 'package:pg_scrcpy/widgets/config_screen_sections/audio_config.dart';
 import 'package:pg_scrcpy/widgets/config_screen_sections/device_config.dart';
@@ -94,6 +95,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
     final selectedConfig = ref.watch(selectedConfigProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final allConfig = ref.watch(configsProvider);
+    final settings = ref.watch(appThemeProvider);
 
     // final device = ref.watch(savedAdbDevicesProvider).firstWhere(
     //     (d) => d.serialNo == selectedDevice!.serialNo,
@@ -141,7 +143,8 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
                           Container(
                             decoration: BoxDecoration(
                               color: Colors.grey.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(
+                                  settings.widgetRadius * 0.8),
                             ),
                             // width: appWidth,
                             child: Padding(

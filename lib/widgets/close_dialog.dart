@@ -7,6 +7,7 @@ import 'package:pg_scrcpy/utils/scrcpy_command.dart';
 import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
 
 import '../providers/info_provider.dart';
+import '../providers/theme_provider.dart';
 
 class CloseDialog extends ConsumerStatefulWidget {
   const CloseDialog({super.key});
@@ -48,6 +49,8 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(selectedConfigProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
+    final settings = ref.watch(appThemeProvider);
+
     final info = ref
         .watch(infoProvider)
         .firstWhere((i) => i.device.serialNo == selectedDevice!.serialNo);
@@ -55,7 +58,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
     return AlertDialog(
       insetPadding: const EdgeInsets.all(16),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(settings.widgetRadius),
         side: BorderSide(
           color: notAllowed
               ? Colors.red
@@ -91,7 +94,8 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
             const SizedBox(height: 10),
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius:
+                    BorderRadius.circular(settings.widgetRadius * 0.8),
                 color: Theme.of(context).colorScheme.inversePrimary,
               ),
               child: Padding(

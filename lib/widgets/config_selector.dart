@@ -10,6 +10,7 @@ import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
 import 'package:pg_scrcpy/widgets/section_button.dart';
 
 import '../models/scrcpy_related/scrcpy_config.dart';
+import '../providers/theme_provider.dart';
 import '../utils/const.dart';
 import 'config_visualizer.dart';
 import 'custom_filename_input.dart';
@@ -35,6 +36,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
   Widget build(BuildContext context) {
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final allConfigs = ref.watch(configsProvider);
+    final settings = ref.watch(appThemeProvider);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -54,14 +56,14 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
                   height: 60,
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.inversePrimary,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(settings.widgetRadius),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: Row(
                       children: [
                         Expanded(
-                          child: _buildDropdown(context, allConfigs),
+                          child: _buildDropdown(ref, context, allConfigs),
                         ),
                       ],
                     ),
@@ -78,15 +80,18 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
   }
 
   CustomDropdown<ScrcpyConfig> _buildDropdown(
-      BuildContext context, List<ScrcpyConfig> allConfigs) {
+      WidgetRef ref, BuildContext context, List<ScrcpyConfig> allConfigs) {
+    final settings = ref.watch(appThemeProvider);
+
     return CustomDropdown.search(
       //decoration
       decoration: CustomDropdownDecoration(
         searchFieldDecoration: SearchFieldDecoration(
           fillColor: Theme.of(context).colorScheme.inversePrimary,
         ),
-        expandedBorderRadius: BorderRadius.circular(6),
-        closedBorderRadius: BorderRadius.circular(6),
+        expandedBorderRadius:
+            BorderRadius.circular(settings.widgetRadius * 0.8),
+        closedBorderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
         // expandedBorder: Border.all(
         //     color: Theme.of(context).colorScheme.inversePrimary, width: 5),
         listItemDecoration: ListItemDecoration(
@@ -95,7 +100,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
         closedFillColor: Theme.of(context).colorScheme.onPrimary,
         expandedFillColor: Theme.of(context).colorScheme.onPrimary,
         expandedBorder: Border.all(
-            color: Theme.of(context).colorScheme.inversePrimary, width: 4),
+            color: Theme.of(context).colorScheme.onPrimary, width: 4),
       ),
       listItemPadding: const EdgeInsets.all(0),
       itemsListPadding: const EdgeInsets.only(right: 4),

@@ -33,6 +33,7 @@ void main() async {
           ProviderScope(
             child: MyApp(
               theme: AppTheme(
+                widgetRadius: t.widgetRadius,
                 color: c,
                 brightness: t.brightness,
                 fromWall: t.fromWall,
@@ -46,6 +47,7 @@ void main() async {
         ProviderScope(
           child: MyApp(
             theme: AppTheme(
+              widgetRadius: t.widgetRadius,
               color: t.color,
               brightness: t.brightness,
               fromWall: t.fromWall,
@@ -71,7 +73,6 @@ class _MyAppState extends ConsumerState<MyApp> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((c) {
       ref.read(appThemeProvider.notifier).setTheme(widget.theme);
-      ref.read(defaultThemeProvider.notifier).state = widget.theme;
     });
   }
 

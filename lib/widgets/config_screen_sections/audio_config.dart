@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_info.dart';
 import 'package:pg_scrcpy/providers/config_provider.dart';
+import 'package:pg_scrcpy/providers/theme_provider.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../../models/scrcpy_related/scrcpy_config.dart';
@@ -41,6 +42,8 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(selectedConfigProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
+    final settings = ref.watch(appThemeProvider);
+
     final ScrcpyInfo info = ref
         .watch(infoProvider)
         .firstWhere((i) => i.device.serialNo == selectedDevice!.serialNo);
@@ -71,7 +74,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
             Container(
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.inversePrimary,
-                  borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(settings.widgetRadius)),
               width: appWidth,
               child: Padding(
                 padding: const EdgeInsets.all(4.0),

@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_running_instance.dart';
 
+import '../../providers/theme_provider.dart';
+
 class LogScreen extends ConsumerStatefulWidget {
   final ScrcpyRunningInstance instance;
   const LogScreen({super.key, required this.instance});
@@ -41,6 +43,8 @@ class _LogScreenState extends ConsumerState<LogScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final settings = ref.watch(appThemeProvider);
+
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.escape): () =>
@@ -62,7 +66,7 @@ class _LogScreenState extends ConsumerState<LogScreen> {
               child: Container(
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(settings.widgetRadius),
                     border: Border.all(
                       color: Theme.of(context).colorScheme.inverseSurface,
                     )),

@@ -12,6 +12,7 @@ import 'package:pg_scrcpy/utils/scrcpy_command.dart';
 
 import '../../models/scrcpy_related/scrcpy_info.dart';
 import '../../providers/info_provider.dart';
+import '../../providers/theme_provider.dart';
 import '../../utils/const.dart';
 import '../../utils/scrcpy_utils.dart';
 
@@ -54,6 +55,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final runningInstance = ref.watch(scrcpyInstanceProvider);
     final testInstance = ref.watch(testInstanceProvider);
+    final settings = ref.watch(appThemeProvider);
 
     final bool isTestRunning = runningInstance.contains(testInstance);
 
@@ -74,7 +76,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
         Container(
           decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.inversePrimary,
-              borderRadius: BorderRadius.circular(10)),
+              borderRadius: BorderRadius.circular(settings.widgetRadius)),
           width: appWidth,
           child: Padding(
             padding: const EdgeInsets.all(4.0),
@@ -90,7 +92,8 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                   width: appWidth,
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.onPrimary,
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius:
+                        BorderRadius.circular(settings.widgetRadius * 0.8),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -108,7 +111,8 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                           backgroundColor: WidgetStatePropertyAll(
                               !isTestRunning ? Colors.green : Colors.red),
                           shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5))),
+                              borderRadius: BorderRadius.circular(
+                                  settings.widgetRadius * 0.8))),
                         ),
                         onPressed: () async {
                           if (!isTestRunning) {

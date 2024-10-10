@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pg_scrcpy/providers/config_provider.dart';
 import 'package:pg_scrcpy/widgets/config_dropdown.dart';
 
+import '../../providers/theme_provider.dart';
 import '../../utils/const.dart';
 
 class DeviceConfig extends ConsumerStatefulWidget {
@@ -16,6 +17,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(selectedConfigProvider);
+    final settings = ref.watch(appThemeProvider);
     // final selectedDevice = ref.watch(selectedDeviceProvider);
     // final selectedDeviceInfo = ref
     //     .watch(infoProvider)
@@ -34,7 +36,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
         Container(
           decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.inversePrimary,
-              borderRadius: BorderRadius.circular(10)),
+              borderRadius: BorderRadius.circular(settings.widgetRadius)),
           width: appWidth,
           child: Padding(
             padding: const EdgeInsets.all(4.0),

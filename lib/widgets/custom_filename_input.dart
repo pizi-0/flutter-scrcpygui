@@ -4,6 +4,7 @@ import 'package:pg_scrcpy/providers/config_provider.dart';
 import 'package:pg_scrcpy/providers/scrcpy_provider.dart';
 import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
 
+import '../providers/theme_provider.dart';
 import '../utils/const.dart';
 
 class CustomFileName extends ConsumerStatefulWidget {
@@ -25,6 +26,7 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(selectedConfigProvider);
+    final settings = ref.watch(appThemeProvider);
     final style =
         TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer);
 
@@ -47,7 +49,7 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
               height: 60,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.inversePrimary,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(settings.widgetRadius),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(4.0),
@@ -58,7 +60,8 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
                       child: Container(
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.onPrimary,
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(
+                              settings.widgetRadius * 0.8),
                         ),
                         child: Center(
                           child: Padding(

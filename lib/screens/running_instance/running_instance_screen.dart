@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pg_scrcpy/utils/const.dart';
 
 import '../../providers/scrcpy_provider.dart';
+import '../../providers/theme_provider.dart';
 import '../../providers/toast_providers.dart';
 import '../../utils/scrcpy_utils.dart';
 import '../../widgets/instance_list.dart';
@@ -21,6 +22,8 @@ class _RunningInstanceScreenState extends ConsumerState<RunningInstanceScreen> {
   @override
   Widget build(BuildContext context) {
     final runningInstance = ref.watch(scrcpyInstanceProvider);
+    final settings = ref.watch(appThemeProvider);
+
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.escape): () =>
@@ -46,7 +49,8 @@ class _RunningInstanceScreenState extends ConsumerState<RunningInstanceScreen> {
                     child: Container(
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.inversePrimary,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius:
+                            BorderRadius.circular(settings.widgetRadius),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),
