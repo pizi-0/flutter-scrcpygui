@@ -15,7 +15,6 @@ import 'package:string_extensions/string_extensions.dart';
 
 import '../models/adb_devices.dart';
 import '../providers/adb_provider.dart';
-import '../providers/config_provider.dart';
 import '../providers/toast_providers.dart';
 import '../widgets/simple_toast/simple_toast_item.dart';
 
@@ -186,8 +185,6 @@ class AdbUtils {
   static Future<void> saveWirelessDeviceHistory(
       WidgetRef ref, String ip) async {
     final connected = await AdbUtils.connectedDevices();
-    final saved = ref.read(savedAdbDevicesProvider);
-    final configs = ref.read(configsProvider);
 
     final currentHx = [...ref.read(wirelessDevicesHistoryProvider)];
 
@@ -214,7 +211,7 @@ class AdbUtils {
           ));
     }
 
-    ref.read(adbProvider.notifier).setConnected(connected, saved, configs);
+    ref.read(adbProvider.notifier).setConnected(connected);
 
     bool toSaveExists =
         currentHx.where((h) => h.serialNo == toSave.serialNo).isNotEmpty;

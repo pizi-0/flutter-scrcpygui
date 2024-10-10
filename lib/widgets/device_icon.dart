@@ -10,11 +10,12 @@ import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/widgets/disconnect_dialog.dart';
+import 'package:tray_manager/tray_manager.dart' hide MenuItem;
 
 import '../models/adb_devices.dart';
-import '../providers/config_provider.dart';
 import '../providers/theme_provider.dart';
 import '../providers/toast_providers.dart';
+import '../utils/tray_utils.dart';
 import 'simple_toast/simple_toast_item.dart';
 
 class DeviceIcon extends ConsumerStatefulWidget {
@@ -39,6 +40,8 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((a) async {
       if (mounted) {
+        trayManager.destroy();
+        TrayUtils.initTray(ref);
         final existingInfo = ref.read(infoProvider);
 
         if (existingInfo
@@ -297,9 +300,6 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
           label: 'Disconnect',
           icon: Icons.link_off_rounded,
           onSelected: () async {
-            final saved = ref.read(savedAdbDevicesProvider);
-            final configs = ref.read(configsProvider);
-
             ref.read(shouldPollAdb.notifier).state = false;
 
             setState(() {
@@ -318,9 +318,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
               _showToast();
 
               final connected = await AdbUtils.connectedDevices();
-              ref
-                  .read(adbProvider.notifier)
-                  .setConnected(connected, saved, configs);
+              ref.read(adbProvider.notifier).setConnected(connected);
               if (ref.read(selectedDeviceProvider) != null) {
                 if (ref.read(selectedDeviceProvider)!.id == widget.device!.id) {
                   if (indexedOf != -1 && ref.read(adbProvider).isNotEmpty) {

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/providers/adb_provider.dart';
-import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/utils/tray_utils.dart';
 import 'package:scrcpygui/widgets/start_stop_button.dart';
 import 'package:tray_manager/tray_manager.dart';
@@ -23,11 +21,7 @@ class _DesktopMainScreenState extends ConsumerState<DesktopMainScreen>
 
   @override
   void initState() {
-    final connected = ref.read(adbProvider);
-    final saved = ref.read(savedAdbDevicesProvider);
-    final configs = ref.read(configsProvider);
-
-    TrayUtils.initTray(connected, saved, configs);
+    TrayUtils.initTray(ref);
     trayManager.addListener(this);
     super.initState();
   }
@@ -36,12 +30,6 @@ class _DesktopMainScreenState extends ConsumerState<DesktopMainScreen>
   void dispose() {
     trayManager.removeListener(this);
     super.dispose();
-  }
-
-  @override
-  void onTrayIconMouseDown() async {
-    print('object');
-    super.onTrayIconMouseDown();
   }
 
   @override

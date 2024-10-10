@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,9 +14,11 @@ import 'package:scrcpygui/widgets/device_icon_hx.dart';
 import 'package:scrcpygui/widgets/section_button.dart';
 import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 import 'package:string_extensions/string_extensions.dart';
+import 'package:tray_manager/tray_manager.dart';
 
 import '../providers/theme_provider.dart';
 import '../utils/const.dart';
+import '../utils/tray_utils.dart';
 import 'device_icon.dart';
 
 class ConnectedDevicesView extends ConsumerStatefulWidget {
@@ -41,6 +44,14 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
   @override
   void initState() {
     super.initState();
+    ref.read(adbProvider.notifier).ref.listenSelf(
+      (previous, next) {
+        if (!listEquals(previous, next)) {
+          trayManager.destroy();
+          TrayUtils.initTray(ref);
+        }
+      },
+    );
   }
 
   @override

@@ -1,8 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
-import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
-import 'package:scrcpygui/utils/tray_utils.dart';
-import 'package:tray_manager/tray_manager.dart';
 
 class AdbNotifier extends Notifier<List<AdbDevices>> {
   @override
@@ -10,8 +7,7 @@ class AdbNotifier extends Notifier<List<AdbDevices>> {
     return [];
   }
 
-  setConnected(List<AdbDevices> connected, List<AdbDevices> saved,
-      List<ScrcpyConfig> configs) {
+  setConnected(List<AdbDevices> connected) {
     List<AdbDevices> currentAdb = state;
 
     if (currentAdb.length > connected.length) {
@@ -20,9 +16,6 @@ class AdbNotifier extends Notifier<List<AdbDevices>> {
       List<AdbDevices> newCurrent =
           currentAdb.where((d) => !diff.contains(d)).toList();
 
-      trayManager.destroy();
-      TrayUtils.initTray(newCurrent, saved, configs);
-
       state = [...newCurrent];
 
       //device connected
@@ -30,9 +23,6 @@ class AdbNotifier extends Notifier<List<AdbDevices>> {
       final diff = connected.toSet().difference(currentAdb.toSet()).toList();
 
       final newCurrent = [...currentAdb, ...diff];
-
-      trayManager.destroy();
-      TrayUtils.initTray(newCurrent, saved, configs);
 
       state = [...newCurrent];
     } else {
