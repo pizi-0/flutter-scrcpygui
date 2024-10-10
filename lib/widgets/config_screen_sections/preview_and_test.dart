@@ -127,7 +127,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      LogScreen(pid: inst.scrcpyPID),
+                                      LogScreen(instance: inst),
                                 ));
                           } else {
                             final appPID = ref.read(appPidProvider);
