@@ -92,6 +92,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final appTheme = ref.watch(appThemeProvider);
+
     return BodyContainer(
       headerTitle: 'Theme',
       children: [
@@ -127,26 +128,42 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
         ),
         BodyContainerItem(
           title: 'Color',
-          trailing: InkWell(
-            onTap: () async {
-              await showAdaptiveDialog(
-                barrierDismissible: true,
-                context: context,
-                builder: (context) {
-                  return const MyColorPicker();
+          trailing: Row(
+            children: [
+              IconButton(
+                tooltip: 'Default',
+                onPressed: () async {
+                  ref
+                      .read(appThemeProvider.notifier)
+                      .setColor(defaultTheme.color);
+
+                  final theme = ref.read(appThemeProvider);
+                  await AppUtils.saveAppTheme(theme);
                 },
-              );
-            },
-            child: Container(
-              height: 20,
-              width: 100,
-              decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.circular(appTheme.widgetRadius * 0.8),
-                border: Border.all(color: Colors.black),
-                color: appTheme.color,
+                icon: const Icon(Icons.refresh_rounded),
               ),
-            ),
+              InkWell(
+                onTap: () async {
+                  await showAdaptiveDialog(
+                    barrierDismissible: true,
+                    context: context,
+                    builder: (context) {
+                      return const MyColorPicker();
+                    },
+                  );
+                },
+                child: Container(
+                  height: 20,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    borderRadius:
+                        BorderRadius.circular(appTheme.widgetRadius * 0.8),
+                    border: Border.all(color: Colors.black),
+                    color: appTheme.color,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         BodyContainerItem(
