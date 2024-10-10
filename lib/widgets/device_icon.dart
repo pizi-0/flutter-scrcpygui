@@ -2,16 +2,17 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_info.dart';
-import 'package:pg_scrcpy/providers/adb_provider.dart';
-import 'package:pg_scrcpy/providers/info_provider.dart';
-import 'package:pg_scrcpy/providers/poll_provider.dart';
-import 'package:pg_scrcpy/providers/scrcpy_provider.dart';
-import 'package:pg_scrcpy/utils/adb_utils.dart';
-import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
-import 'package:pg_scrcpy/widgets/disconnect_dialog.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_info.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/info_provider.dart';
+import 'package:scrcpygui/providers/poll_provider.dart';
+import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/utils/adb_utils.dart';
+import 'package:scrcpygui/utils/scrcpy_utils.dart';
+import 'package:scrcpygui/widgets/disconnect_dialog.dart';
 
 import '../models/adb_devices.dart';
+import '../providers/config_provider.dart';
 import '../providers/theme_provider.dart';
 import '../providers/toast_providers.dart';
 import 'simple_toast/simple_toast_item.dart';
@@ -74,6 +75,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
     final settings = ref.watch(appThemeProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final deviceServers = ref
@@ -295,6 +297,9 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
           label: 'Disconnect',
           icon: Icons.link_off_rounded,
           onSelected: () async {
+            final saved = ref.read(savedAdbDevicesProvider);
+            final configs = ref.read(configsProvider);
+
             ref.read(shouldPollAdb.notifier).state = false;
 
             setState(() {
@@ -313,7 +318,9 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
               _showToast();
 
               final connected = await AdbUtils.connectedDevices();
-              ref.read(adbProvider.notifier).setConnected(connected);
+              ref
+                  .read(adbProvider.notifier)
+                  .setConnected(connected, saved, configs);
               if (ref.read(selectedDeviceProvider) != null) {
                 if (ref.read(selectedDeviceProvider)!.id == widget.device!.id) {
                   if (indexedOf != -1 && ref.read(adbProvider).isNotEmpty) {

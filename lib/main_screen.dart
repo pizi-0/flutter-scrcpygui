@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pg_scrcpy/providers/adb_provider.dart';
-import 'package:pg_scrcpy/providers/poll_provider.dart';
-import 'package:pg_scrcpy/providers/scrcpy_provider.dart';
-import 'package:pg_scrcpy/providers/theme_provider.dart';
-import 'package:pg_scrcpy/screens/main_screen/ms_desktop.dart';
-import 'package:pg_scrcpy/widgets/quit_dialog.dart';
-import 'package:pg_scrcpy/widgets/simple_toast/simple_toast_container.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/poll_provider.dart';
+import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/providers/theme_provider.dart';
+import 'package:scrcpygui/screens/main_screen/ms_desktop.dart';
+import 'package:scrcpygui/widgets/quit_dialog.dart';
+import 'package:scrcpygui/widgets/simple_toast/simple_toast_container.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:window_manager/window_manager.dart';
 

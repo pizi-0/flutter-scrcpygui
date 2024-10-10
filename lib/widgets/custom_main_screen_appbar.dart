@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:pg_scrcpy/providers/toast_providers.dart';
-import 'package:pg_scrcpy/screens/settings_screen/settings_screen.dart';
+import 'package:scrcpygui/providers/toast_providers.dart';
+import 'package:scrcpygui/screens/settings_screen/settings_screen.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../providers/theme_provider.dart';

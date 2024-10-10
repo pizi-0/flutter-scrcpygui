@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/providers/adb_provider.dart';
-import 'package:pg_scrcpy/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../providers/theme_provider.dart';

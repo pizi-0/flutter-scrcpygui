@@ -1,19 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:pg_scrcpy/widgets/start_stop_button.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/utils/tray_utils.dart';
+import 'package:scrcpygui/widgets/start_stop_button.dart';
+import 'package:tray_manager/tray_manager.dart';
 
 import '../../utils/const.dart';
 import '../../widgets/config_selector.dart';
 import '../../widgets/connected_device_view.dart';
 
-class DesktopMainScreen extends StatefulWidget {
+class DesktopMainScreen extends ConsumerStatefulWidget {
   const DesktopMainScreen({super.key});
 
   @override
-  State<DesktopMainScreen> createState() => _DesktopMainScreenState();
+  ConsumerState<DesktopMainScreen> createState() => _DesktopMainScreenState();
 }
 
-class _DesktopMainScreenState extends State<DesktopMainScreen> {
+class _DesktopMainScreenState extends ConsumerState<DesktopMainScreen>
+    with TrayListener {
   ScrollController scroll = ScrollController();
+
+  @override
+  void initState() {
+    final connected = ref.read(adbProvider);
+    final saved = ref.read(savedAdbDevicesProvider);
+    final configs = ref.read(configsProvider);
+
+    TrayUtils.initTray(connected, saved, configs);
+    trayManager.addListener(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    trayManager.removeListener(this);
+    super.dispose();
+  }
+
+  @override
+  void onTrayIconMouseDown() async {
+    print('object');
+    super.onTrayIconMouseDown();
+  }
 
   @override
   Widget build(BuildContext context) {

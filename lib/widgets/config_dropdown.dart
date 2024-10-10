@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/providers/theme_provider.dart';
+import 'package:scrcpygui/providers/theme_provider.dart';
 import 'package:string_extensions/string_extensions.dart';
 
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_enum.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 
 const double _minWidth = 100;
 

@@ -1,9 +1,9 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_config/audio_options.dart';
-import 'package:pg_scrcpy/providers/config_provider.dart';
-import 'package:pg_scrcpy/providers/theme_provider.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/providers/theme_provider.dart';
 
 import '../../models/scrcpy_related/scrcpy_config.dart';
 import '../../models/scrcpy_related/scrcpy_enum.dart';

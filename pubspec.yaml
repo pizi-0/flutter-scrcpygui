@@ -1,4 +1,4 @@
-name: pg_scrcpy
+name: scrcpygui
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -53,6 +53,7 @@ dependencies:
   path_provider: ^2.1.4
   flex_color_picker: ^3.5.1
   hugeicons: ^0.0.7
+  tray_manager: ^0.2.4
   # circular_reveal_animation: ^2.0.1
 
 dev_dependencies:
@@ -78,9 +79,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

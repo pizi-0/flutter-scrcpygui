@@ -2,7 +2,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/providers/theme_provider.dart';
+import 'package:scrcpygui/providers/theme_provider.dart';
 
 class BodyContainer extends ConsumerWidget {
   final List<Widget> children;

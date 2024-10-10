@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_config/audio_options.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_config/device_options.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_config/video_options.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_config/window_options.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/device_options.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/video_options.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/window_options.dart';
 
 import '../models/scrcpy_related/scrcpy_config.dart';
 import '../models/scrcpy_related/scrcpy_enum.dart';

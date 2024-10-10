@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:pg_scrcpy/models/adb_devices.dart';
+import 'package:scrcpygui/models/adb_devices.dart';
 
 import 'scrcpy_camera.dart';
 import 'scrcpy_display.dart';

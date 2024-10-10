@@ -40,11 +40,11 @@ static void my_application_activate(GApplication* application) {
   if (use_header_bar) {
     GtkHeaderBar* header_bar = GTK_HEADER_BAR(gtk_header_bar_new());
     gtk_widget_show(GTK_WIDGET(header_bar));
-    // gtk_header_bar_set_title(header_bar, "pg_scrcpy");
+    gtk_header_bar_set_title(header_bar, "Scrcpy GUI");
     gtk_header_bar_set_show_close_button(header_bar, TRUE);
     gtk_window_set_titlebar(window, GTK_WIDGET(header_bar));
   } else {
-    gtk_window_set_title(window, "pg_scrcpy");
+    gtk_window_set_title(window, "Scrcpy GUI");
   }
 
   gtk_window_set_default_size(window, 400, 543);

@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/models/app_theme.dart';
-import 'package:pg_scrcpy/providers/theme_provider.dart';
-import 'package:pg_scrcpy/providers/toast_providers.dart';
-import 'package:pg_scrcpy/utils/extension.dart';
+import 'package:scrcpygui/models/app_theme.dart';
+import 'package:scrcpygui/providers/theme_provider.dart';
+import 'package:scrcpygui/providers/toast_providers.dart';
+import 'package:scrcpygui/utils/extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AppUtils {
@@ -28,7 +28,7 @@ class AppUtils {
 
   static Future<String> getAppPid() async {
     String pidof;
-    pidof = (await Process.run('pgrep', ['pg_scrcpy'])).stdout;
+    pidof = (await Process.run('pgrep', ['scrcpygui'])).stdout;
 
     return pidof;
   }

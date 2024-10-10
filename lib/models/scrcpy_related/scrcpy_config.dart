@@ -1,10 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_config/audio_options.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_config/device_options.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_config/video_options.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_enum.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/device_options.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/video_options.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 
 import 'scrcpy_config/window_options.dart';
 

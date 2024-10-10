@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/utils/app_utils.dart';
+import 'package:scrcpygui/utils/app_utils.dart';
 
 import '../models/app_theme.dart';
 

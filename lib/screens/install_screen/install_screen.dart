@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:pg_scrcpy/models/dependencies.dart';
-import 'package:pg_scrcpy/providers/dependencies_provider.dart';
-import 'package:pg_scrcpy/providers/theme_provider.dart';
-import 'package:pg_scrcpy/utils/adb_utils.dart';
-import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
+import 'package:scrcpygui/models/dependencies.dart';
+import 'package:scrcpygui/providers/dependencies_provider.dart';
+import 'package:scrcpygui/providers/theme_provider.dart';
+import 'package:scrcpygui/utils/adb_utils.dart';
+import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../main_screen.dart';

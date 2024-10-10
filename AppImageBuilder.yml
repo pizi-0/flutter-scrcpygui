@@ -1,13 +1,13 @@
 # appimage-builder recipe see https://appimage-builder.readthedocs.io for details
 version: 1
 AppDir:
-  path: /home/pizi/Documents/Projects/pg_scrcpy/AppDir
+  path: /home/pizi/Documents/Projects/scrcpygui/AppDir
   app_info:
-    id: com.piji.pg_scrcpy
-    name: PG_Scrcpy
+    id: com.piji.scrcpygui
+    name: Scrcpy GUI
     icon: application-vnd.appimage
     version: latest
-    exec: pg_scrcpy
+    exec: scrcpygui
     exec_args: $@
   files:
     include:

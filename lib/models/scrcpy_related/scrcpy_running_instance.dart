@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:pg_scrcpy/models/adb_devices.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_config.dart';
+import 'package:scrcpygui/models/adb_devices.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 
 class ScrcpyRunningInstance {
   final AdbDevices device;

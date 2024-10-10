@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:pg_scrcpy/providers/theme_provider.dart';
-import 'package:pg_scrcpy/utils/app_utils.dart';
-import 'package:pg_scrcpy/widgets/body_container.dart';
+import 'package:scrcpygui/providers/theme_provider.dart';
+import 'package:scrcpygui/utils/app_utils.dart';
+import 'package:scrcpygui/widgets/body_container.dart';
 
 import '../../utils/const.dart';
 

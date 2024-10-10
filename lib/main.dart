@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pg_scrcpy/models/app_theme.dart';
-import 'package:pg_scrcpy/providers/theme_provider.dart';
-import 'package:pg_scrcpy/screens/splash_screen/splash_screen.dart';
-import 'package:pg_scrcpy/utils/app_utils.dart';
+import 'package:scrcpygui/models/app_theme.dart';
+import 'package:scrcpygui/providers/theme_provider.dart';
+import 'package:scrcpygui/screens/splash_screen/splash_screen.dart';
+import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -71,7 +71,8 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((c) {
+
+    WidgetsBinding.instance.addPostFrameCallback((c) async {
       ref.read(appThemeProvider.notifier).setTheme(widget.theme);
     });
   }

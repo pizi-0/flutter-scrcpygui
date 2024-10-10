@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_instance_logs.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_instance_logs.dart';
 
 class LogsNotifier extends Notifier<List<ScrcpyInstanceLogs>> {
   @override

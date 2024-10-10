@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/models/adb_devices.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_config.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_enum.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_info.dart';
+import 'package:scrcpygui/models/adb_devices.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_info.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../providers/adb_provider.dart';

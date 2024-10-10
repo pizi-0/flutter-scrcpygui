@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/widgets/simple_toast/simple_toast_item.dart';
+import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 
 class ToastNotifier extends Notifier<List<SimpleToastItem>> {
   @override

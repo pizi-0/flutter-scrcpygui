@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/providers/config_provider.dart';
-import 'package:pg_scrcpy/providers/scrcpy_provider.dart';
-import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
 import '../providers/theme_provider.dart';
 import '../utils/const.dart';

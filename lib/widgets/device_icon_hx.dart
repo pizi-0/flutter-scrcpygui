@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/providers/adb_provider.dart';
-import 'package:pg_scrcpy/utils/adb_utils.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/utils/adb_utils.dart';
 
 import '../models/adb_devices.dart';
 import '../providers/theme_provider.dart';

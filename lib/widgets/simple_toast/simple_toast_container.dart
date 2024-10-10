@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/providers/toast_providers.dart';
-// import 'package:pg_scrcpy/providers/toast_providers.dart';
+import 'package:scrcpygui/providers/toast_providers.dart';
+// import 'package:scrcpygui/providers/toast_providers.dart';
 
 class SimpleToastContainer extends ConsumerStatefulWidget {
   const SimpleToastContainer({super.key});

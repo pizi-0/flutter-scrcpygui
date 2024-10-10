@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_running_instance.dart';
-import 'package:pg_scrcpy/providers/adb_provider.dart';
-import 'package:pg_scrcpy/providers/config_provider.dart';
-import 'package:pg_scrcpy/providers/scrcpy_provider.dart';
-import 'package:pg_scrcpy/screens/log_screen/log_screen.dart';
-import 'package:pg_scrcpy/utils/scrcpy_command.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/screens/log_screen/log_screen.dart';
+import 'package:scrcpygui/utils/scrcpy_command.dart';
 
 import '../../models/scrcpy_related/scrcpy_info.dart';
 import '../../providers/info_provider.dart';

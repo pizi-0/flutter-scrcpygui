@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_config.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_enum.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_running_instance.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 
 class ConfigVisualizer extends StatelessWidget {
   final ScrcpyRunningInstance? instance;

@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:pg_scrcpy/main_screen.dart';
-import 'package:pg_scrcpy/models/app_theme.dart';
-import 'package:pg_scrcpy/providers/adb_provider.dart';
-import 'package:pg_scrcpy/providers/config_provider.dart';
-import 'package:pg_scrcpy/providers/dependencies_provider.dart';
-import 'package:pg_scrcpy/providers/scrcpy_provider.dart';
-import 'package:pg_scrcpy/providers/toast_providers.dart';
-import 'package:pg_scrcpy/utils/adb_utils.dart';
-import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
+import 'package:scrcpygui/main_screen.dart';
+import 'package:scrcpygui/models/app_theme.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/providers/dependencies_provider.dart';
+import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/providers/toast_providers.dart';
+import 'package:scrcpygui/utils/adb_utils.dart';
+import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
 import '../../utils/app_utils.dart';
 import '../install_screen/install_screen.dart';
@@ -62,24 +62,26 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       var toastEnabled = await AppUtils.getNotiPreference();
       ref.read(toastEnabledProvider.notifier).state = toastEnabled;
 
-      var adbDevices = await AdbUtils.connectedDevices();
-      ref.read(adbProvider.notifier).setConnected(adbDevices);
-
       var savedDevices = await AdbUtils.getSavedAdbDevice();
       ref
           .read(savedAdbDevicesProvider.notifier)
           .update((state) => savedDevices);
-
-      var wirelessHistory = await AdbUtils.getWirelessHistory();
-      ref
-          .read(wirelessDevicesHistoryProvider.notifier)
-          .update((state) => wirelessHistory);
 
       var confs = await ScrcpyUtils.getSavedConfig();
 
       for (final c in confs) {
         ref.read(configsProvider.notifier).addConfig(c);
       }
+
+      var adbDevices = await AdbUtils.connectedDevices();
+      ref
+          .read(adbProvider.notifier)
+          .setConnected(adbDevices, savedDevices, confs);
+
+      var wirelessHistory = await AdbUtils.getWirelessHistory();
+      ref
+          .read(wirelessDevicesHistoryProvider.notifier)
+          .update((state) => wirelessHistory);
 
       ref.read(selectedConfigProvider.notifier).state =
           await ScrcpyUtils.getLastUsedConfig();

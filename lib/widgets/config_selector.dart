@@ -2,12 +2,12 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:pg_scrcpy/models/adb_devices.dart';
-import 'package:pg_scrcpy/providers/adb_provider.dart';
-import 'package:pg_scrcpy/providers/config_provider.dart';
-import 'package:pg_scrcpy/screens/config_screen/config_screen.dart';
-import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
-import 'package:pg_scrcpy/widgets/section_button.dart';
+import 'package:scrcpygui/models/adb_devices.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/screens/config_screen/config_screen.dart';
+import 'package:scrcpygui/utils/scrcpy_utils.dart';
+import 'package:scrcpygui/widgets/section_button.dart';
 
 import '../models/scrcpy_related/scrcpy_config.dart';
 import '../providers/theme_provider.dart';

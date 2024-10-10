@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "pg_scrcpy" "\0"
+            VALUE "FileDescription", "scrcpygui" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "pg_scrcpy" "\0"
+            VALUE "InternalName", "scrcpygui" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "pg_scrcpy.exe" "\0"
-            VALUE "ProductName", "pg_scrcpy" "\0"
+            VALUE "OriginalFilename", "scrcpygui.exe" "\0"
+            VALUE "ProductName", "scrcpygui" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

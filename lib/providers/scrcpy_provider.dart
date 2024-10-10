@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/models/adb_devices.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_config.dart';
-import 'package:pg_scrcpy/models/scrcpy_related/scrcpy_running_instance.dart';
-import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
+import 'package:scrcpygui/models/adb_devices.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
+import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
 import '../utils/const.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/providers/config_provider.dart';
-import 'package:pg_scrcpy/widgets/config_dropdown.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/widgets/config_dropdown.dart';
 
 import '../../providers/theme_provider.dart';
 import '../../utils/const.dart';

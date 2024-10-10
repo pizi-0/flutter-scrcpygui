@@ -2,7 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/providers/toast_providers.dart';
+import 'package:scrcpygui/providers/toast_providers.dart';
 
 import '../../providers/theme_provider.dart';
 import '../../utils/const.dart';

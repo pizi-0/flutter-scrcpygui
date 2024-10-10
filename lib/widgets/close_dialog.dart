@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:pg_scrcpy/providers/adb_provider.dart';
-import 'package:pg_scrcpy/providers/config_provider.dart';
-import 'package:pg_scrcpy/utils/const.dart';
-import 'package:pg_scrcpy/utils/scrcpy_command.dart';
-import 'package:pg_scrcpy/utils/scrcpy_utils.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/utils/const.dart';
+import 'package:scrcpygui/utils/scrcpy_command.dart';
+import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
 import '../providers/info_provider.dart';
 import '../providers/theme_provider.dart';
