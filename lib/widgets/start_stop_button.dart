@@ -72,7 +72,9 @@ class _StartButtonState extends ConsumerState<StartButton> {
                 if (proceed == true) {
                   await widget.onTap!();
                 }
-                setState(() => loading = false);
+                if (mounted) {
+                  setState(() => loading = false);
+                }
               },
               icon: widget.icon,
             ),
@@ -233,13 +235,7 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
                           message: 'Stop all servers',
                           child: StartButton(
                             onTap: () async {
-                              await ScrcpyUtils.newInstance(ref);
-                              await Future.delayed(
-                                  const Duration(milliseconds: 200));
-                              widget.scroll.animateTo(
-                                  widget.scroll.position.extentTotal,
-                                  duration: const Duration(milliseconds: 1000),
-                                  curve: Curves.ease);
+                              await ScrcpyUtils.killAllServers(ref);
                             },
                             icon: const Icon(
                               Icons.stop_rounded,

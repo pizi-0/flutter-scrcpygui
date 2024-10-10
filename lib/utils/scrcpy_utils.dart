@@ -182,33 +182,28 @@ class ScrcpyUtils {
     return instance;
   }
 
-  static Future<void> runCommand(WidgetRef ref) async {
+  static Future<void> killAllServers(WidgetRef ref) async {
     final runningInstance = ref.read(scrcpyInstanceProvider);
     final appPID = ref.read(appPidProvider);
 
-    if (runningInstance.isEmpty) {
-      final inst = await _startServer(ref);
-      ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
-    } else {
-      for (var p in runningInstance) {
-        ScrcpyUtils.killServer(p, appPID).then((a) async {
-          ref.read(scrcpyInstanceProvider.notifier).removeInstance(p);
-        });
-      }
-
-      final strays = await AdbUtils.getScrcpyServerPIDs();
-      if (strays.isNotEmpty) {
-        ScrcpyUtils.killStrays(strays, ProcessSignal.sigterm);
-      }
-
-      ref.read(toastProvider.notifier).addToast(
-            SimpleToastItem(
-              message: 'All (${runningInstance.length}) servers  killed',
-              toastStyle: SimpleToastStyle.success,
-              key: UniqueKey(),
-            ),
-          );
+    for (var p in runningInstance) {
+      ScrcpyUtils.killServer(p, appPID).then((a) async {
+        ref.read(scrcpyInstanceProvider.notifier).removeInstance(p);
+      });
     }
+
+    final strays = await AdbUtils.getScrcpyServerPIDs();
+    if (strays.isNotEmpty) {
+      ScrcpyUtils.killStrays(strays, ProcessSignal.sigterm);
+    }
+
+    ref.read(toastProvider.notifier).addToast(
+          SimpleToastItem(
+            message: 'All (${runningInstance.length}) servers  killed',
+            toastStyle: SimpleToastStyle.success,
+            key: UniqueKey(),
+          ),
+        );
 
     await ScrcpyUtils.saveLastUsedConfig(ref.read(selectedConfigProvider));
   }
