@@ -40,8 +40,8 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((a) async {
       if (mounted) {
-        trayManager.destroy();
-        TrayUtils.initTray(ref);
+        await trayManager.destroy();
+        await TrayUtils.initTray(ref);
         final existingInfo = ref.read(infoProvider);
 
         if (existingInfo

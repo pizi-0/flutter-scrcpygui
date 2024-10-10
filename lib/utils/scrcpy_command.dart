@@ -20,7 +20,7 @@ class ScrcpyCommand {
         .firstWhere((d) => d.serialNo == device.serialNo, orElse: () => device);
 
     command = command
-            .append('-s ${d.id}')
+            .append('-s ${device.id}')
             .append(config.scrcpyMode.command) // Both / video / audio
             .append(_displayId(config)) // display id
             .append(_videoCodec(config)) // video codec

@@ -78,8 +78,8 @@ class ScrcpyUtils {
       savedJson.add(c.toJson());
     }
 
-    trayManager.destroy();
-    TrayUtils.initTray(ref);
+    await trayManager.destroy();
+    await TrayUtils.initTray(ref);
 
     prefs.setStringList('savedconfig', savedJson);
   }

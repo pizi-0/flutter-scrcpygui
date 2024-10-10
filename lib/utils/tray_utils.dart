@@ -50,35 +50,30 @@ class TrayUtils {
           disabled: true,
         ),
         ...connected.map((d) {
-          final device = saved.firstWhere((s) => s.id == d.id, orElse: () => d);
+          final device = saved.firstWhere((s) => s.serialNo == d.serialNo,
+              orElse: () => d);
           return MenuItem.submenu(
-              key: d.id,
-              label: device.id.contains(':')
-                  ? '${device.name ?? device.id} (WiFi)'
-                  : '${device.name ?? device.id} (USB)',
-              sublabel: 'Config',
-              submenu: Menu(
-                items: configs
-                    .where((c) => c != newConfig)
-                    .map((c) => MenuItem(
-                          key: c.configName,
-                          label: c.configName,
-                          onClick: (menuItem) async {
-                            ref.read(selectedDeviceProvider.notifier).state =
-                                device;
-                            ref.read(selectedConfigProvider.notifier).state = c;
+            key: d.id,
+            label: d.id.contains(':')
+                ? '${device.name ?? device.id} (WiFi)'
+                : '${device.name ?? device.id} (USB)',
+            sublabel: 'Config',
+            submenu: Menu(
+              items: configs
+                  .where((c) => c != newConfig)
+                  .map((c) => MenuItem(
+                        key: c.configName,
+                        label: c.configName,
+                        onClick: (menuItem) async {
+                          ref.read(selectedDeviceProvider.notifier).state = d;
+                          ref.read(selectedConfigProvider.notifier).state = c;
 
-                            final res =
-                                ScrcpyUtils.checkForIncompatibleFlags(ref);
-
-                            if (res.where((r) => !r.ok).isNotEmpty) {
-                            } else {
-                              await ScrcpyUtils.newInstance(ref);
-                            }
-                          },
-                        ))
-                    .toList(),
-              ));
+                          await ScrcpyUtils.newInstance(ref);
+                        },
+                      ))
+                  .toList(),
+            ),
+          );
         }),
         MenuItem.separator(),
         MenuItem(
