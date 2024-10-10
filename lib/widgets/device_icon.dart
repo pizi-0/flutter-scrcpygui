@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_context_menu/flutter_context_menu.dart';
@@ -41,7 +43,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
     WidgetsBinding.instance.addPostFrameCallback((a) async {
       if (mounted) {
         await trayManager.destroy();
-        await TrayUtils.initTray(ref);
+        await TrayUtils.initTray(ref, context);
         final existingInfo = ref.read(infoProvider);
 
         if (existingInfo

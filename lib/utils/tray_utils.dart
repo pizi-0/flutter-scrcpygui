@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
@@ -8,12 +11,13 @@ import 'package:window_manager/window_manager.dart';
 
 import '../providers/adb_provider.dart';
 import '../providers/config_provider.dart';
+import '../widgets/quit_dialog.dart';
 import 'scrcpy_utils.dart';
 
 class TrayUtils {
   static const String _trayIcon = 'assets/logo.png';
 
-  static Future<void> initTray(WidgetRef ref) async {
+  static Future<void> initTray(WidgetRef ref, BuildContext context) async {
     final connected = ref.read(adbProvider);
     final saved = ref.read(savedAdbDevicesProvider);
     final configs = ref.read(configsProvider);
@@ -32,7 +36,7 @@ class TrayUtils {
             onClick: (menuItem) async {
               await windowManager.hide();
               await trayManager.destroy();
-              await TrayUtils.initTray(ref);
+              await TrayUtils.initTray(ref, context);
             },
           ),
         if (!windowVisible)
@@ -41,14 +45,11 @@ class TrayUtils {
             onClick: (menuItem) async {
               await windowManager.show();
               await trayManager.destroy();
-              await TrayUtils.initTray(ref);
+              await TrayUtils.initTray(ref, context);
             },
           ),
         MenuItem.separator(),
-        MenuItem(
-          label: 'New instance:',
-          disabled: true,
-        ),
+        MenuItem(label: 'New instance:', disabled: true),
         ...connected.map((d) {
           final device = saved.firstWhere((s) => s.serialNo == d.serialNo,
               orElse: () => d);
@@ -77,9 +78,7 @@ class TrayUtils {
         }),
         MenuItem.separator(),
         MenuItem(
-          label: 'Running instances: (${running.length})',
-          disabled: true,
-        ),
+            label: 'Running instances: (${running.length})', disabled: true),
         if (running.isNotEmpty)
           MenuItem.submenu(
             label: 'Kill instance',
@@ -100,7 +99,32 @@ class TrayUtils {
             ),
           ),
         MenuItem.separator(),
-        MenuItem(label: 'Quit'),
+        MenuItem(
+          label: 'Quit',
+          onClick: (menuItem) async {
+            final windowVisible = await windowManager.isVisible();
+            final running = ref.read(scrcpyInstanceProvider);
+            final wifi = ref.read(adbProvider).where((d) => d.id.contains(':'));
+
+            if (!windowVisible) {
+              await windowManager.show();
+              if (wifi.isNotEmpty || running.isNotEmpty) {
+                showAdaptiveDialog(
+                  barrierColor: Colors.black.withOpacity(0.9),
+                  context: context,
+                  builder: (context) => const QuitDialog(),
+                );
+              } else {
+                await windowManager.setPreventClose(false);
+                windowManager.destroy();
+              }
+            } else {
+              await windowManager.destroy();
+            }
+
+            // await windowManager.destroy();
+          },
+        ),
       ],
     );
 

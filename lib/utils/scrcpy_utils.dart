@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
@@ -70,7 +72,7 @@ class ScrcpyUtils {
   }
 
   static Future<void> saveConfigs(
-      WidgetRef ref, List<ScrcpyConfig> conf) async {
+      WidgetRef ref, BuildContext context, List<ScrcpyConfig> conf) async {
     final prefs = await SharedPreferences.getInstance();
     List<String> savedJson = [];
 
@@ -79,7 +81,7 @@ class ScrcpyUtils {
     }
 
     await trayManager.destroy();
-    await TrayUtils.initTray(ref);
+    await TrayUtils.initTray(ref, context);
 
     prefs.setStringList('savedconfig', savedJson);
   }

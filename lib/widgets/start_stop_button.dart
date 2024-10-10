@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:io';
 
@@ -195,7 +197,7 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
     ref.read(scrcpyInstanceProvider.notifier).ref.listenSelf((a, b) async {
       if (!listEquals(a, b)) {
         await trayManager.destroy();
-        await TrayUtils.initTray(ref);
+        await TrayUtils.initTray(ref, context);
       }
     });
     WidgetsBinding.instance.addPostFrameCallback(

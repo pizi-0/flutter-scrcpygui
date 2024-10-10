@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -191,7 +193,6 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
 
                       if (proceed == true) {
                         Navigator.push(
-                          // ignore: use_build_context_synchronously
                           context,
                           PageTransition(
                             child: const ConfigScreen(),
@@ -228,7 +229,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
                           .where((e) => !defaultConfigs.contains(e))
                           .toList();
 
-                      ScrcpyUtils.saveConfigs(ref, toSave);
+                      ScrcpyUtils.saveConfigs(ref, context, toSave);
                     }
                   : null,
             ),

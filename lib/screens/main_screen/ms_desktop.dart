@@ -24,7 +24,7 @@ class _DesktopMainScreenState extends ConsumerState<DesktopMainScreen>
 
   @override
   void initState() {
-    TrayUtils.initTray(ref);
+    TrayUtils.initTray(ref, context);
     trayManager.addListener(this);
     ref.read(adbProvider.notifier).ref.listenSelf((prev, next) async {
       if (prev!.length < next.length) {

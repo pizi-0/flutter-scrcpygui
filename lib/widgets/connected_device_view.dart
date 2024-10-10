@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
@@ -48,7 +50,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
       (previous, next) async {
         if (!listEquals(previous, next)) {
           await trayManager.destroy();
-          await TrayUtils.initTray(ref);
+          await TrayUtils.initTray(ref, context);
         }
       },
     );
@@ -427,7 +429,6 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
       });
       if (message.contains('authenticate')) {
         bool done = await showDialog(
-              // ignore: use_build_context_synchronously
               context: context,
               builder: (context) {
                 return AlertDialog(
