@@ -24,11 +24,8 @@ class ConfigSelector extends ConsumerStatefulWidget {
 }
 
 class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
-  late ScrcpyConfig selectedConfig;
-
   @override
   void initState() {
-    selectedConfig = ref.read(selectedConfigProvider);
     super.initState();
   }
 
@@ -138,12 +135,9 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
           ),
         ),
       ),
-      initialItem: selectedConfig,
+      initialItem: ref.watch(selectedConfigProvider),
       items: allConfigs,
       onChanged: (config) {
-        setState(() {
-          selectedConfig = config!;
-        });
         ref.read(selectedConfigProvider.notifier).state = config!;
 
         if (config == newConfig) {
@@ -153,10 +147,6 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
               child: const ConfigScreen(),
               type: PageTransitionType.rightToLeft,
             ),
-          ).then(
-            (value) => setState(() {
-              selectedConfig = ref.read(selectedConfigProvider);
-            }),
           );
         }
       },
@@ -165,6 +155,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
 
   Row _sectionTitle(BuildContext context, List<ScrcpyConfig> allConfigs,
       AdbDevices? selectedDevice) {
+    final selectedConfig = ref.watch(selectedConfigProvider);
     return Row(
       children: [
         Padding(
@@ -199,9 +190,6 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
                       }
 
                       if (proceed == true) {
-                        ref.read(configToEditProvider.notifier).state =
-                            selectedConfig;
-
                         Navigator.push(
                           // ignore: use_build_context_synchronously
                           context,
@@ -210,11 +198,9 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
                             type: PageTransitionType.rightToLeft,
                           ),
                         ).then(
-                          (value) => setState(() {
-                            selectedConfig = ref.read(selectedConfigProvider);
-                            ref.read(configToEditProvider.notifier).state =
-                                null;
-                          }),
+                          (value) => ref
+                              .read(configToEditProvider.notifier)
+                              .state = null,
                         );
                       }
                     }
@@ -224,19 +210,25 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
               tooltipmessage: 'Delete config',
               icondata: Icons.delete,
               ontap: !defaultConfigs.contains(selectedConfig)
-                  ? () {
+                  ? () async {
+                      final lastUsed = await ScrcpyUtils.getLastUsedConfig();
                       ref
                           .read(configsProvider.notifier)
                           .removeConfig(selectedConfig);
 
-                      selectedConfig = allConfigs[1];
+                      ref.read(selectedConfigProvider.notifier).state =
+                          defaultMirror;
+
+                      if (ref.read(selectedConfigProvider) == lastUsed) {
+                        await ScrcpyUtils.saveLastUsedConfig(defaultMirror);
+                      }
 
                       final toSave = ref
                           .read(configsProvider)
                           .where((e) => !defaultConfigs.contains(e))
                           .toList();
 
-                      ScrcpyUtils.saveConfigs(toSave);
+                      ScrcpyUtils.saveConfigs(ref, toSave);
                     }
                   : null,
             ),

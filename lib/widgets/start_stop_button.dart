@@ -12,9 +12,11 @@ import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/screens/running_instance/running_instance_screen.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
+import 'package:tray_manager/tray_manager.dart';
 
 import '../providers/theme_provider.dart';
 import '../providers/toast_providers.dart';
+import '../utils/tray_utils.dart';
 import 'simple_toast/simple_toast_item.dart';
 
 class StartButton extends ConsumerStatefulWidget {
@@ -190,6 +192,12 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
   @override
   void initState() {
     super.initState();
+    ref.read(scrcpyInstanceProvider.notifier).ref.listenSelf((a, b) async {
+      if (!listEquals(a, b)) {
+        await trayManager.destroy();
+        await TrayUtils.initTray(ref);
+      }
+    });
     WidgetsBinding.instance.addPostFrameCallback(
         (t) => runningTimer = Timer.periodic(1.seconds, (t) => _pollRunning()));
   }

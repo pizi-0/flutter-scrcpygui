@@ -149,7 +149,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                           .where((e) => !defaultConfigs.contains(e))
                           .toList();
 
-                      ScrcpyUtils.saveConfigs(toSave);
+                      ScrcpyUtils.saveConfigs(ref, toSave);
 
                       Navigator.pop(context, true);
                     },
@@ -224,7 +224,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                           .where((e) => !defaultConfigs.contains(e))
                           .toList();
 
-                      ScrcpyUtils.saveConfigs(toSave);
+                      ScrcpyUtils.saveConfigs(ref, toSave);
 
                       Navigator.pop(context, true);
                     },

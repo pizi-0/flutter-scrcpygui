@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:tray_manager/tray_manager.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../providers/adb_provider.dart';
 import '../providers/config_provider.dart';
@@ -15,33 +17,96 @@ class TrayUtils {
     final connected = ref.read(adbProvider);
     final saved = ref.read(savedAdbDevicesProvider);
     final configs = ref.read(configsProvider);
+    final running = ref.read(scrcpyInstanceProvider);
+
+    bool windowVisible = await windowManager.isVisible();
 
     await trayManager.setIcon(_trayIcon);
     if (!Platform.isLinux) await trayManager.setToolTip('Scrcpy GUI');
 
     final menu = Menu(
-      items: connected.map((d) {
-        final device = saved.firstWhere((s) => s.id == d.id, orElse: () => d);
-        return MenuItem.submenu(
-            key: d.id,
-            label: device.name ?? device.id,
-            sublabel: 'Config',
+      items: [
+        if (windowVisible)
+          MenuItem(
+            label: 'Hide window',
+            onClick: (menuItem) async {
+              await windowManager.hide();
+              await trayManager.destroy();
+              await TrayUtils.initTray(ref);
+            },
+          ),
+        if (!windowVisible)
+          MenuItem(
+            label: 'Show window',
+            onClick: (menuItem) async {
+              await windowManager.show();
+              await trayManager.destroy();
+              await TrayUtils.initTray(ref);
+            },
+          ),
+        MenuItem.separator(),
+        MenuItem(
+          label: 'New instance:',
+          disabled: true,
+        ),
+        ...connected.map((d) {
+          final device = saved.firstWhere((s) => s.id == d.id, orElse: () => d);
+          return MenuItem.submenu(
+              key: d.id,
+              label: device.id.contains(':')
+                  ? '${device.name ?? device.id} (WiFi)'
+                  : '${device.name ?? device.id} (USB)',
+              sublabel: 'Config',
+              submenu: Menu(
+                items: configs
+                    .where((c) => c != newConfig)
+                    .map((c) => MenuItem(
+                          key: c.configName,
+                          label: c.configName,
+                          onClick: (menuItem) async {
+                            ref.read(selectedDeviceProvider.notifier).state =
+                                device;
+                            ref.read(selectedConfigProvider.notifier).state = c;
+
+                            final res =
+                                ScrcpyUtils.checkForIncompatibleFlags(ref);
+
+                            if (res.where((r) => !r.ok).isNotEmpty) {
+                            } else {
+                              await ScrcpyUtils.newInstance(ref);
+                            }
+                          },
+                        ))
+                    .toList(),
+              ));
+        }),
+        MenuItem.separator(),
+        MenuItem(
+          label: 'Running instances: (${running.length})',
+          disabled: true,
+        ),
+        if (running.isNotEmpty)
+          MenuItem.submenu(
+            label: 'Kill instance',
             submenu: Menu(
-              items: configs
-                  .where((c) => c != newConfig)
-                  .map((c) => MenuItem(
-                        key: c.configName,
-                        label: c.configName,
+              items: running
+                  .map((r) => MenuItem(
+                        toolTip: 'Kill instance',
+                        label: r.instanceName,
                         onClick: (menuItem) async {
-                          ref.read(selectedDeviceProvider.notifier).state =
-                              device;
-                          ref.read(selectedConfigProvider.notifier).state = c;
-                          await ScrcpyUtils.newInstance(ref);
+                          final appPID = ref.read(appPidProvider);
+                          await ScrcpyUtils.killServer(r, appPID);
+                          ref
+                              .read(scrcpyInstanceProvider.notifier)
+                              .removeInstance(r);
                         },
                       ))
                   .toList(),
-            ));
-      }).toList(),
+            ),
+          ),
+        MenuItem.separator(),
+        MenuItem(label: 'Quit'),
+      ],
     );
 
     await trayManager.setContextMenu(menu);

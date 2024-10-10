@@ -15,6 +15,7 @@ import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_extensions/string_extensions.dart';
+import 'package:tray_manager/tray_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/scrcpy_related/scrcpy_flag_check_result.dart';
@@ -24,6 +25,7 @@ import '../providers/info_provider.dart';
 import '../widgets/config_override/config_override.dart';
 import 'adb_utils.dart';
 import 'scrcpy_command.dart';
+import 'tray_utils.dart';
 
 class ScrcpyUtils {
   static Future<bool> scrcpyInstalled() async {
@@ -67,13 +69,17 @@ class ScrcpyUtils {
     return ScrcpyConfig.fromJson(res);
   }
 
-  static Future<void> saveConfigs(List<ScrcpyConfig> conf) async {
+  static Future<void> saveConfigs(
+      WidgetRef ref, List<ScrcpyConfig> conf) async {
     final prefs = await SharedPreferences.getInstance();
     List<String> savedJson = [];
 
     for (var c in conf) {
       savedJson.add(c.toJson());
     }
+
+    trayManager.destroy();
+    TrayUtils.initTray(ref);
 
     prefs.setStringList('savedconfig', savedJson);
   }

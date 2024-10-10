@@ -45,10 +45,10 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
   void initState() {
     super.initState();
     ref.read(adbProvider.notifier).ref.listenSelf(
-      (previous, next) {
+      (previous, next) async {
         if (!listEquals(previous, next)) {
-          trayManager.destroy();
-          TrayUtils.initTray(ref);
+          await trayManager.destroy();
+          await TrayUtils.initTray(ref);
         }
       },
     );
