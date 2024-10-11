@@ -212,7 +212,9 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
               icondata: Icons.delete,
               ontap: !defaultConfigs.contains(selectedConfig)
                   ? () async {
-                      final lastUsed = await ScrcpyUtils.getLastUsedConfig();
+                      final savedLastUsed =
+                          await ScrcpyUtils.getLastUsedConfig();
+                      final lastused = ref.read(selectedConfigProvider);
                       ref
                           .read(configsProvider.notifier)
                           .removeConfig(selectedConfig);
@@ -220,7 +222,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
                       ref.read(selectedConfigProvider.notifier).state =
                           defaultMirror;
 
-                      if (ref.read(selectedConfigProvider) == lastUsed) {
+                      if (lastused == savedLastUsed) {
                         await ScrcpyUtils.saveLastUsedConfig(defaultMirror);
                       }
 
