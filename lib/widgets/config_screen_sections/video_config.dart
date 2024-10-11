@@ -5,6 +5,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/info_provider.dart';
 import 'package:scrcpygui/providers/theme_provider.dart';
+import 'package:scrcpygui/widgets/custom_slider_track_shape.dart';
 
 import '../../models/scrcpy_related/scrcpy_config.dart';
 import '../../models/scrcpy_related/scrcpy_enum.dart';
@@ -176,28 +177,35 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
         children: [
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 150),
-            child: SliderTheme(
-              data: const SliderThemeData(
-                thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5),
-              ),
-              child: Slider(
-                label: selectedConfig.videoOptions.resolutionScale.toString(),
-                value: selectedConfig.videoOptions.resolutionScale,
-                max: 1,
-                min: 0.4,
-                divisions: 6,
-                onChanged: (value) {
-                  ref.read(selectedConfigProvider.notifier).update((state) =>
-                      state = state.copyWith(
-                          videoOptions: state.videoOptions
-                              .copyWith(resolutionScale: value)));
-                },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: SliderTheme(
+                data: SliderThemeData(
+                  trackShape: CustomTrackShape(),
+                  thumbShape:
+                      const RoundSliderThumbShape(enabledThumbRadius: 5),
+                ),
+                child: Slider(
+                  label: selectedConfig.videoOptions.resolutionScale
+                      .toStringAsFixed(1),
+                  value: selectedConfig.videoOptions.resolutionScale,
+                  max: 1,
+                  min: 0.3,
+                  divisions: 7,
+                  onChanged: (value) {
+                    ref.read(selectedConfigProvider.notifier).update((state) =>
+                        state = state.copyWith(
+                            videoOptions: state.videoOptions
+                                .copyWith(resolutionScale: value)));
+                  },
+                ),
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
-            child: Text(selectedConfig.videoOptions.resolutionScale.toString()),
+            child: Text(
+                selectedConfig.videoOptions.resolutionScale.toStringAsFixed(1)),
           ),
         ],
       ),
