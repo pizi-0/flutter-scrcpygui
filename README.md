@@ -24,6 +24,7 @@ Refer [scrcpy](https://github.com/Genymobile/scrcpy) for installation.
 - Save scrcpy config.
 - List of running scrcpy instances. (only on Linux)
 - Theming - dark/light + accent color.
+- Tray support (start/stop servers)
 
 ## Preview
 
