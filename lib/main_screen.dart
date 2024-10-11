@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
-import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/theme_provider.dart';
 import 'package:scrcpygui/screens/main_screen/ms_desktop.dart';
-import 'package:scrcpygui/widgets/quit_dialog.dart';
+import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/widgets/simple_toast/simple_toast_container.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:window_manager/window_manager.dart';
@@ -41,19 +39,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WindowListener {
   @override
   void onWindowEvent(String eventName) async {
     if (eventName == kWindowEventClose) {
-      final wifi = ref.read(adbProvider).where((d) => d.id.contains(':'));
-      final instance = ref.read(scrcpyInstanceProvider);
-
-      if (wifi.isNotEmpty || instance.isNotEmpty) {
-        showAdaptiveDialog(
-          barrierColor: Colors.black.withOpacity(0.9),
-          context: context,
-          builder: (context) => const QuitDialog(),
-        );
-      } else {
-        await windowManager.setPreventClose(false);
-        windowManager.destroy();
-      }
+      await AppUtils.onAppCloseRequested(ref, context);
     }
     super.onWindowEvent(eventName);
   }

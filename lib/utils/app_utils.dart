@@ -7,6 +7,11 @@ import 'package:scrcpygui/providers/theme_provider.dart';
 import 'package:scrcpygui/providers/toast_providers.dart';
 import 'package:scrcpygui/utils/extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:window_manager/window_manager.dart';
+
+import '../providers/adb_provider.dart';
+import '../providers/scrcpy_provider.dart';
+import '../widgets/quit_dialog.dart';
 
 class AppUtils {
   static Future<Color> getPrimaryColor() async {
@@ -60,5 +65,22 @@ class AppUtils {
     final prefs = await SharedPreferences.getInstance();
 
     return prefs.getBool('saved_noti_prefs') ?? true;
+  }
+
+  static Future<void> onAppCloseRequested(
+      WidgetRef ref, BuildContext context) async {
+    final wifi = ref.read(adbProvider).where((d) => d.id.contains(':'));
+    final instance = ref.read(scrcpyInstanceProvider);
+
+    if (wifi.isNotEmpty || instance.isNotEmpty) {
+      showAdaptiveDialog(
+        barrierColor: Colors.black.withOpacity(0.9),
+        context: context,
+        builder: (context) => const QuitDialog(),
+      );
+    } else {
+      await windowManager.setPreventClose(false);
+      windowManager.destroy();
+    }
   }
 }

@@ -5,13 +5,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../providers/adb_provider.dart';
 import '../providers/config_provider.dart';
-import '../widgets/quit_dialog.dart';
 import 'scrcpy_utils.dart';
 
 class TrayUtils {
@@ -103,26 +103,12 @@ class TrayUtils {
           label: 'Quit',
           onClick: (menuItem) async {
             final windowVisible = await windowManager.isVisible();
-            final running = ref.read(scrcpyInstanceProvider);
-            final wifi = ref.read(adbProvider).where((d) => d.id.contains(':'));
 
             if (!windowVisible) {
               await windowManager.show();
-              if (wifi.isNotEmpty || running.isNotEmpty) {
-                showAdaptiveDialog(
-                  barrierColor: Colors.black.withOpacity(0.9),
-                  context: context,
-                  builder: (context) => const QuitDialog(),
-                );
-              } else {
-                await windowManager.setPreventClose(false);
-                windowManager.destroy();
-              }
-            } else {
-              await windowManager.destroy();
             }
 
-            // await windowManager.destroy();
+            await AppUtils.onAppCloseRequested(ref, context);
           },
         ),
       ],
