@@ -311,6 +311,10 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
   Widget _enterIpTextBox(WidgetRef ref, BuildContext context) {
     final appTheme = ref.watch(appThemeProvider);
 
+    final buttonStyle = ButtonStyle(
+        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(
@@ -354,6 +358,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
                   child: Icon(Icons.error_rounded, color: Colors.redAccent),
                 )
               : IconButton(
+                  style: buttonStyle,
                   onPressed: _connect,
                   icon: const Icon(
                     Icons.send_rounded,

@@ -74,6 +74,7 @@ class _CustomAppbarState extends ConsumerState<CustomAppbar> {
       mainAxisSize: MainAxisSize.max,
       children: [
         IconButton(
+          tooltip: 'Exit',
           style: buttonStyle,
           onPressed: () async {
             await AppUtils.onAppCloseRequested(ref, context);
