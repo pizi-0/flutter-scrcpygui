@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:io';
 
@@ -6,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scrcpygui/providers/toast_providers.dart';
 import 'package:scrcpygui/screens/settings_screen/settings_screen.dart';
+import 'package:scrcpygui/utils/tray_utils.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../providers/theme_provider.dart';
@@ -60,27 +63,35 @@ class _CustomAppbarState extends ConsumerState<CustomAppbar> {
 
   @override
   Widget build(BuildContext context) {
+    final appTheme = ref.watch(appThemeProvider);
+
+    final buttonStyle = ButtonStyle(
+        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       children: [
-        const Expanded(child: DragToMoveArea(child: SizedBox.expand())),
-        // IconButton(
-        //   onPressed: () async {
-        //     final size = await windowManager.getSize();
-
-        //     if (size == const Size(450, 600)) {
-        //       await windowManager.setSize(const Size(200, 200), animate: true);
-        //     } else {
-        //       await windowManager.setSize(const Size(450, 600), animate: true);
-        //     }
-        //   },
-        //   icon: Icon(
-        //     Icons.support_rounded,
-        //     color: ref.watch(toastEnabledProvider) ? Colors.green : Colors.red,
-        //   ),
-        // ),
         IconButton(
+          style: buttonStyle,
+          onPressed: () async {
+            await AppUtils.onAppCloseRequested(ref, context);
+          },
+          icon: const Icon(Icons.close_rounded, color: Colors.red),
+        ),
+        IconButton(
+          style: buttonStyle,
+          tooltip: 'Hide window',
+          onPressed: () async {
+            await windowManager.hide();
+            await TrayUtils.initTray(ref, context);
+          },
+          icon: const Icon(Icons.minimize_rounded, color: Colors.yellow),
+        ),
+        const Expanded(child: DragToMoveArea(child: SizedBox.expand())),
+        IconButton(
+          style: buttonStyle,
           tooltip: ref.watch(toastEnabledProvider)
               ? 'Disable notification popup'
               : 'Enable notification popup',
@@ -98,6 +109,7 @@ class _CustomAppbarState extends ConsumerState<CustomAppbar> {
           ),
         ),
         IconButton(
+          style: buttonStyle,
           tooltip: ref.watch(appThemeProvider).brightness == Brightness.dark
               ? 'Light mode'
               : 'Dark mode',
@@ -111,6 +123,7 @@ class _CustomAppbarState extends ConsumerState<CustomAppbar> {
           ),
         ),
         IconButton(
+          style: buttonStyle,
           tooltip: 'Settings',
           onPressed: () {
             Navigator.push(

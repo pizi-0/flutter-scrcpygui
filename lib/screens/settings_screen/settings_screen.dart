@@ -10,6 +10,7 @@ import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/widgets/body_container.dart';
 
 import '../../utils/const.dart';
+import '../../widgets/custom_slider_track_shape.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -22,6 +23,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final appTheme = ref.watch(appThemeProvider);
+
+    final buttonStyle = ButtonStyle(
+        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
+
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.escape): () =>
@@ -32,6 +39,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         child: Scaffold(
           appBar: AppBar(
             leading: IconButton(
+              style: buttonStyle,
               tooltip: 'ESC',
               onPressed: () {
                 Navigator.pop(context);
@@ -312,22 +320,5 @@ class _MyColorPickerState extends ConsumerState<MyColorPicker> {
         ),
       ),
     );
-  }
-}
-
-class CustomTrackShape extends RoundedRectSliderTrackShape {
-  @override
-  Rect getPreferredRect({
-    required RenderBox parentBox,
-    Offset offset = Offset.zero,
-    required SliderThemeData sliderTheme,
-    bool isEnabled = false,
-    bool isDiscrete = false,
-  }) {
-    final trackHeight = sliderTheme.trackHeight;
-    final trackLeft = offset.dx;
-    final trackTop = offset.dy + (parentBox.size.height - trackHeight!) / 2;
-    final trackWidth = parentBox.size.width;
-    return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
 }

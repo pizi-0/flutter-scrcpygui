@@ -95,7 +95,11 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
     final selectedConfig = ref.watch(selectedConfigProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final allConfig = ref.watch(configsProvider);
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(appThemeProvider);
+
+    final buttonStyle = ButtonStyle(
+        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
 
     // final device = ref.watch(savedAdbDevicesProvider).firstWhere(
     //     (d) => d.serialNo == selectedDevice!.serialNo,
@@ -110,6 +114,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
           elevation: 0,
           scrolledUnderElevation: 0,
           leading: IconButton(
+            style: buttonStyle,
             onPressed: () => _handleOnClose(),
             icon: const Icon(Icons.close_rounded),
           ),
@@ -144,7 +149,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
                             decoration: BoxDecoration(
                               color: Colors.grey.withOpacity(0.2),
                               borderRadius: BorderRadius.circular(
-                                  settings.widgetRadius * 0.8),
+                                  appTheme.widgetRadius * 0.8),
                             ),
                             // width: appWidth,
                             child: Padding(

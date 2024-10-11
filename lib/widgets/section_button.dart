@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class SectionButton extends StatelessWidget {
+import '../providers/theme_provider.dart';
+
+class SectionButton extends ConsumerWidget {
   final String? tooltipmessage;
   final Function()? ontap;
   final IconData icondata;
@@ -13,11 +16,15 @@ class SectionButton extends StatelessWidget {
       this.tooltipmessage});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appTheme = ref.watch(appThemeProvider);
+
+    final buttonStyle = ButtonStyle(
+        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
+
     return IconButton(
-      style: const ButtonStyle(
-        padding: WidgetStatePropertyAll(EdgeInsets.all(0)),
-      ),
+      style: buttonStyle,
       tooltip: ontap == null ? '' : tooltipmessage,
       onPressed: ontap,
       icon: Icon(
