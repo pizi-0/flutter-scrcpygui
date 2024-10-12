@@ -281,6 +281,7 @@ class _MyColorPickerState extends ConsumerState<MyColorPicker> {
 
     return Center(
       child: Container(
+        margin: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: colorScheme.surface,
           borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
