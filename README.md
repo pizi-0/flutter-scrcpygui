@@ -13,7 +13,7 @@ A gui for [Scrcpy](https://github.com/Genymobile/scrcpy), made with Flutter.
 ### Linux & MacOS
 
 To be installed and be available in PATH.\
-Refer [scrcpy](https://github.com/Genymobile/scrcpy) for installation.
+Refer [scrcpy](https://github.com/Genymobile/scrcpy?tab=readme-ov-file#get-the-app) for installation.
 
 - scrcpy
 - adb
