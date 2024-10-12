@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/theme_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/widgets/body_container.dart';
+import 'package:scrcpygui/widgets/clear_preferences_dialog.dart';
 
 import '../../utils/const.dart';
 import '../../widgets/custom_slider_track_shape.dart';
@@ -251,7 +252,7 @@ class _DataSectionState extends ConsumerState<DataSection> {
               showAdaptiveDialog(
                 context: context,
                 builder: (context) {
-                  return const SizedBox.shrink();
+                  return const ClearPreferencesDialog();
                 },
               );
             },

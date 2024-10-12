@@ -14,6 +14,7 @@ import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/toast_providers.dart';
 import 'package:scrcpygui/utils/const.dart';
+import 'package:scrcpygui/utils/prefs_key.dart';
 import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -48,7 +49,7 @@ class ScrcpyUtils {
     List<ScrcpyConfig> saved = [];
     final prefs = await SharedPreferences.getInstance();
 
-    final res = prefs.getStringList('savedconfig') ?? [];
+    final res = prefs.getStringList(PKEY_SAVED_CONFIG) ?? [];
 
     for (var r in res) {
       saved.add(ScrcpyConfig.fromJson(r));
@@ -60,13 +61,13 @@ class ScrcpyUtils {
   static Future<void> saveLastUsedConfig(ScrcpyConfig config) async {
     final prefs = await SharedPreferences.getInstance();
 
-    prefs.setString('lastused', config.toJson());
+    prefs.setString(PKEY_LASTUSED_CONFIG, config.toJson());
   }
 
   static Future<ScrcpyConfig> getLastUsedConfig() async {
     final prefs = await SharedPreferences.getInstance();
 
-    final res = prefs.getString('lastused') ?? defaultMirror.toJson();
+    final res = prefs.getString(PKEY_LASTUSED_CONFIG) ?? defaultMirror.toJson();
 
     return ScrcpyConfig.fromJson(res);
   }
@@ -83,7 +84,7 @@ class ScrcpyUtils {
     await trayManager.destroy();
     await TrayUtils.initTray(ref, context);
 
-    prefs.setStringList('savedconfig', savedJson);
+    prefs.setStringList(PKEY_SAVED_CONFIG, savedJson);
   }
 
   static Future<List<String>> getRunningScrcpy(String appPID) async {

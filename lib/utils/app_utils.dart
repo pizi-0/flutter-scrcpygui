@@ -6,6 +6,7 @@ import 'package:scrcpygui/models/app_theme.dart';
 import 'package:scrcpygui/providers/theme_provider.dart';
 import 'package:scrcpygui/providers/toast_providers.dart';
 import 'package:scrcpygui/utils/extension.dart';
+import 'package:scrcpygui/utils/prefs_key.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -41,12 +42,12 @@ class AppUtils {
   static Future<void> saveAppTheme(AppTheme apptheme) async {
     final prefs = await SharedPreferences.getInstance();
 
-    prefs.setString('apptheme', apptheme.toJson());
+    prefs.setString(PKEY_APPTHEME, apptheme.toJson());
   }
 
   static Future<AppTheme> getAppTheme() async {
     final prefs = await SharedPreferences.getInstance();
-    final jsons = prefs.getString('apptheme');
+    final jsons = prefs.getString(PKEY_APPTHEME);
 
     if (jsons == null) {
       return defaultTheme;
@@ -58,13 +59,13 @@ class AppUtils {
   static Future<void> saveNotiPreference(WidgetRef ref) async {
     final prefs = await SharedPreferences.getInstance();
 
-    await prefs.setBool('saved_noti_prefs', ref.read(toastEnabledProvider));
+    await prefs.setBool(PKEY_NOTI, ref.read(toastEnabledProvider));
   }
 
   static Future<bool> getNotiPreference() async {
     final prefs = await SharedPreferences.getInstance();
 
-    return prefs.getBool('saved_noti_prefs') ?? true;
+    return prefs.getBool(PKEY_NOTI) ?? true;
   }
 
   static Future<void> onAppCloseRequested(
@@ -82,5 +83,11 @@ class AppUtils {
       await windowManager.setPreventClose(false);
       windowManager.destroy();
     }
+  }
+
+  static Future<void> clearSharedPrefs(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.remove(key);
   }
 }

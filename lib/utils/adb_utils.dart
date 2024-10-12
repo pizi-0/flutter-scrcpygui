@@ -10,6 +10,7 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_camera.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_display.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_encoder.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info.dart';
+import 'package:scrcpygui/utils/prefs_key.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -366,13 +367,14 @@ class AdbUtils {
 
   static Future<void> saveAdbDevice(List<AdbDevices> dev) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList('saveddevices', dev.map((e) => e.toJson()).toList());
-    // prefs.remove('saveddevices');
+    prefs.setStringList(
+        PKEY_SAVED_DEVICES, dev.map((e) => e.toJson()).toList());
+    // prefs.remove(PKEY_SAVED_DEVICES);
   }
 
   static Future<List<AdbDevices>> getSavedAdbDevice() async {
     final prefs = await SharedPreferences.getInstance();
-    final jsons = prefs.getStringList('saveddevices') ?? [];
+    final jsons = prefs.getStringList(PKEY_SAVED_DEVICES) ?? [];
 
     return jsons.map((e) => AdbDevices.fromJson(e)).toList();
   }
@@ -380,12 +382,13 @@ class AdbUtils {
   static Future<void> saveWirelessHistory(List<AdbDevices> devs) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(
-        'wireless_history', devs.map((d) => d.toJson()).toList());
+        PKEY_WIRELESS_DEVICE_HX, devs.map((d) => d.toJson()).toList());
   }
 
   static Future<List<AdbDevices>> getWirelessHistory() async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> historyStr = prefs.getStringList('wireless_history') ?? [];
+    List<String> historyStr =
+        prefs.getStringList(PKEY_WIRELESS_DEVICE_HX) ?? [];
 
     return historyStr.map((s) => AdbDevices.fromJson(s)).toList();
   }
