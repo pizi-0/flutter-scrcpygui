@@ -12,19 +12,15 @@ A gui for [Scrcpy](https://github.com/Genymobile/scrcpy), made with Flutter.
 
 ### Linux & MacOS
 
-```text
 To be installed and be available in PATH.\
 Refer [scrcpy](https://github.com/Genymobile/scrcpy) for installation.
 
 - scrcpy
 - adb
-```
 
 ### Windows
 
-```text
 Nothing
-```
 
 ## Features
 
