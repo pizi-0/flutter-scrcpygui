@@ -20,7 +20,7 @@ Refer [scrcpy](https://github.com/Genymobile/scrcpy) for installation.
 
 ### Windows
 
-Nothing
+- Nothing
 
 ## Features
 
