@@ -80,10 +80,11 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text(
-                        '*Servers with no window will be killed regardless. (${noWin.length} servers)',
+                        '*Servers with no window will be killed regardless. (${noWin.length})',
                         style: style,
                       ).italic().fontSize(11),
                     ),
+                  if (noWin.isNotEmpty) const SizedBox(height: 5),
                   if (runningInstance.isNotEmpty)
                     Container(
                       margin: const EdgeInsets.only(bottom: 4),
@@ -141,12 +142,47 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  Checkbox(
+                    tristate: true,
+                    value: wifi && instance
+                        ? true
+                        : wifi
+                            ? null
+                            : instance
+                                ? null
+                                : false,
+                    onChanged: (v) {
+                      if (wifi && instance) {
+                        wifi = false;
+                        instance = false;
+                      } else {
+                        wifi = true;
+                        instance = true;
+                      }
+
+                      setState(() {});
+                    },
+                  ),
+                  InkWell(
+                      onTap: () {
+                        if (wifi && instance) {
+                          wifi = false;
+                          instance = false;
+                        } else {
+                          wifi = true;
+                          instance = true;
+                        }
+
+                        setState(() {});
+                      },
+                      child: const Text('Select all')),
+                  const Spacer(),
                   TextButton(
                     style: buttonStyle,
                     onPressed: () {
                       _onClose(wifi, instance);
                     },
-                    child: const Text('Yes'),
+                    child: const Text('Quit'),
                   ),
                   const SizedBox(width: 10),
                   TextButton(
@@ -155,7 +191,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                     onPressed: () {
                       Navigator.pop(context, false);
                     },
-                    child: const Text('No'),
+                    child: const Text('Cancel'),
                   ),
                 ],
               )
