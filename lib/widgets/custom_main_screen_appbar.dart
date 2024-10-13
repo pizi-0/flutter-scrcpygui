@@ -87,7 +87,7 @@ class _CustomAppbarState extends ConsumerState<CustomAppbar> {
             await windowManager.hide();
             await TrayUtils.initTray(ref, context);
           },
-          icon: const Icon(Icons.minimize_rounded, color: Colors.yellow),
+          icon: const Icon(Icons.minimize_rounded, color: Colors.orange),
         ),
         const Expanded(child: DragToMoveArea(child: SizedBox.expand())),
         IconButton(
