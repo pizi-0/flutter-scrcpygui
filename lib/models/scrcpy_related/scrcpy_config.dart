@@ -9,6 +9,7 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'scrcpy_config/window_options.dart';
 
 class ScrcpyConfig {
+  final String id;
   final String configName;
 
   final ScrcpyMode scrcpyMode;
@@ -22,6 +23,7 @@ class ScrcpyConfig {
 
   final String? savePath;
   ScrcpyConfig({
+    required this.id,
     required this.configName,
     required this.scrcpyMode,
     required this.isRecording,
@@ -34,6 +36,7 @@ class ScrcpyConfig {
   });
 
   ScrcpyConfig copyWith({
+    String? id,
     String? configName,
     ScrcpyMode? scrcpyMode,
     bool? isRecording,
@@ -46,6 +49,7 @@ class ScrcpyConfig {
     String? savePath,
   }) {
     return ScrcpyConfig(
+      id: id ?? this.id,
       configName: configName ?? this.configName,
       scrcpyMode: scrcpyMode ?? this.scrcpyMode,
       isRecording: isRecording ?? this.isRecording,
@@ -60,6 +64,7 @@ class ScrcpyConfig {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'configName': configName,
       'scrcpyMode': ScrcpyMode.values.indexOf(scrcpyMode),
       'isRecording': isRecording,
@@ -74,6 +79,7 @@ class ScrcpyConfig {
 
   factory ScrcpyConfig.fromMap(Map<String, dynamic> map) {
     return ScrcpyConfig(
+      id: map['id'],
       configName: map['configName'] as String,
       scrcpyMode: ScrcpyMode.values[map['scrcpyMode']],
       isRecording: map['isRecording'] as bool,
@@ -104,7 +110,8 @@ class ScrcpyConfig {
   bool operator ==(covariant ScrcpyConfig other) {
     if (identical(this, other)) return true;
 
-    return other.configName == configName &&
+    return other.id == id &&
+        other.configName == configName &&
         other.scrcpyMode == scrcpyMode &&
         other.isRecording == isRecording &&
         other.videoOptions == videoOptions &&
@@ -117,7 +124,8 @@ class ScrcpyConfig {
 
   @override
   int get hashCode {
-    return configName.hashCode ^
+    return id.hashCode ^
+        configName.hashCode ^
         scrcpyMode.hashCode ^
         isRecording.hashCode ^
         videoOptions.hashCode ^

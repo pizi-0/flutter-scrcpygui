@@ -32,6 +32,7 @@ const List<DropdownMenuItem> yesno = [
 ];
 
 final ScrcpyConfig defaultMirror = ScrcpyConfig(
+  id: 'default-mirror',
   configName: 'Default (Mirror)',
   scrcpyMode: ScrcpyMode.both,
   isRecording: false,
@@ -69,6 +70,7 @@ final ScrcpyConfig defaultMirror = ScrcpyConfig(
 );
 
 final ScrcpyConfig newConfig = ScrcpyConfig(
+  id: 'new-config',
   configName: 'New config',
   scrcpyMode: ScrcpyMode.both,
   isRecording: false,
@@ -107,6 +109,7 @@ final ScrcpyConfig newConfig = ScrcpyConfig(
 );
 
 final ScrcpyConfig defaultRecord = ScrcpyConfig(
+  id: 'default-record',
   configName: 'Default (Record)',
   scrcpyMode: ScrcpyMode.both,
   isRecording: true,

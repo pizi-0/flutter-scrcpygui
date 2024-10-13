@@ -32,28 +32,17 @@ class ConfigScreen extends ConsumerStatefulWidget {
 }
 
 class _ConfigScreenState extends ConsumerState<ConfigScreen> {
-  late TextEditingController audioBitrateController;
-  late TextEditingController videoBitrateController;
-
   String modeLabel = MainMode.mirror.value;
 
   bool editname = false;
 
   @override
   void initState() {
-    final selectedConfig = ref.read(selectedConfigProvider);
-    videoBitrateController = TextEditingController(
-        text: selectedConfig.videoOptions.videoBitrate.toString());
-    audioBitrateController = TextEditingController(
-        text: selectedConfig.audioOptions.audioBitrate.toString());
-
     super.initState();
   }
 
   @override
   void dispose() {
-    audioBitrateController.dispose();
-    videoBitrateController.dispose();
     super.dispose();
   }
 
