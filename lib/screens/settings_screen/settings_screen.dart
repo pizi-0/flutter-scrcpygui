@@ -367,7 +367,7 @@ class _AppBehaviourSectionState extends ConsumerState<AppBehaviourSection> {
       headerTitle: 'App behaviour',
       children: [
         BodyContainerItem(
-          title: 'System tray support.',
+          title: 'Show tray icon',
           trailing: Checkbox(
             value: behaviour.traySupport,
             onChanged: (v) async {
@@ -381,18 +381,26 @@ class _AppBehaviourSectionState extends ConsumerState<AppBehaviourSection> {
               } else {
                 await trayManager.destroy();
               }
+
+              final newSettings = ref.read(settingsProvider);
+
+              await AppUtils.saveAppSettings(newSettings);
             },
           ),
         ),
         BodyContainerItem(
-          title: 'Quit always kill instances with no window.',
+          title: 'Quit always kill instances with no window',
           trailing: Checkbox(
             value: behaviour.killNoWindowInstance,
-            onChanged: (v) {
+            onChanged: (v) async {
               ref.read(settingsProvider.notifier).update((state) => state =
                   state.copyWith(
                       behaviour:
                           state.behaviour.copyWith(killNoWindowInstance: v)));
+
+              final newSettings = ref.read(settingsProvider);
+
+              await AppUtils.saveAppSettings(newSettings);
             },
           ),
         ),
