@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/providers/theme_provider.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
@@ -26,12 +26,12 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
+        borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
       ),
       height: 40,
       child: Padding(
@@ -52,14 +52,14 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.inversePrimary,
                     borderRadius:
-                        BorderRadius.circular(settings.widgetRadius * 0.8),
+                        BorderRadius.circular(appTheme.widgetRadius * 0.8),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: DropdownButton(
                         borderRadius:
-                            BorderRadius.circular(settings.widgetRadius * 0.8),
+                            BorderRadius.circular(appTheme.widgetRadius * 0.8),
                         style: Theme.of(context).textTheme.bodyMedium,
                         focusColor: Theme.of(context).colorScheme.onPrimary,
                         value: initialValue,
@@ -103,11 +103,12 @@ class ConfigDropdownOthers extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
+        borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
       ),
       height: 40,
       child: Padding(
@@ -135,7 +136,7 @@ class ConfigDropdownOthers extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.inversePrimary,
                     borderRadius:
-                        BorderRadius.circular(settings.widgetRadius * 0.8),
+                        BorderRadius.circular(appTheme.widgetRadius * 0.8),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: Padding(
@@ -176,11 +177,12 @@ class ConfigUserInput extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
+        borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
       ),
       height: 40,
       child: Padding(
@@ -208,7 +210,7 @@ class ConfigUserInput extends ConsumerWidget {
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.inversePrimary,
                           borderRadius: BorderRadius.circular(
-                              settings.widgetRadius * 0.8),
+                              appTheme.widgetRadius * 0.8),
                         ),
                         child: Center(
                           child: TextField(
@@ -261,11 +263,12 @@ class ConfigCustom extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
+        borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
       ),
       height: 40,
       child: Padding(
@@ -289,7 +292,7 @@ class ConfigCustom extends ConsumerWidget {
                     color: childBackgroundColor ??
                         Theme.of(context).colorScheme.inversePrimary,
                     borderRadius:
-                        BorderRadius.circular(settings.widgetRadius * 0.8),
+                        BorderRadius.circular(appTheme.widgetRadius * 0.8),
                   ),
                   child: child,
                 ),

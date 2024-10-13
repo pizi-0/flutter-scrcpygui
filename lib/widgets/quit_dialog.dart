@@ -7,7 +7,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../providers/theme_provider.dart';
+import '../providers/settings_provider.dart';
 import '../utils/adb_utils.dart';
 import '../utils/const.dart';
 import '../utils/scrcpy_utils.dart';
@@ -40,10 +40,10 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
     final runningInstance = ref.watch(scrcpyInstanceProvider);
     final wifiDevices =
         ref.watch(adbProvider).where((e) => e.id.contains(':')).toList();
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final buttonStyle = ButtonStyle(
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8))));
+            borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8))));
 
     final noWin = runningInstance
         .where((ins) => ins.config.windowOptions.noWindow)
@@ -67,7 +67,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
         : AlertDialog(
             insetPadding: const EdgeInsets.all(16),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(settings.widgetRadius),
+              borderRadius: BorderRadius.circular(appTheme.widgetRadius),
             ),
             title: const Text('Quit?'),
             content: ConstrainedBox(
@@ -92,7 +92,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.inversePrimary,
                         borderRadius:
-                            BorderRadius.circular(settings.widgetRadius * 0.8),
+                            BorderRadius.circular(appTheme.widgetRadius * 0.8),
                       ),
                       child: ListTile(
                         onTap: () {
@@ -121,7 +121,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.inversePrimary,
                         borderRadius:
-                            BorderRadius.circular(settings.widgetRadius * 0.8),
+                            BorderRadius.circular(appTheme.widgetRadius * 0.8),
                       ),
                       child: ListTile(
                         onTap: () {

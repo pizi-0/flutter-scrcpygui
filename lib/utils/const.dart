@@ -5,9 +5,12 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/device_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/video_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/window_options.dart';
+import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
+import 'package:scrcpygui/models/settings_model/app_settings.dart';
 
 import '../models/scrcpy_related/scrcpy_config.dart';
 import '../models/scrcpy_related/scrcpy_enum.dart';
+import '../models/settings_model/app_theme.dart';
 
 final List<ScrcpyConfig> defaultConfigs = [
   newConfig,
@@ -139,4 +142,21 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
   ),
   additionalFlags: '',
   savePath: Platform.environment['HOME'],
+);
+
+final defaultTheme = AppTheme(
+  widgetRadius: 10,
+  color: const Color(0xff00b8d4),
+  brightness: Brightness.dark,
+  fromWall: false,
+);
+
+final defaultAppBehaviour = AppBehaviour(
+  killNoWindowInstance: true,
+  traySupport: true,
+);
+
+final defaultSettings = AppSettings(
+  looks: defaultTheme,
+  behaviour: defaultAppBehaviour,
 );

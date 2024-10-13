@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 
-import '../../providers/theme_provider.dart';
+import '../../providers/settings_provider.dart';
 
 class LogScreen extends ConsumerStatefulWidget {
   final ScrcpyRunningInstance instance;
@@ -43,7 +43,7 @@ class _LogScreenState extends ConsumerState<LogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return CallbackShortcuts(
       bindings: {
@@ -66,7 +66,7 @@ class _LogScreenState extends ConsumerState<LogScreen> {
               child: Container(
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(settings.widgetRadius),
+                    borderRadius: BorderRadius.circular(appTheme.widgetRadius),
                     border: Border.all(
                       color: Theme.of(context).colorScheme.inverseSurface,
                     )),

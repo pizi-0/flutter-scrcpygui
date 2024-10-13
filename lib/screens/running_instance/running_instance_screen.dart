@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/utils/const.dart';
 
 import '../../providers/scrcpy_provider.dart';
-import '../../providers/theme_provider.dart';
+import '../../providers/settings_provider.dart';
 import '../../providers/toast_providers.dart';
 import '../../utils/scrcpy_utils.dart';
 import '../../widgets/instance_list.dart';
@@ -22,7 +22,7 @@ class _RunningInstanceScreenState extends ConsumerState<RunningInstanceScreen> {
   @override
   Widget build(BuildContext context) {
     final runningInstance = ref.watch(scrcpyInstanceProvider);
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return CallbackShortcuts(
       bindings: {
@@ -50,7 +50,7 @@ class _RunningInstanceScreenState extends ConsumerState<RunningInstanceScreen> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.inversePrimary,
                         borderRadius:
-                            BorderRadius.circular(settings.widgetRadius),
+                            BorderRadius.circular(appTheme.widgetRadius),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(4.0),

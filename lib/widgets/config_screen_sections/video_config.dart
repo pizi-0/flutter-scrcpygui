@@ -4,11 +4,11 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_info.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/info_provider.dart';
-import 'package:scrcpygui/providers/theme_provider.dart';
 import 'package:scrcpygui/widgets/custom_slider_track_shape.dart';
 
 import '../../models/scrcpy_related/scrcpy_config.dart';
 import '../../models/scrcpy_related/scrcpy_enum.dart';
+import '../../providers/settings_provider.dart';
 import '../../utils/const.dart';
 import '../config_dropdown.dart';
 
@@ -48,7 +48,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(selectedConfigProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     final ScrcpyInfo info = ref
         .watch(infoProvider)
@@ -72,7 +72,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
             Container(
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.inversePrimary,
-                  borderRadius: BorderRadius.circular(settings.widgetRadius)),
+                  borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
               width: appWidth,
               child: Padding(
                 padding: const EdgeInsets.all(4.0),

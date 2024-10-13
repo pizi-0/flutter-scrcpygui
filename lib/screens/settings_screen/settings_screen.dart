@@ -1,14 +1,16 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 
-import 'package:scrcpygui/providers/theme_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
+import 'package:scrcpygui/utils/tray_utils.dart';
 import 'package:scrcpygui/widgets/body_container.dart';
 import 'package:scrcpygui/widgets/clear_preferences_dialog.dart';
+import 'package:tray_manager/tray_manager.dart';
 
 import '../../utils/const.dart';
 import '../../widgets/custom_slider_track_shape.dart';
@@ -24,7 +26,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final appTheme = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     final buttonStyle = ButtonStyle(
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
@@ -68,6 +70,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ThemeSection(),
+                      AppBehaviourSection(),
                       DataSection(),
                     ],
                   ),
@@ -93,14 +96,14 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
 
   @override
   void initState() {
-    radius = ref.read(appThemeProvider).widgetRadius;
+    radius = ref.read(settingsProvider.select((s) => s.looks)).widgetRadius;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final appTheme = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return BodyContainer(
       headerTitle: 'Theme',
@@ -114,9 +117,15 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                 value: Brightness.dark,
                 groupValue: appTheme.brightness,
                 onChanged: (val) {
-                  var theme = ref.read(appThemeProvider);
-                  ref.read(appThemeProvider.notifier).setBrightness(val!);
-                  AppUtils.saveAppTheme(theme.copyWith(brightness: val));
+                  final currentSettings = ref.read(settingsProvider);
+                  final currentLooks = currentSettings.looks;
+
+                  ref.read(settingsProvider.notifier).update((state) => state =
+                      state.copyWith(
+                          looks: currentLooks.copyWith(brightness: val)));
+
+                  AppUtils.saveAppSettings(currentSettings.copyWith(
+                      looks: currentLooks.copyWith(brightness: val)));
                 },
               ),
               const Text('Dark'),
@@ -126,9 +135,15 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                 value: Brightness.light,
                 groupValue: appTheme.brightness,
                 onChanged: (val) {
-                  var theme = ref.read(appThemeProvider);
-                  ref.read(appThemeProvider.notifier).setBrightness(val!);
-                  AppUtils.saveAppTheme(theme.copyWith(brightness: val));
+                  final currentSettings = ref.read(settingsProvider);
+                  final currentLooks = currentSettings.looks;
+
+                  ref.read(settingsProvider.notifier).update((state) => state =
+                      state.copyWith(
+                          looks: currentLooks.copyWith(brightness: val)));
+
+                  AppUtils.saveAppSettings(currentSettings.copyWith(
+                      looks: currentLooks.copyWith(brightness: val)));
                 },
               ),
               const Text('Light'),
@@ -142,12 +157,13 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               IconButton(
                 tooltip: 'Default',
                 onPressed: () async {
-                  ref
-                      .read(appThemeProvider.notifier)
-                      .setColor(defaultTheme.color);
+                  ref.read(settingsProvider.notifier).update((state) => state =
+                      state.copyWith(
+                          looks:
+                              state.looks.copyWith(color: defaultTheme.color)));
 
-                  final theme = ref.read(appThemeProvider);
-                  await AppUtils.saveAppTheme(theme);
+                  final newSettings = ref.read(settingsProvider);
+                  await AppUtils.saveAppSettings(newSettings);
                 },
                 icon: const Icon(Icons.refresh_rounded),
               ),
@@ -188,16 +204,17 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                 IconButton(
                   tooltip: 'Default: 10',
                   onPressed: () async {
-                    ref
-                        .read(appThemeProvider.notifier)
-                        .setWidgetRadius(defaultTheme.widgetRadius);
+                    ref.read(settingsProvider.notifier).update((state) =>
+                        state = state.copyWith(
+                            looks: state.looks.copyWith(
+                                widgetRadius: defaultTheme.widgetRadius)));
 
                     setState(() {
                       radius = defaultTheme.widgetRadius;
                     });
 
-                    final theme = ref.read(appThemeProvider);
-                    await AppUtils.saveAppTheme(theme);
+                    final newSettings = ref.read(settingsProvider);
+                    await AppUtils.saveAppSettings(newSettings);
                   },
                   icon: const Icon(Icons.refresh_rounded),
                 ),
@@ -209,13 +226,15 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                     max: 15,
                     value: radius,
                     onChangeEnd: (value) async {
-                      final theme = ref.read(appThemeProvider);
-                      await AppUtils.saveAppTheme(theme);
+                      final newSettings = ref.read(settingsProvider);
+                      await AppUtils.saveAppSettings(newSettings);
                     },
                     onChanged: (v) {
                       radius = v;
                       setState(() {});
-                      ref.read(appThemeProvider.notifier).setWidgetRadius(v);
+                      ref.read(settingsProvider.notifier).update((state) =>
+                          state = state.copyWith(
+                              looks: state.looks.copyWith(widgetRadius: v)));
                     },
                   ),
                 ),
@@ -278,7 +297,7 @@ class _MyColorPickerState extends ConsumerState<MyColorPicker> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final settings = ref.watch(appThemeProvider);
+    final settings = ref.watch(settingsProvider.select((s) => s.looks));
 
     return Center(
       child: Container(
@@ -287,7 +306,7 @@ class _MyColorPickerState extends ConsumerState<MyColorPicker> {
           color: colorScheme.surface,
           borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
           // border:
-          //     Border.all(color: ref.watch(appThemeProvider).color, width: 2),
+          //     Border.all(color: ref.watch(settingsProvider.select((s)=> s.looks)).color, width: 2),
         ),
         width: appWidth,
         child: Column(
@@ -300,7 +319,8 @@ class _MyColorPickerState extends ConsumerState<MyColorPicker> {
               ),
               child: SingleChildScrollView(
                 child: ColorPicker(
-                  color: ref.watch(appThemeProvider).color,
+                  color:
+                      ref.watch(settingsProvider.select((s) => s.looks)).color,
                   heading: const Text('Colors'),
                   pickersEnabled: const {
                     ColorPickerType.accent: true,
@@ -311,9 +331,14 @@ class _MyColorPickerState extends ConsumerState<MyColorPicker> {
                   subheading: const Text('Shades'),
                   enableShadesSelection: true,
                   onColorChanged: (col) async {
-                    var theme = ref.read(appThemeProvider);
-                    ref.read(appThemeProvider.notifier).setColor(col);
-                    AppUtils.saveAppTheme(theme.copyWith(color: col));
+                    final currentSettings = ref.read(settingsProvider);
+                    final currentLooks = currentSettings.looks;
+
+                    ref.read(settingsProvider.notifier).update((state) =>
+                        state = state.copyWith(
+                            looks: currentLooks.copyWith(color: col)));
+                    AppUtils.saveAppSettings(currentSettings.copyWith(
+                        looks: currentLooks.copyWith(color: col)));
                   },
                 ),
               ),
@@ -321,6 +346,57 @@ class _MyColorPickerState extends ConsumerState<MyColorPicker> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class AppBehaviourSection extends ConsumerStatefulWidget {
+  const AppBehaviourSection({super.key});
+
+  @override
+  ConsumerState<AppBehaviourSection> createState() =>
+      _AppBehaviourSectionState();
+}
+
+class _AppBehaviourSectionState extends ConsumerState<AppBehaviourSection> {
+  @override
+  Widget build(BuildContext context) {
+    final behaviour = ref.watch(settingsProvider.select((s) => s.behaviour));
+
+    return BodyContainer(
+      headerTitle: 'App behaviour',
+      children: [
+        BodyContainerItem(
+          title: 'System tray support.',
+          trailing: Checkbox(
+            value: behaviour.traySupport,
+            onChanged: (v) async {
+              ref.read(settingsProvider.notifier).update((state) => state =
+                  state.copyWith(
+                      behaviour: state.behaviour.copyWith(traySupport: v)));
+
+              if (v == true) {
+                await trayManager.destroy();
+                await TrayUtils.initTray(ref, context);
+              } else {
+                await trayManager.destroy();
+              }
+            },
+          ),
+        ),
+        BodyContainerItem(
+          title: 'Quit always kill instances with no window.',
+          trailing: Checkbox(
+            value: behaviour.killNoWindowInstance,
+            onChanged: (v) {
+              ref.read(settingsProvider.notifier).update((state) => state =
+                  state.copyWith(
+                      behaviour:
+                          state.behaviour.copyWith(killNoWindowInstance: v)));
+            },
+          ),
+        ),
+      ],
     );
   }
 }

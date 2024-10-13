@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
-import 'package:scrcpygui/providers/theme_provider.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 
 import '../../models/scrcpy_related/scrcpy_config.dart';
 import '../../models/scrcpy_related/scrcpy_enum.dart';
@@ -23,7 +23,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(selectedConfigProvider);
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -38,7 +38,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
         Container(
           decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.inversePrimary,
-              borderRadius: BorderRadius.circular(settings.widgetRadius)),
+              borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
           width: appWidth,
           child: Padding(
             padding: const EdgeInsets.all(4.0),
@@ -61,7 +61,8 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
 
   Widget _buildMainModeSelector(
       WidgetRef ref, BuildContext context, ScrcpyConfig selectedConfig) {
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+
     return AnimatedContainer(
       height: selectedConfig.isRecording ? 84 : 40,
       duration: const Duration(milliseconds: 200),
@@ -93,13 +94,13 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
                 label: 'Save folder',
                 child: ClipRRect(
                   borderRadius:
-                      BorderRadius.circular(settings.widgetRadius * 0.8),
+                      BorderRadius.circular(appTheme.widgetRadius * 0.8),
                   child: Tooltip(
                     message: selectedConfig.savePath ?? '',
                     child: Material(
                       shape: RoundedRectangleBorder(
                         borderRadius:
-                            BorderRadius.circular(settings.widgetRadius * 0.8),
+                            BorderRadius.circular(appTheme.widgetRadius * 0.8),
                       ),
                       color: Colors.transparent,
                       child: InkWell(

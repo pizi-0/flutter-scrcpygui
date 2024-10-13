@@ -2,7 +2,8 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/providers/theme_provider.dart';
+
+import '../providers/settings_provider.dart';
 
 class BodyContainer extends ConsumerWidget {
   final List<Widget> children;
@@ -11,7 +12,7 @@ class BodyContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
@@ -32,7 +33,7 @@ class BodyContainer extends ConsumerWidget {
             width: double.maxFinite,
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.inversePrimary,
-              borderRadius: BorderRadius.circular(settings.widgetRadius),
+              borderRadius: BorderRadius.circular(appTheme.widgetRadius),
             ),
             child: Padding(
               padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
@@ -60,7 +61,7 @@ class BodyContainerItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return AnimatedContainer(
       duration: 200.milliseconds,
@@ -68,7 +69,7 @@ class BodyContainerItem extends ConsumerWidget {
       width: double.maxFinite,
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(settings.widgetRadius * 0.85),
+        borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.85),
       ),
       margin: const EdgeInsets.only(bottom: 4),
       child: Padding(

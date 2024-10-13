@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scrcpygui/main_screen.dart';
-import 'package:scrcpygui/models/app_theme.dart';
+import 'package:scrcpygui/models/settings_model/app_theme.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/dependencies_provider.dart';

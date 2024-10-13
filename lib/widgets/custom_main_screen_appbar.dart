@@ -11,7 +11,7 @@ import 'package:scrcpygui/screens/settings_screen/settings_screen.dart';
 import 'package:scrcpygui/utils/tray_utils.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../providers/theme_provider.dart';
+import '../providers/settings_provider.dart';
 import '../utils/app_utils.dart';
 
 class CustomAppbar extends ConsumerStatefulWidget
@@ -35,11 +35,9 @@ class _CustomAppbarState extends ConsumerState<CustomAppbar> {
       (event) {
         if (event.type == FileSystemEvent.modify) {
           AppUtils.getPrimaryColor().then((c) {
-            if (c != ref.read(appThemeProvider).color) {
-              final currentTheme = ref.read(appThemeProvider);
-              ref
-                  .read(appThemeProvider.notifier)
-                  .setTheme(currentTheme.copyWith(color: c));
+            if (c != ref.read(settingsProvider).looks.color) {
+              ref.read(settingsProvider.notifier).update((state) => state =
+                  state.copyWith(looks: state.looks.copyWith(color: c)));
             }
           });
         }
@@ -49,7 +47,7 @@ class _CustomAppbarState extends ConsumerState<CustomAppbar> {
 
   @override
   void initState() {
-    if (ref.read(appThemeProvider).fromWall) {
+    if (ref.read(settingsProvider).looks.fromWall) {
       _pollColor();
     }
     super.initState();
@@ -63,7 +61,7 @@ class _CustomAppbarState extends ConsumerState<CustomAppbar> {
 
   @override
   Widget build(BuildContext context) {
-    final appTheme = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     final buttonStyle = ButtonStyle(
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
@@ -111,13 +109,23 @@ class _CustomAppbarState extends ConsumerState<CustomAppbar> {
         ),
         IconButton(
           style: buttonStyle,
-          tooltip: ref.watch(appThemeProvider).brightness == Brightness.dark
+          tooltip: appTheme.brightness == Brightness.dark
               ? 'Light mode'
               : 'Dark mode',
-          onPressed: () =>
-              ref.read(appThemeProvider.notifier).toggleBrightness(),
+          onPressed: () {
+            var val = appTheme.brightness;
+
+            if (appTheme.brightness == Brightness.dark) {
+              val = Brightness.light;
+            } else {
+              val = Brightness.dark;
+            }
+
+            ref.read(settingsProvider.notifier).update((state) => state =
+                state.copyWith(looks: state.looks.copyWith(brightness: val)));
+          },
           icon: Icon(
-            ref.watch(appThemeProvider).brightness == Brightness.dark
+            appTheme.brightness == Brightness.dark
                 ? Icons.sunny
                 : Icons.nightlight_round,
             color: Colors.orange,

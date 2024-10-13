@@ -5,7 +5,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 
 import '../models/adb_devices.dart';
-import '../providers/theme_provider.dart';
+import '../providers/settings_provider.dart';
 
 class DeviceHistoryIcon extends ConsumerStatefulWidget {
   final AdbDevices? device;
@@ -33,7 +33,8 @@ class _DeviceHistoryIconState extends ConsumerState<DeviceHistoryIcon> {
   @override
   Widget build(BuildContext context) {
     final selectedDevice = ref.watch(selectedDeviceProvider);
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+
     final isConnected = ref
         .watch(adbProvider)
         .where((d) => d.id == widget.device!.id)
@@ -61,7 +62,7 @@ class _DeviceHistoryIconState extends ConsumerState<DeviceHistoryIcon> {
           verticalOffset: 50,
           waitDuration: const Duration(milliseconds: 200),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(settings.widgetRadius),
+            borderRadius: BorderRadius.circular(appTheme.widgetRadius),
             child: Material(
               color: Colors.transparent,
               child: InkWell(

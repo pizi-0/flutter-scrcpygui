@@ -4,7 +4,7 @@ import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 
-import '../providers/theme_provider.dart';
+import '../providers/settings_provider.dart';
 import '../utils/const.dart';
 
 class DisconnectDialog extends ConsumerStatefulWidget {
@@ -30,12 +30,12 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     TextStyle? style = Theme.of(context).textTheme.titleSmall;
     final buttonStyle = ButtonStyle(
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8))));
+            borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8))));
     final runningInstance = ref
         .watch(scrcpyInstanceProvider)
         .where((inst) => inst.device == widget.device);
@@ -61,7 +61,7 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
           )
         : AlertDialog(
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(settings.widgetRadius),
+              borderRadius: BorderRadius.circular(appTheme.widgetRadius),
             ),
             title: Text(
                 'Disconnect ${device.name?.toUpperCase() ?? device.modelName.toUpperCase()}?'),
@@ -77,7 +77,7 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.inversePrimary,
                         borderRadius:
-                            BorderRadius.circular(settings.widgetRadius * 0.8),
+                            BorderRadius.circular(appTheme.widgetRadius * 0.8),
                       ),
                       margin: const EdgeInsets.all(4),
                       child: ListTile(

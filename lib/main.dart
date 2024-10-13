@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:scrcpygui/models/app_theme.dart';
-import 'package:scrcpygui/providers/theme_provider.dart';
+import 'package:scrcpygui/models/settings_model/app_settings.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/splash_screen/splash_screen.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:window_manager/window_manager.dart';
@@ -26,42 +26,20 @@ void main() async {
     await windowManager.focus();
   });
 
-  AppUtils.getAppTheme().then((t) {
-    if (t.fromWall) {
-      AppUtils.getPrimaryColor().then(
-        (c) => runApp(
-          ProviderScope(
-            child: MyApp(
-              theme: AppTheme(
-                widgetRadius: t.widgetRadius,
-                color: c,
-                brightness: t.brightness,
-                fromWall: t.fromWall,
-              ),
-            ),
-          ),
+  AppUtils.getAppSettings().then((settings) {
+    runApp(
+      ProviderScope(
+        child: MyApp(
+          settings: settings,
         ),
-      );
-    } else {
-      runApp(
-        ProviderScope(
-          child: MyApp(
-            theme: AppTheme(
-              widgetRadius: t.widgetRadius,
-              color: t.color,
-              brightness: t.brightness,
-              fromWall: t.fromWall,
-            ),
-          ),
-        ),
-      );
-    }
+      ),
+    );
   });
 }
 
 class MyApp extends ConsumerStatefulWidget {
-  final AppTheme theme;
-  const MyApp({super.key, required this.theme});
+  final AppSettings settings;
+  const MyApp({super.key, required this.settings});
 
   @override
   ConsumerState<MyApp> createState() => _MyAppState();
@@ -73,7 +51,9 @@ class _MyAppState extends ConsumerState<MyApp> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((c) async {
-      ref.read(appThemeProvider.notifier).setTheme(widget.theme);
+      ref
+          .read(settingsProvider.notifier)
+          .update((state) => state = widget.settings);
     });
   }
 
@@ -84,7 +64,7 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final appTheme = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -96,7 +76,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         ),
         useMaterial3: true,
       ),
-      home: SplashScreen(widget.theme),
+      home: SplashScreen(widget.settings.looks),
     );
   }
 }

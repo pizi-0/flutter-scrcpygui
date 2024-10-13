@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
-import 'package:scrcpygui/providers/theme_provider.dart';
 import 'package:scrcpygui/screens/main_screen/ms_desktop.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/widgets/simple_toast/simple_toast_container.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'providers/settings_provider.dart';
 import 'widgets/custom_main_screen_appbar.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
@@ -46,7 +46,7 @@ class _MainScreenState extends ConsumerState<MainScreen> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-    final appTheme = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     ref.watch(pollAdbProvider);
 
     return MaterialApp(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../providers/config_provider.dart';
-import '../../providers/theme_provider.dart';
+import '../../providers/settings_provider.dart';
 import '../../utils/const.dart';
 import '../config_dropdown.dart';
 
@@ -33,7 +33,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(selectedConfigProvider);
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -48,7 +48,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
         Container(
           decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.inversePrimary,
-              borderRadius: BorderRadius.circular(settings.widgetRadius)),
+              borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
           width: appWidth,
           child: Padding(
             padding: const EdgeInsets.all(4.0),

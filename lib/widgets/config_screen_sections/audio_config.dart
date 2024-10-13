@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
-import 'package:scrcpygui/providers/theme_provider.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../../models/scrcpy_related/scrcpy_config.dart';
 import '../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../providers/adb_provider.dart';
 import '../../providers/info_provider.dart';
+import '../../providers/settings_provider.dart';
 import '../../utils/const.dart';
 import '../config_dropdown.dart';
 
@@ -42,7 +42,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(selectedConfigProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     final ScrcpyInfo info = ref
         .watch(infoProvider)
@@ -74,7 +74,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
             Container(
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.inversePrimary,
-                  borderRadius: BorderRadius.circular(settings.widgetRadius)),
+                  borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
               width: appWidth,
               child: Padding(
                 padding: const EdgeInsets.all(4.0),

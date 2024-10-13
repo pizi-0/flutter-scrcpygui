@@ -15,7 +15,7 @@ import 'package:scrcpygui/widgets/disconnect_dialog.dart';
 import 'package:tray_manager/tray_manager.dart' hide MenuItem;
 
 import '../models/adb_devices.dart';
-import '../providers/theme_provider.dart';
+import '../providers/settings_provider.dart';
 import '../providers/toast_providers.dart';
 import '../utils/tray_utils.dart';
 import 'simple_toast/simple_toast_item.dart';
@@ -81,7 +81,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
   Widget build(BuildContext context) {
     super.build(context);
 
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final deviceServers = ref
         .watch(scrcpyInstanceProvider)
@@ -115,7 +115,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                 waitDuration: const Duration(milliseconds: 200),
                 child: ClipRRect(
                   borderRadius:
-                      BorderRadius.circular(settings.widgetRadius * 0.8),
+                      BorderRadius.circular(appTheme.widgetRadius * 0.8),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
@@ -134,7 +134,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                                   .onPrimary
                                   .withOpacity(0.3),
                           borderRadius: BorderRadius.circular(
-                              settings.widgetRadius * 0.8),
+                              appTheme.widgetRadius * 0.8),
                           //   border: Border.all(
                           //     color: Theme.of(context)
                           //         .colorScheme
@@ -204,7 +204,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                         .onPrimary
                         .withOpacity(0.5),
                     borderRadius:
-                        BorderRadius.circular(settings.widgetRadius * 0.8),
+                        BorderRadius.circular(appTheme.widgetRadius * 0.8),
                   ),
                   child: const Center(child: Icon(Icons.timer_rounded)),
                 ),

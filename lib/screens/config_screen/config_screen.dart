@@ -9,7 +9,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/info_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
-import 'package:scrcpygui/providers/theme_provider.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/widgets/config_screen_sections/additional_flags.dart';
 import 'package:scrcpygui/widgets/config_screen_sections/audio_config.dart';
 import 'package:scrcpygui/widgets/config_screen_sections/device_config.dart';
@@ -95,7 +95,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
     final selectedConfig = ref.watch(selectedConfigProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final allConfig = ref.watch(configsProvider);
-    final appTheme = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     final buttonStyle = ButtonStyle(
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(

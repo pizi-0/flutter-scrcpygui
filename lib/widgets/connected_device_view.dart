@@ -18,7 +18,7 @@ import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:tray_manager/tray_manager.dart';
 
-import '../providers/theme_provider.dart';
+import '../providers/settings_provider.dart';
 import '../utils/const.dart';
 import '../utils/tray_utils.dart';
 import 'device_icon.dart';
@@ -69,7 +69,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
   Widget build(BuildContext context) {
     final adbDevices = ref.watch(adbProvider);
     final wirelessHx = ref.watch(wirelessDevicesHistoryProvider);
-    final appTheme = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
@@ -147,7 +147,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
 
   Padding _deviceHxPage(WidgetRef ref, BuildContext context,
       List<AdbDevices> hx, List<AdbDevices> connected) {
-    final appTheme = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -197,7 +197,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
   }
 
   Padding _enterIpPage(WidgetRef ref, BuildContext context) {
-    final appTheme = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return Padding(
       padding: const EdgeInsets.all(4.0),
@@ -272,7 +272,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
 
   AnimatedSwitcher _deviceListPage(
       WidgetRef ref, List<AdbDevices> adbDevices, BuildContext context) {
-    final appTheme = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
@@ -309,7 +309,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
   }
 
   Widget _enterIpTextBox(WidgetRef ref, BuildContext context) {
-    final appTheme = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     final buttonStyle = ButtonStyle(
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
@@ -408,7 +408,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
   }
 
   Future<void> _connect() async {
-    final appTheme = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     setState(() {
       loading = true;

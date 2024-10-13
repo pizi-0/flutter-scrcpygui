@@ -4,7 +4,7 @@ import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
-import '../providers/theme_provider.dart';
+import '../providers/settings_provider.dart';
 import '../utils/const.dart';
 
 class CustomFileName extends ConsumerStatefulWidget {
@@ -26,7 +26,7 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(selectedConfigProvider);
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final style =
         TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer);
 
@@ -49,7 +49,7 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
               height: 60,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.inversePrimary,
-                borderRadius: BorderRadius.circular(settings.widgetRadius),
+                borderRadius: BorderRadius.circular(appTheme.widgetRadius),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(4.0),
@@ -61,7 +61,7 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.onPrimary,
                           borderRadius: BorderRadius.circular(
-                              settings.widgetRadius * 0.8),
+                              appTheme.widgetRadius * 0.8),
                         ),
                         child: Center(
                           child: Padding(

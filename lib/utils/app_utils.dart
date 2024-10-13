@@ -2,8 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/models/app_theme.dart';
-import 'package:scrcpygui/providers/theme_provider.dart';
+import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/providers/toast_providers.dart';
 import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/utils/prefs_key.dart';
@@ -13,6 +12,7 @@ import 'package:window_manager/window_manager.dart';
 import '../providers/adb_provider.dart';
 import '../providers/scrcpy_provider.dart';
 import '../widgets/quit_dialog.dart';
+import 'const.dart';
 
 class AppUtils {
   static Future<Color> getPrimaryColor() async {
@@ -39,20 +39,20 @@ class AppUtils {
     return pidof;
   }
 
-  static Future<void> saveAppTheme(AppTheme apptheme) async {
+  static Future<void> saveAppSettings(AppSettings appSettings) async {
     final prefs = await SharedPreferences.getInstance();
 
-    prefs.setString(PKEY_APPTHEME, apptheme.toJson());
+    prefs.setString(PKEY_APP_SETTINGS, appSettings.toJson());
   }
 
-  static Future<AppTheme> getAppTheme() async {
+  static Future<AppSettings> getAppSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    final jsons = prefs.getString(PKEY_APPTHEME);
+    final jsons = prefs.getString(PKEY_APP_SETTINGS);
 
     if (jsons == null) {
-      return defaultTheme;
+      return defaultSettings;
     } else {
-      return AppTheme.fromJson(jsons);
+      return AppSettings.fromJson(jsons);
     }
   }
 

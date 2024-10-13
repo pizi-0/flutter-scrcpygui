@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
-import 'package:scrcpygui/providers/theme_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/prefs_key.dart';
 
+import '../providers/settings_provider.dart';
 import '../utils/const.dart';
 
 class ClearPreferencesDialog extends ConsumerStatefulWidget {
@@ -20,7 +20,7 @@ class _ClearPreferencesDialogState
     extends ConsumerState<ClearPreferencesDialog> {
   @override
   Widget build(BuildContext context) {
-    final appTheme = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return AlertDialog(
       insetPadding: const EdgeInsets.all(16),
@@ -47,7 +47,8 @@ class _ClearPreferencesDialogState
                 trailing: IconButton(
                   onPressed: () async {
                     await AppUtils.clearSharedPrefs(PKEY_APPTHEME);
-                    ref.read(appThemeProvider.notifier).setTheme(defaultTheme);
+                    ref.read(settingsProvider.notifier).update(
+                        (state) => state = state.copyWith(looks: defaultTheme));
                   },
                   icon: const Icon(Icons.delete),
                 ),

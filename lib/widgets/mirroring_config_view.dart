@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../providers/theme_provider.dart';
+import '../providers/settings_provider.dart';
 import '../utils/const.dart';
 
 class MirroringConfigView extends ConsumerStatefulWidget {
@@ -18,7 +18,7 @@ class _MirroringConfigViewState extends ConsumerState<MirroringConfigView> {
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return Center(
       child: SizedBox(
@@ -39,7 +39,7 @@ class _MirroringConfigViewState extends ConsumerState<MirroringConfigView> {
                 Container(
                   height: 100,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(settings.widgetRadius),
+                    borderRadius: BorderRadius.circular(appTheme.widgetRadius),
                     color: Theme.of(context).colorScheme.secondaryContainer,
                   ),
                   child: const Padding(

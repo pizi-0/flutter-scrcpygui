@@ -7,12 +7,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scrcpygui/models/dependencies.dart';
 import 'package:scrcpygui/providers/dependencies_provider.dart';
-import 'package:scrcpygui/providers/theme_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../main_screen.dart';
+import '../../providers/settings_provider.dart';
 import '../../utils/const.dart';
 
 class InstallScreen extends ConsumerStatefulWidget {
@@ -53,7 +53,7 @@ class _InstallScreenState extends ConsumerState<InstallScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final apptheme = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final dependenciesSatisfied = ref.watch(dependenciesProvider).adb &&
         ref.watch(dependenciesProvider).scrcpy;
 
@@ -62,8 +62,8 @@ class _InstallScreenState extends ConsumerState<InstallScreen> {
       theme: ThemeData(
         fontFamily: GoogleFonts.notoSans().fontFamily,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: apptheme.color,
-          brightness: apptheme.brightness,
+          seedColor: appTheme.color,
+          brightness: appTheme.brightness,
         ),
         useMaterial3: true,
       ),

@@ -7,12 +7,12 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/log_screen/log_screen.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
 
 import '../../models/scrcpy_related/scrcpy_info.dart';
 import '../../providers/info_provider.dart';
-import '../../providers/theme_provider.dart';
 import '../../utils/const.dart';
 import '../../utils/scrcpy_utils.dart';
 
@@ -55,7 +55,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final runningInstance = ref.watch(scrcpyInstanceProvider);
     final testInstance = ref.watch(testInstanceProvider);
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     final bool isTestRunning = runningInstance.contains(testInstance);
 
@@ -76,7 +76,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
         Container(
           decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.inversePrimary,
-              borderRadius: BorderRadius.circular(settings.widgetRadius)),
+              borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
           width: appWidth,
           child: Padding(
             padding: const EdgeInsets.all(4.0),
@@ -93,7 +93,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.onPrimary,
                     borderRadius:
-                        BorderRadius.circular(settings.widgetRadius * 0.8),
+                        BorderRadius.circular(appTheme.widgetRadius * 0.8),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -112,7 +112,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                               !isTestRunning ? Colors.green : Colors.red),
                           shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(
-                                  settings.widgetRadius * 0.8))),
+                                  appTheme.widgetRadius * 0.8))),
                         ),
                         onPressed: () async {
                           if (!isTestRunning) {

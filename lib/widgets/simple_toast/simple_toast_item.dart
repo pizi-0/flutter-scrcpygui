@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/toast_providers.dart';
 
-import '../../providers/theme_provider.dart';
+import '../../providers/settings_provider.dart';
 import '../../utils/const.dart';
 
 class SimpleToastItem extends ConsumerStatefulWidget {
@@ -87,7 +87,7 @@ class _SimpleToastItemState extends ConsumerState<SimpleToastItem>
 
   @override
   Widget build(BuildContext context) {
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return FadeInDown(
       duration: 300.milliseconds,
@@ -110,7 +110,7 @@ class _SimpleToastItemState extends ConsumerState<SimpleToastItem>
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
                     borderRadius:
-                        BorderRadius.circular(settings.widgetRadius * 0.8),
+                        BorderRadius.circular(appTheme.widgetRadius * 0.8),
                     border: Border.all(color: _toastColor(), width: 2)),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

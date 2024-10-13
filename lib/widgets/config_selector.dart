@@ -12,7 +12,7 @@ import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/widgets/section_button.dart';
 
 import '../models/scrcpy_related/scrcpy_config.dart';
-import '../providers/theme_provider.dart';
+import '../providers/settings_provider.dart';
 import '../utils/const.dart';
 import 'config_visualizer.dart';
 import 'custom_filename_input.dart';
@@ -35,7 +35,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
   Widget build(BuildContext context) {
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final allConfigs = ref.watch(configsProvider);
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
@@ -55,7 +55,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
                   height: 60,
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.inversePrimary,
-                    borderRadius: BorderRadius.circular(settings.widgetRadius),
+                    borderRadius: BorderRadius.circular(appTheme.widgetRadius),
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(4.0),
@@ -80,7 +80,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
 
   CustomDropdown<ScrcpyConfig> _buildDropdown(
       WidgetRef ref, BuildContext context, List<ScrcpyConfig> allConfigs) {
-    final settings = ref.watch(appThemeProvider);
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return CustomDropdown.search(
       //decoration
@@ -89,8 +89,8 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
           fillColor: Theme.of(context).colorScheme.inversePrimary,
         ),
         expandedBorderRadius:
-            BorderRadius.circular(settings.widgetRadius * 0.8),
-        closedBorderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
+            BorderRadius.circular(appTheme.widgetRadius * 0.8),
+        closedBorderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
         // expandedBorder: Border.all(
         //     color: Theme.of(context).colorScheme.inversePrimary, width: 5),
         listItemDecoration: ListItemDecoration(
