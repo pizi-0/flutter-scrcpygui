@@ -60,8 +60,8 @@ class TrayUtils {
             return MenuItem.submenu(
               key: d.id,
               label: d.id.contains(':')
-                  ? '${device.name ?? device.id} (WiFi)'
-                  : '${device.name ?? device.id} (USB)',
+                  ? '${device.name?.toUpperCase() ?? device.id} (WiFi)'
+                  : '${device.name?.toUpperCase() ?? device.id} (USB)',
               sublabel: 'Config',
               submenu: Menu(
                 items: configs
