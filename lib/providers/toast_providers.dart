@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 
 class ToastNotifier extends Notifier<List<SimpleToastItem>> {
@@ -8,7 +9,7 @@ class ToastNotifier extends Notifier<List<SimpleToastItem>> {
   }
 
   addToast(SimpleToastItem item) {
-    if (ref.read(toastEnabledProvider)) {
+    if (ref.read(settingsProvider.select((s) => s.behaviour.toastEnabled))) {
       if (state.length >= 5) {
         var newList = state;
 
@@ -34,5 +35,3 @@ class ToastNotifier extends Notifier<List<SimpleToastItem>> {
 
 final toastProvider = NotifierProvider<ToastNotifier, List<SimpleToastItem>>(
     () => ToastNotifier());
-
-final toastEnabledProvider = StateProvider<bool>((ref) => true);

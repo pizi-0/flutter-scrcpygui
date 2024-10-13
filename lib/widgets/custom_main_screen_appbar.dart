@@ -6,7 +6,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:scrcpygui/providers/toast_providers.dart';
 import 'package:scrcpygui/screens/settings_screen/settings_screen.dart';
 import 'package:scrcpygui/utils/tray_utils.dart';
 import 'package:window_manager/window_manager.dart';
@@ -63,6 +62,8 @@ class _CustomAppbarState extends ConsumerState<CustomAppbar> {
   Widget build(BuildContext context) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
+    final appBehaviour = ref.watch(settingsProvider.select((s) => s.behaviour));
+
     final buttonStyle = ButtonStyle(
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
@@ -91,20 +92,26 @@ class _CustomAppbarState extends ConsumerState<CustomAppbar> {
         const Expanded(child: DragToMoveArea(child: SizedBox.expand())),
         IconButton(
           style: buttonStyle,
-          tooltip: ref.watch(toastEnabledProvider)
+          tooltip: appBehaviour.toastEnabled
               ? 'Disable notification popup'
               : 'Enable notification popup',
           onPressed: () {
-            ref
-                .read(toastEnabledProvider.notifier)
-                .update((state) => state = !state);
-            AppUtils.saveNotiPreference(ref);
+            final currentToastSettings = appBehaviour.toastEnabled;
+
+            ref.read(settingsProvider.notifier).update((state) => state =
+                state.copyWith(
+                    behaviour: appBehaviour.copyWith(
+                        toastEnabled: !currentToastSettings)));
+
+            final newSettings = ref.read(settingsProvider);
+
+            AppUtils.saveAppSettings(newSettings);
           },
           icon: Icon(
-            ref.watch(toastEnabledProvider)
+            appBehaviour.toastEnabled
                 ? Icons.notifications_rounded
                 : Icons.notifications_off_rounded,
-            color: ref.watch(toastEnabledProvider) ? Colors.green : Colors.red,
+            color: appBehaviour.toastEnabled ? Colors.green : Colors.red,
           ),
         ),
         IconButton(

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/settings_model/app_settings.dart';
-import 'package:scrcpygui/providers/toast_providers.dart';
 import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/utils/prefs_key.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -54,18 +53,6 @@ class AppUtils {
     } else {
       return AppSettings.fromJson(jsons);
     }
-  }
-
-  static Future<void> saveNotiPreference(WidgetRef ref) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    await prefs.setBool(PKEY_NOTI, ref.read(toastEnabledProvider));
-  }
-
-  static Future<bool> getNotiPreference() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    return prefs.getBool(PKEY_NOTI) ?? true;
   }
 
   static Future<void> onAppCloseRequested(

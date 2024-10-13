@@ -10,7 +10,6 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/dependencies_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
-import 'package:scrcpygui/providers/toast_providers.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
@@ -59,9 +58,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         .update((state) => state = state.copyWith(adb: adb, scrcpy: scrcpy));
 
     if (adb && scrcpy) {
-      var toastEnabled = await AppUtils.getNotiPreference();
-      ref.read(toastEnabledProvider.notifier).state = toastEnabled;
-
       var savedDevices = await AdbUtils.getSavedAdbDevice();
       ref
           .read(savedAdbDevicesProvider.notifier)

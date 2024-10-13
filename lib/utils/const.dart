@@ -154,6 +154,7 @@ final defaultTheme = AppTheme(
 final defaultAppBehaviour = AppBehaviour(
   killNoWindowInstance: true,
   traySupport: true,
+  toastEnabled: true,
 );
 
 final defaultSettings = AppSettings(
