@@ -38,7 +38,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
   Widget build(BuildContext context) {
     TextStyle? style = Theme.of(context).textTheme.titleSmall;
     final runningInstance = ref.watch(scrcpyInstanceProvider);
-    final wifiDevices = ref.watch(adbProvider).where((e) => e.id.contains(':'));
+    final wifiDevices =
+        ref.watch(adbProvider).where((e) => e.id.contains(':')).toList();
     final settings = ref.watch(appThemeProvider);
     final buttonStyle = ButtonStyle(
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
@@ -94,11 +95,16 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                             BorderRadius.circular(settings.widgetRadius * 0.8),
                       ),
                       child: ListTile(
+                        onTap: () {
+                          setState(() {
+                            instance = !instance;
+                          });
+                        },
                         trailing: Checkbox(
                             value: instance,
                             onChanged: (v) {
                               setState(() {
-                                instance = v!;
+                                instance = !instance;
                               });
                             }),
                         title: Text(
@@ -118,11 +124,16 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                             BorderRadius.circular(settings.widgetRadius * 0.8),
                       ),
                       child: ListTile(
+                        onTap: () {
+                          setState(() {
+                            wifi = !wifi;
+                          });
+                        },
                         trailing: Checkbox(
                             value: wifi,
                             onChanged: (v) {
                               setState(() {
-                                wifi = v!;
+                                wifi = !wifi;
                               });
                             }),
                         title: Text(
@@ -142,29 +153,17 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Checkbox(
-                    tristate: true,
-                    value: wifi && instance
-                        ? true
-                        : wifi
-                            ? null
-                            : instance
-                                ? null
-                                : false,
-                    onChanged: (v) {
-                      if (wifi && instance) {
-                        wifi = false;
-                        instance = false;
-                      } else {
-                        wifi = true;
-                        instance = true;
-                      }
-
-                      setState(() {});
-                    },
-                  ),
-                  InkWell(
-                      onTap: () {
+                  if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
+                    Checkbox(
+                      tristate: true,
+                      value: wifi && instance
+                          ? true
+                          : wifi
+                              ? null
+                              : instance
+                                  ? null
+                                  : false,
+                      onChanged: (v) {
                         if (wifi && instance) {
                           wifi = false;
                           instance = false;
@@ -175,7 +174,21 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
 
                         setState(() {});
                       },
-                      child: const Text('Select all')),
+                    ),
+                  if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
+                    InkWell(
+                        onTap: () {
+                          if (wifi && instance) {
+                            wifi = false;
+                            instance = false;
+                          } else {
+                            wifi = true;
+                            instance = true;
+                          }
+
+                          setState(() {});
+                        },
+                        child: const Text('Select all')),
                   const Spacer(),
                   TextButton(
                     style: buttonStyle,
