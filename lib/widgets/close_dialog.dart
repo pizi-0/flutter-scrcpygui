@@ -114,21 +114,27 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                   ? null
                   : (value) async {
                       final selectedConfig = ref.read(newOrEditConfigProvider)!;
+
                       var currentConfig = selectedConfig;
+
                       currentConfig = currentConfig.copyWith(
                           configName: nameController.text);
-                      final allConfigs = ref.read(configsProvider);
-                      final toRemove = allConfigs
-                          .firstWhere((e) => e.id == currentConfig.id);
 
                       if (nameExist) {
+                        final allConfigs = ref.read(configsProvider);
+                        final toRemove = allConfigs
+                            .firstWhere((e) => e.id == currentConfig.id);
                         ref
                             .read(configsProvider.notifier)
                             .overwriteConfig(toRemove, currentConfig);
                       } else {
+                        final allConfigs = ref.read(configsProvider);
+
                         if (allConfigs
                             .where((c) => c.id == currentConfig.id)
                             .isNotEmpty) {
+                          final toRemove = allConfigs
+                              .firstWhere((e) => e.id == currentConfig.id);
                           ref
                               .read(configsProvider.notifier)
                               .overwriteConfig(toRemove, currentConfig);
@@ -187,21 +193,28 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                   ? null
                   : () async {
                       final selectedConfig = ref.read(newOrEditConfigProvider)!;
+
                       var currentConfig = selectedConfig;
+
                       currentConfig = currentConfig.copyWith(
                           configName: nameController.text);
-                      final allConfigs = ref.read(configsProvider);
-                      final toRemove = allConfigs
-                          .firstWhere((e) => e.id == currentConfig.id);
 
                       if (nameExist) {
+                        final allConfigs = ref.read(configsProvider);
+                        final toRemove = allConfigs
+                            .firstWhere((e) => e.id == currentConfig.id);
                         ref
                             .read(configsProvider.notifier)
                             .overwriteConfig(toRemove, currentConfig);
                       } else {
+                        final allConfigs = ref.read(configsProvider);
+
                         if (allConfigs
                             .where((c) => c.id == currentConfig.id)
                             .isNotEmpty) {
+                          final allConfigs = ref.read(configsProvider);
+                          final toRemove = allConfigs
+                              .firstWhere((e) => e.id == currentConfig.id);
                           ref
                               .read(configsProvider.notifier)
                               .overwriteConfig(toRemove, currentConfig);
