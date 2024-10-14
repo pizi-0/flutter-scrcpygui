@@ -129,9 +129,8 @@ class ScrcpyUtils {
         (d) => d.serialNo == selectedDevice!.serialNo,
         orElse: () => selectedDevice!);
     List<String> comm = [];
-    String customName = customInstanceName == ''
-        ? '[${d.name?.toUpperCase() ?? d.id}] ${selectedConfig.configName}'
-        : customInstanceName;
+    String customName =
+        '[${d.name?.toUpperCase() ?? d.id}] ${customInstanceName == '' ? selectedConfig.configName : customInstanceName}';
 
     if (runningInstance.where((r) => r.instanceName == customName).isNotEmpty) {
       for (int i = 1; i < 100; i++) {

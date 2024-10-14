@@ -7,17 +7,11 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info.dart';
 import 'package:string_extensions/string_extensions.dart';
 
-import '../providers/adb_provider.dart';
-
 class ScrcpyCommand {
   static List<String> buildCommand(
       WidgetRef ref, ScrcpyConfig config, ScrcpyInfo info, AdbDevices device,
       {String? customName}) {
     String command = '';
-
-    final d = ref
-        .watch(savedAdbDevicesProvider)
-        .firstWhere((d) => d.serialNo == device.serialNo, orElse: () => device);
 
     command = command
             .append('-s ${device.id}')
@@ -45,9 +39,8 @@ class ScrcpyCommand {
     // recording, savepath, video/audio format
     var comm = command.split(' ') +
         [
-          "--window-title='[${d.name?.toUpperCase() ?? d.id}] ${customName ?? config.configName}'",
-          _recordingFormat(config,
-              '[${d.name?.toUpperCase() ?? d.id}] ${customName ?? config.configName}'),
+          "--window-title='${customName ?? config.configName}'",
+          _recordingFormat(config, customName ?? config.configName),
           config.additionalFlags,
         ];
 

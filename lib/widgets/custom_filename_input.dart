@@ -41,9 +41,15 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: selectedConfig.isRecording
-                  ? Text('File name / window title: (default: {configname})',
+                  ? Text(
+                      'File name / window title: (default: [device] configname)',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: style)
-                  : Text('Window title: (default: {configname})', style: style),
+                  : Text('Window title: (default: [device] configname)',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: style),
             ),
             Container(
               height: 60,
