@@ -51,7 +51,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedConfig = ref.watch(selectedConfigProvider);
+    final selectedConfig = ref.watch(newConfigProvider)!;
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final runningInstance = ref.watch(scrcpyInstanceProvider);
     final testInstance = ref.watch(testInstanceProvider);

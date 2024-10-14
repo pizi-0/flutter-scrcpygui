@@ -48,7 +48,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
 
   _handleOnClose() async {
     final allConfigs = ref.read(configsProvider);
-    final selectedConfig = ref.read(selectedConfigProvider);
+    final selectedConfig = ref.read(newConfigProvider);
     final testInstance = ref.read(testInstanceProvider);
     final appPID = ref.read(appPidProvider);
 
@@ -81,7 +81,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedConfig = ref.watch(selectedConfigProvider);
+    final selectedConfig = ref.watch(newConfigProvider)!;
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final allConfig = ref.watch(configsProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));

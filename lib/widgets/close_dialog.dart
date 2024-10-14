@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
@@ -25,7 +27,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
 
   @override
   void initState() {
-    final selectedConfig = ref.read(selectedConfigProvider);
+    final selectedConfig = ref.read(newConfigProvider)!;
     final allConfigs = ref.read(configsProvider);
 
     nameController = TextEditingController(
@@ -47,7 +49,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedConfig = ref.watch(selectedConfigProvider);
+    final selectedConfig = ref.watch(newConfigProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
@@ -74,13 +76,9 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
               style: TextStyle(color: Colors.red),
             )
           : nameExist
-              ? Text(
-                  ref.watch(configToEditProvider) == null
-                      ? 'Overwrite?'
-                      : 'Save changes?',
-                  style: ref.watch(configToEditProvider) == null
-                      ? const TextStyle(color: Colors.red)
-                      : const TextStyle(color: Colors.green),
+              ? const Text(
+                  'Overwrite?',
+                  style: TextStyle(color: Colors.red),
                 )
               : const Text('Save?'),
       content: ConstrainedBox(
@@ -102,7 +100,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                 padding: const EdgeInsets.all(20.0),
                 child: Center(
                   child: SelectableText(
-                      'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, info, selectedDevice!, customName: nameController.text).toString().replaceAll(',', '').replaceAll('[', '').replaceAll(']', '')}'),
+                      'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig!, info, selectedDevice!, customName: nameController.text).toString().replaceAll(',', '').replaceAll('[', '').replaceAll(']', '')}'),
                 ),
               ),
             ),
@@ -114,33 +112,33 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
               ),
               onSubmitted: notAllowed
                   ? null
-                  : (value) {
-                      final selectedConfig = ref.read(selectedConfigProvider);
-                      final toEdit = ref.read(configToEditProvider);
-
+                  : (value) async {
+                      final selectedConfig = ref.read(newConfigProvider)!;
                       var currentConfig = selectedConfig;
-
                       currentConfig = currentConfig.copyWith(
                           configName: nameController.text);
+                      final allConfigs = ref.read(configsProvider);
+                      final toRemove = allConfigs
+                          .firstWhere((e) => e.id == currentConfig.id);
 
                       if (nameExist) {
-                        if (toEdit != null) {
-                          ref
-                              .read(configsProvider.notifier)
-                              .overwriteConfig(toEdit, currentConfig);
-                        } else {
-                          final allConfigs = ref.read(configsProvider);
-                          final toRemove = allConfigs.firstWhere(
-                              (e) => e.configName == nameController.text);
+                        ref
+                            .read(configsProvider.notifier)
+                            .overwriteConfig(toRemove, currentConfig);
+                      } else {
+                        if (allConfigs
+                            .where((c) => c.id == currentConfig.id)
+                            .isNotEmpty) {
                           ref
                               .read(configsProvider.notifier)
                               .overwriteConfig(toRemove, currentConfig);
+                        } else {
+                          ref
+                              .read(configsProvider.notifier)
+                              .addConfig(currentConfig);
                         }
-                      } else {
-                        ref
-                            .read(configsProvider.notifier)
-                            .addConfig(currentConfig);
                       }
+
                       ref.read(selectedConfigProvider.notifier).state =
                           currentConfig;
 
@@ -149,7 +147,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                           .where((e) => !defaultConfigs.contains(e))
                           .toList();
 
-                      ScrcpyUtils.saveConfigs(ref, context, toSave);
+                      await ScrcpyUtils.saveConfigs(ref, context, toSave);
 
                       Navigator.pop(context, true);
                     },
@@ -173,13 +171,11 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
           children: [
             TextButton(
               onPressed: () {
-                final toEdit = ref.read(configToEditProvider);
-                if (toEdit != null) {
-                  ref.read(selectedConfigProvider.notifier).state = toEdit;
-                } else {
-                  ref.read(selectedConfigProvider.notifier).state =
-                      defaultMirror;
-                }
+                final allConfigs = ref.read(configsProvider);
+
+                ref.read(selectedConfigProvider.notifier).state =
+                    allConfigs.firstWhere((c) => c.id == selectedConfig.id,
+                        orElse: () => defaultMirror);
 
                 Navigator.pop(context, true);
               },
@@ -189,33 +185,33 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
             TextButton(
               onPressed: notAllowed || nameController.text.isEmpty
                   ? null
-                  : () {
-                      final selectedConfig = ref.read(selectedConfigProvider);
-                      final toEdit = ref.read(configToEditProvider);
-
+                  : () async {
+                      final selectedConfig = ref.read(newConfigProvider)!;
                       var currentConfig = selectedConfig;
-
                       currentConfig = currentConfig.copyWith(
                           configName: nameController.text);
+                      final allConfigs = ref.read(configsProvider);
+                      final toRemove = allConfigs
+                          .firstWhere((e) => e.id == currentConfig.id);
 
                       if (nameExist) {
-                        if (toEdit != null) {
-                          ref
-                              .read(configsProvider.notifier)
-                              .overwriteConfig(toEdit, currentConfig);
-                        } else {
-                          final allConfigs = ref.read(configsProvider);
-                          final toRemove = allConfigs.firstWhere(
-                              (e) => e.configName == nameController.text);
+                        ref
+                            .read(configsProvider.notifier)
+                            .overwriteConfig(toRemove, currentConfig);
+                      } else {
+                        if (allConfigs
+                            .where((c) => c.id == currentConfig.id)
+                            .isNotEmpty) {
                           ref
                               .read(configsProvider.notifier)
                               .overwriteConfig(toRemove, currentConfig);
+                        } else {
+                          ref
+                              .read(configsProvider.notifier)
+                              .addConfig(currentConfig);
                         }
-                      } else {
-                        ref
-                            .read(configsProvider.notifier)
-                            .addConfig(currentConfig);
                       }
+
                       ref.read(selectedConfigProvider.notifier).state =
                           currentConfig;
 
@@ -224,7 +220,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                           .where((e) => !defaultConfigs.contains(e))
                           .toList();
 
-                      ScrcpyUtils.saveConfigs(ref, context, toSave);
+                      await ScrcpyUtils.saveConfigs(ref, context, toSave);
 
                       Navigator.pop(context, true);
                     },

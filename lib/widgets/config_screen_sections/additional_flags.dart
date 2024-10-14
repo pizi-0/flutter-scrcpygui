@@ -20,7 +20,7 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
 
   @override
   void initState() {
-    final config = ref.read(selectedConfigProvider);
+    final config = ref.read(newConfigProvider)!;
     add.text = config.additionalFlags;
     super.initState();
   }
@@ -84,9 +84,8 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
                             .map((e) => FilteringTextInputFormatter.deny(e))
                       ],
                       onChanged: (val) {
-                        ref.read(selectedConfigProvider.notifier).update(
-                            (state) =>
-                                state = state.copyWith(additionalFlags: val));
+                        ref.read(newConfigProvider.notifier).update((state) =>
+                            state = state!.copyWith(additionalFlags: val));
                       },
                     ),
                   ),

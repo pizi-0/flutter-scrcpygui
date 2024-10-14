@@ -24,7 +24,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
 
   @override
   void initState() {
-    final selectedConfig = ref.read(selectedConfigProvider);
+    final selectedConfig = ref.read(newConfigProvider)!;
 
     audioBitrateController = TextEditingController(
         text: selectedConfig.audioOptions.audioBitrate.toString());
@@ -40,7 +40,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedConfig = ref.watch(selectedConfigProvider);
+    final selectedConfig = ref.watch(newConfigProvider)!;
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
@@ -106,19 +106,19 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
       onSelected: (info.buildVersion.toInt() ?? 0) < 13
           ? null
           : (value) {
-              ref.read(selectedConfigProvider.notifier).update((state) =>
-                  state = state.copyWith(
+              ref.read(newConfigProvider.notifier).update((state) => state =
+                  state!.copyWith(
                       audioOptions:
                           state.audioOptions.copyWith(duplicateAudio: value)));
 
               if (value == true) {
-                ref.read(selectedConfigProvider.notifier).update((state) =>
-                    state = state.copyWith(
+                ref.read(newConfigProvider.notifier).update((state) => state =
+                    state!.copyWith(
                         audioOptions: state.audioOptions
                             .copyWith(audioSource: AudioSource.playback)));
               } else {
-                ref.read(selectedConfigProvider.notifier).update((state) =>
-                    state.copyWith(
+                ref.read(newConfigProvider.notifier).update((state) => state!
+                    .copyWith(
                         audioOptions: state.audioOptions
                             .copyWith(audioSource: AudioSource.output)));
               }
@@ -151,8 +151,8 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
       onSelected: selectedConfig.audioOptions.duplicateAudio
           ? null
           : (value) {
-              ref.read(selectedConfigProvider.notifier).update((state) =>
-                  state = state.copyWith(
+              ref.read(newConfigProvider.notifier).update((state) => state =
+                  state!.copyWith(
                       audioOptions:
                           state.audioOptions.copyWith(audioSource: value)));
             },
@@ -177,8 +177,8 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
               onSelected: _isNotRecordingAudioOnly(selectedConfig)
                   ? null
                   : (value) {
-                      ref.read(selectedConfigProvider.notifier).update(
-                          (state) => state = state.copyWith(
+                      ref.read(newConfigProvider.notifier).update((state) =>
+                          state = state!.copyWith(
                               audioOptions: state.audioOptions.copyWith(
                                   audioCodec: value, audioEncoder: 'default')));
                     },
@@ -196,8 +196,8 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
             ConfigDropdownOthers(
               initialValue: selectedConfig.audioOptions.audioEncoder,
               onSelected: (value) {
-                ref.read(selectedConfigProvider.notifier).update((state) =>
-                    state = state.copyWith(
+                ref.read(newConfigProvider.notifier).update((state) => state =
+                    state!.copyWith(
                         audioOptions:
                             state.audioOptions.copyWith(audioEncoder: value)));
               },
@@ -210,10 +210,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
                   ...info.audioEncoder
                       .firstWhere((ae) =>
                           ae.codec ==
-                          ref
-                              .read(selectedConfigProvider)
-                              .audioOptions
-                              .audioCodec)
+                          ref.read(newConfigProvider)!.audioOptions.audioCodec)
                       .encoder
                       .map(
                         (enc) => DropdownMenuItem(
@@ -269,36 +266,36 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
 
   _onFormatSelected(AudioFormat? value) {
     if (value == AudioFormat.wav) {
-      ref.read(selectedConfigProvider.notifier).update((state) => state =
-          state.copyWith(
+      ref.read(newConfigProvider.notifier).update((state) => state = state!
+          .copyWith(
               audioOptions: state.audioOptions.copyWith(audioCodec: 'raw')));
     }
 
     if (value == AudioFormat.flac) {
-      ref.read(selectedConfigProvider.notifier).update((state) => state =
-          state.copyWith(
+      ref.read(newConfigProvider.notifier).update((state) => state = state!
+          .copyWith(
               audioOptions: state.audioOptions.copyWith(audioCodec: 'flac')));
     }
 
     if (value == AudioFormat.aac) {
-      ref.read(selectedConfigProvider.notifier).update((state) => state =
-          state.copyWith(
+      ref.read(newConfigProvider.notifier).update((state) => state = state!
+          .copyWith(
               audioOptions: state.audioOptions.copyWith(audioCodec: 'aac')));
     }
 
     if (value == AudioFormat.opus) {
-      ref.read(selectedConfigProvider.notifier).update((state) => state =
-          state.copyWith(
+      ref.read(newConfigProvider.notifier).update((state) => state = state!
+          .copyWith(
               audioOptions: state.audioOptions.copyWith(audioCodec: 'opus')));
     }
 
     if (value == AudioFormat.m4a) {
-      ref.read(selectedConfigProvider.notifier).update((state) => state =
-          state.copyWith(
+      ref.read(newConfigProvider.notifier).update((state) => state = state!
+          .copyWith(
               audioOptions: state.audioOptions.copyWith(audioCodec: 'opus')));
     }
 
-    ref.read(selectedConfigProvider.notifier).update((state) => state.copyWith(
+    ref.read(newConfigProvider.notifier).update((state) => state!.copyWith(
         audioOptions: state.audioOptions.copyWith(audioFormat: value)));
   }
 
@@ -309,15 +306,15 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
       unit: 'K',
       onChanged: (value) {
         if (value.isEmpty) {
-          ref.read(selectedConfigProvider.notifier).update((state) => state =
-              state.copyWith(
+          ref.read(newConfigProvider.notifier).update((state) => state = state!
+              .copyWith(
                   audioOptions:
                       state.audioOptions.copyWith(audioBitrate: 128)));
           audioBitrateController.text = '128';
           setState(() {});
         } else {
-          ref.read(selectedConfigProvider.notifier).update((state) => state =
-              state.copyWith(
+          ref.read(newConfigProvider.notifier).update((state) => state = state!
+              .copyWith(
                   audioOptions: state.audioOptions
                       .copyWith(audioBitrate: int.parse(value))));
         }
