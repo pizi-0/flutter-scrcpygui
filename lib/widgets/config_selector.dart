@@ -10,6 +10,7 @@ import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/widgets/section_button.dart';
+import 'package:uuid/uuid.dart';
 
 import '../models/scrcpy_related/scrcpy_config.dart';
 import '../providers/settings_provider.dart';
@@ -143,6 +144,12 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
         ref.read(selectedConfigProvider.notifier).state = config!;
 
         if (config == newConfig) {
+          final id = const Uuid().v1();
+          ref.read(newConfigProvider.notifier).state = newConfig.copyWith(
+            id: id,
+            configName: 'My config',
+          );
+
           Navigator.push(
             context,
             PageTransition(
@@ -158,6 +165,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
   Row _sectionTitle(BuildContext context, List<ScrcpyConfig> allConfigs,
       AdbDevices? selectedDevice) {
     final selectedConfig = ref.watch(selectedConfigProvider);
+
     return Row(
       children: [
         Padding(
@@ -192,16 +200,15 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
                       }
 
                       if (proceed == true) {
+                        ref.read(newConfigProvider.notifier).state =
+                            selectedConfig;
+
                         Navigator.push(
                           context,
                           PageTransition(
                             child: const ConfigScreen(),
                             type: PageTransitionType.rightToLeft,
                           ),
-                        ).then(
-                          (value) => ref
-                              .read(configToEditProvider.notifier)
-                              .state = null,
                         );
                       }
                     }
