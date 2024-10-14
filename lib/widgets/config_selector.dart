@@ -220,7 +220,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
               ontap: !defaultConfigs.contains(selectedConfig)
                   ? () async {
                       final savedLastUsed =
-                          await ScrcpyUtils.getLastUsedConfig();
+                          await ScrcpyUtils.getLastUsedConfig(ref);
                       final lastused = ref.read(selectedConfigProvider);
                       ref
                           .read(configsProvider.notifier)
@@ -229,7 +229,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
                       ref.read(selectedConfigProvider.notifier).state =
                           defaultMirror;
 
-                      if (lastused == savedLastUsed) {
+                      if (lastused.id == savedLastUsed.id) {
                         await ScrcpyUtils.saveLastUsedConfig(defaultMirror);
                       }
 

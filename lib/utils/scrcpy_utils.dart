@@ -61,15 +61,18 @@ class ScrcpyUtils {
   static Future<void> saveLastUsedConfig(ScrcpyConfig config) async {
     final prefs = await SharedPreferences.getInstance();
 
-    prefs.setString(PKEY_LASTUSED_CONFIG, config.toJson());
+    prefs.setString(PKEY_LASTUSED_CONFIG, config.id);
   }
 
-  static Future<ScrcpyConfig> getLastUsedConfig() async {
+  static Future<ScrcpyConfig> getLastUsedConfig(WidgetRef ref) async {
     final prefs = await SharedPreferences.getInstance();
+    final allConfig = ref.read(configsProvider);
 
-    final res = prefs.getString(PKEY_LASTUSED_CONFIG) ?? defaultMirror.toJson();
+    final res = prefs.getString(PKEY_LASTUSED_CONFIG) ?? defaultMirror.id;
 
-    return ScrcpyConfig.fromJson(res);
+    final lastUsed = allConfig.firstWhere((c) => c.id == res);
+
+    return lastUsed;
   }
 
   static Future<void> saveConfigs(

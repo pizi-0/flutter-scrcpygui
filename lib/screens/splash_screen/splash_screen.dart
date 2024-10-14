@@ -78,7 +78,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           .update((state) => wirelessHistory);
 
       ref.read(selectedConfigProvider.notifier).state =
-          await ScrcpyUtils.getLastUsedConfig();
+          await ScrcpyUtils.getLastUsedConfig(ref);
 
       final pid = await AppUtils.getAppPid();
 
