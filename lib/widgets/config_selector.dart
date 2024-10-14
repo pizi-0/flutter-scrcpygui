@@ -145,7 +145,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
 
         if (config == newConfig) {
           final id = const Uuid().v1();
-          ref.read(newConfigProvider.notifier).state = newConfig.copyWith(
+          ref.read(newOrEditConfigProvider.notifier).state = newConfig.copyWith(
             id: id,
             configName: 'My config',
           );
@@ -200,7 +200,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
                       }
 
                       if (proceed == true) {
-                        ref.read(newConfigProvider.notifier).state =
+                        ref.read(newOrEditConfigProvider.notifier).state =
                             selectedConfig;
 
                         Navigator.push(

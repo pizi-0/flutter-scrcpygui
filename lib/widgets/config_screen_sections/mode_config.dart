@@ -22,7 +22,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedConfig = ref.watch(newConfigProvider)!;
+    final selectedConfig = ref.watch(newOrEditConfigProvider)!;
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return Column(
@@ -82,7 +82,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
                 onSelected: (value) {
                   bool isRecording = value == MainMode.record;
 
-                  ref.read(newConfigProvider.notifier).update((state) =>
+                  ref.read(newOrEditConfigProvider.notifier).update((state) =>
                       state = state!.copyWith(isRecording: isRecording));
 
                   modeLabel = value!.value;
@@ -109,7 +109,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
                               await FilePicker.platform.getDirectoryPath();
 
                           if (res != null) {
-                            ref.read(newConfigProvider.notifier).update(
+                            ref.read(newOrEditConfigProvider.notifier).update(
                                 (state) =>
                                     state = state!.copyWith(savePath: res));
                           }
@@ -160,7 +160,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
       initialValue: selectedConfig.scrcpyMode,
       onSelected: (value) {
         ref
-            .read(newConfigProvider.notifier)
+            .read(newOrEditConfigProvider.notifier)
             .update((state) => state = state!.copyWith(scrcpyMode: value));
 
         final def = selectedConfig.isRecording ? defaultRecord : defaultMirror;
@@ -169,7 +169,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
           final audioFormat = _audioFormat(selectedConfig);
 
           ref
-              .read(newConfigProvider.notifier)
+              .read(newOrEditConfigProvider.notifier)
               .update((state) => state = state!.copyWith(
                   videoOptions: def.videoOptions,
                   audioOptions: SAudioOptions(
@@ -184,7 +184,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
 
         if (value == ScrcpyMode.videoOnly) {
           ref
-              .read(newConfigProvider.notifier)
+              .read(newOrEditConfigProvider.notifier)
               .update((state) => state = state!.copyWith(
                     videoOptions: selectedConfig.videoOptions,
                     audioOptions: SAudioOptions(

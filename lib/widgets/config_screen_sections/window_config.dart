@@ -18,7 +18,8 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
 
   @override
   void initState() {
-    final timeLimit = ref.read(newConfigProvider)!.windowOptions.timeLimit;
+    final timeLimit =
+        ref.read(newOrEditConfigProvider)!.windowOptions.timeLimit;
     timeLimitController = TextEditingController(
         text: timeLimit == 0 ? '-' : timeLimit.toString());
     super.initState();
@@ -32,7 +33,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedConfig = ref.watch(newConfigProvider)!;
+    final selectedConfig = ref.watch(newOrEditConfigProvider)!;
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     return Column(
@@ -63,17 +64,18 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
                       value: selectedConfig.windowOptions.noWindow,
                       onChanged: (value) {
                         if (value!) {
-                          ref.read(newConfigProvider.notifier).update((state) =>
-                              state = state!.copyWith(
-                                  deviceOptions: state.deviceOptions.copyWith(
-                                stayAwake: false,
-                                showTouches: false,
-                                offScreenOnClose: false,
-                                turnOffDisplay: false,
-                              )));
+                          ref.read(newOrEditConfigProvider.notifier).update(
+                              (state) => state = state!.copyWith(
+                                      deviceOptions:
+                                          state.deviceOptions.copyWith(
+                                    stayAwake: false,
+                                    showTouches: false,
+                                    offScreenOnClose: false,
+                                    turnOffDisplay: false,
+                                  )));
                         }
 
-                        ref.read(newConfigProvider.notifier).update(
+                        ref.read(newOrEditConfigProvider.notifier).update(
                               (state) => state = state!.copyWith(
                                   windowOptions: state.windowOptions
                                       .copyWith(noWindow: value)),
@@ -87,7 +89,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
                   child: Checkbox(
                     value: selectedConfig.windowOptions.noBorder,
                     onChanged: (value) =>
-                        ref.read(newConfigProvider.notifier).update(
+                        ref.read(newOrEditConfigProvider.notifier).update(
                               (state) => state = state!.copyWith(
                                   windowOptions: state.windowOptions
                                       .copyWith(noBorder: value)),
@@ -101,7 +103,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
                   child: Checkbox(
                     value: selectedConfig.windowOptions.alwaysOntop,
                     onChanged: (value) =>
-                        ref.read(newConfigProvider.notifier).update(
+                        ref.read(newOrEditConfigProvider.notifier).update(
                               (state) => state = state!.copyWith(
                                   windowOptions: state.windowOptions
                                       .copyWith(alwaysOntop: value)),
@@ -120,8 +122,8 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
                         }),
                     onChanged: (value) {
                       if (value.isEmpty) {
-                        ref.read(newConfigProvider.notifier).update((state) =>
-                            state = state!.copyWith(
+                        ref.read(newOrEditConfigProvider.notifier).update(
+                            (state) => state = state!.copyWith(
                                 windowOptions: state.windowOptions
                                     .copyWith(timeLimit: 0)));
 
@@ -129,8 +131,8 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
                           timeLimitController.text = '-';
                         });
                       } else {
-                        ref.read(newConfigProvider.notifier).update((state) =>
-                            state = state!.copyWith(
+                        ref.read(newOrEditConfigProvider.notifier).update(
+                            (state) => state = state!.copyWith(
                                 windowOptions: state.windowOptions
                                     .copyWith(timeLimit: int.parse(value))));
                       }

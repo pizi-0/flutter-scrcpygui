@@ -34,4 +34,4 @@ final configsProvider = NotifierProvider<ConfigsNotifier, List<ScrcpyConfig>>(
 final selectedConfigProvider =
     StateProvider<ScrcpyConfig>((ref) => defaultConfigs[1]);
 
-final newConfigProvider = StateProvider<ScrcpyConfig?>((ref) => null);
+final newOrEditConfigProvider = StateProvider<ScrcpyConfig?>((ref) => null);

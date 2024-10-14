@@ -27,7 +27,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
 
   @override
   void initState() {
-    final selectedConfig = ref.read(newConfigProvider)!;
+    final selectedConfig = ref.read(newOrEditConfigProvider)!;
     final allConfigs = ref.read(configsProvider);
 
     nameController = TextEditingController(
@@ -49,7 +49,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedConfig = ref.watch(newConfigProvider);
+    final selectedConfig = ref.watch(newOrEditConfigProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
@@ -113,7 +113,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
               onSubmitted: notAllowed
                   ? null
                   : (value) async {
-                      final selectedConfig = ref.read(newConfigProvider)!;
+                      final selectedConfig = ref.read(newOrEditConfigProvider)!;
                       var currentConfig = selectedConfig;
                       currentConfig = currentConfig.copyWith(
                           configName: nameController.text);
@@ -186,7 +186,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
               onPressed: notAllowed || nameController.text.isEmpty
                   ? null
                   : () async {
-                      final selectedConfig = ref.read(newConfigProvider)!;
+                      final selectedConfig = ref.read(newOrEditConfigProvider)!;
                       var currentConfig = selectedConfig;
                       currentConfig = currentConfig.copyWith(
                           configName: nameController.text);
