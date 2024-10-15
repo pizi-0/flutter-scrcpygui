@@ -11,7 +11,7 @@ import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/log_screen/log_screen.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
 
-import '../../models/scrcpy_related/scrcpy_info.dart';
+import '../../models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import '../../providers/info_provider.dart';
 import '../../utils/const.dart';
 import '../../utils/scrcpy_utils.dart';

@@ -22,7 +22,7 @@ import 'package:tray_manager/tray_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/scrcpy_related/scrcpy_flag_check_result.dart';
-import '../models/scrcpy_related/scrcpy_info.dart';
+import '../models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
 import '../providers/info_provider.dart';
 import '../widgets/config_override/config_override.dart';

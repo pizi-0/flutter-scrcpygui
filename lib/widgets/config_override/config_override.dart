@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/scrcpy_related/scrcpy_info.dart';
+import '../../models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import '../../providers/adb_provider.dart';
 import '../../providers/config_provider.dart';
 import '../../providers/info_provider.dart';

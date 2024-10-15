@@ -47,28 +47,6 @@ enum AudioFormat implements StringEnum {
   const AudioFormat(this.value, this.command);
 }
 
-enum AudioCodec implements StringEnum {
-  aac('aac', ' --audio-codec=aac'),
-  flac('flac', ' --audio-codec=flac'),
-  opus('opus', ''),
-  raw('raw', ' --audio-codec=raw');
-
-  @override
-  final String value, command;
-
-  const AudioCodec(this.value, this.command);
-}
-
-enum VideoCodec implements StringEnum {
-  h264('h264', ''),
-  h265('h265', ' --video-codec=h265'),
-  av1('av1', ' --video-codec=av1');
-
-  @override
-  final String value, command;
-  const VideoCodec(this.value, this.command);
-}
-
 enum AudioSource implements StringEnum {
   output('output', ''),
   playback('playback', ' --audio-source=playback'),
