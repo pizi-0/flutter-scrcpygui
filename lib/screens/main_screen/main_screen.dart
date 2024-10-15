@@ -8,8 +8,8 @@ import 'package:scrcpygui/widgets/simple_toast/simple_toast_container.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'providers/settings_provider.dart';
-import 'widgets/custom_main_screen_appbar.dart';
+import '../../providers/settings_provider.dart';
+import '../../widgets/custom_main_screen_appbar.dart';
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});

@@ -11,7 +11,7 @@ import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../main_screen.dart';
+import '../main_screen/main_screen.dart';
 import '../../providers/settings_provider.dart';
 import '../../utils/const.dart';
 
