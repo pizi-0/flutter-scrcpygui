@@ -75,7 +75,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
         ),
         Container(
           decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.inversePrimary,
+              color: Theme.of(context).colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
           width: appWidth,
           child: Padding(
@@ -91,7 +91,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                 Container(
                   width: appWidth,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.onPrimary,
+                    color: Theme.of(context).colorScheme.secondaryContainer,
                     borderRadius:
                         BorderRadius.circular(appTheme.widgetRadius * 0.8),
                   ),

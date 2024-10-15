@@ -48,7 +48,7 @@ class _RunningInstanceScreenState extends ConsumerState<RunningInstanceScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.inversePrimary,
+                        color: Theme.of(context).colorScheme.primaryContainer,
                         borderRadius:
                             BorderRadius.circular(appTheme.widgetRadius),
                       ),

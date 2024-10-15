@@ -48,7 +48,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
         ),
         Container(
           decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.inversePrimary,
+              color: Theme.of(context).colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
           width: appWidth,
           child: Padding(

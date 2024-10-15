@@ -30,7 +30,7 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onPrimary,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
       ),
       height: 40,
@@ -50,7 +50,7 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
                 constraints: const BoxConstraints(minWidth: _minWidth),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.inversePrimary,
+                    color: Theme.of(context).colorScheme.primaryContainer,
                     borderRadius:
                         BorderRadius.circular(appTheme.widgetRadius * 0.8),
                   ),
@@ -107,7 +107,7 @@ class ConfigDropdownOthers extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onPrimary,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
       ),
       height: 40,
@@ -134,7 +134,7 @@ class ConfigDropdownOthers extends ConsumerWidget {
                 constraints: const BoxConstraints(minWidth: _minWidth),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.inversePrimary,
+                    color: Theme.of(context).colorScheme.primaryContainer,
                     borderRadius:
                         BorderRadius.circular(appTheme.widgetRadius * 0.8),
                   ),
@@ -181,7 +181,7 @@ class ConfigUserInput extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onPrimary,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
       ),
       height: 40,
@@ -208,7 +208,7 @@ class ConfigUserInput extends ConsumerWidget {
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.inversePrimary,
+                          color: Theme.of(context).colorScheme.primaryContainer,
                           borderRadius: BorderRadius.circular(
                               appTheme.widgetRadius * 0.8),
                         ),
@@ -267,7 +267,7 @@ class ConfigCustom extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onPrimary,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
       ),
       height: 40,
@@ -290,7 +290,7 @@ class ConfigCustom extends ConsumerWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: childBackgroundColor ??
-                        Theme.of(context).colorScheme.inversePrimary,
+                        Theme.of(context).colorScheme.primaryContainer,
                     borderRadius:
                         BorderRadius.circular(appTheme.widgetRadius * 0.8),
                   ),

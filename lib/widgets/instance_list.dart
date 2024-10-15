@@ -209,7 +209,7 @@ class _InstanceListItemState extends ConsumerState<InstanceListItem> {
     timer?.cancel();
     // out?.cancel();
     // err?.cancel();
-    debugPrint('Scrcpy with PID:${widget.instance.scrcpyPID} killed');
+    // debugPrint('Scrcpy with PID:${widget.instance.scrcpyPID} killed');
     super.dispose();
   }
 
@@ -221,10 +221,10 @@ class _InstanceListItemState extends ConsumerState<InstanceListItem> {
         orElse: () => widget.instance.device);
     return Container(
       width: appWidth,
-      height: 106,
+      height: 116,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(appTheme.widgetRadius),
-          color: Theme.of(context).colorScheme.onPrimary),
+          color: Theme.of(context).colorScheme.secondaryContainer),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -274,6 +274,7 @@ class _InstanceListItemState extends ConsumerState<InstanceListItem> {
                 ),
               ],
             ),
+            const SizedBox(height: 10),
             Row(
               children: [
                 Expanded(child: ConfigVisualizer(instance: widget.instance)),

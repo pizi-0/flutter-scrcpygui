@@ -32,7 +32,7 @@ class BodyContainer extends ConsumerWidget {
             duration: 200.milliseconds,
             width: double.maxFinite,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.inversePrimary,
+              color: Theme.of(context).colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(appTheme.widgetRadius),
             ),
             child: Padding(
@@ -68,7 +68,7 @@ class BodyContainerItem extends ConsumerWidget {
       height: 50,
       width: double.maxFinite,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onPrimary,
+        color: Theme.of(context).colorScheme.secondaryContainer,
         borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.85),
       ),
       margin: const EdgeInsets.only(bottom: 4),

@@ -90,7 +90,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                     Container(
                       margin: const EdgeInsets.only(bottom: 4),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.inversePrimary,
+                        color: Theme.of(context).colorScheme.primaryContainer,
                         borderRadius:
                             BorderRadius.circular(appTheme.widgetRadius * 0.8),
                       ),
@@ -119,7 +119,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                   if (wifiDevices.isNotEmpty)
                     Container(
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.inversePrimary,
+                        color: Theme.of(context).colorScheme.primaryContainer,
                         borderRadius:
                             BorderRadius.circular(appTheme.widgetRadius * 0.8),
                       ),

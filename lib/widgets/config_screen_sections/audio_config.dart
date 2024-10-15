@@ -73,7 +73,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
             ),
             Container(
               decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.inversePrimary,
+                  color: Theme.of(context).colorScheme.primaryContainer,
                   borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
               width: appWidth,
               child: Padding(

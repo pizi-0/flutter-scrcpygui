@@ -32,7 +32,6 @@ class _DeviceHistoryIconState extends ConsumerState<DeviceHistoryIcon> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedDevice = ref.watch(selectedDeviceProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
     final isConnected = ref
@@ -70,10 +69,11 @@ class _DeviceHistoryIconState extends ConsumerState<DeviceHistoryIcon> {
                 onTap: widget.hxOntap,
                 child: Container(
                   decoration: BoxDecoration(
-                      color: (selectedDevice != null &&
-                              (selectedDevice.id) == widget.device!.id)
-                          ? Theme.of(context).colorScheme.onPrimary
-                          : Colors.transparent),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .secondaryContainer
+                        .withOpacity(0.3),
+                  ),
                   height: 100,
                   width: 100,
                   child: Center(

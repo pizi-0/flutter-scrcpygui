@@ -8,24 +8,29 @@ class AppTheme {
   final bool fromWall;
   final Color color;
   final Brightness brightness;
+  final int colorModifier;
 
-  AppTheme(
-      {required this.color,
-      required this.brightness,
-      this.fromWall = false,
-      this.widgetRadius = 10});
+  AppTheme({
+    required this.color,
+    required this.brightness,
+    this.fromWall = false,
+    this.widgetRadius = 10,
+    this.colorModifier = 90,
+  });
 
   AppTheme copyWith({
     double? widgetRadius,
     bool? fromWall,
     Color? color,
     Brightness? brightness,
+    int? colorModifier,
   }) {
     return AppTheme(
       widgetRadius: widgetRadius ?? this.widgetRadius,
       fromWall: fromWall ?? this.fromWall,
       color: color ?? this.color,
       brightness: brightness ?? this.brightness,
+      colorModifier: colorModifier ?? this.colorModifier,
     );
   }
 
@@ -35,6 +40,7 @@ class AppTheme {
       'fromWall': fromWall,
       'color': color.value,
       'brightness': Brightness.values.indexOf(brightness),
+      'colorModifier': colorModifier,
     };
   }
 
@@ -44,6 +50,7 @@ class AppTheme {
       fromWall: map['fromWall'] ?? false,
       color: Color(map['color']),
       brightness: Brightness.values[map['brightness']],
+      colorModifier: map['colorModifier'] ?? 90,
     );
   }
 
@@ -51,21 +58,4 @@ class AppTheme {
 
   factory AppTheme.fromJson(String source) =>
       AppTheme.fromMap(json.decode(source));
-
-  @override
-  bool operator ==(covariant AppTheme other) {
-    if (identical(this, other)) return true;
-
-    return other.widgetRadius == widgetRadius &&
-        other.fromWall == fromWall &&
-        other.color == color &&
-        other.brightness == brightness;
-  }
-
-  @override
-  int get hashCode =>
-      widgetRadius.hashCode ^
-      fromWall.hashCode ^
-      color.hashCode ^
-      brightness.hashCode;
 }

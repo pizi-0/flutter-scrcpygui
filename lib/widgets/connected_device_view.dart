@@ -95,7 +95,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
                 width: appWidth,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(appTheme.widgetRadius),
-                  color: Theme.of(context).colorScheme.inversePrimary,
+                  color: Theme.of(context).colorScheme.primaryContainer,
                 ),
                 child: Stack(
                   children: [
@@ -154,7 +154,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
-          color: Theme.of(context).colorScheme.onPrimary,
+          color: Theme.of(context).colorScheme.primaryContainer,
         ),
         child: SizedBox.expand(
           child: SingleChildScrollView(
@@ -204,7 +204,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
-          color: Theme.of(context).colorScheme.onPrimary,
+          color: Theme.of(context).colorScheme.secondaryContainer,
         ),
         child: Center(
           child: Column(
@@ -337,6 +337,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
               padding: const EdgeInsets.all(8.0),
               child: Center(
                 child: TextField(
+                  cursorColor: Theme.of(context).colorScheme.surface,
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp("[0-9.:]")),
                   ],
@@ -345,6 +346,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
                   onChanged: (a) {
                     setState(() => error = false);
                   },
+                  style: const TextStyle(fontSize: 14),
                   textAlign: TextAlign.center,
                   decoration: const InputDecoration.collapsed(hintText: ''),
                 ),

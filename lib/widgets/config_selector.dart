@@ -55,7 +55,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
                 Container(
                   height: 60,
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.inversePrimary,
+                    color: Theme.of(context).colorScheme.primaryContainer,
                     borderRadius: BorderRadius.circular(appTheme.widgetRadius),
                   ),
                   child: Padding(
@@ -97,10 +97,8 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
         listItemDecoration: ListItemDecoration(
           selectedColor: Theme.of(context).colorScheme.onPrimary,
         ),
-        closedFillColor: Theme.of(context).colorScheme.onPrimary,
-        expandedFillColor: Theme.of(context).colorScheme.onPrimary,
-        expandedBorder: Border.all(
-            color: Theme.of(context).colorScheme.onPrimary, width: 4),
+        closedFillColor: Theme.of(context).colorScheme.secondaryContainer,
+        expandedFillColor: Theme.of(context).colorScheme.secondaryContainer,
       ),
       listItemPadding: const EdgeInsets.all(0),
       itemsListPadding: const EdgeInsets.only(right: 4),
@@ -109,14 +107,13 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
         children: [
           Text(selectedItem.configName),
           const Spacer(),
-          ConfigVisualizer(conf: selectedItem)
+          ConfigVisualizer(conf: selectedItem),
         ],
       ),
       listItemBuilder: (context, item, isSelected, onItemSelect) => Container(
         decoration: BoxDecoration(
           border: Border(
-            bottom:
-                BorderSide(color: Theme.of(context).colorScheme.inversePrimary),
+            bottom: BorderSide(color: Theme.of(context).colorScheme.primary),
           ),
         ),
         height: 60,

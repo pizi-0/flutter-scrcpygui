@@ -27,8 +27,6 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(selectedConfigProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final style =
-        TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer);
 
     return SizedBox(
       width: appWidth,
@@ -41,20 +39,21 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: selectedConfig.isRecording
-                  ? Text(
+                  ? const Text(
                       'File name / window title: (default: [device] configname)',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: style)
-                  : Text('Window title: (default: [device] configname)',
+                    )
+                  : const Text(
+                      'Window title: (default: [device] configname)',
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
-                      style: style),
+                    ),
             ),
             Container(
               height: 60,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.inversePrimary,
+                color: Theme.of(context).colorScheme.primaryContainer,
                 borderRadius: BorderRadius.circular(appTheme.widgetRadius),
               ),
               child: Padding(
@@ -65,7 +64,8 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.onPrimary,
+                          color:
+                              Theme.of(context).colorScheme.secondaryContainer,
                           borderRadius: BorderRadius.circular(
                               appTheme.widgetRadius * 0.8),
                         ),
@@ -85,21 +85,32 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
                                         ref
                                             .read(customNameProvider.notifier)
                                             .state = a;
+
+                                        setState(() {});
                                       },
+                                      style: const TextStyle(fontSize: 14),
                                       decoration: InputDecoration.collapsed(
-                                          hintText: selectedConfig.isRecording
-                                              ? 'Custom name'
-                                              : 'Title'),
+                                        hintText: selectedConfig.isRecording
+                                            ? 'Custom name'
+                                            : 'Title',
+                                      ),
                                     ),
                                   ),
                                 ),
                                 name.text.isNotEmpty
                                     ? IconButton(
+                                        style: ButtonStyle(
+                                            shape: WidgetStatePropertyAll(
+                                                RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius
+                                                        .circular(appTheme
+                                                            .widgetRadius)))),
                                         onPressed: () {
                                           name.clear();
                                           ref
                                               .read(customNameProvider.notifier)
                                               .state = '';
+                                          setState(() {});
                                         },
                                         icon: const Icon(Icons.close),
                                       )

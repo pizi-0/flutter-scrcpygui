@@ -152,6 +152,7 @@ final defaultTheme = AppTheme(
   color: const Color(0xff00b8d4),
   brightness: Brightness.dark,
   fromWall: false,
+  colorModifier: 90,
 );
 
 final defaultAppBehaviour = AppBehaviour(

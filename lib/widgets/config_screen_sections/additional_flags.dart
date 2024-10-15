@@ -47,7 +47,7 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
         ),
         Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.inversePrimary,
+            color: Theme.of(context).colorScheme.primaryContainer,
             borderRadius: BorderRadius.circular(appTheme.widgetRadius),
           ),
           width: appWidth,
@@ -64,7 +64,7 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
                 const SizedBox(height: 4),
                 Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.onPrimary,
+                    color: Theme.of(context).colorScheme.secondaryContainer,
                     borderRadius:
                         BorderRadius.circular(appTheme.widgetRadius * 0.8),
                   ),
@@ -74,9 +74,6 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
                       controller: add,
                       decoration: const InputDecoration.collapsed(
                         hintText: '--flag1 --flag-2 --flag-3=\'3 oh 3\'',
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                        ),
                       ),
                       maxLines: 5,
                       inputFormatters: [

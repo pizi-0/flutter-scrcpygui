@@ -21,6 +21,7 @@ class _AppBehaviourSectionState extends ConsumerState<AppBehaviourSection> {
   @override
   Widget build(BuildContext context) {
     final behaviour = ref.watch(settingsProvider.select((s) => s.behaviour));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return BodyContainer(
       headerTitle: 'App behaviour',
@@ -29,6 +30,7 @@ class _AppBehaviourSectionState extends ConsumerState<AppBehaviourSection> {
           title: 'Show tray icon',
           trailing: Checkbox(
             value: behaviour.traySupport,
+            checkColor: colorScheme.surface,
             onChanged: (v) async {
               ref.read(settingsProvider.notifier).update((state) => state =
                   state.copyWith(
@@ -51,6 +53,8 @@ class _AppBehaviourSectionState extends ConsumerState<AppBehaviourSection> {
           title: 'Quit always kill instances with no window',
           trailing: Checkbox(
             value: behaviour.killNoWindowInstance,
+            activeColor: colorScheme.primary,
+            checkColor: colorScheme.secondaryContainer,
             onChanged: (v) async {
               ref.read(settingsProvider.notifier).update((state) => state =
                   state.copyWith(

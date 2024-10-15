@@ -35,6 +35,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         autofocus: true,
         child: Scaffold(
           appBar: AppBar(
+            backgroundColor: colorScheme.surface,
+            scrolledUnderElevation: 0,
             leading: IconButton(
               style: buttonStyle,
               tooltip: 'ESC',

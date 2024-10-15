@@ -17,7 +17,7 @@ class ConfigVisualizer extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.inversePrimary,
+        color: Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(4),
       ),
       child: Row(
@@ -30,16 +30,14 @@ class ConfigVisualizer extends StatelessWidget {
                   message: 'Recording',
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child: Icon(Icons.videocam,
-                        size: iconSize, color: Colors.green),
+                    child: Icon(Icons.videocam, size: iconSize),
                   ),
                 )
               : Tooltip(
                   message: 'Mirroring',
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2),
-                    child:
-                        Icon(Icons.copy, size: iconSize, color: Colors.green),
+                    child: Icon(Icons.copy, size: iconSize),
                   ),
                 ),
           if (config.audioOptions.audioSource == AudioSource.mic)

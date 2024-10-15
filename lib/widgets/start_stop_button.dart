@@ -14,11 +14,9 @@ import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/screens/running_instance/running_instance_screen.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
-import 'package:tray_manager/tray_manager.dart';
 
 import '../providers/settings_provider.dart';
 import '../providers/toast_providers.dart';
-import '../utils/tray_utils.dart';
 import 'simple_toast/simple_toast_item.dart';
 
 class StartButton extends ConsumerStatefulWidget {
@@ -87,7 +85,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
             ),
             loading
                 ? Container(
-                    color: Theme.of(context).colorScheme.inversePrimary,
+                    color: Theme.of(context).colorScheme.secondaryContainer,
                     child: SizedBox.expand(
                       child: Center(
                         child: SizedBox(
@@ -194,12 +192,6 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
   @override
   void initState() {
     super.initState();
-    ref.read(scrcpyInstanceProvider.notifier).ref.listenSelf((a, b) async {
-      if (!listEquals(a, b)) {
-        await trayManager.destroy();
-        await TrayUtils.initTray(ref, context);
-      }
-    });
     WidgetsBinding.instance.addPostFrameCallback(
         (t) => runningTimer = Timer.periodic(1.seconds, (t) => _pollRunning()));
   }
@@ -267,8 +259,6 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
                           borderRadius:
                               BorderRadius.circular(appTheme.widgetRadius),
                           child: Material(
-                            color:
-                                Theme.of(context).colorScheme.primaryContainer,
                             child: InkWell(
                               onTap: () {
                                 Navigator.push(
@@ -278,7 +268,12 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
                                       type: PageTransitionType.bottomToTop),
                                 );
                               },
-                              child: SizedBox(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .primaryContainer,
+                                ),
                                 height: 40,
                                 child: Center(
                                     child: Padding(
@@ -308,11 +303,7 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
                           Theme.of(context).colorScheme.primaryContainer,
                       icon: Icon(
                         running ? Icons.add_rounded : Icons.play_arrow_rounded,
-                        color: running
-                            ? Colors.white
-                            : Theme.of(context).brightness == Brightness.light
-                                ? Colors.black
-                                : Colors.white,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   )

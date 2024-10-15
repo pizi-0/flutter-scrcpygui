@@ -18,10 +18,12 @@ class ThemeSection extends ConsumerStatefulWidget {
 
 class _ThemeSectionState extends ConsumerState<ThemeSection> {
   late double radius;
+  late int colorMod;
 
   @override
   void initState() {
     radius = ref.read(settingsProvider.select((s) => s.looks)).widgetRadius;
+    colorMod = ref.read(settingsProvider.select((s) => s.looks)).colorModifier;
     super.initState();
   }
 
@@ -38,7 +40,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
           trailing: Row(
             children: [
               Radio(
-                activeColor: colorScheme.inversePrimary,
+                activeColor: colorScheme.primary,
                 value: Brightness.dark,
                 groupValue: appTheme.brightness,
                 onChanged: (val) {
@@ -56,7 +58,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               const Text('Dark'),
               const SizedBox(width: 10),
               Radio(
-                activeColor: colorScheme.inversePrimary,
+                activeColor: colorScheme.primary,
                 value: Brightness.light,
                 groupValue: appTheme.brightness,
                 onChanged: (val) {
@@ -73,6 +75,64 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               ),
               const Text('Light'),
             ],
+          ),
+        ),
+        BodyContainerItem(
+          title:
+              appTheme.brightness == Brightness.dark ? 'Darkness' : 'Lightness',
+          trailing: SliderTheme(
+            data: SliderThemeData(
+              trackShape: CustomTrackShape(),
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
+              activeTrackColor: colorScheme.primary,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  tooltip: 'Default',
+                  onPressed: () async {
+                    ref.read(settingsProvider.notifier).update((state) =>
+                        state = state.copyWith(
+                            looks: state.looks.copyWith(
+                                colorModifier: defaultTheme.colorModifier)));
+
+                    setState(() {
+                      colorMod = defaultTheme.colorModifier;
+                    });
+
+                    final newSettings = ref.read(settingsProvider);
+                    await AppUtils.saveAppSettings(newSettings);
+                  },
+                  icon: const Icon(Icons.refresh_rounded),
+                ),
+                SizedBox(
+                  width: 150,
+                  child: Slider(
+                    divisions: 50,
+                    min: 1,
+                    max: 100,
+                    value: colorMod.toDouble(),
+                    onChangeEnd: (value) async {
+                      final newSettings = ref.read(settingsProvider);
+                      await AppUtils.saveAppSettings(newSettings);
+                    },
+                    onChanged: (v) {
+                      colorMod = v.toInt();
+                      setState(() {});
+                      ref.read(settingsProvider.notifier).update((state) =>
+                          state = state.copyWith(
+                              looks: state.looks
+                                  .copyWith(colorModifier: v.toInt())));
+                    },
+                  ),
+                ),
+                SizedBox(
+                    width: 30,
+                    child:
+                        Text(colorMod.toInt().toString()).alignAtCenterRight())
+              ],
+            ),
           ),
         ),
         BodyContainerItem(
@@ -122,6 +182,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
             data: SliderThemeData(
               trackShape: CustomTrackShape(),
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
+              activeTrackColor: colorScheme.primary,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,

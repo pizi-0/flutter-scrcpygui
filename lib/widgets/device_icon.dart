@@ -124,14 +124,15 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                         ref.read(selectedDeviceProvider.notifier).state =
                             widget.device;
                       },
-                      child: Container(
+                      child: AnimatedContainer(
+                        duration: 100.milliseconds,
                         decoration: BoxDecoration(
                           color: (selectedDevice != null &&
                                   (selectedDevice.id) == widget.device!.id)
-                              ? Theme.of(context).colorScheme.onPrimary
+                              ? Theme.of(context).colorScheme.secondaryContainer
                               : Theme.of(context)
                                   .colorScheme
-                                  .onPrimary
+                                  .secondaryContainer
                                   .withOpacity(0.3),
                           borderRadius: BorderRadius.circular(
                               appTheme.widgetRadius * 0.8),
@@ -157,12 +158,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                                     widget.device!.id.contains('.')
                                         ? const Icon(Icons.wifi)
                                         : const Icon(Icons.usb),
-                                    Icon(
-                                      Icons.phone_android_rounded,
-                                      color: widget.device!.status
-                                          ? Colors.green
-                                          : Colors.red,
-                                    ),
+                                    const Icon(Icons.phone_android_rounded),
                                   ],
                                 ),
                                 const SizedBox(height: 10),

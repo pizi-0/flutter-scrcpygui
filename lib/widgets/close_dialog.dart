@@ -65,7 +65,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
           color: notAllowed
               ? Colors.red
               : nameExist
-                  ? Theme.of(context).colorScheme.inversePrimary
+                  ? Theme.of(context).colorScheme.primaryContainer
                   : Theme.of(context).colorScheme.surface,
           width: 5,
         ),
@@ -94,7 +94,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
               decoration: BoxDecoration(
                 borderRadius:
                     BorderRadius.circular(appTheme.widgetRadius * 0.8),
-                color: Theme.of(context).colorScheme.inversePrimary,
+                color: Theme.of(context).colorScheme.primaryContainer,
               ),
               child: Padding(
                 padding: const EdgeInsets.all(20.0),
