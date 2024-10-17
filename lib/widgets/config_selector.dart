@@ -84,6 +84,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
       WidgetRef ref, BuildContext context, List<ScrcpyConfig> allConfigs) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final colorScheme = Theme.of(context).colorScheme;
+    final allconfigs = ref.watch(configsProvider);
 
     return CustomDropdown.search(
       //decoration
@@ -107,7 +108,8 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
       //items
       headerBuilder: (context, selectedItem, enabled) => Row(
         children: [
-          Text(selectedItem.configName).textColor(colorScheme.inverseSurface),
+          Text(ref.watch(selectedConfigProvider).configName)
+              .textColor(colorScheme.inverseSurface),
           const Spacer(),
           ConfigVisualizer(conf: selectedItem),
         ],
@@ -139,7 +141,7 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
         ),
       ),
       initialItem: ref.watch(selectedConfigProvider),
-      items: allConfigs,
+      items: allconfigs,
       onChanged: (config) {
         ref.read(selectedConfigProvider.notifier).state = config!;
 

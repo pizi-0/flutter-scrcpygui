@@ -110,8 +110,7 @@ class ScrcpyConfig {
   bool operator ==(covariant ScrcpyConfig other) {
     if (identical(this, other)) return true;
 
-    return other.configName == configName &&
-        other.scrcpyMode == scrcpyMode &&
+    return other.scrcpyMode == scrcpyMode &&
         other.isRecording == isRecording &&
         other.videoOptions == videoOptions &&
         other.audioOptions == audioOptions &&
@@ -123,8 +122,7 @@ class ScrcpyConfig {
 
   @override
   int get hashCode {
-    return configName.hashCode ^
-        scrcpyMode.hashCode ^
+    return scrcpyMode.hashCode ^
         isRecording.hashCode ^
         videoOptions.hashCode ^
         audioOptions.hashCode ^
