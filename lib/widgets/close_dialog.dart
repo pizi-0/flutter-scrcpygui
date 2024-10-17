@@ -159,8 +159,6 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                       ref.read(selectedConfigProvider.notifier).state =
                           currentConfig;
 
-                      print(currentConfig.configName);
-
                       final toSave = ref
                           .read(configsProvider)
                           .where((e) => !defaultConfigs.contains(e))
