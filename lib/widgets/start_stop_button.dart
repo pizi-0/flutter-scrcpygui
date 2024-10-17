@@ -92,7 +92,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
                           height: 20,
                           width: 20,
                           child: CircularProgressIndicator(
-                            color: Theme.of(context).colorScheme.onPrimary,
+                            color: Theme.of(context).colorScheme.inverseSurface,
                           ),
                         ),
                       ),
@@ -224,6 +224,7 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
     final runningInstance = ref.watch(scrcpyInstanceProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     bool running = runningInstance.isNotEmpty;
 
@@ -270,9 +271,7 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
                               },
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer,
+                                  color: colorScheme.primaryContainer,
                                 ),
                                 height: 40,
                                 child: Center(
@@ -280,7 +279,8 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 16.0),
                                   child: Text(
-                                      'Running servers (${runningInstance.length})'),
+                                          'Running servers (${runningInstance.length})')
+                                      .textColor(colorScheme.inverseSurface),
                                 )),
                               ),
                             ),
@@ -303,7 +303,7 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
                           Theme.of(context).colorScheme.primaryContainer,
                       icon: Icon(
                         running ? Icons.add_rounded : Icons.play_arrow_rounded,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: colorScheme.inverseSurface,
                       ),
                     ),
                   )

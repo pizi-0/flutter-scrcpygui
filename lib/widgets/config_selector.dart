@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
@@ -82,30 +83,31 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
   CustomDropdown<ScrcpyConfig> _buildDropdown(
       WidgetRef ref, BuildContext context, List<ScrcpyConfig> allConfigs) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return CustomDropdown.search(
       //decoration
       decoration: CustomDropdownDecoration(
         searchFieldDecoration: SearchFieldDecoration(
-          fillColor: Theme.of(context).colorScheme.inversePrimary,
+          fillColor: colorScheme.inversePrimary,
         ),
         expandedBorderRadius:
             BorderRadius.circular(appTheme.widgetRadius * 0.8),
         closedBorderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
         // expandedBorder: Border.all(
-        //     color: Theme.of(context).colorScheme.inversePrimary, width: 5),
-        listItemDecoration: ListItemDecoration(
-          selectedColor: Theme.of(context).colorScheme.onPrimary,
-        ),
-        closedFillColor: Theme.of(context).colorScheme.secondaryContainer,
-        expandedFillColor: Theme.of(context).colorScheme.secondaryContainer,
+        //     color: colorScheme.inversePrimary, width: 5),
+        // listItemDecoration: ListItemDecoration(
+        //   selectedColor: colorScheme.onPrimary,
+        // ),
+        closedFillColor: colorScheme.secondaryContainer,
+        expandedFillColor: colorScheme.secondaryContainer,
       ),
       listItemPadding: const EdgeInsets.all(0),
       itemsListPadding: const EdgeInsets.only(right: 4),
       //items
       headerBuilder: (context, selectedItem, enabled) => Row(
         children: [
-          Text(selectedItem.configName),
+          Text(selectedItem.configName).textColor(colorScheme.inverseSurface),
           const Spacer(),
           ConfigVisualizer(conf: selectedItem),
         ],
@@ -128,7 +130,8 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
                     SizedBox(width: 10),
                   ],
                 ),
-              Text(item == newConfig ? 'Create new config' : item.configName),
+              Text(item == newConfig ? 'Create new config' : item.configName)
+                  .textColor(colorScheme.inverseSurface),
               const Spacer(),
               if (item != newConfig) ConfigVisualizer(conf: item),
             ],
@@ -169,8 +172,8 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
           padding: const EdgeInsets.only(left: 8.0),
           child: Text(
             'Config',
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.onPrimaryContainer),
+            style:
+                TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
           ),
         ),
         const Spacer(),

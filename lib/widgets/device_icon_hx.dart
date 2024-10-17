@@ -91,7 +91,7 @@ class _DeviceHistoryIconState extends ConsumerState<DeviceHistoryIcon> {
                               Icon(Icons.phone_android_rounded,
                                   color: Theme.of(context)
                                       .colorScheme
-                                      .onPrimaryContainer),
+                                      .inverseSurface),
                             ],
                           ),
                           const SizedBox(height: 10),

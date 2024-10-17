@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/splash_screen/splash_screen.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
+import 'package:scrcpygui/utils/theme_utils.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -64,18 +64,9 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: GoogleFonts.roboto().fontFamily,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: appTheme.color,
-          brightness: appTheme.brightness,
-        ),
-        useMaterial3: true,
-      ),
+      theme: ThemeUtils.themeData(ref),
       home: SplashScreen(widget.settings.looks),
     );
   }

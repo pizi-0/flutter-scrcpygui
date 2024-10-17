@@ -45,12 +45,12 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               },
               icon: Icon(
                 Icons.close,
-                color: colorScheme.onPrimaryContainer,
+                color: colorScheme.inverseSurface,
               ),
             ),
             title: Text(
               'Settings',
-              style: TextStyle(color: colorScheme.onPrimaryContainer),
+              style: TextStyle(color: colorScheme.inverseSurface),
             ),
             centerTitle: true,
             elevation: 0,

@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
@@ -27,6 +28,7 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(selectedConfigProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return SizedBox(
       width: appWidth,
@@ -43,12 +45,12 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
                       'File name / window title: (default: [device] configname)',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                    )
+                    ).textColor(colorScheme.inverseSurface)
                   : const Text(
                       'Window title: (default: [device] configname)',
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
-                    ),
+                    ).textColor(colorScheme.inverseSurface),
             ),
             Container(
               height: 60,
@@ -88,7 +90,10 @@ class _CustomFileNameState extends ConsumerState<CustomFileName> {
 
                                         setState(() {});
                                       },
-                                      style: const TextStyle(fontSize: 14),
+                                      cursorColor: colorScheme.inverseSurface,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: colorScheme.inverseSurface),
                                       decoration: InputDecoration.collapsed(
                                         hintText: selectedConfig.isRecording
                                             ? 'Custom name'

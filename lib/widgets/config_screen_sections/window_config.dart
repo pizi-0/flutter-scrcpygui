@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -35,6 +36,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(newOrEditConfigProvider)!;
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -44,7 +46,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
           child: Text(
             'Window',
             style: Theme.of(context).textTheme.titleLarge,
-          ),
+          ).textColor(colorScheme.inverseSurface),
         ),
         Container(
           decoration: BoxDecoration(

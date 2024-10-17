@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,6 +25,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(newOrEditConfigProvider)!;
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -33,7 +35,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
           child: Text(
             'Mode',
             style: Theme.of(context).textTheme.titleLarge,
-          ),
+          ).textColor(colorScheme.inverseSurface),
         ),
         Container(
           decoration: BoxDecoration(
@@ -62,6 +64,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
   Widget _buildMainModeSelector(
       WidgetRef ref, BuildContext context, ScrcpyConfig selectedConfig) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return AnimatedContainer(
       height: selectedConfig.isRecording ? 84 : 40,
@@ -132,11 +135,12 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
                                 ),
                               ),
                             ),
-                            const Padding(
-                              padding: EdgeInsets.only(right: 8.0),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
                               child: Icon(
                                 Icons.folder,
                                 size: 15,
+                                color: colorScheme.inverseSurface,
                               ),
                             ),
                           ],

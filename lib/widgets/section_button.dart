@@ -7,21 +7,29 @@ class SectionButton extends ConsumerWidget {
   final String? tooltipmessage;
   final Function()? ontap;
   final IconData icondata;
+  final Color? iconColor;
   final Color? nullColor;
-  const SectionButton(
-      {super.key,
-      required this.icondata,
-      required this.ontap,
-      this.nullColor,
-      this.tooltipmessage});
+  const SectionButton({
+    super.key,
+    required this.icondata,
+    required this.ontap,
+    this.nullColor,
+    this.iconColor,
+    this.tooltipmessage,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     final buttonStyle = ButtonStyle(
-        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
+      shape: WidgetStatePropertyAll(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(appTheme.widgetRadius),
+        ),
+      ),
+    );
 
     return IconButton(
       style: buttonStyle,
@@ -31,7 +39,7 @@ class SectionButton extends ConsumerWidget {
         icondata,
         color: ontap == null
             ? nullColor ?? Colors.transparent
-            : Theme.of(context).colorScheme.onPrimaryContainer,
+            : iconColor ?? colorScheme.inverseSurface,
       ),
     );
   }

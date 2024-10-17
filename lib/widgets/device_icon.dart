@@ -80,6 +80,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final selectedDevice = ref.watch(selectedDeviceProvider);
@@ -119,7 +120,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      focusColor: Theme.of(context).colorScheme.onPrimary,
+                      focusColor: colorScheme.onPrimary,
                       onTap: () {
                         ref.read(selectedDeviceProvider.notifier).state =
                             widget.device;
@@ -129,20 +130,20 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                         decoration: BoxDecoration(
                           color: (selectedDevice != null &&
                                   (selectedDevice.id) == widget.device!.id)
-                              ? Theme.of(context).colorScheme.secondaryContainer
+                              ? colorScheme.secondaryContainer
                               : Theme.of(context)
                                   .colorScheme
                                   .secondaryContainer
                                   .withOpacity(0.3),
                           borderRadius: BorderRadius.circular(
                               appTheme.widgetRadius * 0.8),
-                          //   border: Border.all(
-                          //     color: Theme.of(context)
-                          //         .colorScheme
-                          //         .onPrimary
-                          //         .withOpacity(0.5),
-                          //     width: 2,
-                          //   ),
+                          // border: Border.all(
+                          //   color: (selectedDevice != null &&
+                          //           (selectedDevice.id) == widget.device!.id)
+                          //       ? colorScheme.primaryContainer
+                          //       : Colors.transparent,
+                          //   width: 4,
+                          // ),
                         ),
                         height: 100,
                         width: 100,
@@ -156,9 +157,14 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     widget.device!.id.contains('.')
-                                        ? const Icon(Icons.wifi)
-                                        : const Icon(Icons.usb),
-                                    const Icon(Icons.phone_android_rounded),
+                                        ? Icon(Icons.wifi,
+                                            color: colorScheme.inverseSurface)
+                                        : Icon(Icons.usb,
+                                            color: colorScheme.inverseSurface),
+                                    Icon(
+                                      Icons.phone_android_rounded,
+                                      color: colorScheme.inverseSurface,
+                                    ),
                                   ],
                                 ),
                                 const SizedBox(height: 10),
@@ -177,7 +183,8 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
                                               textAlign: TextAlign.center,
-                                            ),
+                                            ).textColor(
+                                                colorScheme.inverseSurface),
                                           ),
                                         ],
                                       ),
@@ -197,7 +204,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                   decoration: BoxDecoration(
                     color: Theme.of(context)
                         .colorScheme
-                        .onPrimary
+                        .primaryContainer
                         .withOpacity(0.5),
                     borderRadius:
                         BorderRadius.circular(appTheme.widgetRadius * 0.8),
@@ -215,7 +222,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(4),
                         color: selectedDevice == widget.device
-                            ? Theme.of(context).colorScheme.inversePrimary
+                            ? colorScheme.inversePrimary
                             : Theme.of(context)
                                 .colorScheme
                                 .onPrimary

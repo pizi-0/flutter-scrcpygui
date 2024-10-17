@@ -8,14 +8,14 @@ class AppTheme {
   final bool fromWall;
   final Color color;
   final Brightness brightness;
-  final int colorModifier;
+  final ColorTintLevel tintLevel;
 
   AppTheme({
     required this.color,
     required this.brightness,
     this.fromWall = false,
     this.widgetRadius = 10,
-    this.colorModifier = 90,
+    required this.tintLevel,
   });
 
   AppTheme copyWith({
@@ -23,14 +23,14 @@ class AppTheme {
     bool? fromWall,
     Color? color,
     Brightness? brightness,
-    int? colorModifier,
+    ColorTintLevel? tintLevel,
   }) {
     return AppTheme(
       widgetRadius: widgetRadius ?? this.widgetRadius,
       fromWall: fromWall ?? this.fromWall,
       color: color ?? this.color,
       brightness: brightness ?? this.brightness,
-      colorModifier: colorModifier ?? this.colorModifier,
+      tintLevel: tintLevel ?? this.tintLevel,
     );
   }
 
@@ -40,7 +40,7 @@ class AppTheme {
       'fromWall': fromWall,
       'color': color.value,
       'brightness': Brightness.values.indexOf(brightness),
-      'colorModifier': colorModifier,
+      'tintLevel': tintLevel.toMap(),
     };
   }
 
@@ -50,7 +50,11 @@ class AppTheme {
       fromWall: map['fromWall'] ?? false,
       color: Color(map['color']),
       brightness: Brightness.values[map['brightness']],
-      colorModifier: map['colorModifier'] ?? 90,
+      tintLevel: map['tintLevel'] == null
+          ? ColorTintLevel()
+          : ColorTintLevel.fromMap(
+              map['tintLevel'],
+            ),
     );
   }
 
@@ -58,4 +62,54 @@ class AppTheme {
 
   factory AppTheme.fromJson(String source) =>
       AppTheme.fromMap(json.decode(source));
+}
+
+class ColorTintLevel {
+  final int surfaceTintLevel;
+  final int primaryTintLevel;
+  final int secondaryTintLevel;
+  final int tertiaryTintLevel;
+
+  ColorTintLevel(
+      {this.surfaceTintLevel = 90,
+      this.primaryTintLevel = 40,
+      this.secondaryTintLevel = 80,
+      this.tertiaryTintLevel = 90});
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'surfaceTintLevel': surfaceTintLevel,
+      'primaryTintLevel': primaryTintLevel,
+      'secondaryTintLevel': secondaryTintLevel,
+      'tertiaryTintLevel': tertiaryTintLevel,
+    };
+  }
+
+  factory ColorTintLevel.fromMap(Map<String, dynamic> map) {
+    return ColorTintLevel(
+      surfaceTintLevel: map['surfaceTintLevel'] ?? 90,
+      primaryTintLevel: map['primaryTintLevel'] ?? 90,
+      secondaryTintLevel: map['secondaryTintLevel'] ?? 90,
+      tertiaryTintLevel: map['tertiaryTintLevel'] ?? 90,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory ColorTintLevel.fromJson(String source) =>
+      ColorTintLevel.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  ColorTintLevel copyWith({
+    int? surfaceTintLevel,
+    int? primaryTintLevel,
+    int? secondaryTintLevel,
+    int? tertiaryTintLevel,
+  }) {
+    return ColorTintLevel(
+      surfaceTintLevel: surfaceTintLevel ?? this.surfaceTintLevel,
+      primaryTintLevel: primaryTintLevel ?? this.primaryTintLevel,
+      secondaryTintLevel: secondaryTintLevel ?? this.secondaryTintLevel,
+      tertiaryTintLevel: tertiaryTintLevel ?? this.tertiaryTintLevel,
+    );
+  }
 }

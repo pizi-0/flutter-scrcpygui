@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
@@ -18,10 +19,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(newOrEditConfigProvider)!;
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    // final selectedDevice = ref.watch(selectedDeviceProvider);
-    // final selectedDeviceInfo = ref
-    //     .watch(infoProvider)
-    //     .firstWhere((i) => i.device.serialNo == selectedDevice!.serialNo);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -31,11 +29,11 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
           child: Text(
             'Device',
             style: Theme.of(context).textTheme.titleLarge,
-          ),
+          ).textColor(colorScheme.inverseSurface),
         ),
         Container(
           decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
+              color: colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
           width: appWidth,
           child: Padding(

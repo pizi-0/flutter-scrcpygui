@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
@@ -52,10 +53,15 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
     final selectedConfig = ref.watch(newOrEditConfigProvider);
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     final info = ref
         .watch(infoProvider)
         .firstWhere((i) => i.device.serialNo == selectedDevice!.serialNo);
+
+    final buttonStyle = ButtonStyle(
+        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
 
     return AlertDialog(
       insetPadding: const EdgeInsets.all(16),
@@ -80,7 +86,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                   'Overwrite?',
                   style: TextStyle(color: Colors.red),
                 )
-              : const Text('Save?'),
+              : const Text('Save?').textColor(colorScheme.inverseSurface),
       content: ConstrainedBox(
         constraints:
             const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
@@ -88,7 +94,8 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text('Command preview:'),
+            const Text('Command preview:')
+                .textColor(colorScheme.inverseSurface),
             const SizedBox(height: 10),
             Container(
               decoration: BoxDecoration(
@@ -100,15 +107,19 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                 padding: const EdgeInsets.all(20.0),
                 child: Center(
                   child: SelectableText(
-                      'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig!, info, selectedDevice!, customName: nameController.text).toString().replaceAll(',', '').replaceAll('[', '').replaceAll(']', '')}'),
+                    'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig!, info, selectedDevice!, customName: nameController.text).toString().replaceAll(',', '').replaceAll('[', '').replaceAll(']', '')}',
+                    style: TextStyle(
+                        fontSize: 14, color: colorScheme.inverseSurface),
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 10),
             TextField(
               controller: nameController,
-              decoration: const InputDecoration(
-                label: Text('Config name'),
+              decoration: InputDecoration(
+                label: const Text('Config name')
+                    .textColor(colorScheme.inverseSurface.withOpacity(0.8)),
               ),
               onSubmitted: notAllowed
                   ? null
@@ -176,6 +187,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
         Row(
           children: [
             TextButton(
+              style: buttonStyle,
               onPressed: () {
                 final allConfigs = ref.read(configsProvider);
 
@@ -185,10 +197,12 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
 
                 Navigator.pop(context, true);
               },
-              child: const Text('Discard'),
+              child:
+                  const Text('Discard').textColor(colorScheme.inverseSurface),
             ),
             const Spacer(),
             TextButton(
+              style: buttonStyle,
               onPressed: notAllowed || nameController.text.isEmpty
                   ? null
                   : () async {
@@ -237,14 +251,16 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
 
                       Navigator.pop(context, true);
                     },
-              child: Text(nameExist ? 'Overwrite' : 'Save'),
+              child: Text(nameExist ? 'Overwrite' : 'Save')
+                  .textColor(colorScheme.inverseSurface),
             ),
             const SizedBox(width: 10),
             TextButton(
+              style: buttonStyle,
               onPressed: () {
                 Navigator.pop(context, false);
               },
-              child: const Text('No'),
+              child: const Text('No').textColor(colorScheme.inverseSurface),
             ),
           ],
         )

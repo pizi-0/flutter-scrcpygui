@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scrcpygui/screens/main_screen/main_screen.dart';
 import 'package:scrcpygui/models/settings_model/app_theme.dart';
@@ -12,6 +11,7 @@ import 'package:scrcpygui/providers/dependencies_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
+import 'package:scrcpygui/utils/theme_utils.dart';
 
 import '../../utils/app_utils.dart';
 import '../install_screen/install_screen.dart';
@@ -96,14 +96,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: GoogleFonts.roboto().fontFamily,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: widget.theme.color,
-          brightness: widget.theme.brightness,
-        ),
-        useMaterial3: true,
-      ),
+      theme: ThemeUtils.themeData(ref),
       home: const Scaffold(
         body: Center(
           child: Column(

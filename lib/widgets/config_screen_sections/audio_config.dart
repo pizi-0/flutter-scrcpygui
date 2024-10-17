@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
@@ -43,6 +44,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
     final selectedConfig = ref.watch(newOrEditConfigProvider)!;
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     final ScrcpyInfo info = ref
         .watch(infoProvider)
@@ -69,7 +71,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
               child: Text(
                 'Audio',
                 style: Theme.of(context).textTheme.titleLarge,
-              ),
+              ).textColor(colorScheme.inverseSurface),
             ),
             Container(
               decoration: BoxDecoration(
@@ -101,6 +103,8 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
 
   Widget _buildAudioDuplicateOption(
       BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ConfigDropdownOthers(
       initialValue: selectedConfig.audioOptions.duplicateAudio,
       onSelected: (info.buildVersion.toInt() ?? 0) < 13
@@ -123,14 +127,14 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
                             .copyWith(audioSource: AudioSource.output)));
               }
             },
-      items: const [
+      items: [
         DropdownMenuItem(
           value: true,
-          child: Text('Yes'),
+          child: const Text('Yes').textColor(colorScheme.inverseSurface),
         ),
         DropdownMenuItem(
           value: false,
-          child: Text('No'),
+          child: const Text('No').textColor(colorScheme.inverseSurface),
         ),
       ],
       label: 'Duplicate audio *',
@@ -161,6 +165,8 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
 
   Widget _buildAudioFormatSelector(
       BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
       height: selectedConfig.isRecording &&
@@ -183,10 +189,15 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
                                   audioCodec: value, audioEncoder: 'default')));
                     },
               items: [
-                ...info.audioEncoder.map((e) =>
-                    DropdownMenuItem(value: e.codec, child: Text(e.codec))),
+                ...info.audioEncoder.map((e) => DropdownMenuItem(
+                    value: e.codec,
+                    child:
+                        Text(e.codec).textColor(colorScheme.inverseSurface))),
                 if (selectedConfig.audioOptions.audioFormat != AudioFormat.m4a)
-                  const DropdownMenuItem(value: 'raw', child: Text('raw'))
+                  DropdownMenuItem(
+                      value: 'raw',
+                      child: const Text('raw')
+                          .textColor(colorScheme.inverseSurface))
               ],
               label: 'Codec *',
               tooltipMessage:
@@ -202,9 +213,10 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
                             state.audioOptions.copyWith(audioEncoder: value)));
               },
               items: [
-                const DropdownMenuItem(
+                DropdownMenuItem(
                   value: 'default',
-                  child: Text('Default'),
+                  child: const Text('Default')
+                      .textColor(colorScheme.inverseSurface),
                 ),
                 if (selectedConfig.audioOptions.audioCodec != 'raw')
                   ...info.audioEncoder
@@ -218,7 +230,8 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
                       .map(
                         (enc) => DropdownMenuItem(
                           value: enc,
-                          child: Text(enc),
+                          child:
+                              Text(enc).textColor(colorScheme.inverseSurface),
                         ),
                       )
               ],

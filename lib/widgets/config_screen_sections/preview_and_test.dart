@@ -56,6 +56,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
     final runningInstance = ref.watch(scrcpyInstanceProvider);
     final testInstance = ref.watch(testInstanceProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     final bool isTestRunning = runningInstance.contains(testInstance);
 
@@ -71,7 +72,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
           child: Text(
             'Test config',
             style: Theme.of(context).textTheme.titleLarge,
-          ),
+          ).textColor(colorScheme.inverseSurface),
         ),
         Container(
           decoration: BoxDecoration(
@@ -84,9 +85,10 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(left: 8.0),
-                  child: Text('Command preview:'),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: const Text('Command preview:')
+                      .textColor(colorScheme.inverseSurface),
                 ),
                 Container(
                   width: appWidth,
@@ -99,6 +101,8 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                     padding: const EdgeInsets.all(8.0),
                     child: SelectableText(
                       'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, info, selectedDevice!).join(' ')}',
+                      style: TextStyle(
+                          fontSize: 14, color: colorScheme.inverseSurface),
                     ),
                   ),
                 ),

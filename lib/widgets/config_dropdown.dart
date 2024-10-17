@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,6 +28,7 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       decoration: BoxDecoration(
@@ -43,7 +45,7 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
                 child: Text(
               label.toTitleCase,
               style: Theme.of(context).textTheme.bodyMedium,
-            )),
+            ).textColor(colorScheme.inverseSurface)),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: ConstrainedBox(
@@ -68,8 +70,9 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
                             .map((e) => DropdownMenuItem(
                                   value: e,
                                   child: Text(toTitleCase
-                                      ? e.value.toString().toTitleCase
-                                      : e.value.toString()),
+                                          ? e.value.toString().toTitleCase
+                                          : e.value.toString())
+                                      .textColor(colorScheme.inverseSurface),
                                 ))
                             .toList(),
                       ),
@@ -104,6 +107,7 @@ class ConfigDropdownOthers extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       decoration: BoxDecoration(
@@ -120,7 +124,7 @@ class ConfigDropdownOthers extends ConsumerWidget {
                 child: Text(
               label,
               style: Theme.of(context).textTheme.bodyMedium,
-            )),
+            ).textColor(colorScheme.inverseSurface)),
             if (onSelected == null)
               Tooltip(
                 message: tooltipMessage ?? '',
@@ -142,7 +146,10 @@ class ConfigDropdownOthers extends ConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: DropdownButton<dynamic>(
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(color: colorScheme.inverseSurface),
                         value: initialValue,
                         onChanged: onSelected,
                         items: items,
@@ -178,6 +185,7 @@ class ConfigUserInput extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       decoration: BoxDecoration(
@@ -194,7 +202,7 @@ class ConfigUserInput extends ConsumerWidget {
                 child: Text(
               label,
               style: Theme.of(context).textTheme.bodyMedium,
-            )),
+            ).textColor(colorScheme.inverseSurface)),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: ConstrainedBox(
@@ -224,6 +232,9 @@ class ConfigUserInput extends ConsumerWidget {
                                 const InputDecoration.collapsed(hintText: ''),
                             onChanged: onChanged,
                             onTap: onTap,
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: colorScheme.inverseSurface),
                           ),
                         ),
                       ),
@@ -232,7 +243,8 @@ class ConfigUserInput extends ConsumerWidget {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Text(unit,
-                            style: Theme.of(context).textTheme.bodyMedium),
+                                style: Theme.of(context).textTheme.bodyMedium)
+                            .textColor(colorScheme.inverseSurface),
                       ),
                     ),
                     const SizedBox(width: 5),
@@ -264,6 +276,7 @@ class ConfigCustom extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       decoration: BoxDecoration(
@@ -281,7 +294,7 @@ class ConfigCustom extends ConsumerWidget {
                 child: Text(
                   label,
                   style: Theme.of(context).textTheme.bodyMedium,
-                )),
+                ).textColor(colorScheme.inverseSurface)),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: ConstrainedBox(

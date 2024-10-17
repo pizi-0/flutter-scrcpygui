@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
@@ -49,6 +50,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     final selectedConfig = ref.watch(newOrEditConfigProvider)!;
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     final ScrcpyInfo info = ref
         .watch(infoProvider)
@@ -67,7 +69,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
               child: Text(
                 'Video',
                 style: Theme.of(context).textTheme.titleLarge,
-              ),
+              ).textColor(colorScheme.inverseSurface),
             ),
             Container(
               decoration: BoxDecoration(
@@ -145,6 +147,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   }
 
   Widget _buildDisplaySelector(ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -157,7 +161,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
           items: info.displays
               .map((d) => DropdownMenuItem(
                     value: d.id,
-                    child: Text(d.id),
+                    child: Text(d.id).textColor(colorScheme.inverseSurface
+                        .withOpacity(info.displays.length == 1 ? 0.3 : 0)),
                   ))
               .toList(),
           onSelected: info.displays.length == 1
@@ -171,6 +176,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   }
 
   Widget _buildResolutionScale(ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ConfigCustom(
       label: 'Resolution scale',
       child: Row(
@@ -204,8 +211,9 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
           ),
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
-            child: Text(
-                selectedConfig.videoOptions.resolutionScale.toStringAsFixed(1)),
+            child: Text(selectedConfig.videoOptions.resolutionScale
+                    .toStringAsFixed(1))
+                .textColor(colorScheme.inverseSurface),
           ),
         ],
       ),
@@ -214,6 +222,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
 
   Widget _buildVideoCodecNFormatSelector(
       BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return AnimatedContainer(
       height: selectedConfig.isRecording ? 128 : 84,
       duration: const Duration(milliseconds: 200),
@@ -246,9 +256,10 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                             state.videoOptions.copyWith(videoEncoder: value)));
               },
               items: [
-                const DropdownMenuItem(
+                DropdownMenuItem(
                   value: 'default',
-                  child: Text('Default'),
+                  child: const Text('Default')
+                      .textColor(colorScheme.inverseSurface),
                 ),
                 ...info.videoEncoders
                     .firstWhere((ve) =>

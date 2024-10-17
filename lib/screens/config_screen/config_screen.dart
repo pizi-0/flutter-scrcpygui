@@ -83,10 +83,11 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(newOrEditConfigProvider)!;
     final selectedDevice = ref.watch(selectedDeviceProvider);
-    final allConfig = ref.watch(configsProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     final buttonStyle = ButtonStyle(
+        iconColor: WidgetStatePropertyAll(colorScheme.inverseSurface),
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
 
@@ -107,9 +108,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
             onPressed: () => _handleOnClose(),
             icon: const Icon(Icons.close_rounded),
           ),
-          title: Text(allConfig.contains(selectedConfig)
-              ? selectedConfig.configName
-              : '${selectedConfig.configName} *'),
+          title: Text(selectedConfig.configName),
         ),
         body: ref
                 .watch(infoProvider)

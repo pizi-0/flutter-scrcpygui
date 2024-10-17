@@ -17,23 +17,31 @@ class ThemeSection extends ConsumerStatefulWidget {
 }
 
 class _ThemeSectionState extends ConsumerState<ThemeSection> {
-  late double radius;
-  late int colorMod;
-
-  @override
-  void initState() {
-    radius = ref.read(settingsProvider.select((s) => s.looks)).widgetRadius;
-    colorMod = ref.read(settingsProvider.select((s) => s.looks)).colorModifier;
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final looks = ref.watch(settingsProvider.select((s) => s.looks));
+    final advancedVisible = ref.watch(advancedThemingVisible);
 
     return BodyContainer(
+      height: (54 * (advancedVisible ? 6 : 3)) + 4,
       headerTitle: 'Theme',
+      headerTrailing: TextButton.icon(
+        style: ButtonStyle(
+          iconSize: const WidgetStatePropertyAll(15),
+          textStyle: const WidgetStatePropertyAll(TextStyle(fontSize: 10)),
+          shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(looks.widgetRadius))),
+          // padding: const WidgetStatePropertyAll(EdgeInsets.all(2)),
+        ),
+        onPressed: () => setState(() =>
+            ref.read(advancedThemingVisible.notifier).state = !advancedVisible),
+        label: advancedVisible ? const Text('Less') : const Text('More'),
+        icon: advancedVisible
+            ? const Icon(Icons.expand_less_rounded)
+            : const Icon(Icons.expand_more_rounded),
+        iconAlignment: IconAlignment.end,
+      ),
       children: [
         BodyContainerItem(
           title: 'Brightness',
@@ -42,7 +50,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               Radio(
                 activeColor: colorScheme.primary,
                 value: Brightness.dark,
-                groupValue: appTheme.brightness,
+                groupValue: looks.brightness,
                 onChanged: (val) {
                   final currentSettings = ref.read(settingsProvider);
                   final currentLooks = currentSettings.looks;
@@ -55,12 +63,12 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                       looks: currentLooks.copyWith(brightness: val)));
                 },
               ),
-              const Text('Dark'),
+              const Text('Dark').textColor(colorScheme.inverseSurface),
               const SizedBox(width: 10),
               Radio(
                 activeColor: colorScheme.primary,
                 value: Brightness.light,
-                groupValue: appTheme.brightness,
+                groupValue: looks.brightness,
                 onChanged: (val) {
                   final currentSettings = ref.read(settingsProvider);
                   final currentLooks = currentSettings.looks;
@@ -73,66 +81,8 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                       looks: currentLooks.copyWith(brightness: val)));
                 },
               ),
-              const Text('Light'),
+              const Text('Light').textColor(colorScheme.inverseSurface),
             ],
-          ),
-        ),
-        BodyContainerItem(
-          title:
-              appTheme.brightness == Brightness.dark ? 'Darkness' : 'Lightness',
-          trailing: SliderTheme(
-            data: SliderThemeData(
-              trackShape: CustomTrackShape(),
-              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
-              activeTrackColor: colorScheme.primary,
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                IconButton(
-                  tooltip: 'Default',
-                  onPressed: () async {
-                    ref.read(settingsProvider.notifier).update((state) =>
-                        state = state.copyWith(
-                            looks: state.looks.copyWith(
-                                colorModifier: defaultTheme.colorModifier)));
-
-                    setState(() {
-                      colorMod = defaultTheme.colorModifier;
-                    });
-
-                    final newSettings = ref.read(settingsProvider);
-                    await AppUtils.saveAppSettings(newSettings);
-                  },
-                  icon: const Icon(Icons.refresh_rounded),
-                ),
-                SizedBox(
-                  width: 150,
-                  child: Slider(
-                    divisions: 50,
-                    min: 1,
-                    max: 100,
-                    value: colorMod.toDouble(),
-                    onChangeEnd: (value) async {
-                      final newSettings = ref.read(settingsProvider);
-                      await AppUtils.saveAppSettings(newSettings);
-                    },
-                    onChanged: (v) {
-                      colorMod = v.toInt();
-                      setState(() {});
-                      ref.read(settingsProvider.notifier).update((state) =>
-                          state = state.copyWith(
-                              looks: state.looks
-                                  .copyWith(colorModifier: v.toInt())));
-                    },
-                  ),
-                ),
-                SizedBox(
-                    width: 30,
-                    child:
-                        Text(colorMod.toInt().toString()).alignAtCenterRight())
-              ],
-            ),
           ),
         ),
         BodyContainerItem(
@@ -167,9 +117,9 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                   width: 100,
                   decoration: BoxDecoration(
                     borderRadius:
-                        BorderRadius.circular(appTheme.widgetRadius * 0.8),
+                        BorderRadius.circular(looks.widgetRadius * 0.8),
                     border: Border.all(color: Colors.black),
-                    color: appTheme.color,
+                    color: looks.color,
                   ),
                 ),
               ),
@@ -195,29 +145,24 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                             looks: state.looks.copyWith(
                                 widgetRadius: defaultTheme.widgetRadius)));
 
-                    setState(() {
-                      radius = defaultTheme.widgetRadius;
-                    });
-
                     final newSettings = ref.read(settingsProvider);
                     await AppUtils.saveAppSettings(newSettings);
                   },
                   icon: const Icon(Icons.refresh_rounded),
                 ),
+                const SizedBox(width: 10),
                 SizedBox(
-                  width: 150,
+                  width: 100,
                   child: Slider(
                     divisions: 15,
                     min: 0,
                     max: 15,
-                    value: radius,
+                    value: looks.widgetRadius,
                     onChangeEnd: (value) async {
                       final newSettings = ref.read(settingsProvider);
                       await AppUtils.saveAppSettings(newSettings);
                     },
                     onChanged: (v) {
-                      radius = v;
-                      setState(() {});
                       ref.read(settingsProvider.notifier).update((state) =>
                           state = state.copyWith(
                               looks: state.looks.copyWith(widgetRadius: v)));
@@ -226,11 +171,190 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                 ),
                 SizedBox(
                     width: 30,
-                    child: Text(radius.toInt().toString()).alignAtCenterRight())
+                    child: Text(looks.widgetRadius.toInt().toString())
+                        .textColor(colorScheme.inverseSurface)
+                        .alignAtCenterRight())
               ],
             ),
           ),
-        )
+        ),
+        BodyContainerItem(
+          title: 'Background tint level',
+          trailing: SliderTheme(
+            data: SliderThemeData(
+              trackShape: CustomTrackShape(),
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
+              activeTrackColor: colorScheme.primary,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  tooltip: 'Default',
+                  onPressed: () async {
+                    final currentTint = looks.tintLevel;
+                    ref.read(settingsProvider.notifier).update((state) =>
+                        state = state.copyWith(
+                            looks: state.looks.copyWith(
+                                tintLevel: currentTint.copyWith(
+                                    surfaceTintLevel: defaultTheme
+                                        .tintLevel.surfaceTintLevel))));
+
+                    final newSettings = ref.read(settingsProvider);
+                    await AppUtils.saveAppSettings(newSettings);
+                  },
+                  icon: const Icon(Icons.refresh_rounded),
+                ),
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 100,
+                  child: Slider(
+                    divisions: 100,
+                    min: 0,
+                    max: 100,
+                    value: looks.tintLevel.surfaceTintLevel.toDouble(),
+                    onChangeEnd: (value) async {
+                      final newSettings = ref.read(settingsProvider);
+                      await AppUtils.saveAppSettings(newSettings);
+                    },
+                    onChanged: (v) {
+                      final currentTint = looks.tintLevel;
+                      ref.read(settingsProvider.notifier).update((state) =>
+                          state = state.copyWith(
+                              looks: state.looks.copyWith(
+                                  tintLevel: currentTint.copyWith(
+                                      surfaceTintLevel: v.toInt()))));
+                    },
+                  ),
+                ),
+                SizedBox(
+                    width: 30,
+                    child: Text(
+                            looks.tintLevel.surfaceTintLevel.toInt().toString())
+                        .textColor(colorScheme.inverseSurface)
+                        .alignAtCenterRight())
+              ],
+            ),
+          ),
+        ),
+        BodyContainerItem(
+          title: 'Primary tint level',
+          trailing: SliderTheme(
+            data: SliderThemeData(
+              trackShape: CustomTrackShape(),
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
+              activeTrackColor: colorScheme.primary,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  tooltip: 'Default',
+                  onPressed: () async {
+                    final currentTint = looks.tintLevel;
+                    ref.read(settingsProvider.notifier).update((state) =>
+                        state = state.copyWith(
+                            looks: state.looks.copyWith(
+                                tintLevel: currentTint.copyWith(
+                                    primaryTintLevel: defaultTheme
+                                        .tintLevel.primaryTintLevel))));
+
+                    final newSettings = ref.read(settingsProvider);
+                    await AppUtils.saveAppSettings(newSettings);
+                  },
+                  icon: const Icon(Icons.refresh_rounded),
+                ),
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 100,
+                  child: Slider(
+                    divisions: 100,
+                    min: 0,
+                    max: 100,
+                    value: looks.tintLevel.primaryTintLevel.toDouble(),
+                    onChangeEnd: (value) async {
+                      final newSettings = ref.read(settingsProvider);
+                      await AppUtils.saveAppSettings(newSettings);
+                    },
+                    onChanged: (v) {
+                      final currentTint = looks.tintLevel;
+                      ref.read(settingsProvider.notifier).update((state) =>
+                          state = state.copyWith(
+                              looks: state.looks.copyWith(
+                                  tintLevel: currentTint.copyWith(
+                                      primaryTintLevel: v.toInt()))));
+                    },
+                  ),
+                ),
+                SizedBox(
+                    width: 30,
+                    child: Text(
+                            looks.tintLevel.primaryTintLevel.toInt().toString())
+                        .textColor(colorScheme.inverseSurface)
+                        .alignAtCenterRight())
+              ],
+            ),
+          ),
+        ),
+        BodyContainerItem(
+          title: 'Secondary tint level',
+          trailing: SliderTheme(
+            data: SliderThemeData(
+              trackShape: CustomTrackShape(),
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  tooltip: 'Default',
+                  onPressed: () async {
+                    final currentTint = looks.tintLevel;
+                    ref.read(settingsProvider.notifier).update((state) =>
+                        state = state.copyWith(
+                            looks: state.looks.copyWith(
+                                tintLevel: currentTint.copyWith(
+                                    secondaryTintLevel: defaultTheme
+                                        .tintLevel.secondaryTintLevel))));
+
+                    final newSettings = ref.read(settingsProvider);
+                    await AppUtils.saveAppSettings(newSettings);
+                  },
+                  icon: const Icon(Icons.refresh_rounded),
+                ),
+                const SizedBox(width: 10),
+                SizedBox(
+                  width: 100,
+                  child: Slider(
+                    divisions: 100,
+                    min: 0,
+                    max: 100,
+                    value: looks.tintLevel.secondaryTintLevel.toDouble(),
+                    onChangeEnd: (value) async {
+                      final newSettings = ref.read(settingsProvider);
+                      await AppUtils.saveAppSettings(newSettings);
+                    },
+                    onChanged: (v) {
+                      final currentTint = looks.tintLevel;
+                      ref.read(settingsProvider.notifier).update((state) =>
+                          state = state.copyWith(
+                              looks: state.looks.copyWith(
+                                  tintLevel: currentTint.copyWith(
+                                      secondaryTintLevel: v.toInt()))));
+                    },
+                  ),
+                ),
+                SizedBox(
+                    width: 30,
+                    child: Text(looks.tintLevel.secondaryTintLevel
+                            .toInt()
+                            .toString())
+                        .textColor(colorScheme.inverseSurface)
+                        .alignAtCenterRight())
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }

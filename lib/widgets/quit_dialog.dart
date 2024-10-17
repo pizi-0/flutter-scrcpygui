@@ -37,13 +37,14 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
   @override
   Widget build(BuildContext context) {
     TextStyle? style = Theme.of(context).textTheme.titleSmall;
+    final colorScheme = Theme.of(context).colorScheme;
     final runningInstance = ref.watch(scrcpyInstanceProvider);
     final wifiDevices =
         ref.watch(adbProvider).where((e) => e.id.contains(':')).toList();
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final buttonStyle = ButtonStyle(
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8))));
+            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
 
     final noWin = runningInstance
         .where((ins) => ins.config.windowOptions.noWindow)
@@ -83,7 +84,10 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                       child: Text(
                         '*Servers with no window will be killed regardless. (${noWin.length})',
                         style: style,
-                      ).italic().fontSize(11),
+                      )
+                          .italic()
+                          .fontSize(11)
+                          .textColor(colorScheme.inverseSurface),
                     ),
                   if (noWin.isNotEmpty) const SizedBox(height: 5),
                   if (runningInstance.isNotEmpty)
@@ -110,10 +114,11 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                         title: Text(
                           'Kill running servers?',
                           style: style,
-                        ),
+                        ).textColor(colorScheme.inverseSurface),
                         subtitle: Text(
                           '${runningInstance.length} server(s)',
-                        ),
+                        ).textColor(
+                            colorScheme.inverseSurface.withOpacity(0.8)),
                       ),
                     ),
                   if (wifiDevices.isNotEmpty)
@@ -139,10 +144,11 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                         title: Text(
                           'Disconnect Wireless ADB?',
                           style: style,
-                        ),
+                        ).textColor(colorScheme.inverseSurface),
                         subtitle: Text(
                           '${wifiDevices.length} device(s)',
-                        ),
+                        ).textColor(
+                            colorScheme.inverseSurface.withOpacity(0.8)),
                       ),
                     )
                 ],
@@ -195,7 +201,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                     onPressed: () {
                       _onClose(wifi, instance);
                     },
-                    child: const Text('Quit'),
+                    child: const Text('Quit')
+                        .textColor(colorScheme.inverseSurface),
                   ),
                   const SizedBox(width: 10),
                   TextButton(
@@ -204,7 +211,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                     onPressed: () {
                       Navigator.pop(context, false);
                     },
-                    child: const Text('Cancel'),
+                    child: const Text('Cancel')
+                        .textColor(colorScheme.inverseSurface),
                   ),
                 ],
               )

@@ -2,6 +2,7 @@
 
 import 'dart:async';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +43,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
   PageController page = PageController(initialPage: 1);
   PageController wirelessPage = PageController(initialPage: 0);
   TextEditingController ip = TextEditingController(text: '192.168.');
+  late AnimationController anim;
 
   @override
   void initState() {
@@ -207,13 +209,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
           color: Theme.of(context).colorScheme.secondaryContainer,
         ),
         child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Developer option > Wireless debugging > IP & Port'),
-              _enterIpTextBox(ref, context)
-            ],
-          ),
+          child: _enterIpTextBox(ref, context),
         ),
       ),
     );
@@ -224,6 +220,9 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
       tooltipmessage:
           currentPage == 0 ? 'Connected devices' : 'Connect wireless ADB',
       icondata: currentPage == 0 ? Icons.close : Icons.wifi_rounded,
+      iconColor: currentPage == 0
+          ? Colors.red
+          : Theme.of(context).colorScheme.inverseSurface,
       ontap: () async {
         if (currentPage == 0) {
           await page.nextPage(
@@ -264,8 +263,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
       padding: const EdgeInsets.all(8.0),
       child: Text(
         title,
-        style:
-            TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
+        style: TextStyle(color: Theme.of(context).colorScheme.inverseSurface),
       ),
     );
   }
@@ -310,10 +308,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
 
   Widget _enterIpTextBox(WidgetRef ref, BuildContext context) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-
-    final buttonStyle = ButtonStyle(
-        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -321,34 +316,51 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Tooltip(
-            message: 'Default to 5555 if no port specifed',
+            message:
+                '1. Set static IP for easier connection.\n2. Port default to 5555 if not specifed.\n3. Auto listen to 5555 for new device on connect.',
             child: Icon(Icons.info),
           ),
           const SizedBox(width: 10),
-          const Text('IP:Port: '),
-          Container(
-            height: 40,
-            width: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
-              color: Theme.of(context).colorScheme.primaryContainer,
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: TextField(
-                  cursorColor: Theme.of(context).colorScheme.surface,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp("[0-9.:]")),
-                  ],
-                  controller: ip,
-                  onSubmitted: (t) => _connect(),
-                  onChanged: (a) {
-                    setState(() => error = false);
-                  },
-                  style: const TextStyle(fontSize: 14),
-                  textAlign: TextAlign.center,
-                  decoration: const InputDecoration.collapsed(hintText: ''),
+          const Text('IP:Port: ').textColor(colorScheme.inverseSurface),
+          ShakeX(
+            controller: (p0) => anim = p0,
+            duration: 200.milliseconds,
+            curve: Curves.linear,
+            from: 5,
+            manualTrigger: true,
+            child: Container(
+              height: 40,
+              width: 200,
+              decoration: BoxDecoration(
+                borderRadius:
+                    BorderRadius.circular(appTheme.widgetRadius * 0.8),
+                color: colorScheme.primaryContainer,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Center(
+                  child: TextField(
+                    cursorColor: colorScheme.inverseSurface,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp("[0-9.:]")),
+                    ],
+                    controller: ip,
+                    onSubmitted: (t) async {
+                      if (t.isIpv4) {
+                        await _connect();
+                      } else {
+                        anim.reset();
+                        anim.forward();
+                      }
+                    },
+                    onChanged: (a) {
+                      setState(() => error = false);
+                    },
+                    style: TextStyle(
+                        fontSize: 14, color: colorScheme.inverseSurface),
+                    textAlign: TextAlign.center,
+                    decoration: const InputDecoration.collapsed(hintText: ''),
+                  ),
                 ),
               ),
             ),
@@ -359,12 +371,9 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
                   message: 'Failed to connect',
                   child: Icon(Icons.error_rounded, color: Colors.redAccent),
                 )
-              : IconButton(
-                  style: buttonStyle,
-                  onPressed: _connect,
-                  icon: const Icon(
-                    Icons.send_rounded,
-                  ),
+              : SectionButton(
+                  ontap: _connect,
+                  icondata: Icons.send_rounded,
                 )
         ],
       ),
