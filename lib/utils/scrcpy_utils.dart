@@ -241,9 +241,22 @@ class ScrcpyUtils {
     return res;
   }
 
-  static List<FlagCheckResult> checkForIncompatibleFlags(WidgetRef ref) {
+  static Future<List<FlagCheckResult>> checkForIncompatibleFlags(
+      WidgetRef ref) async {
     final selectedDevice = ref.read(selectedDeviceProvider);
     final selectedConfig = ref.read(selectedConfigProvider);
+
+    try {
+      ref
+          .read(infoProvider)
+          .firstWhere((e) => e.device.serialNo == selectedDevice!.serialNo);
+    } on StateError catch (e) {
+      debugPrint(e.toString());
+      final info = await AdbUtils.getScrcpyDetailsFor(selectedDevice!);
+
+      ref.read(infoProvider.notifier).addInfo(info);
+    }
+
     final ScrcpyInfo info = ref
         .read(infoProvider)
         .firstWhere((i) => i.device.serialNo == selectedDevice!.serialNo);

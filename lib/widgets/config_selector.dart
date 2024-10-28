@@ -28,6 +28,8 @@ class ConfigSelector extends ConsumerStatefulWidget {
 }
 
 class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
+  bool buttonLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -183,10 +185,14 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
           children: [
             SectionButton(
               tooltipmessage: 'Edit config',
-              icondata: Icons.edit,
+              icondata: buttonLoading ? Icons.timer_outlined : Icons.edit,
               ontap: !defaultConfigs.contains(selectedConfig)
                   ? () async {
-                      final res = ScrcpyUtils.checkForIncompatibleFlags(ref);
+                      setState(() {
+                        buttonLoading = true;
+                      });
+                      final res =
+                          await ScrcpyUtils.checkForIncompatibleFlags(ref);
 
                       bool proceed = res.where((r) => !r.ok).isEmpty;
 
@@ -202,6 +208,9 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
                       }
 
                       if (proceed == true) {
+                        setState(() {
+                          buttonLoading = false;
+                        });
                         ref.read(newOrEditConfigProvider.notifier).state =
                             selectedConfig;
 
@@ -213,6 +222,9 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
                           ),
                         );
                       }
+                      setState(() {
+                        buttonLoading = false;
+                      });
                     }
                   : null,
             ),

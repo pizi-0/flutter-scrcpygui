@@ -1,5 +1,6 @@
 {
-    "editor.fontFamily": "Source Code Pro for Powerline",
-    "editor.fontLigatures": false,
-    "terminal.integrated.fontFamily": "'FiraCode Nerd Font'"
+  "editor.fontFamily": "Source Code Pro for Powerline",
+  "editor.fontLigatures": false,
+  "terminal.integrated.fontFamily": "'FiraCode Nerd Font'",
+  "dart.flutterSdkPath": ".fvm/versions/3.24.3"
 }

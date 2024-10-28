@@ -62,7 +62,8 @@ class _StartButtonState extends ConsumerState<StartButton> {
               ),
               onPressed: () async {
                 setState(() => loading = true);
-                final res = ScrcpyUtils.checkForIncompatibleFlags(ref);
+
+                final res = await ScrcpyUtils.checkForIncompatibleFlags(ref);
 
                 bool proceed = res.where((r) => !r.ok).isEmpty;
 

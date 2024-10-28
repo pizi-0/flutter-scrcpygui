@@ -6,18 +6,15 @@ import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
-import 'package:scrcpygui/providers/info_provider.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/widgets/disconnect_dialog.dart';
-import 'package:tray_manager/tray_manager.dart' hide MenuItem;
 
 import '../models/adb_devices.dart';
 import '../providers/settings_provider.dart';
 import '../providers/toast_providers.dart';
-import '../utils/tray_utils.dart';
 import 'simple_toast/simple_toast_item.dart';
 
 class DeviceIcon extends ConsumerStatefulWidget {
@@ -41,24 +38,24 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((a) async {
-      if (mounted) {
-        await trayManager.destroy();
-        await TrayUtils.initTray(ref, context);
-        final existingInfo = ref.read(infoProvider);
+      // if (mounted) {
+      //   await trayManager.destroy();
+      //   await TrayUtils.initTray(ref, context);
+      //   final existingInfo = ref.read(infoProvider);
 
-        if (existingInfo
-            .where((i) => i.device.serialNo == widget.device!.serialNo)
-            .isEmpty) {
-          setState(() {
-            loading = true;
-          });
-          info = await AdbUtils.getScrcpyDetailsFor(widget.device!);
-          ref.read(infoProvider.notifier).addInfo(info);
-          setState(() {
-            loading = false;
-          });
-        }
-      }
+      //   if (existingInfo
+      //       .where((i) => i.device.serialNo == widget.device!.serialNo)
+      //       .isEmpty) {
+      //     setState(() {
+      //       loading = true;
+      //     });
+      //     info = await AdbUtils.getScrcpyDetailsFor(widget.device!);
+      //     ref.read(infoProvider.notifier).addInfo(info);
+      //     setState(() {
+      //       loading = false;
+      //     });
+      //   }
+      // }
     });
   }
 
