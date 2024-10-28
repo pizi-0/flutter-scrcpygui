@@ -349,8 +349,10 @@ class AdbUtils {
 
   static Future<String> getIpForUSB(AdbDevices dev) async {
     String? ip;
-    final res = await Process.run(
-        'bash', ['-c', 'adb -s ${dev.serialNo} shell ip route']);
+    final res = await Process.run('bash', [
+      '-c',
+      '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb -s ${dev.serialNo} shell ip route'
+    ]);
 
     final res2 = res.stdout.toString().splitLines();
 
