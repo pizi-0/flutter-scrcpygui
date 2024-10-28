@@ -11,6 +11,7 @@ import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/widgets/disconnect_dialog.dart';
+import 'package:string_extensions/string_extensions.dart';
 
 import '../models/adb_devices.dart';
 import '../providers/settings_provider.dart';
@@ -356,6 +357,11 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
         ),
       ];
     } else {
+      final connected = ref.read(adbProvider);
+      final wirelessAreadyConnected = connected
+          .where((d) => d.serialNo == widget.device!.serialNo && d.id.isIpv4)
+          .isNotEmpty;
+
       return [
         if (deviceServers.isNotEmpty)
           MenuItem.submenu(
@@ -374,6 +380,29 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
             ],
           ),
         if (deviceServers.isNotEmpty) const MenuDivider(),
+        if (!wirelessAreadyConnected)
+          MenuItem(
+            label: 'To wireless',
+            icon: Icons.wifi,
+            onSelected: () async {
+              setState(() {
+                loading = true;
+              });
+              final ip = '${await AdbUtils.getIpForUSB(widget.device!)}:5555';
+              await AdbUtils.tcpip5555(widget.device!.id);
+              await AdbUtils.connectWifiDebugging(ip: ip);
+              final connected = await AdbUtils.connectedDevices();
+
+              if (connected.where((d) => d.id == ip).isNotEmpty) {
+                await AdbUtils.saveWirelessDeviceHistory(ref, ip);
+              }
+
+              setState(() {
+                loading = false;
+              });
+            },
+          ),
+        if (!wirelessAreadyConnected) const MenuDivider(),
         MenuItem(
           label: 'Rename',
           icon: Icons.edit_rounded,

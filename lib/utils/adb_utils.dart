@@ -347,6 +347,22 @@ class AdbUtils {
     ).toString());
   }
 
+  static Future<String> getIpForUSB(AdbDevices dev) async {
+    String? ip;
+    final res = await Process.run(
+        'bash', ['-c', 'adb -s ${dev.serialNo} shell ip route']);
+
+    final res2 = res.stdout.toString().splitLines();
+
+    final res3 = res2.lastWhere((e) => e.contains('wlan0'));
+
+    final res4 = res3.split(' ').lastWhere((e) => e.isIpv4 || e.isIpv6);
+
+    ip = res4.trim();
+
+    return ip;
+  }
+
   static Future<List<String>> getScrcpyServerPIDs() async {
     List<String> adbPIDs = [];
 
