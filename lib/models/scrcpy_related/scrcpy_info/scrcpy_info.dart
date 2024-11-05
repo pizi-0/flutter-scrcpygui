@@ -58,22 +58,22 @@ class ScrcpyInfo {
       device: AdbDevices.fromMap(map['device'] as Map<String, dynamic>),
       buildVersion: map['buildVersion'] as String,
       cameras: List<ScrcpyCamera>.from(
-        (map['cameras'] as List<int>).map<ScrcpyCamera>(
+        (map['cameras']).map<ScrcpyCamera>(
           (x) => ScrcpyCamera.fromMap(x as Map<String, dynamic>),
         ),
       ),
       displays: List<ScrcpyDisplay>.from(
-        (map['displays'] as List<int>).map<ScrcpyDisplay>(
+        (map['displays']).map<ScrcpyDisplay>(
           (x) => ScrcpyDisplay.fromMap(x as Map<String, dynamic>),
         ),
       ),
       videoEncoders: List<VideoEncoder>.from(
-        (map['videoEncoders'] as List<int>).map<VideoEncoder>(
+        (map['videoEncoders']).map<VideoEncoder>(
           (x) => VideoEncoder.fromMap(x as Map<String, dynamic>),
         ),
       ),
       audioEncoder: List<AudioEncoder>.from(
-        (map['audioEncoder'] as List<int>).map<AudioEncoder>(
+        (map['audioEncoder']).map<AudioEncoder>(
           (x) => AudioEncoder.fromMap(x as Map<String, dynamic>),
         ),
       ),

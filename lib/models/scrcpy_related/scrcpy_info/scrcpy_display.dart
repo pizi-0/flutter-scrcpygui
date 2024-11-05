@@ -27,5 +27,5 @@ class ScrcpyDisplay {
       ScrcpyDisplay.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'ScrcpyDisplay(id: $id, resolution: $resolution)';
+  String toString() => 'id: $id, resolution: $resolution';
 }

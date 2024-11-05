@@ -10,6 +10,8 @@ const PKEY_WIRELESS_DEVICE_HX = 'wireless-history';
 
 const PKEY_SAVED_DEVICES = 'saved-devices';
 
+const PKEY_AUTO_CONNECT_DEVICES = 'autoconnect-devices';
+
 const PKEY_LASTUSED_CONFIG = 'last-used-config';
 
 const PKEY_NOTI = 'noti-settings';

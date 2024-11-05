@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/device_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/video_options.dart';
@@ -165,3 +166,5 @@ final defaultSettings = AppSettings(
   looks: defaultTheme,
   behaviour: defaultAppBehaviour,
 );
+
+final defaultAutomationData = AutomationData(actions: []);

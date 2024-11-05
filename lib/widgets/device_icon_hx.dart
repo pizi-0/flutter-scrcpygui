@@ -1,3 +1,4 @@
+import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +20,7 @@ class DeviceHistoryIcon extends ConsumerStatefulWidget {
 
 class _DeviceHistoryIconState extends ConsumerState<DeviceHistoryIcon> {
   bool edit = false;
+  late final ping = Ping(widget.device!.id.split(':').first);
 
   @override
   void initState() {
@@ -133,7 +135,35 @@ class _DeviceHistoryIconState extends ConsumerState<DeviceHistoryIcon> {
   }
 
   List<ContextMenuEntry> _buildContextmenuEntries() {
+    final isAuto = ref.read(autoConnectDevicesProvider).contains(widget.device);
     return [
+      isAuto
+          ? MenuItem(
+              icon: Icons.close_rounded,
+              label: 'Disable auto connect',
+              onSelected: () async {
+                ref.read(autoConnectDevicesProvider.notifier).update((state) =>
+                    state = state.where((e) => e != widget.device!).toList());
+
+                final devs = ref.read(autoConnectDevicesProvider);
+                await AdbUtils.saveAutoConnectDevices(devs);
+              },
+            )
+          : MenuItem(
+              icon: Icons.add_rounded,
+              label: 'Enable auto connect',
+              onSelected: () async {
+                ref.read(autoConnectDevicesProvider.notifier).update((state) =>
+                    state = [
+                      ...state
+                          .where((e) => e.serialNo != widget.device!.serialNo),
+                      widget.device!
+                    ]);
+                final devs = ref.read(autoConnectDevicesProvider);
+                await AdbUtils.saveAutoConnectDevices(devs);
+              },
+            ),
+      const MenuDivider(),
       MenuItem(
         icon: Icons.remove,
         label: 'Remove from history',

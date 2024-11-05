@@ -49,3 +49,5 @@ final savedAdbDevicesProvider = StateProvider<List<AdbDevices>>((ref) => []);
 
 final wirelessDevicesHistoryProvider =
     StateProvider<List<AdbDevices>>((ref) => []);
+
+final autoConnectDevicesProvider = StateProvider<List<AdbDevices>>((ref) => []);

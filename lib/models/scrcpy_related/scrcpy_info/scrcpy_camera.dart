@@ -28,9 +28,9 @@ class ScrcpyCamera {
     return ScrcpyCamera(
       id: map['id'] as String,
       desc: map['desc'] as String,
-      sizes: List<String>.from((map['sizes'] as List<String>)),
+      sizes: List<String>.from((map['sizes'])),
       fps: List<String>.from(
-        (map['fps'] as List<String>),
+        (map['fps']),
       ),
     );
   }
@@ -42,6 +42,6 @@ class ScrcpyCamera {
 
   @override
   String toString() {
-    return 'ScrcpyCamera(id: $id, desc: $desc, sizes: $sizes, fps: $fps)';
+    return 'id: $id, desc: $desc, sizes: $sizes, fps: $fps';
   }
 }

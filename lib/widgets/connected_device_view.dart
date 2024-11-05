@@ -271,6 +271,7 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
   AnimatedSwitcher _deviceListPage(
       WidgetRef ref, List<AdbDevices> adbDevices, BuildContext context) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final saved = ref.watch(savedAdbDevicesProvider);
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
@@ -295,7 +296,8 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
                     mainAxisSize: MainAxisSize.max,
                     children: adbDevices
                         .map((e) => DeviceIcon(
-                              device: e,
+                              device: saved.firstWhere((d) => d.id == e.id,
+                                  orElse: () => e),
                               key: ValueKey(e.id),
                             ))
                         .toList(),

@@ -59,6 +59,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     if (adb && scrcpy) {
       var savedDevices = await AdbUtils.getSavedAdbDevice();
+
       ref
           .read(savedAdbDevicesProvider.notifier)
           .update((state) => savedDevices);
@@ -79,6 +80,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
       ref.read(selectedConfigProvider.notifier).state =
           await ScrcpyUtils.getLastUsedConfig(ref);
+
+      ref.read(autoConnectDevicesProvider.notifier).state =
+          await AdbUtils.getAutoConnectDevices();
 
       final pid = await AppUtils.getAppPid();
 

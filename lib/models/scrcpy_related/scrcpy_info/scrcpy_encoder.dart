@@ -19,7 +19,7 @@ class VideoEncoder {
     return VideoEncoder(
       codec: map['codec'] as String,
       encoder: List<String>.from(
-        (map['encoder'] as List<String>),
+        (map['encoder']),
       ),
     );
   }
@@ -40,7 +40,7 @@ class VideoEncoder {
   }
 
   @override
-  String toString() => 'VideoEncoder(codec: $codec, encoder: $encoder)';
+  String toString() => 'codec: $codec, encoder: $encoder';
 }
 
 class AudioEncoder {
@@ -60,7 +60,7 @@ class AudioEncoder {
     return AudioEncoder(
       codec: map['codec'] as String,
       encoder: List<String>.from(
-        (map['encoder'] as List<String>),
+        (map['encoder']),
       ),
     );
   }
@@ -81,5 +81,5 @@ class AudioEncoder {
   }
 
   @override
-  String toString() => 'AudioEncoder(codec: $codec, encoder: $encoder)';
+  String toString() => 'codec: $codec, encoder: $encoder';
 }

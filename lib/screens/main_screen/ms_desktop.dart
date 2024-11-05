@@ -1,8 +1,12 @@
+import 'dart:async';
+
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/info_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
+import 'package:scrcpygui/utils/automation_utils.dart';
 import 'package:scrcpygui/utils/tray_utils.dart';
 import 'package:scrcpygui/widgets/start_stop_button.dart';
 import 'package:tray_manager/tray_manager.dart';
@@ -21,6 +25,7 @@ class DesktopMainScreen extends ConsumerStatefulWidget {
 class _DesktopMainScreenState extends ConsumerState<DesktopMainScreen>
     with TrayListener {
   ScrollController scroll = ScrollController();
+  Timer? autoDevicesPingTimer;
 
   @override
   void initState() {
@@ -41,11 +46,18 @@ class _DesktopMainScreenState extends ConsumerState<DesktopMainScreen>
       }
     });
     super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((a) {
+      autoDevicesPingTimer = Timer.periodic(1.seconds, (a) async {
+        await AutomationUtils.autoconnectRunner(ref);
+      });
+    });
   }
 
   @override
   void dispose() {
     trayManager.removeListener(this);
+    autoDevicesPingTimer?.cancel();
     super.dispose();
   }
 

@@ -55,6 +55,7 @@ dependencies:
   hugeicons: ^0.0.7
   tray_manager: ^0.2.4
   uuid: ^4.5.1
+  dart_ping: ^9.0.1
   # circular_reveal_animation: ^2.0.1
 
 dev_dependencies:

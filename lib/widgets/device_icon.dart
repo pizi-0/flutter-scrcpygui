@@ -4,10 +4,12 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/screens/device_settings_screen/device_settings_screen.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/widgets/disconnect_dialog.dart';
@@ -34,31 +36,6 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
   FocusNode focusNode = FocusNode();
   bool loading = false;
   late ScrcpyInfo info;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((a) async {
-      // if (mounted) {
-      //   await trayManager.destroy();
-      //   await TrayUtils.initTray(ref, context);
-      //   final existingInfo = ref.read(infoProvider);
-
-      //   if (existingInfo
-      //       .where((i) => i.device.serialNo == widget.device!.serialNo)
-      //       .isEmpty) {
-      //     setState(() {
-      //       loading = true;
-      //     });
-      //     info = await AdbUtils.getScrcpyDetailsFor(widget.device!);
-      //     ref.read(infoProvider.notifier).addInfo(info);
-      //     setState(() {
-      //       loading = false;
-      //     });
-      //   }
-      // }
-    });
-  }
 
   @override
   void dispose() {
@@ -88,7 +65,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
         .toList();
 
     final device = ref.watch(savedAdbDevicesProvider).firstWhere(
-        (d) => d.serialNo == widget.device!.serialNo,
+        (d) => d.id == widget.device!.id,
         orElse: () => widget.device!);
 
     return Padding(
@@ -98,7 +75,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
           showContextMenu(
             context,
             contextMenu: ContextMenu(
-              entries: _buildContextmenuEntries(),
+              entries: _buildContextmenuEntries(device),
               position: Offset((details.globalPosition.dx + 2),
                   (details.globalPosition.dy + 2)),
             ),
@@ -109,7 +86,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
           child: Stack(
             children: [
               Tooltip(
-                message: widget.device?.id ?? '',
+                message: device.id,
                 verticalOffset: 50,
                 waitDuration: const Duration(milliseconds: 200),
                 child: ClipRRect(
@@ -121,13 +98,13 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                       focusColor: colorScheme.onPrimary,
                       onTap: () {
                         ref.read(selectedDeviceProvider.notifier).state =
-                            widget.device;
+                            device;
                       },
                       child: AnimatedContainer(
                         duration: 100.milliseconds,
                         decoration: BoxDecoration(
                           color: (selectedDevice != null &&
-                                  (selectedDevice.id) == widget.device!.id)
+                                  (selectedDevice.id) == device.id)
                               ? colorScheme.secondaryContainer
                               : Theme.of(context)
                                   .colorScheme
@@ -154,7 +131,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    widget.device!.id.contains('.')
+                                    device.id.isIpv4
                                         ? Icon(Icons.wifi,
                                             color: colorScheme.inverseSurface)
                                         : Icon(Icons.usb,
@@ -219,7 +196,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                       width: 20,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(4),
-                        color: selectedDevice == widget.device
+                        color: selectedDevice == device
                             ? colorScheme.inversePrimary
                             : Theme.of(context)
                                 .colorScheme
@@ -244,11 +221,20 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
       onSubmitted: (v) async {
         final list = [...ref.read(savedAdbDevicesProvider)];
 
-        if (list.where((d) => d.serialNo == widget.device!.serialNo).isEmpty) {
-          list.add(widget.device!.copyWith(name: v.trimRight().trimLeft()));
+        var dev = widget.device!;
+
+        if (dev.info == null) {
+          setState(() {
+            loading = true;
+          });
+          final info = await AdbUtils.getScrcpyDetailsFor(dev);
+          dev.copyWith(info: info);
+        }
+
+        if (list.where((d) => d.serialNo == dev.serialNo).isEmpty) {
+          list.add(dev.copyWith(name: v.trimRight().trimLeft()));
         } else {
-          final toEdit =
-              list.firstWhere((d) => d.serialNo == widget.device!.serialNo);
+          final toEdit = list.firstWhere((d) => d.serialNo == dev.serialNo);
 
           list.remove(toEdit);
 
@@ -261,6 +247,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
 
         setState(() {
           edit = false;
+          loading = false;
         });
       },
       controller: name,
@@ -271,11 +258,11 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
     );
   }
 
-  List<ContextMenuEntry> _buildContextmenuEntries() {
-    final isWireless = widget.device!.id.contains(':');
+  List<ContextMenuEntry> _buildContextmenuEntries(AdbDevices dev) {
+    final isWireless = dev.id.isIpv4;
     final deviceServers = ref
         .watch(scrcpyInstanceProvider)
-        .where((ins) => ins.device.serialNo == widget.device!.serialNo)
+        .where((ins) => ins.device.serialNo == dev.serialNo)
         .toList();
 
     final appPID = ref.watch(appPidProvider);
@@ -309,21 +296,21 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
               loading = true;
             });
 
-            int indexedOf = ref.read(adbProvider).indexOf(widget.device!);
+            int indexedOf = ref.read(adbProvider).indexOf(dev);
 
             final disconnect = await showDialog(
               context: context,
-              builder: (context) => DisconnectDialog(device: widget.device!),
+              builder: (context) => DisconnectDialog(device: dev),
             );
 
             if (disconnect ?? false) {
-              await AdbUtils.disconnectWirelessDevice(widget.device!);
+              await AdbUtils.disconnectWirelessDevice(dev);
               _showToast();
 
               final connected = await AdbUtils.connectedDevices();
               ref.read(adbProvider.notifier).setConnected(connected);
               if (ref.read(selectedDeviceProvider) != null) {
-                if (ref.read(selectedDeviceProvider)!.id == widget.device!.id) {
+                if (ref.read(selectedDeviceProvider)!.id == dev.id) {
                   if (indexedOf != -1 && ref.read(adbProvider).isNotEmpty) {
                     ref.read(selectedDeviceProvider.notifier).state = ref
                         .read(adbProvider)[indexedOf == 0 ? 0 : indexedOf - 1];
@@ -332,15 +319,47 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
                   }
                 }
               }
-
-              // ref.read(adbProvider.notifier).removeDevice(widget.device!);
-              // final connected = await AdbUtils.connectedDevices();
-              // ref.read(adbProvider.notifier).setConnected(connected);
             }
             setState(() {
               loading = false;
             });
             ref.read(shouldPollAdb.notifier).state = true;
+          },
+        ),
+        const MenuDivider(),
+        MenuItem(
+          icon: Icons.settings,
+          label: 'Device settings',
+          onSelected: () async {
+            setState(() {
+              loading = true;
+            });
+
+            if (dev.info == null) {
+              final info = await AdbUtils.getScrcpyDetailsFor(dev);
+              final saved = ref
+                  .read(savedAdbDevicesProvider)
+                  .where((d) => d.serialNo != dev.serialNo)
+                  .toList();
+
+              dev = dev.copyWith(info: info);
+
+              saved.add(dev);
+
+              await AdbUtils.saveAdbDevice(saved);
+              ref.read(savedAdbDevicesProvider.notifier).state = saved;
+            }
+
+            setState(() {
+              loading = false;
+            });
+
+            Navigator.push(
+              context,
+              PageTransition(
+                  child: DeviceSettingsScreen(device: dev),
+                  type: PageTransitionType.rightToLeft),
+            );
           },
         ),
         const MenuDivider(),
@@ -359,7 +378,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
     } else {
       final connected = ref.read(adbProvider);
       final wirelessAreadyConnected = connected
-          .where((d) => d.serialNo == widget.device!.serialNo && d.id.isIpv4)
+          .where((d) => d.serialNo == dev.serialNo && d.id.isIpv4)
           .isNotEmpty;
 
       return [
@@ -388,7 +407,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
               setState(() {
                 loading = true;
               });
-              final ip = '${await AdbUtils.getIpForUSB(widget.device!)}:5555';
+              final ip = '${await AdbUtils.getIpForUSB(dev)}:5555';
               await AdbUtils.tcpip5555(widget.device!.id);
               await AdbUtils.connectWifiDebugging(ip: ip);
               final connected = await AdbUtils.connectedDevices();
