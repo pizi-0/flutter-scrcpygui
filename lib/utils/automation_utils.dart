@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -26,6 +27,20 @@ class AutomationUtils {
       if (res == null) {
         if (!connected.contains(t)) {
           AdbUtils.connectWifiDebugging(ip: t.id);
+        }
+      } else {
+        if (connected.contains(t)) {
+          AdbUtils.disconnectWirelessDevice(t);
+          final runningInstances = ref
+              .read(scrcpyInstanceProvider)
+              .where((i) => i.device.id == t.id)
+              .toList();
+
+          if (runningInstances.isNotEmpty) {
+            for (var i in runningInstances) {
+              ref.read(scrcpyInstanceProvider.notifier).removeInstance(i);
+            }
+          }
         }
       }
     }
