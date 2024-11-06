@@ -22,9 +22,7 @@ import 'package:tray_manager/tray_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/scrcpy_related/scrcpy_flag_check_result.dart';
-import '../models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
-import '../providers/info_provider.dart';
 import '../widgets/config_override/config_override.dart';
 import 'adb_utils.dart';
 import 'scrcpy_command.dart';
@@ -121,9 +119,6 @@ class ScrcpyUtils {
     final selectedConfig = ref.read(selectedConfigProvider);
     final runningInstance = ref.read(scrcpyInstanceProvider);
     final selectedDevice = ref.read(selectedDeviceProvider);
-    final info = ref
-        .watch(infoProvider)
-        .firstWhere((i) => i.device.serialNo == selectedDevice!.serialNo);
 
     final d = ref.watch(savedAdbDevicesProvider).firstWhere(
         (d) => d.serialNo == selectedDevice!.serialNo,
@@ -162,8 +157,7 @@ class ScrcpyUtils {
       }
     }
 
-    comm = ScrcpyCommand.buildCommand(
-        ref, selectedConfig, info, selectedDevice!,
+    comm = ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice!,
         customName: customName);
 
     final process = await Process.start(
@@ -246,49 +240,34 @@ class ScrcpyUtils {
     final selectedDevice = ref.read(selectedDeviceProvider);
     final selectedConfig = ref.read(selectedConfigProvider);
 
-    try {
-      ref
-          .read(infoProvider)
-          .firstWhere((e) => e.device.serialNo == selectedDevice!.serialNo);
-    } on StateError catch (e) {
-      debugPrint(e.toString());
-      final info = await AdbUtils.getScrcpyDetailsFor(selectedDevice!);
-
-      ref.read(infoProvider.notifier).addInfo(info);
-    }
-
-    final ScrcpyInfo info = ref
-        .read(infoProvider)
-        .firstWhere((i) => i.device.serialNo == selectedDevice!.serialNo);
-
     List<FlagCheckResult> result = [];
 
-    bool display = info.displays
+    bool display = selectedDevice!.info!.displays
         .where((d) => d.id == selectedConfig.videoOptions.displayId.toString())
         .isNotEmpty;
 
-    bool videoCodec = info.videoEncoders
+    bool videoCodec = selectedDevice.info!.videoEncoders
         .where((enc) => enc.codec == selectedConfig.videoOptions.videoCodec)
         .isNotEmpty;
 
     bool videoEncoder = selectedConfig.videoOptions.videoEncoder == 'default'
         ? true
-        : info.videoEncoders
+        : selectedDevice.info!.videoEncoders
             .where((ve) =>
                 ve.encoder.contains(selectedConfig.videoOptions.videoEncoder))
             .isNotEmpty;
 
     bool duplicateAudio = selectedConfig.audioOptions.duplicateAudio
-        ? int.parse(info.buildVersion) >= 13
+        ? int.parse(selectedDevice.info!.buildVersion) >= 13
         : true;
 
-    bool audioCodec = info.audioEncoder
+    bool audioCodec = selectedDevice.info!.audioEncoder
         .where((enc) => enc.codec == selectedConfig.audioOptions.audioCodec)
         .isNotEmpty;
 
     bool audioEncoder = selectedConfig.audioOptions.audioEncoder == 'default'
         ? true
-        : info.audioEncoder
+        : selectedDevice.info!.audioEncoder
             .where((ae) =>
                 ae.encoder.contains(selectedConfig.audioOptions.audioEncoder))
             .isNotEmpty;

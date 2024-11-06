@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
-import 'package:scrcpygui/providers/info_provider.dart';
 import 'package:scrcpygui/widgets/custom_slider_track_shape.dart';
 
 import '../../models/scrcpy_related/scrcpy_config.dart';
@@ -52,12 +51,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final colorScheme = Theme.of(context).colorScheme;
 
-    final ScrcpyInfo info = ref
-        .watch(infoProvider)
-        .firstWhere((i) => i.device.serialNo == selectedDevice!.serialNo);
-
     return AnimatedContainer(
-      height: _containerHeight(selectedConfig, info),
+      height: _containerHeight(selectedConfig, selectedDevice!.info!),
       duration: const Duration(milliseconds: 200),
       child: SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
@@ -82,10 +77,10 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildDisplaySelector(selectedConfig, info),
+                    _buildDisplaySelector(selectedConfig, selectedDevice.info!),
                     const SizedBox(height: 4),
                     _buildVideoCodecNFormatSelector(
-                        context, selectedConfig, info),
+                        context, selectedConfig, selectedDevice.info!),
                     const SizedBox(height: 4),
                     _buildVideoBitrate(context),
                     const SizedBox(height: 4),
@@ -93,7 +88,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                     // const SizedBox(height: 4),
                     // _buildCrop(selectedConfig, info),
                     const SizedBox(height: 4),
-                    _buildResolutionScale(selectedConfig, info),
+                    _buildResolutionScale(selectedConfig, selectedDevice.info!),
                   ],
                 ),
               ),

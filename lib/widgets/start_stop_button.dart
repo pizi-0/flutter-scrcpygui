@@ -12,6 +12,7 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_flag_check_result.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/screens/running_instance/running_instance_screen.dart';
+import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
@@ -62,6 +63,24 @@ class _StartButtonState extends ConsumerState<StartButton> {
               ),
               onPressed: () async {
                 setState(() => loading = true);
+
+                final selectedDevice = ref.read(selectedDeviceProvider);
+
+                if (selectedDevice!.info == null) {
+                  final info =
+                      await AdbUtils.getScrcpyDetailsFor(selectedDevice);
+
+                  var dev = selectedDevice.copyWith(info: info);
+
+                  ref
+                      .read(savedAdbDevicesProvider.notifier)
+                      .addEditDevices(dev);
+
+                  ref.read(selectedDeviceProvider.notifier).state = dev;
+                  ;
+                  final saved = ref.read(savedAdbDevicesProvider);
+                  await AdbUtils.saveAdbDevice(saved);
+                }
 
                 final res = await ScrcpyUtils.checkForIncompatibleFlags(ref);
 

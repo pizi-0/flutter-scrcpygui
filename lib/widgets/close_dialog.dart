@@ -9,7 +9,6 @@ import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
-import '../providers/info_provider.dart';
 import '../providers/settings_provider.dart';
 
 class CloseDialog extends ConsumerStatefulWidget {
@@ -54,10 +53,6 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final colorScheme = Theme.of(context).colorScheme;
-
-    final info = ref
-        .watch(infoProvider)
-        .firstWhere((i) => i.device.serialNo == selectedDevice!.serialNo);
 
     final buttonStyle = ButtonStyle(
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
@@ -107,7 +102,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                 padding: const EdgeInsets.all(20.0),
                 child: Center(
                   child: SelectableText(
-                    'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig!, info, selectedDevice!, customName: nameController.text).toString().replaceAll(',', '').replaceAll('[', '').replaceAll(']', '')}',
+                    'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig!, selectedDevice!, customName: nameController.text).toString().replaceAll(',', '').replaceAll('[', '').replaceAll(']', '')}',
                     style: TextStyle(
                         fontSize: 14, color: colorScheme.inverseSurface),
                   ),

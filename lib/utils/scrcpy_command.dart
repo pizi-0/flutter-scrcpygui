@@ -9,7 +9,7 @@ import 'package:string_extensions/string_extensions.dart';
 
 class ScrcpyCommand {
   static List<String> buildCommand(
-      WidgetRef ref, ScrcpyConfig config, ScrcpyInfo info, AdbDevices device,
+      WidgetRef ref, ScrcpyConfig config, AdbDevices device,
       {String? customName}) {
     String command = '';
 
@@ -21,7 +21,7 @@ class ScrcpyCommand {
             .append(_videoEncoder(config)) // video encoder
             .append(_videoBitrate(config)) // video bitrate
             .append(_maxFps(config)) // fps limit
-            .append(_maxSize(config, info)) // resolution scale
+            .append(_maxSize(config, device.info!)) // resolution scale
             .append(_audioCodec(config)) // audio codec
             .append(_audioSourceAndDup(config)) // Audio source + audio dup
             .append(_audioBitrate(config)) // audio bitrate

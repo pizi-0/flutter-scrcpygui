@@ -11,8 +11,6 @@ import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/log_screen/log_screen.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
 
-import '../../models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
-import '../../providers/info_provider.dart';
 import '../../utils/const.dart';
 import '../../utils/scrcpy_utils.dart';
 
@@ -60,10 +58,6 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
 
     final bool isTestRunning = runningInstance.contains(testInstance);
 
-    final ScrcpyInfo info = ref
-        .watch(infoProvider)
-        .firstWhere((i) => i.device.serialNo == selectedDevice!.serialNo);
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -100,7 +94,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SelectableText(
-                      'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, info, selectedDevice!).join(' ')}',
+                      'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice!).join(' ')}',
                       style: TextStyle(
                           fontSize: 14, color: colorScheme.inverseSurface),
                     ),

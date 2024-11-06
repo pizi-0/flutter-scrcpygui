@@ -9,6 +9,7 @@ import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/screens/config_screen/config_screen.dart';
+import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/widgets/section_button.dart';
 import 'package:uuid/uuid.dart';
@@ -144,8 +145,22 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
       ),
       initialItem: ref.watch(selectedConfigProvider),
       items: allconfigs,
-      onChanged: (config) {
+      onChanged: (config) async {
         ref.read(selectedConfigProvider.notifier).state = config!;
+        final selectedDevice = ref.read(selectedDeviceProvider);
+
+        var dev = selectedDevice;
+
+        if (dev!.info == null) {
+          final info = await AdbUtils.getScrcpyDetailsFor(dev);
+
+          dev = dev.copyWith(info: info);
+          ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
+
+          ref.read(selectedDeviceProvider.notifier).state = dev;
+          final saved = ref.read(savedAdbDevicesProvider);
+          await AdbUtils.saveAdbDevice(saved);
+        }
 
         if (config == newConfig) {
           final id = const Uuid().v1();
@@ -191,6 +206,22 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
                       setState(() {
                         buttonLoading = true;
                       });
+
+                      if (selectedDevice!.info == null) {
+                        var dev = selectedDevice;
+                        final info = await AdbUtils.getScrcpyDetailsFor(dev);
+
+                        dev = dev.copyWith(info: info);
+
+                        ref
+                            .read(savedAdbDevicesProvider.notifier)
+                            .addEditDevices(dev);
+
+                        ref.read(selectedDeviceProvider.notifier).state = dev;
+                        final saved = ref.read(savedAdbDevicesProvider);
+                        await AdbUtils.saveAdbDevice(saved);
+                      }
+
                       final res =
                           await ScrcpyUtils.checkForIncompatibleFlags(ref);
 

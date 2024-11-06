@@ -8,7 +8,6 @@ import 'package:string_extensions/string_extensions.dart';
 import '../../models/scrcpy_related/scrcpy_config.dart';
 import '../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../providers/adb_provider.dart';
-import '../../providers/info_provider.dart';
 import '../../providers/settings_provider.dart';
 import '../../utils/const.dart';
 import '../config_dropdown.dart';
@@ -46,10 +45,6 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final colorScheme = Theme.of(context).colorScheme;
 
-    final ScrcpyInfo info = ref
-        .watch(infoProvider)
-        .firstWhere((i) => i.device.serialNo == selectedDevice!.serialNo);
-
     return AnimatedContainer(
       height: selectedConfig.scrcpyMode == ScrcpyMode.videoOnly
           ? 0
@@ -84,11 +79,14 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildAudioDuplicateOption(context, selectedConfig, info),
+                    _buildAudioDuplicateOption(
+                        context, selectedConfig, selectedDevice!.info!),
                     const SizedBox(height: 4),
-                    _buildAudioSourceSelector(context, selectedConfig, info),
+                    _buildAudioSourceSelector(
+                        context, selectedConfig, selectedDevice.info!),
                     const SizedBox(height: 4),
-                    _buildAudioFormatSelector(context, selectedConfig, info),
+                    _buildAudioFormatSelector(
+                        context, selectedConfig, selectedDevice.info!),
                     const SizedBox(height: 4),
                     _buildAudioBitrate(context),
                   ],

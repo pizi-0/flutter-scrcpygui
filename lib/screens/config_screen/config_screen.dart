@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
-import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
-import 'package:scrcpygui/providers/info_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/widgets/config_screen_sections/additional_flags.dart';
@@ -58,7 +56,9 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
       ref.read(testInstanceProvider.notifier).state = null;
     }
 
-    if (allConfigs.contains(selectedConfig) && selectedConfig == newConfig) {
+    print(allConfigs.contains(selectedConfig));
+
+    if (allConfigs.contains(selectedConfig)) {
       final lastused = await ScrcpyUtils.getLastUsedConfig(ref);
       ref.read(selectedConfigProvider.notifier).state = lastused;
 
@@ -81,7 +81,6 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(newOrEditConfigProvider)!;
-    final selectedDevice = ref.watch(selectedDeviceProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -89,10 +88,6 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
         iconColor: WidgetStatePropertyAll(colorScheme.inverseSurface),
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
-
-    // final device = ref.watch(savedAdbDevicesProvider).firstWhere(
-    //     (d) => d.serialNo == selectedDevice!.serialNo,
-    //     orElse: () => selectedDevice!);
 
     return PopScope(
       canPop: false,
@@ -109,59 +104,46 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
           ),
           title: Text(selectedConfig.configName),
         ),
-        body: ref
-                .watch(infoProvider)
-                .where((i) => i.device.serialNo == selectedDevice!.serialNo)
-                .isEmpty
-            ? const Center(
+        body: Center(
+          child: SingleChildScrollView(
+            child: SizedBox(
+              width: appWidth + 50,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 20),
-                  Text('Waiting for device info'),
-                ],
-              ))
-            : Center(
-                child: SingleChildScrollView(
-                  child: SizedBox(
-                    width: appWidth + 50,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(
-                                  appTheme.widgetRadius * 0.8),
-                            ),
-                            // width: appWidth,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: const Text('* Device-specific')
-                                  .fontSize(10)
-                                  .italic(),
-                            ),
-                          ),
-                          const ModeConfig(),
-                          const VideoConfig(),
-                          const AudioConfig(),
-                          const DeviceConfig(),
-                          const WindowConfig(),
-                          const AdditionalFlagsConfig(),
-                          const SizedBox(height: 30),
-                          const Divider(indent: 30, endIndent: 30),
-                          const PreviewAndTest(),
-                          const SizedBox(height: 50),
-                        ],
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.withOpacity(0.2),
+                        borderRadius:
+                            BorderRadius.circular(appTheme.widgetRadius * 0.8),
+                      ),
+                      // width: appWidth,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: const Text('* Device-specific')
+                            .fontSize(10)
+                            .italic(),
                       ),
                     ),
-                  ),
+                    const ModeConfig(),
+                    const VideoConfig(),
+                    const AudioConfig(),
+                    const DeviceConfig(),
+                    const WindowConfig(),
+                    const AdditionalFlagsConfig(),
+                    const SizedBox(height: 30),
+                    const Divider(indent: 30, endIndent: 30),
+                    const PreviewAndTest(),
+                    const SizedBox(height: 50),
+                  ],
                 ),
               ),
+            ),
+          ),
+        ),
       ),
     );
   }
