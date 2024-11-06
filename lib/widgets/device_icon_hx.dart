@@ -42,7 +42,7 @@ class _DeviceHistoryIconState extends ConsumerState<DeviceHistoryIcon> {
         .isNotEmpty;
 
     final device = ref.watch(savedAdbDevicesProvider).firstWhere(
-        (d) => d.serialNo == widget.device!.serialNo,
+        (d) => d.id == widget.device!.id,
         orElse: () => widget.device!);
 
     return GestureDetector(

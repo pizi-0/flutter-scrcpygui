@@ -422,29 +422,15 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
   }
 
   _showToast() {
-    final named = ref.read(savedAdbDevicesProvider);
-
-    if (named.where((d) => d.serialNo == widget.device!.serialNo).isNotEmpty) {
-      final dev =
-          named.firstWhere((d) => d.serialNo == widget.device!.serialNo);
-      ref.read(toastProvider.notifier).addToast(
-            SimpleToastItem(
-              icon: Icons.link_off_rounded,
-              message: '${dev.name!.toUpperCase()} disconnected',
-              toastStyle: SimpleToastStyle.info,
-              key: UniqueKey(),
-            ),
-          );
-    } else {
-      ref.read(toastProvider.notifier).addToast(
-            SimpleToastItem(
-              icon: Icons.link_off_rounded,
-              message: '${widget.device!.modelName.toUpperCase()} disconnected',
-              toastStyle: SimpleToastStyle.info,
-              key: UniqueKey(),
-            ),
-          );
-    }
+    ref.read(toastProvider.notifier).addToast(
+          SimpleToastItem(
+            icon: Icons.link_off_rounded,
+            message:
+                '${widget.device!.name?.toUpperCase() ?? widget.device!.modelName.toUpperCase()} disconnected',
+            toastStyle: SimpleToastStyle.info,
+            key: UniqueKey(),
+          ),
+        );
   }
 
   @override
