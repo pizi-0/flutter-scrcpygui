@@ -41,7 +41,7 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
         .where((inst) => inst.device == widget.device);
 
     final device = ref.watch(savedAdbDevicesProvider).firstWhere(
-        (d) => d.serialNo == widget.device.serialNo,
+        (d) => d.id == widget.device.id,
         orElse: () => widget.device);
 
     return loading

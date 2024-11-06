@@ -55,8 +55,8 @@ class TrayUtils {
           MenuItem.separator(),
           MenuItem(label: 'New instance:', disabled: true),
           ...connected.map((d) {
-            final device = saved.firstWhere((s) => s.serialNo == d.serialNo,
-                orElse: () => d);
+            final device =
+                saved.firstWhere((s) => s.id == d.id, orElse: () => d);
             return MenuItem.submenu(
               key: d.id,
               label: d.id.contains(':')

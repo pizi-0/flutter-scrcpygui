@@ -155,8 +155,7 @@ class _DeviceHistoryIconState extends ConsumerState<DeviceHistoryIcon> {
               onSelected: () async {
                 ref.read(autoConnectDevicesProvider.notifier).update((state) =>
                     state = [
-                      ...state
-                          .where((e) => e.serialNo != widget.device!.serialNo),
+                      ...state.where((e) => e.id != widget.device!.id),
                       widget.device!
                     ]);
                 final devs = ref.read(autoConnectDevicesProvider);

@@ -26,7 +26,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   @override
   void initState() {
     dev = ref.read(savedAdbDevicesProvider).firstWhere(
-        (d) => d.serialNo == widget.device.serialNo,
+        (d) => d.id == widget.device.id,
         orElse: () => widget.device);
 
     super.initState();

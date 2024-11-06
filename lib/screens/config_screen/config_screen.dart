@@ -56,8 +56,6 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
       ref.read(testInstanceProvider.notifier).state = null;
     }
 
-    print(allConfigs.contains(selectedConfig));
-
     if (allConfigs.contains(selectedConfig)) {
       final lastused = await ScrcpyUtils.getLastUsedConfig(ref);
       ref.read(selectedConfigProvider.notifier).state = lastused;

@@ -361,9 +361,8 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
       ];
     } else {
       final connected = ref.read(adbProvider);
-      final wirelessAreadyConnected = connected
-          .where((d) => d.serialNo == dev.serialNo && d.id.isIpv4)
-          .isNotEmpty;
+      final wirelessAreadyConnected =
+          connected.where((d) => d.id == dev.id && d.id.isIpv4).isNotEmpty;
 
       return [
         if (deviceServers.isNotEmpty)

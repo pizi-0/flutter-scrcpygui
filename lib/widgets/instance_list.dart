@@ -217,7 +217,7 @@ class _InstanceListItemState extends ConsumerState<InstanceListItem> {
   Widget build(BuildContext context) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final device = ref.watch(savedAdbDevicesProvider).firstWhere(
-        (d) => d.serialNo == widget.instance.device.serialNo,
+        (d) => d.id == widget.instance.device.id,
         orElse: () => widget.instance.device);
     return Container(
       width: appWidth,

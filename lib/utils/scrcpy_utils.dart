@@ -121,7 +121,7 @@ class ScrcpyUtils {
     final selectedDevice = ref.read(selectedDeviceProvider);
 
     final d = ref.watch(savedAdbDevicesProvider).firstWhere(
-        (d) => d.serialNo == selectedDevice!.serialNo,
+        (d) => d.id == selectedDevice!.id,
         orElse: () => selectedDevice!);
     List<String> comm = [];
     String customName =

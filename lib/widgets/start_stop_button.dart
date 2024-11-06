@@ -77,7 +77,7 @@ class _StartButtonState extends ConsumerState<StartButton> {
                       .addEditDevices(dev);
 
                   ref.read(selectedDeviceProvider.notifier).state = dev;
-                  ;
+
                   final saved = ref.read(savedAdbDevicesProvider);
                   await AdbUtils.saveAdbDevice(saved);
                 }
