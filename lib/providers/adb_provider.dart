@@ -40,7 +40,7 @@ class AdbNotifier extends Notifier<List<AdbDevices>> {
   }
 }
 
-class SavedAdb extends Notifier<List<AdbDevices>> {
+class SavedAdbNotifier extends Notifier<List<AdbDevices>> {
   @override
   build() {
     return [];
@@ -67,7 +67,8 @@ final adbProvider =
 final selectedDeviceProvider = StateProvider<AdbDevices?>((ref) => null);
 
 final savedAdbDevicesProvider =
-    NotifierProvider<SavedAdb, List<AdbDevices>>(() => SavedAdb());
+    NotifierProvider<SavedAdbNotifier, List<AdbDevices>>(
+        () => SavedAdbNotifier());
 
 final wirelessDevicesHistoryProvider =
     StateProvider<List<AdbDevices>>((ref) => []);
