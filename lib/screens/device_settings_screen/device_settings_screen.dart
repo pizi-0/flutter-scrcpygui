@@ -5,6 +5,7 @@ import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/automation_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/body_container.dart';
@@ -89,6 +90,8 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                           setState(() {});
                         }
                         AutomationUtils.setAutoConnect(ref, dev);
+                        final saved = ref.read(savedAdbDevicesProvider);
+                        await AdbUtils.saveAdbDevice(saved);
                       },
                     ),
                   )
