@@ -5,7 +5,6 @@ import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
-import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/automation_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/body_container.dart';
@@ -63,11 +62,6 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                                     type: ActionType.autoconnect)) ??
                             false;
 
-                        final saved = ref
-                            .read(savedAdbDevicesProvider)
-                            .where((e) => e.serialNo != dev.serialNo)
-                            .toList();
-
                         if (enabled) {
                           final current =
                               dev.automationData ?? defaultAutomationData;
@@ -78,8 +72,6 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                           dev = dev.copyWith(
                               automationData:
                                   current.copyWith(actions: current.actions));
-
-                          AutomationUtils.setAutoConnect(ref, dev);
 
                           setState(() {});
                         } else {
@@ -94,14 +86,9 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                                 current.copyWith(actions: current.actions),
                           );
 
-                          AutomationUtils.setAutoConnect(ref, dev);
                           setState(() {});
                         }
-
-                        saved.add(dev);
-                        await AdbUtils.saveAdbDevice(saved);
-                        ref.read(savedAdbDevicesProvider.notifier).state =
-                            saved;
+                        AutomationUtils.setAutoConnect(ref, dev);
                       },
                     ),
                   )

@@ -60,9 +60,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (adb && scrcpy) {
       var savedDevices = await AdbUtils.getSavedAdbDevice();
 
-      ref
-          .read(savedAdbDevicesProvider.notifier)
-          .update((state) => savedDevices);
+      ref.read(savedAdbDevicesProvider.notifier).setDevices(savedDevices);
 
       var confs = await ScrcpyUtils.getSavedConfig();
 

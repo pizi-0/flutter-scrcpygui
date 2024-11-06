@@ -219,8 +219,6 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
     return TextField(
       textAlign: TextAlign.center,
       onSubmitted: (v) async {
-        final list = [...ref.read(savedAdbDevicesProvider)];
-
         var dev = widget.device!;
 
         if (dev.info == null) {
@@ -228,21 +226,14 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
             loading = true;
           });
           final info = await AdbUtils.getScrcpyDetailsFor(dev);
-          dev.copyWith(info: info);
+          dev = dev.copyWith(info: info);
         }
 
-        if (list.where((d) => d.serialNo == dev.serialNo).isEmpty) {
-          list.add(dev.copyWith(name: v.trimRight().trimLeft()));
-        } else {
-          final toEdit = list.firstWhere((d) => d.serialNo == dev.serialNo);
+        dev = dev.copyWith(name: v.trim());
 
-          list.remove(toEdit);
+        ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
 
-          final edited = toEdit.copyWith(name: v.trimRight().trimLeft());
-          list.add(edited);
-        }
-
-        ref.read(savedAdbDevicesProvider.notifier).state = list;
+        final list = ref.read(savedAdbDevicesProvider);
         await AdbUtils.saveAdbDevice(list);
 
         setState(() {
@@ -337,17 +328,10 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
 
             if (dev.info == null) {
               final info = await AdbUtils.getScrcpyDetailsFor(dev);
-              final saved = ref
-                  .read(savedAdbDevicesProvider)
-                  .where((d) => d.serialNo != dev.serialNo)
-                  .toList();
 
               dev = dev.copyWith(info: info);
 
-              saved.add(dev);
-
-              await AdbUtils.saveAdbDevice(saved);
-              ref.read(savedAdbDevicesProvider.notifier).state = saved;
+              ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
             }
 
             setState(() {

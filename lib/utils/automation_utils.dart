@@ -32,14 +32,6 @@ class AutomationUtils {
   }
 
   static setAutoConnect(WidgetRef ref, AdbDevices device) {
-    final current = ref.read(savedAdbDevicesProvider);
-
-    if (current.contains(device)) {
-      current.remove(device);
-    }
-
-    current.add(device);
-
-    ref.read(savedAdbDevicesProvider.notifier).state = current;
+    ref.read(savedAdbDevicesProvider.notifier).addEditDevices(device);
   }
 }

@@ -40,12 +40,34 @@ class AdbNotifier extends Notifier<List<AdbDevices>> {
   }
 }
 
+class SavedAdb extends Notifier<List<AdbDevices>> {
+  @override
+  build() {
+    return [];
+  }
+
+  setDevices(List<AdbDevices> devices) {
+    state = devices;
+  }
+
+  addEditDevices(AdbDevices device) {
+    final list = [...state.where((d) => d.id != device.id)];
+
+    state = [...list, device];
+  }
+
+  removeDevice(AdbDevices device) {
+    state = [...state.where((d) => d.id != device.id)];
+  }
+}
+
 final adbProvider =
     NotifierProvider<AdbNotifier, List<AdbDevices>>(() => AdbNotifier());
 
 final selectedDeviceProvider = StateProvider<AdbDevices?>((ref) => null);
 
-final savedAdbDevicesProvider = StateProvider<List<AdbDevices>>((ref) => []);
+final savedAdbDevicesProvider =
+    NotifierProvider<SavedAdb, List<AdbDevices>>(() => SavedAdb());
 
 final wirelessDevicesHistoryProvider =
     StateProvider<List<AdbDevices>>((ref) => []);
