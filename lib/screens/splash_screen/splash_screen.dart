@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/screens/main_screen/main_screen.dart';
 import 'package:scrcpygui/models/settings_model/app_theme.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
@@ -60,12 +59,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     if (adb && scrcpy) {
       var savedDevices = await AdbUtils.getSavedAdbDevice();
-
-      print(savedDevices
-          .where((d) => d.automationData!.actions
-              .where((a) => a.type == ActionType.autoconnect)
-              .isNotEmpty)
-          .length);
 
       ref.read(savedAdbDevicesProvider.notifier).setDevices(savedDevices);
 

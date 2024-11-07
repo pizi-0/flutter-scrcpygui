@@ -332,6 +332,8 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
               dev = dev.copyWith(info: info);
 
               ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
+              final saved = ref.read(savedAdbDevicesProvider);
+              await AdbUtils.saveAdbDevice(saved);
             }
 
             setState(() {

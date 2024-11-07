@@ -123,6 +123,7 @@ class ScrcpyUtils {
     final d = ref.watch(savedAdbDevicesProvider).firstWhere(
         (d) => d.id == selectedDevice!.id,
         orElse: () => selectedDevice!);
+
     List<String> comm = [];
     String customName =
         '[${d.name?.toUpperCase() ?? d.id}] ${customInstanceName == '' ? selectedConfig.configName : customInstanceName}';

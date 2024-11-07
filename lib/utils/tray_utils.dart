@@ -58,8 +58,8 @@ class TrayUtils {
             final device =
                 saved.firstWhere((s) => s.id == d.id, orElse: () => d);
             return MenuItem.submenu(
-              key: d.id,
-              label: d.id.contains(':')
+              key: device.id,
+              label: device.id.contains(':')
                   ? '${device.name?.toUpperCase() ?? device.id} (WiFi)'
                   : '${device.name?.toUpperCase() ?? device.id} (USB)',
               sublabel: 'Config',
@@ -70,7 +70,8 @@ class TrayUtils {
                           key: c.configName,
                           label: c.configName,
                           onClick: (menuItem) async {
-                            ref.read(selectedDeviceProvider.notifier).state = d;
+                            ref.read(selectedDeviceProvider.notifier).state =
+                                device;
                             ref.read(selectedConfigProvider.notifier).state = c;
 
                             await ScrcpyUtils.newInstance(ref);
