@@ -95,13 +95,84 @@ class BodyContainerItem extends ConsumerWidget {
         borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.85),
       ),
       margin: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        children: [
+          if (leading != null) leading!,
+          Expanded(
+              child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(title).textColor(colorScheme.inverseSurface),
+          )),
+          if (trailing != null)
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 150),
+              child: trailing!,
+            )
+        ],
+      ),
+    );
+  }
+}
+
+class AddAutomationActions extends ConsumerWidget {
+  final String title;
+  final Widget? leading;
+  final Widget? trailing;
+  final List<Widget>? children;
+  const AddAutomationActions({
+    super.key,
+    required this.title,
+    this.leading,
+    this.trailing,
+    this.children,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return AnimatedContainer(
+      duration: 200.milliseconds,
+      constraints: const BoxConstraints(minHeight: 50),
+      width: double.maxFinite,
+      decoration: BoxDecoration(
+        color: colorScheme.secondaryContainer,
+        borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.85),
+      ),
+      margin: const EdgeInsets.only(bottom: 4),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Row(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (leading != null) leading!,
-            Expanded(child: Text(title).textColor(colorScheme.inverseSurface)),
-            if (trailing != null) trailing!
+            Row(
+              children: [
+                if (leading != null) leading!,
+                Expanded(
+                    child: Text(title).textColor(colorScheme.inverseSurface)),
+                if (trailing != null) trailing!
+              ],
+            ),
+            if (children != null)
+              Container(
+                decoration: BoxDecoration(
+                  color: colorScheme.primaryContainer,
+                  borderRadius: BorderRadius.circular(appTheme.widgetRadius),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // if (children == null) const Text('Do nothing'),
+                      ...children ?? [],
+                    ],
+                  ),
+                ),
+              )
           ],
         ),
       ),

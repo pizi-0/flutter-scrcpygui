@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/automation_utils.dart';
@@ -11,6 +12,9 @@ import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/body_container.dart';
 
 import '../../providers/adb_provider.dart';
+
+// ignore: constant_identifier_names
+const DO_NOTHING = 'Do nothing';
 
 class DeviceSettingsScreen extends ConsumerStatefulWidget {
   final AdbDevices device;
@@ -23,6 +27,7 @@ class DeviceSettingsScreen extends ConsumerStatefulWidget {
 
 class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   late AdbDevices dev;
+  late String ddValue;
 
   @override
   void initState() {
@@ -30,17 +35,27 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
         (d) => d.id == widget.device.id,
         orElse: () => widget.device);
 
+    ddValue = dev.automationData?.actions
+            .firstWhere((a) => a.type == ActionType.launchConfig,
+                orElse: () => AutomationAction(type: null))
+            .action ??
+        DO_NOTHING;
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final info = dev.info!;
+    final configs = ref.watch(configsProvider);
+    final appTheme = ref.read(settingsProvider).looks;
+    final colorSheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(dev.name?.toUpperCase() ?? dev.id),
         centerTitle: true,
+        backgroundColor: colorSheme.surface,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -94,12 +109,77 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                         await AdbUtils.saveAdbDevice(saved);
                       },
                     ),
+                  ),
+                  BodyContainerItem(
+                    title: 'On autoconnect success',
+                    trailing: Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.primaryContainer,
+                          borderRadius: BorderRadius.circular(
+                              appTheme.widgetRadius * 0.8),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 4.0),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              value: ddValue,
+                              items: [
+                                const DropdownMenuItem(
+                                  value: DO_NOTHING,
+                                  child: Text('Do nothing'),
+                                ),
+                                ...configs.where((c) => c != newConfig).map(
+                                      (c) => DropdownMenuItem(
+                                        value: c.id,
+                                        child: Text(c.configName),
+                                      ),
+                                    )
+                              ],
+                              onChanged: (v) async {
+                                setState(() {
+                                  ddValue = v!;
+                                });
+                                if (v == DO_NOTHING) {
+                                  var currentAutoData = dev.automationData ??
+                                      AutomationData(actions: []);
+
+                                  currentAutoData.actions.removeWhere(
+                                      (e) => e.type == ActionType.launchConfig);
+                                } else {
+                                  var currentAutoData = dev.automationData ??
+                                      AutomationData(actions: []);
+                                  dev = dev.copyWith(
+                                      automationData:
+                                          currentAutoData.copyWith(actions: [
+                                    ...currentAutoData.actions,
+                                    AutomationAction(
+                                      type: ActionType.launchConfig,
+                                      action: v,
+                                    )
+                                  ]));
+                                }
+                                ref
+                                    .read(savedAdbDevicesProvider.notifier)
+                                    .addEditDevices(dev);
+                                final saved = ref.read(savedAdbDevicesProvider);
+                                await AdbUtils.saveAdbDevice(saved);
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   )
                 ],
               ),
               BodyContainer(
                 headerTitle: 'Info',
-                children: [InfoContainer(info: info)],
+                children: [
+                  InfoContainer(info: info),
+                ],
               ),
             ],
           ),

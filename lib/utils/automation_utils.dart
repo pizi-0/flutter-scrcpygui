@@ -25,7 +25,12 @@ class AutomationUtils {
 
       if (res == null) {
         if (!connected.contains(t)) {
-          AdbUtils.connectWifiDebugging(ip: t.id);
+          await AdbUtils.connectWifiDebugging(ip: t.id);
+        }
+      } else {
+        if (connected.contains(t)) {
+          await AdbUtils.disconnectWirelessDevice(t);
+          ref.read(adbProvider.notifier).removeDevice(t);
         }
       }
     }

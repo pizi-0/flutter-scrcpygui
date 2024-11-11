@@ -54,11 +54,11 @@ class AutomationData {
 }
 
 class AutomationAction {
-  final ActionType type;
+  final ActionType? type;
   final dynamic action;
 
   AutomationAction({
-    required this.type,
+    this.type,
     this.action,
   });
 
@@ -74,7 +74,7 @@ class AutomationAction {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'type': ActionType.values.indexOf(type),
+      'type': ActionType.values.indexOf(type!),
       'action': action,
     };
   }
