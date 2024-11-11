@@ -103,11 +103,7 @@ class BodyContainerItem extends ConsumerWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(title).textColor(colorScheme.inverseSurface),
           )),
-          if (trailing != null)
-            ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 150),
-              child: trailing!,
-            )
+          if (trailing != null) trailing!
         ],
       ),
     );

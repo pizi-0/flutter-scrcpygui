@@ -113,7 +113,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                   BodyContainerItem(
                     title: 'On autoconnect success',
                     trailing: Padding(
-                      padding: const EdgeInsets.all(4),
+                      padding: const EdgeInsets.fromLTRB(0, 8, 6, 8),
                       child: Container(
                         decoration: BoxDecoration(
                           color: Theme.of(context).colorScheme.primaryContainer,
@@ -121,7 +121,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                               appTheme.widgetRadius * 0.8),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 4.0),
+                          padding: const EdgeInsets.only(left: 6.0),
                           child: DropdownButtonHideUnderline(
                             child: DropdownButton<String>(
                               style: Theme.of(context).textTheme.bodyMedium,
