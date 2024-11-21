@@ -273,6 +273,11 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final saved = ref.watch(savedAdbDevicesProvider);
 
+    // print(
+    //     "[Saved] Connected devices view: ${saved.map((s) => '${s.name}(${s.modelName})').toList()}");
+    // print(
+    //     "[Connected] Connected devices view: ${adbDevices.map((s) => s.modelName).toList()}");
+
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
       child: adbDevices.isEmpty
@@ -433,7 +438,9 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
     if (error == false) {
       await AdbUtils.saveWirelessDeviceHistory(ref, ip.text);
       final toConnect = _getLatestConnectedDevice();
-      ref.read(selectedDeviceProvider.notifier).state = toConnect;
+      ref.read(selectedDeviceProvider.notifier).state = ref
+          .read(savedAdbDevicesProvider)
+          .firstWhere((sav) => sav.id == toConnect.id, orElse: () => toConnect);
       await page.animateToPage(
         1,
         duration: const Duration(milliseconds: 200),

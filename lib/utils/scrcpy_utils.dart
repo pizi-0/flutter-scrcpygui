@@ -158,7 +158,7 @@ class ScrcpyUtils {
       }
     }
 
-    comm = ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice!,
+    comm = ScrcpyCommand.buildCommand(ref, selectedConfig, d,
         customName: customName);
 
     final process = await Process.start(
@@ -173,7 +173,7 @@ class ScrcpyUtils {
     final now = DateTime.now();
 
     final instance = ScrcpyRunningInstance(
-      device: selectedDevice,
+      device: d,
       config: selectedConfig,
       scrcpyPID: Platform.isMacOS
           ? (process.pid + 1).toString()

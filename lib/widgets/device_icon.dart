@@ -234,6 +234,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
         ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
 
         final list = ref.read(savedAdbDevicesProvider);
+
         await AdbUtils.saveAdbDevice(list);
 
         setState(() {
@@ -253,7 +254,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
     final isWireless = dev.id.isIpv4;
     final deviceServers = ref
         .watch(scrcpyInstanceProvider)
-        .where((ins) => ins.device.serialNo == dev.serialNo)
+        .where((ins) => ins.device.id == dev.id)
         .toList();
 
     final appPID = ref.watch(appPidProvider);
@@ -356,6 +357,9 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
             focusNode.requestFocus();
             focusNode.addListener(_onFocusLoss);
             setState(() {
+              if (dev.name != null) {
+                name.text = dev.name!;
+              }
               edit = true;
             });
           },
@@ -363,8 +367,11 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
       ];
     } else {
       final connected = ref.read(adbProvider);
-      final wirelessAreadyConnected =
-          connected.where((d) => d.id == dev.id && d.id.isIpv4).isNotEmpty;
+      final wirelessAreadyConnected = connected
+          .where((d) => d.serialNo == dev.serialNo && d.id.isIpv4)
+          .isNotEmpty;
+
+      print(wirelessAreadyConnected);
 
       return [
         if (deviceServers.isNotEmpty)
