@@ -28,7 +28,7 @@ class AutomationUtils {
 
       if (res == null) {
         if (!connected.contains(t)) {
-          await AdbUtils.connectWifiDebugging(ip: t.id);
+          AdbUtils.connectWifiDebugging(ip: t.id);
         }
       }
       // else {
@@ -40,7 +40,7 @@ class AutomationUtils {
     }
   }
 
-  static autoLaunchConfigRunner(WidgetRef ref) async {
+  static Future<void> autoLaunchConfigRunner(WidgetRef ref) async {
     final connected = ref.read(adbProvider);
 
     final task = ref
@@ -53,10 +53,9 @@ class AutomationUtils {
         .toList();
 
     for (final t in task) {
+      final running = ref.read(scrcpyInstanceProvider);
       if (connected.where((d) => d.id == t.id).isNotEmpty) {
-        final running = ref.read(scrcpyInstanceProvider);
-
-        if (running.where((inst) => inst.device == t).isEmpty) {
+        if (running.where((inst) => inst.device.id == t.id).isEmpty) {
           final configIdtoLaunch = t.automationData!.actions
               .firstWhere((act) => act.type == ActionType.launchConfig)
               .action;
@@ -65,7 +64,7 @@ class AutomationUtils {
               .read(configsProvider)
               .firstWhere((conf) => conf.id == configIdtoLaunch);
 
-          await ScrcpyUtils.newInstance(ref, t, config);
+          ScrcpyUtils.newInstance(ref, t, config);
         }
       }
     }

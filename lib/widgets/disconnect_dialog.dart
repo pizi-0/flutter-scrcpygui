@@ -60,6 +60,7 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
             ),
           )
         : AlertDialog(
+            insetPadding: const EdgeInsets.all(16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(appTheme.widgetRadius),
             ),

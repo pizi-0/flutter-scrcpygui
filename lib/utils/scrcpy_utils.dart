@@ -215,12 +215,10 @@ class ScrcpyUtils {
     await ScrcpyUtils.saveLastUsedConfig(ref.read(selectedConfigProvider));
   }
 
-  static Future<ScrcpyRunningInstance> newInstance(WidgetRef ref,
-      AdbDevices selectedDevice, ScrcpyConfig selectedConfig) async {
+  static Future newInstance(WidgetRef ref, AdbDevices selectedDevice,
+      ScrcpyConfig selectedConfig) async {
     final inst = await _startServer(ref, selectedDevice, selectedConfig);
     ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
-
-    return inst;
   }
 
   static Future<void> killServer(

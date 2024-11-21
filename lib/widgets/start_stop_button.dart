@@ -263,7 +263,7 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
                       children: [
                         Tooltip(
                           message: 'Stop all servers',
-                          child: StartButton(
+                          child: StopButton(
                             onTap: () async {
                               await ScrcpyUtils.killAllServers(ref);
                             },

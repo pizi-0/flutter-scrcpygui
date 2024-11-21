@@ -273,10 +273,10 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final saved = ref.watch(savedAdbDevicesProvider);
 
-    print(
-        "[Saved] Connected devices view: ${saved.map((s) => '${s.name}(${s.modelName})').toList()}");
-    print(
-        "[Connected] Connected devices view: ${adbDevices.map((s) => s.modelName).toList()}");
+    // print(
+    //     "[Saved] Connected devices view: ${saved.map((s) => '${s.name}(${s.modelName})').toList()}");
+    // print(
+    //     "[Connected] Connected devices view: ${adbDevices.map((s) => s.modelName).toList()}");
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
