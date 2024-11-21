@@ -371,8 +371,6 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
           .where((d) => d.serialNo == dev.serialNo && d.id.isIpv4)
           .isNotEmpty;
 
-      print(wirelessAreadyConnected);
-
       return [
         if (deviceServers.isNotEmpty)
           MenuItem.submenu(
