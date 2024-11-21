@@ -114,7 +114,8 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                         ),
                         onPressed: () async {
                           if (!isTestRunning) {
-                            final inst = await ScrcpyUtils.newInstance(ref);
+                            final inst = await ScrcpyUtils.newInstance(
+                                ref, selectedDevice, selectedConfig);
 
                             timer = Timer.periodic(1.seconds, (a) async {
                               await _isStillRunning();

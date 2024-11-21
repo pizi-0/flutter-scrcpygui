@@ -114,15 +114,16 @@ class ScrcpyUtils {
     }
   }
 
-  static Future<ScrcpyRunningInstance> _startServer(WidgetRef ref) async {
+  static Future<ScrcpyRunningInstance> _startServer(WidgetRef ref,
+      AdbDevices selectedDevice, ScrcpyConfig selectedConfig) async {
     final customInstanceName = ref.read(customNameProvider);
-    final selectedConfig = ref.read(selectedConfigProvider);
+    // final selectedConfig = ref.read(selectedConfigProvider);
     final runningInstance = ref.read(scrcpyInstanceProvider);
-    final selectedDevice = ref.read(selectedDeviceProvider);
+    // final selectedDevice = ref.read(selectedDeviceProvider);
 
     final d = ref.watch(savedAdbDevicesProvider).firstWhere(
-        (d) => d.id == selectedDevice!.id,
-        orElse: () => selectedDevice!);
+        (d) => d.id == selectedDevice.id,
+        orElse: () => selectedDevice);
 
     List<String> comm = [];
     String customName =
@@ -214,8 +215,9 @@ class ScrcpyUtils {
     await ScrcpyUtils.saveLastUsedConfig(ref.read(selectedConfigProvider));
   }
 
-  static Future<ScrcpyRunningInstance> newInstance(WidgetRef ref) async {
-    final inst = await _startServer(ref);
+  static Future<ScrcpyRunningInstance> newInstance(WidgetRef ref,
+      AdbDevices selectedDevice, ScrcpyConfig selectedConfig) async {
+    final inst = await _startServer(ref, selectedDevice, selectedConfig);
     ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
 
     return inst;

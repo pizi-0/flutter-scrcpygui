@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_flag_check_result.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/screens/running_instance/running_instance_screen.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
@@ -317,7 +318,9 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
                         : 'New instance',
                     child: StartButton(
                       onTap: () async {
-                        await ScrcpyUtils.newInstance(ref);
+                        final selectedConfig = ref.read(selectedConfigProvider);
+                        await ScrcpyUtils.newInstance(
+                            ref, selectedDevice, selectedConfig);
                       },
                       backgroundColor:
                           Theme.of(context).colorScheme.primaryContainer,

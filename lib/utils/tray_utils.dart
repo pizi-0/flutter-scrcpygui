@@ -74,7 +74,7 @@ class TrayUtils {
                                 device;
                             ref.read(selectedConfigProvider.notifier).state = c;
 
-                            await ScrcpyUtils.newInstance(ref);
+                            await ScrcpyUtils.newInstance(ref, device, c);
                           },
                         ))
                     .toList(),

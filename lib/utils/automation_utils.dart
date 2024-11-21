@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
+import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 class AutomationUtils {
@@ -34,6 +37,37 @@ class AutomationUtils {
       //     ref.read(adbProvider.notifier).removeDevice(t);
       //   }
       // }
+    }
+  }
+
+  static autoLaunchConfigRunner(WidgetRef ref) async {
+    final connected = ref.read(adbProvider);
+
+    final task = ref
+        .read(savedAdbDevicesProvider)
+        .where((auto) =>
+            auto.automationData?.actions
+                .where((act) => act.type == ActionType.launchConfig)
+                .isNotEmpty ??
+            false)
+        .toList();
+
+    for (final t in task) {
+      if (connected.where((d) => d.id == t.id).isNotEmpty) {
+        final running = ref.read(scrcpyInstanceProvider);
+
+        if (running.where((inst) => inst.device == t).isEmpty) {
+          final configIdtoLaunch = t.automationData!.actions
+              .firstWhere((act) => act.type == ActionType.launchConfig)
+              .action;
+
+          final config = ref
+              .read(configsProvider)
+              .firstWhere((conf) => conf.id == configIdtoLaunch);
+
+          await ScrcpyUtils.newInstance(ref, t, config);
+        }
+      }
     }
   }
 
