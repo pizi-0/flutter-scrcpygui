@@ -1,4 +1,4 @@
-package com.example.scrcpygui
+package com.pizi.scrcpygui
 
 import io.flutter.embedding.android.FlutterActivity
 

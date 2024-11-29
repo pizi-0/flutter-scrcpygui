@@ -18,6 +18,7 @@ import 'package:string_extensions/string_extensions.dart';
 import '../models/adb_devices.dart';
 import '../providers/settings_provider.dart';
 import '../providers/toast_providers.dart';
+import '../providers/version_provider.dart';
 import 'simple_toast/simple_toast_item.dart';
 
 class DeviceIcon extends ConsumerStatefulWidget {
@@ -220,12 +221,13 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
       textAlign: TextAlign.center,
       onSubmitted: (v) async {
         var dev = widget.device!;
+        final workDir = ref.read(execDirProvider);
 
         if (dev.info == null) {
           setState(() {
             loading = true;
           });
-          final info = await AdbUtils.getScrcpyDetailsFor(dev);
+          final info = await AdbUtils.getScrcpyDetailsFor(workDir, dev);
           dev = dev.copyWith(info: info);
         }
 
@@ -283,6 +285,7 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
           icon: Icons.link_off_rounded,
           onSelected: () async {
             ref.read(shouldPollAdb.notifier).state = false;
+            final workDir = ref.read(execDirProvider);
 
             setState(() {
               loading = true;
@@ -296,10 +299,10 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
             );
 
             if (disconnect ?? false) {
-              await AdbUtils.disconnectWirelessDevice(dev);
+              await AdbUtils.disconnectWirelessDevice(workDir, dev);
               _showToast();
 
-              final connected = await AdbUtils.connectedDevices();
+              final connected = await AdbUtils.connectedDevices(workDir);
               ref.read(adbProvider.notifier).setConnected(connected);
               if (ref.read(selectedDeviceProvider) != null) {
                 if (ref.read(selectedDeviceProvider)!.id == dev.id) {
@@ -323,12 +326,14 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
           icon: Icons.settings,
           label: 'Device settings',
           onSelected: () async {
+            final workDir = ref.read(execDirProvider);
+
             setState(() {
               loading = true;
             });
 
             if (dev.info == null) {
-              final info = await AdbUtils.getScrcpyDetailsFor(dev);
+              final info = await AdbUtils.getScrcpyDetailsFor(workDir, dev);
 
               dev = dev.copyWith(info: info);
 
@@ -394,13 +399,15 @@ class _DeviceIconState extends ConsumerState<DeviceIcon>
             label: 'To wireless',
             icon: Icons.wifi,
             onSelected: () async {
+              final workDir = ref.read(execDirProvider);
+
               setState(() {
                 loading = true;
               });
-              final ip = '${await AdbUtils.getIpForUSB(dev)}:5555';
-              await AdbUtils.tcpip5555(widget.device!.id);
-              await AdbUtils.connectWifiDebugging(ip: ip);
-              final connected = await AdbUtils.connectedDevices();
+              final ip = '${await AdbUtils.getIpForUSB(workDir, dev)}:5555';
+              await AdbUtils.tcpip5555(workDir, widget.device!.id);
+              await AdbUtils.connectWifiDebugging(workDir, ip: ip);
+              final connected = await AdbUtils.connectedDevices(workDir);
 
               if (connected.where((d) => d.id == ip).isNotEmpty) {
                 await AdbUtils.saveWirelessDeviceHistory(ref, ip);

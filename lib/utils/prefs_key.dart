@@ -15,3 +15,5 @@ const PKEY_AUTO_CONNECT_DEVICES = 'autoconnect-devices';
 const PKEY_LASTUSED_CONFIG = 'last-used-config';
 
 const PKEY_NOTI = 'noti-settings';
+
+const PKEY_SCRCPYVERSION = 'scrcpy-version';

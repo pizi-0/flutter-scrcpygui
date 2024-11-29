@@ -168,3 +168,9 @@ final defaultSettings = AppSettings(
 );
 
 final defaultAutomationData = AutomationData(actions: []);
+
+const scrcpyLatestUrl =
+    'https://api.github.com/repos/Genymobile/scrcpy/releases/latest';
+
+const eadb = './adb';
+const escrcpy = './scrcpy_bin';

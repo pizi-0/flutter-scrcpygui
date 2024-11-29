@@ -13,6 +13,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/toast_providers.dart';
+import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/prefs_key.dart';
 import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
@@ -29,14 +30,14 @@ import 'scrcpy_command.dart';
 import 'tray_utils.dart';
 
 class ScrcpyUtils {
-  static Future<bool> scrcpyInstalled() async {
-    final res = await Process.run('bash', [
-      '-c',
-      ' ${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}which scrcpy'
-    ]);
+  // static Future<bool> scrcpyInstalled() async {
+  //   final res = await Process.run('bash', [
+  //     '-c',
+  //     ' ${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}which scrcpy'
+  //   ]);
 
-    return res.stdout.toString().isNotEmpty;
-  }
+  //   return res.stdout.toString().isNotEmpty;
+  // }
 
   static openFolder(String p) async {
     Uri folder = Uri.file(p);
@@ -116,6 +117,7 @@ class ScrcpyUtils {
 
   static Future<ScrcpyRunningInstance> _startServer(WidgetRef ref,
       AdbDevices selectedDevice, ScrcpyConfig selectedConfig) async {
+    final workDir = ref.read(execDirProvider);
     final customInstanceName = ref.read(customNameProvider);
     // final selectedConfig = ref.read(selectedConfigProvider);
     final runningInstance = ref.read(scrcpyInstanceProvider);
@@ -162,13 +164,8 @@ class ScrcpyUtils {
     comm = ScrcpyCommand.buildCommand(ref, selectedConfig, d,
         customName: customName);
 
-    final process = await Process.start(
-      'bash',
-      [
-        '-c',
-        '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}scrcpy ${comm.join(' ')}'
-      ],
-    );
+    final process = await Process.start(escrcpy, comm,
+        workingDirectory: workDir, environment: {'ADB': './adb'});
     await Future.delayed(500.milliseconds);
 
     final now = DateTime.now();

@@ -9,8 +9,11 @@ import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:string_extensions/string_extensions.dart';
 
+import '../providers/version_provider.dart';
+
 class AutomationUtils {
   static autoconnectRunner(WidgetRef ref) async {
+    final workDir = ref.read(execDirProvider);
     final connected = ref.read(adbProvider);
     final task = ref
         .read(savedAdbDevicesProvider)
@@ -28,7 +31,7 @@ class AutomationUtils {
 
       if (res == null) {
         if (!connected.contains(t)) {
-          AdbUtils.connectWifiDebugging(ip: t.id);
+          AdbUtils.connectWifiDebugging(workDir, ip: t.id);
         }
       }
       // else {

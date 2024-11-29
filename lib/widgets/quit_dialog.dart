@@ -8,6 +8,7 @@ import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../providers/settings_provider.dart';
+import '../providers/version_provider.dart';
 import '../utils/adb_utils.dart';
 import '../utils/const.dart';
 import '../utils/scrcpy_utils.dart';
@@ -227,6 +228,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
     final connectedDevices = ref.read(adbProvider);
     final runningInstances = ref.read(scrcpyInstanceProvider);
     final appPID = ref.read(appPidProvider);
+    final workDir = ref.read(execDirProvider);
 
     for (final i
         in runningInstances.where((ins) => ins.config.windowOptions.noWindow)) {
@@ -250,7 +252,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
 
     if (wifi) {
       for (final d in connectedDevices.where((e) => e.id.contains(':'))) {
-        await AdbUtils.disconnectWirelessDevice(d);
+        await AdbUtils.disconnectWirelessDevice(workDir, d);
       }
     }
     await windowManager.setPreventClose(false);

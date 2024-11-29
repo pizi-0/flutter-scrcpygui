@@ -16,6 +16,7 @@ import 'package:uuid/uuid.dart';
 
 import '../models/scrcpy_related/scrcpy_config.dart';
 import '../providers/settings_provider.dart';
+import '../providers/version_provider.dart';
 import '../utils/const.dart';
 import 'config_visualizer.dart';
 import 'custom_filename_input.dart';
@@ -148,11 +149,12 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
       onChanged: (config) async {
         ref.read(selectedConfigProvider.notifier).state = config!;
         final selectedDevice = ref.read(selectedDeviceProvider);
+        final workDir = ref.read(execDirProvider);
 
         var dev = selectedDevice;
 
         if (dev!.info == null) {
-          final info = await AdbUtils.getScrcpyDetailsFor(dev);
+          final info = await AdbUtils.getScrcpyDetailsFor(workDir, dev);
 
           dev = dev.copyWith(info: info);
           ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
@@ -203,13 +205,16 @@ class _ConfigSelectorState extends ConsumerState<ConfigSelector> {
               icondata: buttonLoading ? Icons.timer_outlined : Icons.edit,
               ontap: !defaultConfigs.contains(selectedConfig)
                   ? () async {
+                      final workDir = ref.read(execDirProvider);
+
                       setState(() {
                         buttonLoading = true;
                       });
 
                       if (selectedDevice!.info == null) {
                         var dev = selectedDevice;
-                        final info = await AdbUtils.getScrcpyDetailsFor(dev);
+                        final info =
+                            await AdbUtils.getScrcpyDetailsFor(workDir, dev);
 
                         dev = dev.copyWith(info: info);
 

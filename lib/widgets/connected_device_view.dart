@@ -11,18 +11,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/result/wireless_connect_result.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
-import 'package:scrcpygui/providers/toast_providers.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/widgets/device_icon_hx.dart';
 import 'package:scrcpygui/widgets/section_button.dart';
-import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:tray_manager/tray_manager.dart';
 
 import '../providers/settings_provider.dart';
+import '../providers/toast_providers.dart';
+import '../providers/version_provider.dart';
 import '../utils/const.dart';
 import '../utils/tray_utils.dart';
 import 'device_icon.dart';
+import 'simple_toast/simple_toast_item.dart';
 
 class ConnectedDevicesView extends ConsumerStatefulWidget {
   const ConnectedDevicesView({super.key});
@@ -427,11 +428,13 @@ class _ConnectedDevicesViewState extends ConsumerState<ConnectedDevicesView> {
 
   Future<void> _connect() async {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final workDir = ref.read(execDirProvider);
 
     setState(() {
       loading = true;
     });
-    WiFiResult wiFiResult = await AdbUtils.connectWifiDebugging(ip: ip.text);
+    WiFiResult wiFiResult =
+        await AdbUtils.connectWifiDebugging(workDir, ip: ip.text);
     error = !wiFiResult.success;
     String message = wiFiResult.errorMessage;
 

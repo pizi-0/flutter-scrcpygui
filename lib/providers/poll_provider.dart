@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/providers/version_provider.dart';
 
 import '../utils/adb_utils.dart';
 import 'adb_provider.dart';
@@ -11,7 +12,8 @@ final shouldPollAdb = StateProvider<bool>((ref) => true);
 final pollAdbProvider = StateProvider<void>((ref) async {
   while (ref.watch(shouldPollAdb)) {
     await Future.delayed(500.milliseconds);
-    AdbUtils.connectedDevices(showLog: false).then((newAdb) {
+    final workDir = ref.read(execDirProvider);
+    AdbUtils.connectedDevices(workDir, showLog: false).then((newAdb) {
       if (ref.read(shouldPollAdb)) {
         ref.read(adbProvider.notifier).setConnected(newAdb);
       }

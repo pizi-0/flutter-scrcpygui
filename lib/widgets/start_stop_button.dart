@@ -19,6 +19,7 @@ import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
 import '../providers/settings_provider.dart';
 import '../providers/toast_providers.dart';
+import '../providers/version_provider.dart';
 import 'simple_toast/simple_toast_item.dart';
 
 class StartButton extends ConsumerStatefulWidget {
@@ -66,10 +67,11 @@ class _StartButtonState extends ConsumerState<StartButton> {
                 setState(() => loading = true);
 
                 final selectedDevice = ref.read(selectedDeviceProvider);
+                final workDir = ref.read(execDirProvider);
 
                 if (selectedDevice!.info == null) {
-                  final info =
-                      await AdbUtils.getScrcpyDetailsFor(selectedDevice);
+                  final info = await AdbUtils.getScrcpyDetailsFor(
+                      workDir, selectedDevice);
 
                   var dev = selectedDevice.copyWith(info: info);
 

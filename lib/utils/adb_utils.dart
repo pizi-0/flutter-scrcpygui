@@ -11,6 +11,7 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_camera.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_display.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_encoder.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
+import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/prefs_key.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -19,47 +20,41 @@ import '../models/adb_devices.dart';
 import '../providers/adb_provider.dart';
 import '../providers/toast_providers.dart';
 import '../widgets/simple_toast/simple_toast_item.dart';
+import 'const.dart';
 
 class AdbUtils {
-  static final String _shell = Platform.environment['SHELL'] ?? 'bash';
+  // static Future<bool> adbInstalled() async {
+  //   final res = await Isolate.run(() => Process.run('bash', [
+  //         '-c',
+  //         '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}which adb'
+  //       ]));
 
-  static Future<bool> adbInstalled() async {
-    final res = await Isolate.run(() => Process.run('bash', [
-          '-c',
-          '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}which adb'
-        ]));
+  //   debugPrint(
+  //     ProcessOutput(
+  //       command: 'which adb',
+  //       stdout: res.stdout,
+  //       stderr: res.stderr,
+  //       exitCode: res.exitCode,
+  //     ).toString(),
+  //   );
 
-    debugPrint(
-      ProcessOutput(
-        command: 'which adb',
-        stdout: res.stdout,
-        stderr: res.stderr,
-        exitCode: res.exitCode,
-      ).toString(),
-    );
+  //   return res.stdout.toString().isNotEmpty;
+  // }
 
-    return res.stdout.toString().isNotEmpty;
-  }
-
-  static Future<List<AdbDevices>> connectedDevices(
+  static Future<List<AdbDevices>> connectedDevices(String workDir,
       {bool showLog = true}) async {
     List<AdbDevices> devices = [];
-    final adbDeviceRes = await Isolate.run(() => Process.run(
-          'bash',
-          [
-            '-c',
-            '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb devices'
-          ],
-        ));
+    final adbDeviceRes =
+        await Process.run(eadb, ['devices'], workingDirectory: workDir);
 
-    if (showLog) {
-      debugPrint(ProcessOutput(
-        command: 'adb devices',
-        stdout: adbDeviceRes.stdout,
-        stderr: adbDeviceRes.stderr,
-        exitCode: adbDeviceRes.exitCode,
-      ).toString());
-    }
+    // if (showLog) {
+    //   debugPrint(ProcessOutput(
+    //     command: 'adb devices',
+    //     stdout: adbDeviceRes.stdout,
+    //     stderr: adbDeviceRes.stderr,
+    //     exitCode: adbDeviceRes.exitCode,
+    //   ).toString());
+    // }
 
     final connected = adbDeviceRes.stdout
         .toString()
@@ -78,11 +73,12 @@ class AdbUtils {
       final status = d[1].trim() != 'offline' && d[1].trim() != 'unauthorized';
 
       if (status) {
-        ProcessResult modelNameRes = await Process.run(_shell, [
-          '-c',
-          '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb -s $id shell getprop ro.product.model'
-        ]).timeout(2.seconds,
-            onTimeout: () => ProcessResult(pid, 124, 'timed-out', 'timed-out'));
+        ProcessResult modelNameRes = await Process.run(
+                eadb, ['-s', id, 'shell', 'getprop', 'ro.product.model'],
+                workingDirectory: workDir)
+            .timeout(2.seconds,
+                onTimeout: () =>
+                    ProcessResult(pid, 124, 'timed-out', 'timed-out'));
 
         if (showLog) {
           debugPrint(
@@ -100,11 +96,12 @@ class AdbUtils {
       if (id.contains(':')) {
         //get serial no if status != offline or unauth
         if (status) {
-          final serialNoRes = await Process.run(_shell, [
-            '-c',
-            '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb -s $id shell getprop ro.boot.serialno'
-          ]).timeout(2.seconds,
-              onTimeout: () => ProcessResult(pid, exitCode, '', 'timed-out'));
+          final serialNoRes = await Process.run(
+                  eadb, ['-s', id, 'shell', 'getprop', 'ro.boot.serialno'],
+                  workingDirectory: workDir)
+              .timeout(2.seconds,
+                  onTimeout: () =>
+                      ProcessResult(pid, exitCode, '', 'timed-out'));
 
           if (showLog) {
             debugPrint(
@@ -136,16 +133,17 @@ class AdbUtils {
     return devices.where((e) => e.status).toList();
   }
 
-  static Future<ScrcpyInfo> getScrcpyDetailsFor(AdbDevices dev) async {
-    final buildVersion = await Process.run('bash', [
-      '-c',
-      '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb -s ${dev.id} shell getprop ro.product.build.version.release'
-    ]);
+  static Future<ScrcpyInfo> getScrcpyDetailsFor(
+      String workDir, AdbDevices dev) async {
+    final buildVersion = await Process.run(
+      eadb,
+      ['-s', dev.id, 'shell', 'getprop', 'ro.product.build.version.release'],
+      workingDirectory: workDir,
+    );
 
-    final info = await Process.run('bash', [
-      '-c',
-      '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}scrcpy -s ${dev.id} --list-encoders --list-displays --list-cameras'
-    ]);
+    final info = await Process.run(escrcpy,
+        ['-s', dev.id, '--list-encoders', '--list-displays', '--list-cameras'],
+        workingDirectory: workDir, environment: {'ADB': './adb'});
 
     debugPrint(ProcessOutput(
       command:
@@ -170,11 +168,10 @@ class AdbUtils {
     );
   }
 
-  static Future<void> disconnectWirelessDevice(AdbDevices dev) async {
-    ProcessResult disconnectRes = await Isolate.run(() => Process.run('bash', [
-          '-c',
-          '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb disconnect ${dev.id}'
-        ]));
+  static Future<void> disconnectWirelessDevice(
+      String workDir, AdbDevices dev) async {
+    ProcessResult disconnectRes = await Isolate.run(() =>
+        Process.run(eadb, ['disconnect', dev.id], workingDirectory: workDir));
 
     debugPrint(ProcessOutput(
       command: 'adb disconnect ${dev.id}',
@@ -186,7 +183,8 @@ class AdbUtils {
 
   static Future<void> saveWirelessDeviceHistory(
       WidgetRef ref, String ip) async {
-    final connected = await AdbUtils.connectedDevices();
+    final workDir = ref.read(execDirProvider);
+    final connected = await AdbUtils.connectedDevices(workDir);
 
     final currentHx = [...ref.read(wirelessDevicesHistoryProvider)];
 
@@ -234,24 +232,22 @@ class AdbUtils {
     }
   }
 
-  static Future<WiFiResult> connectWifiDebugging({required String ip}) async {
+  static Future<WiFiResult> connectWifiDebugging(String workDir,
+      {required String ip}) async {
     ProcessResult? res;
 
     if (!ip.contains(':')) {
-      res = await Process.run('bash', [
-        '-c',
-        '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb connect $ip:5555'
-      ]).timeout(
+      res = await Process.run(eadb, ['connect', '$ip:5555'],
+              workingDirectory: workDir)
+          .timeout(
         5.seconds,
         onTimeout: () {
           return ProcessResult(pid, exitCode, 'timed-out', stderr);
         },
       );
     } else {
-      res = await Process.run('bash', [
-        '-c',
-        '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb connect $ip'
-      ]).timeout(
+      res = await Process.run(eadb, ['connect', ip], workingDirectory: workDir)
+          .timeout(
         5.seconds,
         onTimeout: () {
           return ProcessResult(pid, exitCode, 'timed-out', stderr);
@@ -260,10 +256,7 @@ class AdbUtils {
 
       //stop unauth
       if (res.stdout.toString().contains('authenticate')) {
-        await Process.run('bash', [
-          '-c',
-          '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb disconnect $ip'
-        ]);
+        await Process.run(eadb, ['disconnect', ip], workingDirectory: workDir);
 
         return WiFiResult(success: false, errorMessage: res.stdout);
       }
@@ -272,21 +265,19 @@ class AdbUtils {
       if ((!res.stdout.toString().contains('failed') ||
               !res.stdout.toString().contains('timed-out')) &&
           !ip.contains(':5555')) {
-        await tcpip5555(ip);
+        await tcpip5555(workDir, ip);
 
-        final adb = await connectedDevices();
+        final adb = await connectedDevices(eadb);
 
         if (adb.where((d) => d.id == ip).isNotEmpty) {
-          await Process.run('bash', [
-            '-c',
-            '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb disconnect $ip'
-          ]);
+          await Process.run(eadb, ['disconnect', ip],
+              workingDirectory: workDir);
         }
 
-        res = await Process.run('bash', [
-          '-c',
-          '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb connect ${ip.split(':').first.append(':5555')}'
-        ]).timeout(
+        res = await Process.run(
+                eadb, ['connect', (ip.split(':').first.append(':5555'))],
+                workingDirectory: workDir)
+            .timeout(
           5.seconds,
           onTimeout: () {
             return ProcessResult(pid, exitCode, 'timed-out', stderr);
@@ -300,10 +291,9 @@ class AdbUtils {
       if (res.stdout.toString().contains('failed')) {
         final newIp = ip.replaceAll(RegExp(r':\d+$'), ':5555');
 
-        res = await Process.run('bash', [
-          '-c',
-          '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb connect $newIp'
-        ]).timeout(
+        res = await Process.run(eadb, ['connect', newIp],
+                workingDirectory: workDir)
+            .timeout(
           5.seconds,
           onTimeout: () {
             return ProcessResult(pid, exitCode, 'timed-out', stderr);
@@ -315,10 +305,9 @@ class AdbUtils {
       if (res.stdout.toString().contains('bad port')) {
         final newIp = ip.split(':').first.toString();
 
-        res = await Process.run('bash', [
-          '-c',
-          '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb connect $newIp'
-        ]).timeout(
+        res = await Process.run(eadb, ['connect', newIp],
+                workingDirectory: workDir)
+            .timeout(
           5.seconds,
           onTimeout: () {
             return ProcessResult(pid, exitCode, 'timed-out', stderr);
@@ -334,11 +323,9 @@ class AdbUtils {
     );
   }
 
-  static Future<void> tcpip5555(String id) async {
-    final res = await Process.run('bash', [
-      '-c',
-      '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb -s $id tcpip 5555'
-    ]);
+  static Future<void> tcpip5555(String workDir, String id) async {
+    final res = await Process.run(eadb, ['-s', id, 'tcpip', '5555'],
+        workingDirectory: workDir);
 
     debugPrint(ProcessOutput(
       command: 'adb -s $id tcpip 5555',
@@ -348,12 +335,11 @@ class AdbUtils {
     ).toString());
   }
 
-  static Future<String> getIpForUSB(AdbDevices dev) async {
+  static Future<String> getIpForUSB(String workDir, AdbDevices dev) async {
     String? ip;
-    final res = await Process.run('bash', [
-      '-c',
-      '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}adb -s ${dev.serialNo} shell ip route'
-    ]);
+    final res = await Process.run(
+        eadb, ['-s', (dev.serialNo), 'shell', 'ip', 'route'],
+        workingDirectory: workDir);
 
     final res2 = res.stdout.toString().splitLines();
 
@@ -433,6 +419,7 @@ class AdbUtils {
   static Future<void> pingAutoConnectDevices(WidgetRef ref) async {
     final autoDevices = ref.read(autoConnectDevicesProvider);
     final connectedDevices = ref.read(adbProvider);
+    final workDir = ref.read(execDirProvider);
 
     for (final d in autoDevices) {
       final ping = Ping(d.id.split(':').first);
@@ -441,7 +428,7 @@ class AdbUtils {
 
       if (res == null) {
         if (!connectedDevices.contains(d)) {
-          await connectWifiDebugging(ip: d.id);
+          await connectWifiDebugging(workDir, ip: d.id);
         }
       }
     }
@@ -481,7 +468,7 @@ List<ScrcpyCamera> _getCameraInfo(String res) {
 
 List<VideoEncoder> _getVideoEncoders(String res) {
   RegExp codecRegex = RegExp(r'(?<=--video-codec=)\w+');
-  RegExp encoderRegex = RegExp(r"(?<=--video-encoder=')(.*)(?=')");
+  RegExp encoderRegex = RegExp(r"(?<=--video-encoder=)(.*)(?= )");
   List<VideoEncoder> videoEncoders = [];
   final encoderInfo = res
       .toString()
@@ -491,14 +478,14 @@ List<VideoEncoder> _getVideoEncoders(String res) {
 
   for (final info in encoderInfo) {
     final codec = codecRegex.stringMatch(info);
-    final encoder = encoderRegex.stringMatch(info);
+    final encoder = encoderRegex.stringMatch(info)!.split(' ').first;
     if (videoEncoders.where((e) => e.codec.contains(codec!)).isNotEmpty) {
       videoEncoders
           .firstWhere((e) => e.codec.contains(codec!))
           .encoder
-          .add(encoder!);
+          .add(encoder);
     } else {
-      videoEncoders.add(VideoEncoder(codec: codec!, encoder: [encoder!]));
+      videoEncoders.add(VideoEncoder(codec: codec!, encoder: [encoder]));
     }
   }
 
@@ -507,7 +494,7 @@ List<VideoEncoder> _getVideoEncoders(String res) {
 
 List<AudioEncoder> _getAudioEncoders(String res) {
   RegExp codecRegex = RegExp(r'(?<=--audio-codec=)\w+');
-  RegExp encoderRegex = RegExp(r"(?<=--audio-encoder=')(.*)(?=')");
+  RegExp encoderRegex = RegExp(r"(?<=--audio-encoder=)(.*)(?= )");
   List<AudioEncoder> audioEncoder = [];
 
   final encoderInfo = res
@@ -518,14 +505,14 @@ List<AudioEncoder> _getAudioEncoders(String res) {
 
   for (final info in encoderInfo) {
     final codec = codecRegex.stringMatch(info);
-    final encoder = encoderRegex.stringMatch(info);
+    final encoder = encoderRegex.stringMatch(info)!.split(' ').first;
     if (audioEncoder.where((e) => e.codec.contains(codec!)).isNotEmpty) {
       audioEncoder
           .firstWhere((e) => e.codec.contains(codec!))
           .encoder
-          .add(encoder!);
+          .add(encoder);
     } else {
-      audioEncoder.add(AudioEncoder(codec: codec!, encoder: [encoder!]));
+      audioEncoder.add(AudioEncoder(codec: codec!, encoder: [encoder]));
     }
   }
 
