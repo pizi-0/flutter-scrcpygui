@@ -9,7 +9,7 @@ import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/screens/config_screen/config_screen.dart';
-import 'package:scrcpygui/utils/adb_utils.dart';
+import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/widgets/section_button.dart';
 import 'package:uuid/uuid.dart';

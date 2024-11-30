@@ -25,20 +25,11 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/scrcpy_related/scrcpy_flag_check_result.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
 import '../widgets/config_override/config_override.dart';
-import 'adb_utils.dart';
+import 'adb/adb_utils.dart';
 import 'scrcpy_command.dart';
 import 'tray_utils.dart';
 
 class ScrcpyUtils {
-  // static Future<bool> scrcpyInstalled() async {
-  //   final res = await Process.run('bash', [
-  //     '-c',
-  //     ' ${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}which scrcpy'
-  //   ]);
-
-  //   return res.stdout.toString().isNotEmpty;
-  // }
-
   static openFolder(String p) async {
     Uri folder = Uri.file(p);
     await launchUrl(folder);
@@ -165,7 +156,7 @@ class ScrcpyUtils {
         customName: customName);
 
     final process = await Process.start(escrcpy, comm,
-        workingDirectory: workDir, environment: {'ADB': './adb'});
+        workingDirectory: workDir, environment: shellEnv);
     await Future.delayed(500.milliseconds);
 
     final now = DateTime.now();

@@ -57,6 +57,7 @@ dependencies:
   uuid: ^4.5.1
   dart_ping: ^9.0.1
   dio: ^5.7.0
+  logger: ^2.5.0
   # circular_reveal_animation: ^2.0.1
 
 dev_dependencies:

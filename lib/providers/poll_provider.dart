@@ -4,7 +4,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 
-import '../utils/adb_utils.dart';
+import '../utils/adb/adb_utils.dart';
 import 'adb_provider.dart';
 
 final shouldPollAdb = StateProvider<bool>((ref) => true);

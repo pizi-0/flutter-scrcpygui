@@ -11,7 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/result/wireless_connect_result.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
-import 'package:scrcpygui/utils/adb_utils.dart';
+import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/widgets/device_icon_hx.dart';
 import 'package:scrcpygui/widgets/section_button.dart';
 import 'package:string_extensions/string_extensions.dart';

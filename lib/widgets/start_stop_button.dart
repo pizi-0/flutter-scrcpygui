@@ -13,7 +13,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/screens/running_instance/running_instance_screen.dart';
-import 'package:scrcpygui/utils/adb_utils.dart';
+import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 

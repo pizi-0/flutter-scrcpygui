@@ -7,6 +7,7 @@ import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/prefs_key.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:string_extensions/string_extensions.dart';
 
 class SetupUtils {
   static final String _appPath = Platform.resolvedExecutable;
@@ -18,6 +19,8 @@ class SetupUtils {
       Directory("$appDir/data/flutter_assets/assets/exec/linux").listSync();
 
   static initScrcpy(WidgetRef ref) async {
+    print(int.parse('3.0.0'.removeSpecial));
+
     final supportDir = await getApplicationSupportDirectory();
     final separator = Platform.pathSeparator;
     final execDir = Directory('${supportDir.path}${separator}exec');
@@ -48,6 +51,8 @@ class SetupUtils {
         await Process.run('bash', ['-c', 'chmod +x adb'],
             workingDirectory: versionDir.path);
       }
+
+      await _saveCurrentScrcpyVersion(BUNDLED_VERSION);
     }
 
     ref.read(execDirProvider.notifier).state = versionDir.path;

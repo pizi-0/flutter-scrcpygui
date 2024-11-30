@@ -10,7 +10,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/screens/device_settings_screen/device_settings_screen.dart';
-import 'package:scrcpygui/utils/adb_utils.dart';
+import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/widgets/disconnect_dialog.dart';
 import 'package:string_extensions/string_extensions.dart';

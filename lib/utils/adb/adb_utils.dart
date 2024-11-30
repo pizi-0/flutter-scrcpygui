@@ -5,56 +5,28 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/models/process_output.dart';
 import 'package:scrcpygui/models/result/wireless_connect_result.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_camera.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_display.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_encoder.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
+import 'package:scrcpygui/utils/adb/_adb_utils.dart';
 import 'package:scrcpygui/utils/prefs_key.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_extensions/string_extensions.dart';
 
-import '../models/adb_devices.dart';
-import '../providers/adb_provider.dart';
-import '../providers/toast_providers.dart';
-import '../widgets/simple_toast/simple_toast_item.dart';
-import 'const.dart';
+import '../../models/adb_devices.dart';
+import '../../providers/adb_provider.dart';
+import '../../providers/toast_providers.dart';
+import '../../widgets/simple_toast/simple_toast_item.dart';
+import '../const.dart';
 
 class AdbUtils {
-  // static Future<bool> adbInstalled() async {
-  //   final res = await Isolate.run(() => Process.run('bash', [
-  //         '-c',
-  //         '${Platform.isMacOS ? 'export PATH=/usr/local/bin:\$PATH; ' : ''}which adb'
-  //       ]));
-
-  //   debugPrint(
-  //     ProcessOutput(
-  //       command: 'which adb',
-  //       stdout: res.stdout,
-  //       stderr: res.stderr,
-  //       exitCode: res.exitCode,
-  //     ).toString(),
-  //   );
-
-  //   return res.stdout.toString().isNotEmpty;
-  // }
-
   static Future<List<AdbDevices>> connectedDevices(String workDir,
       {bool showLog = true}) async {
-    List<AdbDevices> devices = [];
     final adbDeviceRes =
         await Process.run(eadb, ['devices'], workingDirectory: workDir);
-
-    // if (showLog) {
-    //   debugPrint(ProcessOutput(
-    //     command: 'adb devices',
-    //     stdout: adbDeviceRes.stdout,
-    //     stderr: adbDeviceRes.stderr,
-    //     exitCode: adbDeviceRes.exitCode,
-    //   ).toString());
-    // }
 
     final connected = adbDeviceRes.stdout
         .toString()
@@ -64,71 +36,7 @@ class AdbUtils {
 
     connected.removeAt(0);
 
-    for (var e in connected) {
-      String? serialNo;
-      String? modelName;
-
-      final d = e.split('	').toList();
-      final id = d[0];
-      final status = d[1].trim() != 'offline' && d[1].trim() != 'unauthorized';
-
-      if (status) {
-        ProcessResult modelNameRes = await Process.run(
-                eadb, ['-s', id, 'shell', 'getprop', 'ro.product.model'],
-                workingDirectory: workDir)
-            .timeout(2.seconds,
-                onTimeout: () =>
-                    ProcessResult(pid, 124, 'timed-out', 'timed-out'));
-
-        if (showLog) {
-          debugPrint(
-            ProcessOutput(
-              command: 'adb -s $id shell getprop ro.product.model',
-              stdout: modelNameRes.stdout,
-              stderr: modelNameRes.stderr,
-              exitCode: modelNameRes.exitCode,
-            ).toString(),
-          );
-        }
-        modelName = modelNameRes.stdout.toString().trim();
-      }
-
-      if (id.contains(':')) {
-        //get serial no if status != offline or unauth
-        if (status) {
-          final serialNoRes = await Process.run(
-                  eadb, ['-s', id, 'shell', 'getprop', 'ro.boot.serialno'],
-                  workingDirectory: workDir)
-              .timeout(2.seconds,
-                  onTimeout: () =>
-                      ProcessResult(pid, exitCode, '', 'timed-out'));
-
-          if (showLog) {
-            debugPrint(
-              ProcessOutput(
-                command: 'adb -s $id shell getprop ro.boot.serialno',
-                stdout: serialNoRes.stdout,
-                stderr: serialNoRes.stderr,
-                exitCode: serialNoRes.exitCode,
-              ).toString(),
-            );
-          }
-
-          serialNo = serialNoRes.stdout.toString().trim();
-        }
-      } else {
-        serialNo = id;
-      }
-
-      devices.add(
-        AdbDevices(
-          id: id,
-          modelName: modelName ?? '',
-          status: status,
-          serialNo: serialNo ?? '',
-        ),
-      );
-    }
+    final devices = await getAdbInfos(workDir, connected: connected);
 
     return devices.where((e) => e.status).toList();
   }
@@ -144,14 +52,6 @@ class AdbUtils {
     final info = await Process.run(escrcpy,
         ['-s', dev.id, '--list-encoders', '--list-displays', '--list-cameras'],
         workingDirectory: workDir, environment: {'ADB': './adb'});
-
-    debugPrint(ProcessOutput(
-      command:
-          'scrcpy -s ${dev.id} --list-encoders --list-displays --list-cameras ',
-      stdout: info.stdout,
-      stderr: info.stderr,
-      exitCode: info.exitCode,
-    ).toString());
 
     final cameraInfo = _getCameraInfo(info.stdout);
     final videoEncoderInfo = _getVideoEncoders(info.stdout);
@@ -170,15 +70,13 @@ class AdbUtils {
 
   static Future<void> disconnectWirelessDevice(
       String workDir, AdbDevices dev) async {
-    ProcessResult disconnectRes = await Isolate.run(() =>
-        Process.run(eadb, ['disconnect', dev.id], workingDirectory: workDir));
-
-    debugPrint(ProcessOutput(
-      command: 'adb disconnect ${dev.id}',
-      stdout: disconnectRes.stdout,
-      stderr: disconnectRes.stderr,
-      exitCode: exitCode,
-    ).toString());
+    try {
+      logger.i('Disconnecting ${dev.id}');
+      await Isolate.run(() =>
+          Process.run(eadb, ['disconnect', dev.id], workingDirectory: workDir));
+    } on Exception catch (e) {
+      logger.e('Error diconnecting ${dev.id}', error: e);
+    }
   }
 
   static Future<void> saveWirelessDeviceHistory(
@@ -242,6 +140,7 @@ class AdbUtils {
           .timeout(
         5.seconds,
         onTimeout: () {
+          logger.i('Connecting $ip, timed-out');
           return ProcessResult(pid, exitCode, 'timed-out', stderr);
         },
       );
@@ -250,12 +149,14 @@ class AdbUtils {
           .timeout(
         5.seconds,
         onTimeout: () {
+          logger.i('Connecting $ip, timed-out');
           return ProcessResult(pid, exitCode, 'timed-out', stderr);
         },
       );
 
       //stop unauth
       if (res.stdout.toString().contains('authenticate')) {
+        logger.i('Unauthenticated, check phone');
         await Process.run(eadb, ['disconnect', ip], workingDirectory: workDir);
 
         return WiFiResult(success: false, errorMessage: res.stdout);
@@ -324,30 +225,36 @@ class AdbUtils {
   }
 
   static Future<void> tcpip5555(String workDir, String id) async {
-    final res = await Process.run(eadb, ['-s', id, 'tcpip', '5555'],
-        workingDirectory: workDir);
+    logger.i('Setting tcp 5555 for $id');
 
-    debugPrint(ProcessOutput(
-      command: 'adb -s $id tcpip 5555',
-      stdout: res.stdout,
-      stderr: res.stderr,
-      exitCode: res.exitCode,
-    ).toString());
+    try {
+      await Process.run(eadb, ['-s', id, 'tcpip', '5555'],
+          workingDirectory: workDir);
+    } on Exception catch (e) {
+      logger.e('Error setting tcp 5555 for $id', error: e);
+    }
   }
 
   static Future<String> getIpForUSB(String workDir, AdbDevices dev) async {
     String? ip;
-    final res = await Process.run(
-        eadb, ['-s', (dev.serialNo), 'shell', 'ip', 'route'],
-        workingDirectory: workDir);
+    try {
+      logger.i('Getting ip for ${dev.id}');
 
-    final res2 = res.stdout.toString().splitLines();
+      final res = await Process.run(
+          eadb, ['-s', (dev.serialNo), 'shell', 'ip', 'route'],
+          workingDirectory: workDir);
 
-    final res3 = res2.lastWhere((e) => e.contains('wlan0'));
+      final res2 = res.stdout.toString().splitLines();
 
-    final res4 = res3.split(' ').lastWhere((e) => e.isIpv4 || e.isIpv6);
+      final res3 = res2.lastWhere((e) => e.contains('wlan0'));
 
-    ip = res4.trim();
+      final res4 = res3.split(' ').lastWhere((e) => e.isIpv4 || e.isIpv6);
+
+      ip = res4.trim();
+    } on Exception catch (e) {
+      logger.e('Error getting ip for ${dev.id}', error: e);
+      ip = '';
+    }
 
     return ip;
   }
@@ -355,17 +262,22 @@ class AdbUtils {
   static Future<List<String>> getScrcpyServerPIDs() async {
     List<String> adbPIDs = [];
 
-    final res = (await Process.run('bash', [
-      '-c',
-      ' ${Platform.isMacOS ? 'export PATH=/usr/bin:\$PATH; ' : ''}pgrep -f scrcpy-server'
-    ]))
-        .stdout
-        .toString()
-        .split('\n');
+    try {
+      logger.i('Get running scrcpy server');
+      final res = (await Process.run('bash', [
+        '-c',
+        ' ${Platform.isMacOS ? 'export PATH=/usr/bin:\$PATH; ' : ''}pgrep -f scrcpy-server'
+      ]))
+          .stdout
+          .toString()
+          .split('\n');
 
-    res.removeLast();
+      res.removeLast();
 
-    adbPIDs = res.map((e) => e.trim()).toList();
+      adbPIDs = res.map((e) => e.trim()).toList();
+    } on Exception catch (e) {
+      logger.e('Error getting running scrcpy servers', error: e);
+    }
 
     return adbPIDs;
   }
@@ -450,17 +362,21 @@ List<ScrcpyCamera> _getCameraInfo(String res) {
       .toList();
 
   for (final info in cameraInfo) {
-    final id = idRegex.stringMatch(info);
-    final desc = descRegex.stringMatch(info);
-    final resolution = resolutionRegex.stringMatch(info);
-    final fps = fpsRegex.stringMatch(info);
-    ScrcpyCamera camera = ScrcpyCamera(
-      id: id ?? 'null',
-      desc: desc!,
-      sizes: [resolution!],
-      fps: fps?.split(',').map((e) => e.trim()).toList() ?? [],
-    );
-    cameras.add(camera);
+    try {
+      final id = idRegex.stringMatch(info);
+      final desc = descRegex.stringMatch(info);
+      final resolution = resolutionRegex.stringMatch(info);
+      final fps = fpsRegex.stringMatch(info);
+      ScrcpyCamera camera = ScrcpyCamera(
+        id: id ?? 'null',
+        desc: desc!,
+        sizes: [resolution!],
+        fps: fps?.split(',').map((e) => e.trim()).toList() ?? [],
+      );
+      cameras.add(camera);
+    } on Exception catch (e) {
+      logger.e('Error getting camera info from scrcpy', error: e);
+    }
   }
 
   return cameras;
@@ -477,15 +393,19 @@ List<VideoEncoder> _getVideoEncoders(String res) {
       .toList();
 
   for (final info in encoderInfo) {
-    final codec = codecRegex.stringMatch(info);
-    final encoder = encoderRegex.stringMatch(info)!.split(' ').first;
-    if (videoEncoders.where((e) => e.codec.contains(codec!)).isNotEmpty) {
-      videoEncoders
-          .firstWhere((e) => e.codec.contains(codec!))
-          .encoder
-          .add(encoder);
-    } else {
-      videoEncoders.add(VideoEncoder(codec: codec!, encoder: [encoder]));
+    try {
+      final codec = codecRegex.stringMatch(info);
+      final encoder = encoderRegex.stringMatch(info)!.split(' ').first;
+      if (videoEncoders.where((e) => e.codec.contains(codec!)).isNotEmpty) {
+        videoEncoders
+            .firstWhere((e) => e.codec.contains(codec!))
+            .encoder
+            .add(encoder);
+      } else {
+        videoEncoders.add(VideoEncoder(codec: codec!, encoder: [encoder]));
+      }
+    } on Exception catch (e) {
+      logger.e('Error getting video encoders info from scrcpy', error: e);
     }
   }
 
@@ -504,15 +424,19 @@ List<AudioEncoder> _getAudioEncoders(String res) {
       .toList();
 
   for (final info in encoderInfo) {
-    final codec = codecRegex.stringMatch(info);
-    final encoder = encoderRegex.stringMatch(info)!.split(' ').first;
-    if (audioEncoder.where((e) => e.codec.contains(codec!)).isNotEmpty) {
-      audioEncoder
-          .firstWhere((e) => e.codec.contains(codec!))
-          .encoder
-          .add(encoder);
-    } else {
-      audioEncoder.add(AudioEncoder(codec: codec!, encoder: [encoder]));
+    try {
+      final codec = codecRegex.stringMatch(info);
+      final encoder = encoderRegex.stringMatch(info)!.split(' ').first;
+      if (audioEncoder.where((e) => e.codec.contains(codec!)).isNotEmpty) {
+        audioEncoder
+            .firstWhere((e) => e.codec.contains(codec!))
+            .encoder
+            .add(encoder);
+      } else {
+        audioEncoder.add(AudioEncoder(codec: codec!, encoder: [encoder]));
+      }
+    } on Exception catch (e) {
+      logger.e('Error getting audio encoders info from scrcpy', error: e);
     }
   }
 
@@ -524,17 +448,21 @@ List<ScrcpyDisplay> _getDisplays(String res) {
   RegExp resolutionRegex = RegExp(r'\d+x\d+');
   List<ScrcpyDisplay> displays = [];
 
-  final displayInfo = res
-      .toString()
-      .splitLines()
-      .where((i) => i.contains('--display-id='))
-      .toList();
+  try {
+    final displayInfo = res
+        .toString()
+        .splitLines()
+        .where((i) => i.contains('--display-id='))
+        .toList();
 
-  for (final info in displayInfo) {
-    final id = idRegex.stringMatch(info);
-    final resolution = resolutionRegex.stringMatch(info);
+    for (final info in displayInfo) {
+      final id = idRegex.stringMatch(info);
+      final resolution = resolutionRegex.stringMatch(info);
 
-    displays.add(ScrcpyDisplay(id: id!, resolution: resolution!));
+      displays.add(ScrcpyDisplay(id: id!, resolution: resolution!));
+    }
+  } on Exception catch (e) {
+    logger.e('Error getting display info from scrcpy', error: e);
   }
 
   return displays;

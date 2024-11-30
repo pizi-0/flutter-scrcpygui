@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/device_options.dart';
@@ -174,3 +175,11 @@ const scrcpyLatestUrl =
 
 const eadb = './adb';
 const escrcpy = './scrcpy_bin';
+
+final logger = Logger(filter: null, printer: PrettyPrinter(), output: null);
+
+final shellEnv = {
+  'ADB': './adb',
+  'SCRCPY_SERVER_PATH': './scrcpy-server',
+  'SCRCPY_ICON_PATH': './icon.png'
+};
