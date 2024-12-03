@@ -30,21 +30,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _init().then((value) {
-        // final dep = ref.read(dependenciesProvider);
-
-        // bool dependenciesSatisfied = dep.adb && dep.scrcpy;
-        // if (dependenciesSatisfied) {
         Navigator.pushReplacement(
             context,
             PageTransition(
                 child: const MainScreen(), type: PageTransitionType.fade));
-        // }
-        // else {
-        //   Navigator.pushReplacement(
-        //       context,
-        //       PageTransition(
-        //           child: const InstallScreen(), type: PageTransitionType.fade));
-        // }
       });
     });
   }
@@ -54,13 +43,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     await SetupUtils.initScrcpy(ref);
 
-    // final adb = await AdbUtils.adbInstalled();
-    // final scrcpy = await ScrcpyUtils.scrcpyInstalled();
-    // ref
-    //     .read(dependenciesProvider.notifier)
-    //     .update((state) => state = state.copyWith(adb: adb, scrcpy: scrcpy));
-
-    // if (adb && scrcpy) {
     final workDir = ref.read(execDirProvider);
     var savedDevices = await AdbUtils.getSavedAdbDevice();
 
