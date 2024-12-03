@@ -114,16 +114,22 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                         ),
                         onPressed: () async {
                           if (!isTestRunning) {
-                            final inst = await ScrcpyUtils.newInstance(
+                            await ScrcpyUtils.newInstance(
                                 ref, selectedDevice, selectedConfig);
 
                             timer = Timer.periodic(1.seconds, (a) async {
                               await _isStillRunning();
                             });
 
-                            ref
-                                .read(testInstanceProvider.notifier)
-                                .update((state) => state = inst);
+                            final inst = ref
+                                .read(scrcpyInstanceProvider)
+                                .where((inst) =>
+                                    inst.device == selectedDevice &&
+                                    inst.config == selectedConfig)
+                                .first;
+
+                            ref.read(testInstanceProvider.notifier).state =
+                                inst;
 
                             Navigator.push(
                                 // ignore: use_build_context_synchronously
