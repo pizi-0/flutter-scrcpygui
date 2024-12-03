@@ -51,7 +51,7 @@ class AdbUtils {
 
     final info = await Process.run(escrcpy,
         ['-s', dev.id, '--list-encoders', '--list-displays', '--list-cameras'],
-        workingDirectory: workDir, environment: {'ADB': './adb'});
+        workingDirectory: workDir, environment: shellEnv);
 
     final cameraInfo = _getCameraInfo(info.stdout);
     final videoEncoderInfo = _getVideoEncoders(info.stdout);

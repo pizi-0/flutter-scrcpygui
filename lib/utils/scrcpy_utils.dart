@@ -156,8 +156,8 @@ class ScrcpyUtils {
     comm = ScrcpyCommand.buildCommand(ref, selectedConfig, d,
         customName: customName);
 
-    final process =
-        await Process.start(escrcpy, comm, workingDirectory: workDir);
+    final process = await Process.start(escrcpy, comm,
+        workingDirectory: workDir, environment: shellEnv);
     await Future.delayed(500.milliseconds);
 
     final now = DateTime.now();
