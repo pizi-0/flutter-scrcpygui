@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scrcpygui/screens/settings_screen/settings_screen.dart';
+import 'package:scrcpygui/screens/update_screen/update_screen.dart';
 import 'package:scrcpygui/utils/tray_utils.dart';
+import 'package:scrcpygui/widgets/section_button.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../providers/settings_provider.dart';
@@ -137,6 +139,17 @@ class _CustomAppbarState extends ConsumerState<CustomAppbar> {
                 : Icons.nightlight_round,
             color: Colors.orange,
           ),
+        ),
+        SectionButton(
+          icondata: Icons.system_update_alt,
+          tooltipmessage: 'Update',
+          ontap: () {
+            Navigator.push(
+                context,
+                PageTransition(
+                    child: const UpdateScreen(),
+                    type: PageTransitionType.rightToLeft));
+          },
         ),
         IconButton(
           style: buttonStyle,
