@@ -58,7 +58,12 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
 
     if (allConfigs.contains(selectedConfig)) {
       final lastused = await ScrcpyUtils.getLastUsedConfig(ref);
-      ref.read(selectedConfigProvider.notifier).state = lastused;
+
+      if (allConfigs.contains(lastused)) {
+        ref.read(selectedConfigProvider.notifier).state = lastused;
+      } else {
+        ref.read(selectedConfigProvider.notifier).state = defaultMirror;
+      }
 
       Navigator.pop(context);
     } else {

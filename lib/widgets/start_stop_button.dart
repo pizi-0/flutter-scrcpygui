@@ -323,6 +323,7 @@ class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
                         final selectedConfig = ref.read(selectedConfigProvider);
                         await ScrcpyUtils.newInstance(
                             ref, selectedDevice, selectedConfig);
+                        await ScrcpyUtils.saveLastUsedConfig(selectedConfig);
                       },
                       backgroundColor:
                           Theme.of(context).colorScheme.primaryContainer,
