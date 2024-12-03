@@ -74,11 +74,13 @@ class BodyContainerItem extends ConsumerWidget {
   final String title;
   final Widget? leading;
   final Widget? trailing;
+  final bool trailingPadding;
   const BodyContainerItem({
     super.key,
     required this.title,
     this.leading,
     this.trailing,
+    this.trailingPadding = true,
   });
 
   @override
@@ -103,7 +105,11 @@ class BodyContainerItem extends ConsumerWidget {
             padding: const EdgeInsets.all(8.0),
             child: Text(title).textColor(colorScheme.inverseSurface),
           )),
-          if (trailing != null) trailing!
+          if (trailing != null)
+            Padding(
+              padding: EdgeInsets.only(right: trailingPadding ? 8.0 : 0),
+              child: trailing!,
+            )
         ],
       ),
     );
