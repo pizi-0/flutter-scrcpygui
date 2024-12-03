@@ -168,7 +168,7 @@ class AdbUtils {
           !ip.contains(':5555')) {
         await tcpip5555(workDir, ip);
 
-        final adb = await connectedDevices(eadb);
+        final adb = await connectedDevices(workDir);
 
         if (adb.where((d) => d.id == ip).isNotEmpty) {
           await Process.run(eadb, ['disconnect', ip],
