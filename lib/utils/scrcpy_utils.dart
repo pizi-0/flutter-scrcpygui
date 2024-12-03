@@ -86,7 +86,7 @@ class ScrcpyUtils {
 
     List<String> split = (await Isolate.run(() => Process.run('bash', [
               '-c',
-              ' ${Platform.isMacOS ? 'export PATH=/usr/bin:\$PATH; ' : ''}pgrep scrcpy'
+              ' ${Platform.isMacOS ? 'export PATH=/usr/bin:\$PATH; ' : ''}pgrep scrcpy_bin'
             ])))
         .stdout
         .toString()
