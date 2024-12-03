@@ -5,6 +5,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
@@ -155,8 +156,8 @@ class ScrcpyUtils {
     comm = ScrcpyCommand.buildCommand(ref, selectedConfig, d,
         customName: customName);
 
-    final process = await Process.start(escrcpy, comm,
-        workingDirectory: workDir, environment: shellEnv);
+    final process =
+        await Process.start(escrcpy, comm, workingDirectory: workDir);
     await Future.delayed(500.milliseconds);
 
     final now = DateTime.now();
@@ -344,5 +345,24 @@ class ScrcpyUtils {
     }
 
     return result;
+  }
+
+  static Future<String?> checkForScrcpyUpdate() async {
+    String? latest;
+
+    logger.i('Checking for scrcpy update...');
+
+    try {
+      final res = await Dio().get(scrcpyLatestUrl);
+
+      String version = res.data['tag_name'];
+      latest = version.removeLetters;
+    } catch (e) {
+      logger.e('Error checking for scrcpy update', error: e);
+    }
+
+    logger.i('Latest scrcpy version: $latest');
+
+    return latest;
   }
 }

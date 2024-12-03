@@ -174,12 +174,16 @@ const scrcpyLatestUrl =
     'https://api.github.com/repos/Genymobile/scrcpy/releases/latest';
 
 const eadb = './adb';
-const escrcpy = './scrcpy_bin';
+const escrcpy = './scrcpy';
 
-final logger = Logger(filter: null, printer: PrettyPrinter(), output: null);
+final logger = Logger(
+  filter: ProductionFilter(),
+  printer: PrettyPrinter(methodCount: 0, errorMethodCount: 0),
+  output: null,
+);
 
-final shellEnv = {
-  'ADB': './adb',
-  'SCRCPY_SERVER_PATH': './scrcpy-server',
-  'SCRCPY_ICON_PATH': './icon.png'
-};
+// final shellEnv = {
+//   'ADB': './adb',
+//   'SCRCPY_SERVER_PATH': './scrcpy-server',
+//   'SCRCPY_ICON_PATH': './icon.png'
+// };
