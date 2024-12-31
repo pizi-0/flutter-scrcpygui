@@ -6,9 +6,13 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/providers/bonsoir_devices.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
+import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/screens/main_screen/small.dart';
+import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
+import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/utils/theme_utils.dart';
 import 'package:scrcpygui/widgets/simple_toast/simple_toast_container.dart';
@@ -109,6 +113,23 @@ class _MainScreenState extends ConsumerState<MainScreen>
       (previous, next) async {
         trayManager.destroy();
         await TrayUtils.initTray(ref, context);
+      },
+    );
+
+    ref.read(bonsoirDeviceProvider.notifier).ref.listenSelf(
+      (previous, next) {
+        final mdnsDevices =
+            ref.read(adbProvider).where((d) => d.id.contains(adbMdns));
+
+        print('Next: $next');
+        print('${mdnsDevices.length} / ${next.length}');
+
+        for (final d in mdnsDevices) {
+          if (next.where((n) => d.id.contains(n.name)).isEmpty) {
+            print('disconnecting');
+            AdbUtils.disconnectWirelessDevice(ref.read(execDirProvider), d);
+          }
+        }
       },
     );
 
