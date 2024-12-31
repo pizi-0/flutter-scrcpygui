@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
@@ -27,6 +28,7 @@ class ConfigVisualizer extends StatelessWidget {
           if (instance != null) SessionTimer(instance: instance!),
           config!.isRecording
               ? Tooltip(
+                  waitDuration: 150.milliseconds,
                   message: 'Recording',
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2),
@@ -34,6 +36,7 @@ class ConfigVisualizer extends StatelessWidget {
                   ),
                 )
               : Tooltip(
+                  waitDuration: 150.milliseconds,
                   message: 'Mirroring',
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2),
@@ -44,6 +47,7 @@ class ConfigVisualizer extends StatelessWidget {
             Icon(Icons.mic_rounded, size: iconSize),
           if (config.windowOptions.noWindow)
             Tooltip(
+              waitDuration: 150.milliseconds,
               message: 'No window',
               child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 2),
@@ -69,10 +73,6 @@ class _CodecIndicatorState extends State<CodecIndicator> {
   TextStyle style = const TextStyle(fontSize: 10);
 
   Widget _buildVideoCodec() {
-    // BoxDecoration decoration = BoxDecoration(
-    //     borderRadius: BorderRadius.circular(3),
-    //     border: Border.all(
-    //         color: Theme.of(context).colorScheme.onPrimaryContainer));
     final codec = widget.config.videoOptions.videoCodec;
 
     final bitrate = widget.config.videoOptions.videoBitrate.toString();
@@ -80,6 +80,7 @@ class _CodecIndicatorState extends State<CodecIndicator> {
     return Row(
       children: [
         Tooltip(
+          waitDuration: 150.milliseconds,
           message: 'Video codec',
           child: Container(
             // decoration: decoration,
@@ -89,6 +90,7 @@ class _CodecIndicatorState extends State<CodecIndicator> {
           ),
         ),
         Tooltip(
+          waitDuration: 150.milliseconds,
           message: 'Video bitrate',
           child: Container(
               // decoration: decoration,
@@ -101,10 +103,6 @@ class _CodecIndicatorState extends State<CodecIndicator> {
   }
 
   Widget _buildAudioCodec() {
-    // BoxDecoration decoration = BoxDecoration(
-    //     borderRadius: BorderRadius.circular(3),
-    //     border: Border.all(
-    //         color: Theme.of(context).colorScheme.onPrimaryContainer));
     final codec = widget.config.audioOptions.audioCodec;
 
     final bitrate = widget.config.audioOptions.audioBitrate.toString();
@@ -112,6 +110,7 @@ class _CodecIndicatorState extends State<CodecIndicator> {
     return Row(
       children: [
         Tooltip(
+          waitDuration: 150.milliseconds,
           message: 'Audio codec',
           child: Container(
               // decoration: decoration,
@@ -120,6 +119,7 @@ class _CodecIndicatorState extends State<CodecIndicator> {
               child: Text(codec, style: style)),
         ),
         Tooltip(
+          waitDuration: 150.milliseconds,
           message: 'Audio bitrate',
           child: Container(
               // decoration: decoration,

@@ -1,345 +1,352 @@
-// ignore_for_file: use_build_context_synchronously
+// // ignore_for_file: use_build_context_synchronously
 
-import 'dart:async';
-import 'dart:io';
+// import 'dart:async';
+// import 'dart:io';
 
-import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:flutter/foundation.dart';
+// import 'package:awesome_extensions/awesome_extensions.dart';
+// import 'package:flutter/foundation.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:page_transition/page_transition.dart';
+// import 'package:scrcpygui/models/scrcpy_related/scrcpy_flag_check_result.dart';
+// import 'package:scrcpygui/providers/adb_provider.dart';
+// import 'package:scrcpygui/providers/config_provider.dart';
+// import 'package:scrcpygui/providers/scrcpy_provider.dart';
+// import 'package:scrcpygui/screens/running_instance/running_instance_screen.dart';
+// import 'package:scrcpygui/utils/adb/adb_utils.dart';
+// import 'package:scrcpygui/utils/const.dart';
+// import 'package:scrcpygui/utils/scrcpy_utils.dart';
+
+// import '../providers/settings_provider.dart';
+// import '../providers/toast_providers.dart';
+// import '../providers/version_provider.dart';
+// import 'simple_toast/simple_toast_item.dart';
+
+// class StartButton extends ConsumerStatefulWidget {
+//   final Icon icon;
+//   final AsyncCallback? onTap;
+//   final Color? backgroundColor;
+//   const StartButton(
+//       {super.key, required this.icon, this.backgroundColor, this.onTap});
+
+//   @override
+//   ConsumerState<StartButton> createState() => _StartButtonState();
+// }
+
+// class _StartButtonState extends ConsumerState<StartButton> {
+//   bool loading = false;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+
+//     return ClipRRect(
+//       borderRadius: BorderRadius.circular(appTheme.widgetRadius),
+//       child: SizedBox(
+//         width: 40,
+//         height: 40,
+//         child: Stack(
+//           children: [
+//             IconButton.filled(
+//               padding: const EdgeInsets.all(0),
+//               splashColor: Theme.of(context).splashColor,
+//               hoverColor: Theme.of(context).hoverColor,
+//               highlightColor: Theme.of(context).highlightColor,
+//               style: ButtonStyle(
+//                 // elevation: const WidgetStatePropertyAll(1),
+//                 shadowColor: WidgetStatePropertyAll(
+//                     Theme.of(context).colorScheme.shadow),
+//                 backgroundColor: WidgetStatePropertyAll(widget.backgroundColor),
+//                 shape: WidgetStatePropertyAll(
+//                   RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(appTheme.widgetRadius),
+//                   ),
+//                 ),
+//               ),
+//               onPressed: () async {
+//                 setState(() => loading = true);
+
+//                 final selectedDevice = ref.read(selectedDeviceProvider);
+//                 final workDir = ref.read(execDirProvider);
+
+//                 if (selectedDevice!.info == null) {
+//                   final info = await AdbUtils.getScrcpyDetailsFor(
+//                       workDir, selectedDevice);
+
+//                   var dev = selectedDevice.copyWith(info: info);
+
+//                   ref
+//                       .read(savedAdbDevicesProvider.notifier)
+//                       .addEditDevices(dev);
+
+//                   ref.read(selectedDeviceProvider.notifier).state = dev;
+
+//                   final saved = ref.read(savedAdbDevicesProvider);
+//                   await AdbUtils.saveAdbDevice(saved);
+//                 }
+
+//                 final res = await ScrcpyUtils.checkForIncompatibleFlags(ref);
+
+//                 bool proceed = res.where((r) => !r.ok).isEmpty;
+
+//                 if (proceed == false) {
+//                   proceed = (await showDialog(
+//                         context: context,
+//                         builder: (context) => OverrideDialog(
+//                             offendingFlags: res.where((r) => !r.ok).toList()),
+//                       )) ??
+//                       false;
+//                 }
+//                 if (proceed == true) {
+//                   await widget.onTap!();
+//                 }
+//                 if (mounted) {
+//                   setState(() => loading = false);
+//                 }
+//               },
+//               icon: widget.icon,
+//             ),
+//             loading
+//                 ? Container(
+//                     color: Theme.of(context).colorScheme.secondaryContainer,
+//                     child: SizedBox.expand(
+//                       child: Center(
+//                         child: SizedBox(
+//                           height: 20,
+//                           width: 20,
+//                           child: CircularProgressIndicator(
+//                             color: Theme.of(context).colorScheme.inverseSurface,
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   )
+//                 : const SizedBox.shrink()
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// class StopButton extends ConsumerStatefulWidget {
+//   final Icon icon;
+//   final AsyncCallback? onTap;
+//   final Color? backgroundColor;
+//   const StopButton(
+//       {super.key, required this.icon, this.backgroundColor, this.onTap});
+
+//   @override
+//   ConsumerState<StopButton> createState() => _StopButtonState();
+// }
+
+// class _StopButtonState extends ConsumerState<StopButton> {
+//   bool loading = false;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+
+//     return ClipRRect(
+//       borderRadius: BorderRadius.circular(appTheme.widgetRadius),
+//       child: SizedBox(
+//         width: 40,
+//         height: 40,
+//         child: Stack(
+//           children: [
+//             IconButton.filled(
+//               padding: const EdgeInsets.all(0),
+//               splashColor: Theme.of(context).splashColor,
+//               hoverColor: Theme.of(context).hoverColor,
+//               highlightColor: Theme.of(context).highlightColor,
+//               style: ButtonStyle(
+//                 // elevation: const WidgetStatePropertyAll(1),
+//                 shadowColor: WidgetStatePropertyAll(
+//                     Theme.of(context).colorScheme.shadow),
+//                 backgroundColor: WidgetStatePropertyAll(widget.backgroundColor),
+//                 shape: WidgetStatePropertyAll(
+//                   RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(appTheme.widgetRadius),
+//                   ),
+//                 ),
+//               ),
+//               onPressed: () async {
+//                 setState(() => loading = true);
+//                 await widget.onTap!();
+//                 if (mounted) setState(() => loading = false);
+//               },
+//               icon: widget.icon,
+//             ),
+//             loading
+//                 ? Container(
+//                     color: Theme.of(context).colorScheme.inversePrimary,
+//                     child: SizedBox.expand(
+//                       child: Center(
+//                         child: SizedBox(
+//                           height: 20,
+//                           width: 20,
+//                           child: CircularProgressIndicator(
+//                             color: Theme.of(context).colorScheme.onPrimary,
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   )
+//                 : const SizedBox.shrink()
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// class MainScreenFAB extends ConsumerStatefulWidget {
+//   final ScrollController scroll;
+//   const MainScreenFAB({super.key, required this.scroll});
+
+//   @override
+//   ConsumerState<MainScreenFAB> createState() => _MainScreenFABState();
+// }
+
+// class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
+//   bool loading = false;
+//   Timer? runningTimer;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     WidgetsBinding.instance.addPostFrameCallback(
+//         (t) => runningTimer = Timer.periodic(1.seconds, (t) => _pollRunning()));
+//   }
+
+//   _pollRunning() async {
+//     await Future.delayed(500.milliseconds);
+//     if (mounted) {
+//       final res = await ScrcpyUtils.getRunningScrcpy(ref.read(appPidProvider));
+//       final running = ref.read(scrcpyInstanceProvider);
+
+//       for (var i in running) {
+//         if (!res.contains(i.scrcpyPID)) {
+//           if (mounted) {
+//             ref.read(toastProvider.notifier).addToast(
+//                   SimpleToastItem(
+//                     message:
+//                         'Server: ${i.instanceName} (${i.scrcpyPID}) killed',
+//                     key: UniqueKey(),
+//                   ),
+//                 );
+//             ref.read(scrcpyInstanceProvider.notifier).removeInstance(i);
+//           }
+//         }
+//       }
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final runningInstance = ref.watch(scrcpyInstanceProvider);
+//     final selectedDevice = ref.watch(selectedDeviceProvider);
+//     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+//     final colorScheme = Theme.of(context).colorScheme;
+
+//     bool running = runningInstance.isNotEmpty;
+
+//     return Padding(
+//       padding: const EdgeInsets.all(8.0),
+//       child: AnimatedContainer(
+//         duration: const Duration(milliseconds: 200),
+//         height: 50,
+//         child: selectedDevice != null
+//             ? Row(
+//                 children: [
+//                   const Spacer(),
+//                   if (running && Platform.isLinux)
+//                     Row(
+//                       children: [
+//                         Tooltip(
+//                           message: 'Stop all servers',
+//                           child: StopButton(
+//                             onTap: () async {
+//                               await ScrcpyUtils.killAllServers(ref);
+//                             },
+//                             icon: const Icon(
+//                               Icons.stop_rounded,
+//                               color: Colors.white,
+//                             ),
+//                             backgroundColor: Colors.red,
+//                           ),
+//                         ),
+//                         const SizedBox(
+//                           width: 10,
+//                         ),
+//                         ClipRRect(
+//                           borderRadius:
+//                               BorderRadius.circular(appTheme.widgetRadius),
+//                           child: Material(
+//                             child: InkWell(
+//                               onTap: () {
+//                                 Navigator.push(
+//                                   context,
+//                                   PageTransition(
+//                                       child: const RunningInstanceScreen(),
+//                                       type: PageTransitionType.bottomToTop),
+//                                 );
+//                               },
+//                               child: Container(
+//                                 decoration: BoxDecoration(
+//                                   color: colorScheme.primaryContainer,
+//                                 ),
+//                                 height: 40,
+//                                 child: Center(
+//                                     child: Padding(
+//                                   padding: const EdgeInsets.symmetric(
+//                                       horizontal: 16.0),
+//                                   child: Text(
+//                                           'Running servers (${runningInstance.length})')
+//                                       .textColor(colorScheme.inverseSurface),
+//                                 )),
+//                               ),
+//                             ),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   const SizedBox(
+//                     width: 10,
+//                   ),
+//                   Tooltip(
+//                     message: runningInstance.isEmpty
+//                         ? 'Start server'
+//                         : 'New instance',
+//                     child: StartButton(
+//                       onTap: () async {
+//                         final selectedConfig = ref.read(selectedConfigProvider);
+//                         await ScrcpyUtils.newInstance(ref,
+//                             selectedConfig: selectedConfig);
+//                         await ScrcpyUtils.saveLastUsedConfig(selectedConfig);
+//                       },
+//                       backgroundColor:
+//                           Theme.of(context).colorScheme.primaryContainer,
+//                       icon: Icon(
+//                         running ? Icons.add_rounded : Icons.play_arrow_rounded,
+//                         color: colorScheme.inverseSurface,
+//                       ),
+//                     ),
+//                   )
+//                 ],
+//               )
+//             : nil,
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:scrcpygui/models/scrcpy_related/scrcpy_flag_check_result.dart';
-import 'package:scrcpygui/providers/adb_provider.dart';
-import 'package:scrcpygui/providers/config_provider.dart';
-import 'package:scrcpygui/providers/scrcpy_provider.dart';
-import 'package:scrcpygui/screens/running_instance/running_instance_screen.dart';
-import 'package:scrcpygui/utils/adb/adb_utils.dart';
-import 'package:scrcpygui/utils/const.dart';
-import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
+import '../models/scrcpy_related/scrcpy_flag_check_result.dart';
 import '../providers/settings_provider.dart';
-import '../providers/toast_providers.dart';
-import '../providers/version_provider.dart';
-import 'simple_toast/simple_toast_item.dart';
-
-class StartButton extends ConsumerStatefulWidget {
-  final Icon icon;
-  final AsyncCallback? onTap;
-  final Color? backgroundColor;
-  const StartButton(
-      {super.key, required this.icon, this.backgroundColor, this.onTap});
-
-  @override
-  ConsumerState<StartButton> createState() => _StartButtonState();
-}
-
-class _StartButtonState extends ConsumerState<StartButton> {
-  bool loading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(appTheme.widgetRadius),
-      child: SizedBox(
-        width: 40,
-        height: 40,
-        child: Stack(
-          children: [
-            IconButton.filled(
-              padding: const EdgeInsets.all(0),
-              splashColor: Theme.of(context).splashColor,
-              hoverColor: Theme.of(context).hoverColor,
-              highlightColor: Theme.of(context).highlightColor,
-              style: ButtonStyle(
-                // elevation: const WidgetStatePropertyAll(1),
-                shadowColor: WidgetStatePropertyAll(
-                    Theme.of(context).colorScheme.shadow),
-                backgroundColor: WidgetStatePropertyAll(widget.backgroundColor),
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(appTheme.widgetRadius),
-                  ),
-                ),
-              ),
-              onPressed: () async {
-                setState(() => loading = true);
-
-                final selectedDevice = ref.read(selectedDeviceProvider);
-                final workDir = ref.read(execDirProvider);
-
-                if (selectedDevice!.info == null) {
-                  final info = await AdbUtils.getScrcpyDetailsFor(
-                      workDir, selectedDevice);
-
-                  var dev = selectedDevice.copyWith(info: info);
-
-                  ref
-                      .read(savedAdbDevicesProvider.notifier)
-                      .addEditDevices(dev);
-
-                  ref.read(selectedDeviceProvider.notifier).state = dev;
-
-                  final saved = ref.read(savedAdbDevicesProvider);
-                  await AdbUtils.saveAdbDevice(saved);
-                }
-
-                final res = await ScrcpyUtils.checkForIncompatibleFlags(ref);
-
-                bool proceed = res.where((r) => !r.ok).isEmpty;
-
-                if (proceed == false) {
-                  proceed = (await showDialog(
-                        context: context,
-                        builder: (context) => OverrideDialog(
-                            offendingFlags: res.where((r) => !r.ok).toList()),
-                      )) ??
-                      false;
-                }
-                if (proceed == true) {
-                  await widget.onTap!();
-                }
-                if (mounted) {
-                  setState(() => loading = false);
-                }
-              },
-              icon: widget.icon,
-            ),
-            loading
-                ? Container(
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                    child: SizedBox.expand(
-                      child: Center(
-                        child: SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            color: Theme.of(context).colorScheme.inverseSurface,
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink()
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class StopButton extends ConsumerStatefulWidget {
-  final Icon icon;
-  final AsyncCallback? onTap;
-  final Color? backgroundColor;
-  const StopButton(
-      {super.key, required this.icon, this.backgroundColor, this.onTap});
-
-  @override
-  ConsumerState<StopButton> createState() => _StopButtonState();
-}
-
-class _StopButtonState extends ConsumerState<StopButton> {
-  bool loading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(appTheme.widgetRadius),
-      child: SizedBox(
-        width: 40,
-        height: 40,
-        child: Stack(
-          children: [
-            IconButton.filled(
-              padding: const EdgeInsets.all(0),
-              splashColor: Theme.of(context).splashColor,
-              hoverColor: Theme.of(context).hoverColor,
-              highlightColor: Theme.of(context).highlightColor,
-              style: ButtonStyle(
-                // elevation: const WidgetStatePropertyAll(1),
-                shadowColor: WidgetStatePropertyAll(
-                    Theme.of(context).colorScheme.shadow),
-                backgroundColor: WidgetStatePropertyAll(widget.backgroundColor),
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(appTheme.widgetRadius),
-                  ),
-                ),
-              ),
-              onPressed: () async {
-                setState(() => loading = true);
-                await widget.onTap!();
-                if (mounted) setState(() => loading = false);
-              },
-              icon: widget.icon,
-            ),
-            loading
-                ? Container(
-                    color: Theme.of(context).colorScheme.inversePrimary,
-                    child: SizedBox.expand(
-                      child: Center(
-                        child: SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                : const SizedBox.shrink()
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class MainScreenFAB extends ConsumerStatefulWidget {
-  final ScrollController scroll;
-  const MainScreenFAB({super.key, required this.scroll});
-
-  @override
-  ConsumerState<MainScreenFAB> createState() => _MainScreenFABState();
-}
-
-class _MainScreenFABState extends ConsumerState<MainScreenFAB> {
-  bool loading = false;
-  Timer? runningTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-        (t) => runningTimer = Timer.periodic(1.seconds, (t) => _pollRunning()));
-  }
-
-  _pollRunning() async {
-    await Future.delayed(500.milliseconds);
-    if (mounted) {
-      final res = await ScrcpyUtils.getRunningScrcpy(ref.read(appPidProvider));
-      final running = ref.read(scrcpyInstanceProvider);
-
-      for (var i in running) {
-        if (!res.contains(i.scrcpyPID)) {
-          if (mounted) {
-            ref.read(toastProvider.notifier).addToast(
-                  SimpleToastItem(
-                    message:
-                        'Server: ${i.instanceName} (${i.scrcpyPID}) killed',
-                    key: UniqueKey(),
-                  ),
-                );
-            ref.read(scrcpyInstanceProvider.notifier).removeInstance(i);
-          }
-        }
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final runningInstance = ref.watch(scrcpyInstanceProvider);
-    final selectedDevice = ref.watch(selectedDeviceProvider);
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final colorScheme = Theme.of(context).colorScheme;
-
-    bool running = runningInstance.isNotEmpty;
-
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        height: 50,
-        child: selectedDevice != null
-            ? Row(
-                children: [
-                  const Spacer(),
-                  if (running && Platform.isLinux)
-                    Row(
-                      children: [
-                        Tooltip(
-                          message: 'Stop all servers',
-                          child: StopButton(
-                            onTap: () async {
-                              await ScrcpyUtils.killAllServers(ref);
-                            },
-                            icon: const Icon(
-                              Icons.stop_rounded,
-                              color: Colors.white,
-                            ),
-                            backgroundColor: Colors.red,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(appTheme.widgetRadius),
-                          child: Material(
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  PageTransition(
-                                      child: const RunningInstanceScreen(),
-                                      type: PageTransitionType.bottomToTop),
-                                );
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: colorScheme.primaryContainer,
-                                ),
-                                height: 40,
-                                child: Center(
-                                    child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16.0),
-                                  child: Text(
-                                          'Running servers (${runningInstance.length})')
-                                      .textColor(colorScheme.inverseSurface),
-                                )),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Tooltip(
-                    message: runningInstance.isEmpty
-                        ? 'Start server'
-                        : 'New instance',
-                    child: StartButton(
-                      onTap: () async {
-                        final selectedConfig = ref.read(selectedConfigProvider);
-                        await ScrcpyUtils.newInstance(
-                            ref, selectedDevice, selectedConfig);
-                        await ScrcpyUtils.saveLastUsedConfig(selectedConfig);
-                      },
-                      backgroundColor:
-                          Theme.of(context).colorScheme.primaryContainer,
-                      icon: Icon(
-                        running ? Icons.add_rounded : Icons.play_arrow_rounded,
-                        color: colorScheme.inverseSurface,
-                      ),
-                    ),
-                  )
-                ],
-              )
-            : nil,
-      ),
-    );
-  }
-}
+import '../utils/const.dart';
 
 class OverrideDialog extends ConsumerWidget {
   final bool isEdit;
@@ -351,15 +358,17 @@ class OverrideDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
-    return SizedBox(
-      width: appWidth,
-      child: AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
-        title: isEdit
-            ? const Text('Edit disabled:')
-            : const Text('Incompatible flags:'),
-        content: Column(
+    return AlertDialog(
+      insetPadding: const EdgeInsets.all(16),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
+      title: isEdit
+          ? const Text('Edit disabled:')
+          : const Text('Incompatible flags:'),
+      content: ConstrainedBox(
+        constraints:
+            const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [

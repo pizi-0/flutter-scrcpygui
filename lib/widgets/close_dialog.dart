@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
@@ -27,7 +28,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
 
   @override
   void initState() {
-    final selectedConfig = ref.read(newOrEditConfigProvider)!;
+    final selectedConfig = ref.read(configScreenConfig)!;
     final allConfigs = ref.read(configsProvider);
 
     nameController = TextEditingController(
@@ -49,7 +50,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedConfig = ref.watch(newOrEditConfigProvider);
+    final selectedConfig = ref.watch(configScreenConfig);
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final colorScheme = Theme.of(context).colorScheme;
@@ -113,13 +114,13 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
             TextField(
               controller: nameController,
               decoration: InputDecoration(
-                label: const Text('Config name')
-                    .textColor(colorScheme.inverseSurface.withOpacity(0.8)),
+                label: const Text('Config name').textColor(
+                    colorScheme.inverseSurface.withValues(alpha: 0.8)),
               ),
               onSubmitted: notAllowed
                   ? null
                   : (value) async {
-                      final selectedConfig = ref.read(newOrEditConfigProvider)!;
+                      final selectedConfig = ref.read(configScreenConfig)!;
 
                       var currentConfig = selectedConfig;
 
@@ -128,8 +129,9 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
 
                       if (nameExist) {
                         final allConfigs = ref.read(configsProvider);
-                        final toRemove = allConfigs
-                            .firstWhere((e) => e.id == currentConfig.id);
+                        final toRemove = allConfigs.firstWhere((e) =>
+                            e.id == currentConfig.id ||
+                            e.configName == currentConfig.configName);
                         ref
                             .read(configsProvider.notifier)
                             .overwriteConfig(toRemove, currentConfig);
@@ -150,9 +152,6 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                               .addConfig(currentConfig);
                         }
                       }
-
-                      ref.read(selectedConfigProvider.notifier).state =
-                          currentConfig;
 
                       final toSave = ref
                           .read(configsProvider)
@@ -184,12 +183,6 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
             TextButton(
               style: buttonStyle,
               onPressed: () {
-                final allConfigs = ref.read(configsProvider);
-
-                ref.read(selectedConfigProvider.notifier).state =
-                    allConfigs.firstWhere((c) => c.id == selectedConfig.id,
-                        orElse: () => defaultMirror);
-
                 Navigator.pop(context, true);
               },
               child:
@@ -201,7 +194,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
               onPressed: notAllowed || nameController.text.isEmpty
                   ? null
                   : () async {
-                      final selectedConfig = ref.read(newOrEditConfigProvider)!;
+                      final selectedConfig = ref.read(configScreenConfig)!;
 
                       var currentConfig = selectedConfig;
 
@@ -210,8 +203,9 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
 
                       if (nameExist) {
                         final allConfigs = ref.read(configsProvider);
-                        final toRemove = allConfigs
-                            .firstWhere((e) => e.id == currentConfig.id);
+                        final toRemove = allConfigs.firstWhere((e) =>
+                            e.id == currentConfig.id ||
+                            e.configName == currentConfig.configName);
                         ref
                             .read(configsProvider.notifier)
                             .overwriteConfig(toRemove, currentConfig);
@@ -233,9 +227,6 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
                               .addConfig(currentConfig);
                         }
                       }
-
-                      ref.read(selectedConfigProvider.notifier).state =
-                          currentConfig;
 
                       final toSave = ref
                           .read(configsProvider)

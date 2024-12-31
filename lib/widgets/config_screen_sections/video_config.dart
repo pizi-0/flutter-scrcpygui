@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
-import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 import 'package:scrcpygui/widgets/custom_slider_track_shape.dart';
 
 import '../../models/scrcpy_related/scrcpy_config.dart';
@@ -25,7 +25,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
 
   @override
   void initState() {
-    final selectedConfig = ref.read(newOrEditConfigProvider)!;
+    final selectedConfig = ref.read(configScreenConfig)!;
 
     videoBitrateController = TextEditingController(
         text: selectedConfig.videoOptions.videoBitrate.toString());
@@ -46,7 +46,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedConfig = ref.watch(newOrEditConfigProvider)!;
+    final selectedConfig = ref.watch(configScreenConfig)!;
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final colorScheme = Theme.of(context).colorScheme;
@@ -124,16 +124,15 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
       }),
       onChanged: (value) {
         if (value.isEmpty) {
-          ref.read(newOrEditConfigProvider.notifier).update((state) => state =
-              state!.copyWith(
-                  videoOptions: state.videoOptions.copyWith(maxFPS: 0)));
+          ref.read(configScreenConfig.notifier).update((state) => state = state!
+              .copyWith(videoOptions: state.videoOptions.copyWith(maxFPS: 0)));
 
           setState(() {
             maxFPSController.text = '-';
           });
         } else {
-          ref.read(newOrEditConfigProvider.notifier).update((state) => state =
-              state!.copyWith(
+          ref.read(configScreenConfig.notifier).update((state) => state = state!
+              .copyWith(
                   videoOptions: state.videoOptions
                       .copyWith(maxFPS: double.parse(value))));
         }
@@ -157,13 +156,14 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
               .map((d) => DropdownMenuItem(
                     value: d.id,
                     child: Text(d.id).textColor(colorScheme.inverseSurface
-                        .withOpacity(info.displays.length == 1 ? 0.3 : 0)),
+                        .withValues(
+                            alpha: info.displays.length == 1 ? 0.3 : 0)),
                   ))
               .toList(),
           onSelected: info.displays.length == 1
               ? null
               : (value) => ref
-                  .read(newOrEditConfigProvider.notifier)
+                  .read(configScreenConfig.notifier)
                   .update((state) => state = state!.copyWith(displayId: value)),
         ),
       ],
@@ -195,7 +195,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                   min: 0.3,
                   divisions: 7,
                   onChanged: (value) {
-                    ref.read(newOrEditConfigProvider.notifier).update((state) =>
+                    ref.read(configScreenConfig.notifier).update((state) =>
                         state = state!.copyWith(
                             videoOptions: state.videoOptions
                                 .copyWith(resolutionScale: value)));
@@ -230,8 +230,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
             ConfigDropdownOthers(
               initialValue: selectedConfig.videoOptions.videoCodec,
               onSelected: (value) {
-                ref.read(newOrEditConfigProvider.notifier).update((state) =>
-                    state = state!.copyWith(
+                ref.read(configScreenConfig.notifier).update((state) => state =
+                    state!.copyWith(
                         videoOptions: state.videoOptions.copyWith(
                             videoCodec: value, videoEncoder: 'default')));
               },
@@ -245,8 +245,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
             ConfigDropdownOthers(
               initialValue: selectedConfig.videoOptions.videoEncoder,
               onSelected: (value) {
-                ref.read(newOrEditConfigProvider.notifier).update((state) =>
-                    state = state!.copyWith(
+                ref.read(configScreenConfig.notifier).update((state) => state =
+                    state!.copyWith(
                         videoOptions:
                             state.videoOptions.copyWith(videoEncoder: value)));
               },
@@ -259,10 +259,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                 ...info.videoEncoders
                     .firstWhere((ve) =>
                         ve.codec ==
-                        ref
-                            .read(newOrEditConfigProvider)!
-                            .videoOptions
-                            .videoCodec)
+                        ref.read(configScreenConfig)!.videoOptions.videoCodec)
                     .encoder
                     .map(
                       (enc) => DropdownMenuItem(
@@ -287,8 +284,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                       initialValue: selectedConfig.videoOptions.videoFormat,
                       toTitleCase: false,
                       onSelected: (value) {
-                        ref.read(newOrEditConfigProvider.notifier).update(
-                            (state) => state = state!.copyWith(
+                        ref.read(configScreenConfig.notifier).update((state) =>
+                            state = state!.copyWith(
                                 videoOptions: state.videoOptions
                                     .copyWith(videoFormat: value)));
                       },
@@ -310,13 +307,13 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
       unit: 'M',
       onChanged: (value) {
         if (value.isEmpty) {
-          ref.read(newOrEditConfigProvider.notifier).update((state) => state!
+          ref.read(configScreenConfig.notifier).update((state) => state!
               .copyWith(
                   videoOptions: state.videoOptions.copyWith(videoBitrate: 8)));
           videoBitrateController.text = '8';
           setState(() {});
         } else {
-          ref.read(newOrEditConfigProvider.notifier).update((state) => state!
+          ref.read(configScreenConfig.notifier).update((state) => state!
               .copyWith(
                   videoOptions: state.videoOptions
                       .copyWith(videoBitrate: int.parse(value))));

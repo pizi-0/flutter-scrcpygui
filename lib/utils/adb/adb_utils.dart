@@ -130,91 +130,59 @@ class AdbUtils {
     }
   }
 
-  static Future<WiFiResult> connectWifiDebugging(String workDir,
+  //using ip
+  static Future<WiFiResult> connectWithIp(String workDir,
       {required String ip}) async {
     ProcessResult? res;
 
-    if (!ip.contains(':')) {
-      res = await Process.run(eadb, ['connect', '$ip:5555'],
-              workingDirectory: workDir)
-          .timeout(
-        5.seconds,
-        onTimeout: () {
-          logger.i('Connecting $ip, timed-out');
-          return ProcessResult(pid, exitCode, 'timed-out', stderr);
-        },
-      );
-    } else {
-      res = await Process.run(eadb, ['connect', ip], workingDirectory: workDir)
-          .timeout(
-        5.seconds,
-        onTimeout: () {
-          logger.i('Connecting $ip, timed-out');
-          return ProcessResult(pid, exitCode, 'timed-out', stderr);
-        },
-      );
+    res = await Process.run(eadb, ['connect', '$ip:5555'],
+            workingDirectory: workDir)
+        .timeout(
+      5.seconds,
+      onTimeout: () {
+        logger.i('Connecting $ip, timed-out');
+        return ProcessResult(pid, exitCode, 'timed-out', stderr);
+      },
+    );
 
-      //stop unauth
-      if (res.stdout.toString().contains('authenticate')) {
-        logger.i('Unauthenticated, check phone');
-        await Process.run(eadb, ['disconnect', ip], workingDirectory: workDir);
+    //stop unauth
+    if (res.stdout.toString().contains('authenticate')) {
+      logger.i('Unauthenticated, check phone');
+      await Process.run(eadb, ['disconnect', '$ip:5555'],
+          workingDirectory: workDir);
 
-        return WiFiResult(success: false, errorMessage: res.stdout);
-      }
+      return WiFiResult(success: false, errorMessage: res.stdout);
+    }
 
-      //on success, change to tcp 5555 if not already
-      if ((!res.stdout.toString().contains('failed') ||
-              !res.stdout.toString().contains('timed-out')) &&
-          !ip.contains(':5555')) {
-        await tcpip5555(workDir, ip);
+    return WiFiResult(
+      success: !res.stdout.toString().contains('failed') &&
+          !res.stdout.toString().contains('timed-out'),
+      errorMessage: res.stdout,
+    );
+  }
 
-        final adb = await connectedDevices(workDir);
+  //using mdns
+  static Future<WiFiResult> connectWithMdns(WidgetRef ref,
+      {required String id}) async {
+    final workDir = ref.read(execDirProvider);
+    ProcessResult? res;
 
-        if (adb.where((d) => d.id == ip).isNotEmpty) {
-          await Process.run(eadb, ['disconnect', ip],
-              workingDirectory: workDir);
-        }
+    res = await Process.run(eadb, ['connect', id], workingDirectory: workDir)
+        .timeout(
+      5.seconds,
+      onTimeout: () {
+        logger.i('Connecting $id, timed-out');
+        return ProcessResult(pid, exitCode, 'timed-out', stderr);
+      },
+    );
 
-        res = await Process.run(
-                eadb, ['connect', (ip.split(':').first.append(':5555'))],
-                workingDirectory: workDir)
-            .timeout(
-          5.seconds,
-          onTimeout: () {
-            return ProcessResult(pid, exitCode, 'timed-out', stderr);
-          },
-        );
+    //stop unauth
+    if (res.stdout.toString().contains('authenticate')) {
+      logger.i('Unauthenticated, check phone');
+      await Process.run(eadb, ['disconnect', '$id.$adbMdns'],
+          workingDirectory: workDir);
 
-        debugPrint('OUT: ${res.stdout}, ERR: ${res.stderr}');
-      }
-
-      //try with 5555 if given port is err
-      if (res.stdout.toString().contains('failed')) {
-        final newIp = ip.replaceAll(RegExp(r':\d+$'), ':5555');
-
-        res = await Process.run(eadb, ['connect', newIp],
-                workingDirectory: workDir)
-            .timeout(
-          5.seconds,
-          onTimeout: () {
-            return ProcessResult(pid, exitCode, 'timed-out', stderr);
-          },
-        );
-      }
-
-      //bad port
-      if (res.stdout.toString().contains('bad port')) {
-        final newIp = ip.split(':').first.toString();
-
-        res = await Process.run(eadb, ['connect', newIp],
-                workingDirectory: workDir)
-            .timeout(
-          5.seconds,
-          onTimeout: () {
-            return ProcessResult(pid, exitCode, 'timed-out', stderr);
-          },
-        );
-      }
+      return WiFiResult(success: false, errorMessage: res.stdout);
     }
 
     return WiFiResult(
@@ -331,7 +299,6 @@ class AdbUtils {
   static Future<void> pingAutoConnectDevices(WidgetRef ref) async {
     final autoDevices = ref.read(autoConnectDevicesProvider);
     final connectedDevices = ref.read(adbProvider);
-    final workDir = ref.read(execDirProvider);
 
     for (final d in autoDevices) {
       final ping = Ping(d.id.split(':').first);
@@ -340,7 +307,7 @@ class AdbUtils {
 
       if (res == null) {
         if (!connectedDevices.contains(d)) {
-          await connectWifiDebugging(workDir, ip: d.id);
+          await connectWithMdns(ref, id: d.id);
         }
       }
     }

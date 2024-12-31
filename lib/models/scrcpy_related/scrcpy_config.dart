@@ -110,8 +110,7 @@ class ScrcpyConfig {
   bool operator ==(covariant ScrcpyConfig other) {
     if (identical(this, other)) return true;
 
-    return other.id == id &&
-        other.scrcpyMode == scrcpyMode &&
+    return other.scrcpyMode == scrcpyMode &&
         other.isRecording == isRecording &&
         other.videoOptions == videoOptions &&
         other.audioOptions == audioOptions &&

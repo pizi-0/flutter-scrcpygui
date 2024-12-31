@@ -1,7 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 import 'package:scrcpygui/widgets/config_dropdown.dart';
 
 import '../../providers/settings_provider.dart';
@@ -17,7 +17,7 @@ class DeviceConfig extends ConsumerStatefulWidget {
 class _DeviceConfigState extends ConsumerState<DeviceConfig> {
   @override
   Widget build(BuildContext context) {
-    final selectedConfig = ref.watch(newOrEditConfigProvider)!;
+    final selectedConfig = ref.watch(configScreenConfig)!;
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -54,7 +54,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                       onChanged: selectedConfig.windowOptions.noWindow
                           ? null
                           : (value) => ref
-                              .read(newOrEditConfigProvider.notifier)
+                              .read(configScreenConfig.notifier)
                               .update((state) => state = state!.copyWith(
                                   deviceOptions: state.deviceOptions
                                       .copyWith(stayAwake: value))),
@@ -74,7 +74,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                       onChanged: selectedConfig.windowOptions.noWindow
                           ? null
                           : (value) => ref
-                              .read(newOrEditConfigProvider.notifier)
+                              .read(configScreenConfig.notifier)
                               .update((state) => state = state!.copyWith(
                                   deviceOptions: state.deviceOptions
                                       .copyWith(showTouches: value))),
@@ -94,7 +94,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                       onChanged: selectedConfig.windowOptions.noWindow
                           ? null
                           : (value) => ref
-                              .read(newOrEditConfigProvider.notifier)
+                              .read(configScreenConfig.notifier)
                               .update((state) => state = state!.copyWith(
                                   deviceOptions: state.deviceOptions
                                       .copyWith(turnOffDisplay: value))),
@@ -114,7 +114,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                       onChanged: selectedConfig.windowOptions.noWindow
                           ? null
                           : (value) => ref
-                              .read(newOrEditConfigProvider.notifier)
+                              .read(configScreenConfig.notifier)
                               .update((state) => state = state!.copyWith(
                                   deviceOptions: state.deviceOptions
                                       .copyWith(offScreenOnClose: value))),
@@ -128,7 +128,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                   child: Checkbox(
                     value: selectedConfig.deviceOptions.noScreensaver,
                     onChanged: (value) => ref
-                        .read(newOrEditConfigProvider.notifier)
+                        .read(configScreenConfig.notifier)
                         .update((state) => state = state!.copyWith(
                             deviceOptions: state.deviceOptions
                                 .copyWith(noScreensaver: value))),

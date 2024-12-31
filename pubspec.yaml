@@ -58,6 +58,9 @@ dependencies:
   dart_ping: ^9.0.1
   dio: ^5.7.0
   logger: ^2.5.0
+  bonsoir: ^5.1.10
+  fpdart: ^1.1.1
+  ffi: ^2.1.3
   # circular_reveal_animation: ^2.0.1
 
 dev_dependencies:

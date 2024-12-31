@@ -62,8 +62,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         .read(wirelessDevicesHistoryProvider.notifier)
         .update((state) => wirelessHistory);
 
-    ref.read(selectedConfigProvider.notifier).state =
-        await ScrcpyUtils.getLastUsedConfig(ref);
+    // ref.read(selectedConfigProvider.notifier).state =
+    //     await ScrcpyUtils.getLastUsedConfig(ref);
 
     ref.read(autoConnectDevicesProvider.notifier).state =
         await AdbUtils.getAutoConnectDevices();

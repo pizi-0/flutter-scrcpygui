@@ -71,6 +71,7 @@ class SetupUtils {
     return prefs.getString(PKEY_SCRCPYVERSION) ?? '';
   }
 
+  // ignore: unused_element
   static Future<String> _getLatestScrcpyVersion() async {
     try {
       final res = await Dio().get(scrcpyLatestUrl);

@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:scrcpygui/utils/extension.dart';
 
 class AppTheme {
   final double widgetRadius;
@@ -38,7 +40,7 @@ class AppTheme {
     return {
       'widgetRadius': widgetRadius,
       'fromWall': fromWall,
-      'color': color.value,
+      'color': color.hex,
       'brightness': Brightness.values.indexOf(brightness),
       'tintLevel': tintLevel.toMap(),
     };
@@ -48,7 +50,7 @@ class AppTheme {
     return AppTheme(
       widgetRadius: map['widgetRadius'] ?? 10,
       fromWall: map['fromWall'] ?? false,
-      color: Color(map['color']),
+      color: HexColor.fromHex(map['color']),
       brightness: Brightness.values[map['brightness']],
       tintLevel: map['tintLevel'] == null
           ? ColorTintLevel()

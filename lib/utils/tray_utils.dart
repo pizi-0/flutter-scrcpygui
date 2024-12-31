@@ -8,6 +8,7 @@ import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
+import 'package:string_extensions/string_extensions.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -59,7 +60,7 @@ class TrayUtils {
                 saved.firstWhere((s) => s.id == d.id, orElse: () => d);
             return MenuItem.submenu(
               key: device.id,
-              label: device.id.contains(':')
+              label: device.id.isIpv4 || device.id.contains(adbMdns)
                   ? '${device.name?.toUpperCase() ?? device.id} (WiFi)'
                   : '${device.name?.toUpperCase() ?? device.id} (USB)',
               sublabel: 'Config',
@@ -70,11 +71,8 @@ class TrayUtils {
                           key: c.configName,
                           label: c.configName,
                           onClick: (menuItem) async {
-                            ref.read(selectedDeviceProvider.notifier).state =
-                                device;
-                            ref.read(selectedConfigProvider.notifier).state = c;
-
-                            await ScrcpyUtils.newInstance(ref, device, c);
+                            await ScrcpyUtils.newInstance(ref,
+                                selectedDevice: device, selectedConfig: c);
                           },
                         ))
                     .toList(),

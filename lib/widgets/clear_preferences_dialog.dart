@@ -72,9 +72,6 @@ class _ClearPreferencesDialogState
                         ref.read(configsProvider.notifier).removeConfig(c);
                       }
                     }
-
-                    ref.read(selectedConfigProvider.notifier).state =
-                        defaultMirror;
                   },
                   icon: const Icon(Icons.delete),
                 ),

@@ -7,8 +7,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
-import 'package:scrcpygui/screens/main_screen/ms_desktop.dart';
+import 'package:scrcpygui/screens/main_screen/small.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
+import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/utils/theme_utils.dart';
 import 'package:scrcpygui/widgets/simple_toast/simple_toast_container.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -32,6 +33,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
     with WindowListener, TrayListener {
   Timer? autoDevicesPingTimer;
   Timer? autoLaunchConfigTimer;
+  Timer? runningInstancePingTimer;
 
   @override
   void initState() {
@@ -40,35 +42,6 @@ class _MainScreenState extends ConsumerState<MainScreen>
     trayManager.addListener(this);
 
     super.initState();
-
-    TrayUtils.initTray(ref, context);
-
-    ref.read(scrcpyInstanceProvider.notifier).ref.listenSelf((a, b) async {
-      if (!listEquals(a, b)) {
-        await trayManager.destroy();
-        await TrayUtils.initTray(ref, context);
-      }
-    });
-
-    ref.read(savedAdbDevicesProvider.notifier).ref.listenSelf(
-      (previous, next) async {
-        trayManager.destroy();
-        await TrayUtils.initTray(ref, context);
-      },
-    );
-
-    WidgetsBinding.instance.addPostFrameCallback((a) {
-      autoDevicesPingTimer = Timer.periodic(1.seconds, (a) async {
-        await AutomationUtils.autoconnectRunner(ref);
-      });
-      autoLaunchConfigTimer = Timer.periodic(1.seconds, (a) async {
-        await AutomationUtils.autoLaunchConfigRunner(ref);
-      });
-    });
-  }
-
-  _init() async {
-    await windowManager.setPreventClose(true);
   }
 
   @override
@@ -77,6 +50,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
     trayManager.removeListener(this);
     autoDevicesPingTimer?.cancel();
     autoLaunchConfigTimer?.cancel();
+    runningInstancePingTimer?.cancel();
     super.dispose();
   }
 
@@ -103,11 +77,11 @@ class _MainScreenState extends ConsumerState<MainScreen>
               builder: (context, sizingInformation) {
                 switch (sizingInformation.deviceScreenType) {
                   case DeviceScreenType.desktop:
-                    return const DesktopMainScreen();
+                    return const MainScreenSmall();
                   case DeviceScreenType.tablet:
-                    return const DesktopMainScreen();
+                    return const MainScreenSmall();
                   case DeviceScreenType.mobile:
-                    return const DesktopMainScreen();
+                    return const MainScreenSmall();
                   default:
                     return const Text('Default');
                 }
@@ -118,5 +92,36 @@ class _MainScreenState extends ConsumerState<MainScreen>
         ),
       ),
     );
+  }
+
+  _init() async {
+    await windowManager.setPreventClose(true);
+    TrayUtils.initTray(ref, context);
+
+    ref.read(scrcpyInstanceProvider.notifier).ref.listenSelf((a, b) async {
+      if (!listEquals(a, b)) {
+        await trayManager.destroy();
+        await TrayUtils.initTray(ref, context);
+      }
+    });
+
+    ref.read(savedAdbDevicesProvider.notifier).ref.listenSelf(
+      (previous, next) async {
+        trayManager.destroy();
+        await TrayUtils.initTray(ref, context);
+      },
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((a) {
+      autoDevicesPingTimer = Timer.periodic(1.seconds, (a) async {
+        await AutomationUtils.autoconnectRunner(ref);
+      });
+      autoLaunchConfigTimer = Timer.periodic(1.seconds, (a) async {
+        await AutomationUtils.autoLaunchConfigRunner(ref);
+      });
+      runningInstancePingTimer = Timer.periodic(1.seconds, (a) async {
+        await ScrcpyUtils.pingRunning(ref);
+      });
+    });
   }
 }

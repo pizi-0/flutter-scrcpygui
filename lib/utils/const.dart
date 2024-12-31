@@ -15,7 +15,6 @@ import '../models/scrcpy_related/scrcpy_enum.dart';
 import '../models/settings_model/app_theme.dart';
 
 final List<ScrcpyConfig> defaultConfigs = [
-  newConfig,
   defaultMirror,
   defaultRecord,
 ];
@@ -187,3 +186,5 @@ final shellEnv = {
   'SCRCPY_SERVER_PATH': './scrcpy-server',
   'SCRCPY_ICON_PATH': './icon.png'
 };
+
+const String adbMdns = '_adb-tls-connect._tcp';

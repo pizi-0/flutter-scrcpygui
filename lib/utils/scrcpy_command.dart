@@ -53,10 +53,10 @@ class ScrcpyCommand {
     if (config.isRecording) {
       switch (config.scrcpyMode) {
         case ScrcpyMode.audioOnly:
-          return " --record='${config.savePath}/${_nameAfterDuplicateCheck(config.savePath!, '$filename${config.audioOptions.audioFormat.command}')}'";
+          return "--record='${config.savePath}/${_nameAfterDuplicateCheck(config.savePath!, '$filename${config.audioOptions.audioFormat.command}')}'";
 
         default:
-          return " --record='${config.savePath}/${_nameAfterDuplicateCheck(config.savePath!, '$filename${config.videoOptions.videoFormat.command}')}'";
+          return "--record=${config.savePath}/${_nameAfterDuplicateCheck(config.savePath!, '$filename${config.videoOptions.videoFormat.command}')}";
       }
     } else {
       return '';
@@ -66,7 +66,7 @@ class ScrcpyCommand {
   static _nameAfterDuplicateCheck(String savePath, String oldname) {
     String newname = oldname;
     File toSave = File('$savePath/$oldname');
-    DateTime now = DateTime.timestamp();
+    DateTime now = DateTime.timestamp().toLocal();
 
     if (toSave.existsSync()) {
       newname = oldname.insertAt(oldname.lastIndexOf('.'), '-$now');

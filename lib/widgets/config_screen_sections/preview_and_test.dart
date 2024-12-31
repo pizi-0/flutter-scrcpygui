@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
-import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 import 'package:scrcpygui/screens/log_screen/log_screen.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
 
@@ -49,7 +49,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedConfig = ref.watch(newOrEditConfigProvider)!;
+    final selectedConfig = ref.watch(configScreenConfig)!;
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final runningInstance = ref.watch(scrcpyInstanceProvider);
     final testInstance = ref.watch(testInstanceProvider);
@@ -114,8 +114,8 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                         ),
                         onPressed: () async {
                           if (!isTestRunning) {
-                            await ScrcpyUtils.newInstance(
-                                ref, selectedDevice, selectedConfig);
+                            await ScrcpyUtils.newInstance(ref,
+                                selectedConfig: selectedConfig);
 
                             timer = Timer.periodic(1.seconds, (a) async {
                               await _isStillRunning();

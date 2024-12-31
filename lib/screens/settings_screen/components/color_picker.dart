@@ -23,10 +23,9 @@ class _MyColorPickerState extends ConsumerState<MyColorPicker> {
 
   @override
   void initState() {
-    hexValue =
-        ref.read(settingsProvider).looks.color.toHex().replaceFirst('ff', '');
+    hexValue = ColorExtension(ref.read(settingsProvider).looks.color).hex;
     customColor.text =
-        ref.read(settingsProvider).looks.color.toHex().replaceFirst('ff', '');
+        ColorExtension(ref.read(settingsProvider).looks.color).hex;
     super.initState();
   }
 
@@ -95,7 +94,7 @@ class _MyColorPickerState extends ConsumerState<MyColorPicker> {
                             looks: currentLooks.copyWith(color: col)));
 
                     setState(() {
-                      customColor.text = col.toHex().replaceFirst('ff', '');
+                      customColor.text = ColorExtension(col).hex;
                     });
 
                     AppUtils.saveAppSettings(currentSettings.copyWith(

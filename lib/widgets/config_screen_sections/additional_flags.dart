@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/available_flags.dart';
-import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 
 import '../../providers/settings_provider.dart';
 import '../../utils/const.dart';
@@ -21,7 +21,7 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
 
   @override
   void initState() {
-    final config = ref.read(newOrEditConfigProvider)!;
+    final config = ref.read(configScreenConfig)!;
     add.text = config.additionalFlags;
     super.initState();
   }
@@ -87,9 +87,8 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
                             .map((e) => FilteringTextInputFormatter.deny(e))
                       ],
                       onChanged: (val) {
-                        ref.read(newOrEditConfigProvider.notifier).update(
-                            (state) =>
-                                state = state!.copyWith(additionalFlags: val));
+                        ref.read(configScreenConfig.notifier).update((state) =>
+                            state = state!.copyWith(additionalFlags: val));
                       },
                     ),
                   ),

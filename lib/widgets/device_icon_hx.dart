@@ -74,7 +74,7 @@ class _DeviceHistoryIconState extends ConsumerState<DeviceHistoryIcon> {
                     color: Theme.of(context)
                         .colorScheme
                         .secondaryContainer
-                        .withOpacity(0.3),
+                        .withValues(alpha: 0.3),
                   ),
                   height: 100,
                   width: 100,

@@ -119,7 +119,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                         subtitle: Text(
                           '${runningInstance.length} server(s)',
                         ).textColor(
-                            colorScheme.inverseSurface.withOpacity(0.8)),
+                            colorScheme.inverseSurface.withValues(alpha: 0.8)),
                       ),
                     ),
                   if (wifiDevices.isNotEmpty)
@@ -149,7 +149,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                         subtitle: Text(
                           '${wifiDevices.length} device(s)',
                         ).textColor(
-                            colorScheme.inverseSurface.withOpacity(0.8)),
+                            colorScheme.inverseSurface.withValues(alpha: 0.8)),
                       ),
                     )
                 ],

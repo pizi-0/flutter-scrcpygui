@@ -18,6 +18,7 @@ import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/prefs_key.dart';
 import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
+import 'package:scrcpygui/widgets/start_stop_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:tray_manager/tray_manager.dart';
@@ -79,6 +80,17 @@ class ScrcpyUtils {
     await TrayUtils.initTray(ref, context);
 
     prefs.setStringList(PKEY_SAVED_CONFIG, savedJson);
+  }
+
+  static Future<void> pingRunning(WidgetRef ref) async {
+    final running = ref.read(scrcpyInstanceProvider);
+    final actual = await getRunningScrcpy(ref.read(appPidProvider));
+
+    for (final inst in running) {
+      if (!actual.contains(inst.scrcpyPID)) {
+        ref.read(scrcpyInstanceProvider.notifier).removeInstance(inst);
+      }
+    }
   }
 
   static Future<List<String>> getRunningScrcpy(String appPID) async {
@@ -201,13 +213,43 @@ class ScrcpyUtils {
           ),
         );
 
-    await ScrcpyUtils.saveLastUsedConfig(ref.read(selectedConfigProvider));
+    // await ScrcpyUtils.saveLastUsedConfig(ref.read(selectedConfigProvider));
   }
 
-  static Future newInstance(WidgetRef ref, AdbDevices selectedDevice,
-      ScrcpyConfig selectedConfig) async {
-    final inst = await _startServer(ref, selectedDevice, selectedConfig);
-    ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
+  static Future newInstance(WidgetRef ref,
+      {AdbDevices? selectedDevice,
+      required ScrcpyConfig selectedConfig}) async {
+    AdbDevices device = selectedDevice ?? ref.read(selectedDeviceProvider)!;
+
+    if (device.info == null) {
+      final info =
+          await AdbUtils.getScrcpyDetailsFor(ref.read(execDirProvider), device);
+      device = device.copyWith(info: info);
+
+      ref.read(savedAdbDevicesProvider.notifier).addEditDevices(device);
+      ref.read(selectedDeviceProvider.notifier).state = device;
+    }
+
+    final checkResult =
+        await checkForIncompatibleFlags(ref, selectedConfig, device);
+
+    bool proceed = checkResult.where((e) => !e.ok).isEmpty;
+
+    if (!proceed) {
+      proceed = (await showDialog(
+            context: ref.context,
+            builder: (context) => OverrideDialog(
+              offendingFlags: checkResult.where((r) => !r.ok).toList(),
+            ),
+          )) ??
+          false;
+    }
+
+    if (proceed) {
+      final inst = await _startServer(ref, device, selectedConfig);
+
+      ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
+    }
   }
 
   static Future<void> killServer(
@@ -225,14 +267,13 @@ class ScrcpyUtils {
     return res;
   }
 
-  static Future<List<FlagCheckResult>> checkForIncompatibleFlags(
-      WidgetRef ref) async {
-    final selectedDevice = ref.read(selectedDeviceProvider);
-    final selectedConfig = ref.read(selectedConfigProvider);
+  static Future<List<FlagCheckResult>> checkForIncompatibleFlags(WidgetRef ref,
+      ScrcpyConfig selectedConfig, AdbDevices selectedDevice) async {
+    // final selectedConfig = ref.read(selectedConfigProvider);
 
     List<FlagCheckResult> result = [];
 
-    bool display = selectedDevice!.info!.displays
+    bool display = selectedDevice.info!.displays
         .where((d) => d.id == selectedConfig.videoOptions.displayId.toString())
         .isNotEmpty;
 

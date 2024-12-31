@@ -1,45 +1,34 @@
-import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/bonsoir_devices.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/adb/adb_utils.dart';
+import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
-import 'package:string_extensions/string_extensions.dart';
-
-import '../providers/version_provider.dart';
 
 class AutomationUtils {
   static autoconnectRunner(WidgetRef ref) async {
-    final workDir = ref.read(execDirProvider);
     final connected = ref.read(adbProvider);
+    final bonsoirDevices = ref.read(bonsoirDeviceProvider);
     final task = ref
         .read(savedAdbDevicesProvider)
         .where((e) =>
-            e.id.isIpv4 &&
+            e.id.contains(adbMdns) &&
             e.automationData != null &&
             e.automationData!.actions
                 .where((a) => a.type == ActionType.autoconnect)
                 .isNotEmpty)
         .toList();
+
     for (final t in task) {
-      final ping = Ping(t.id.split(':').first);
-
-      final res = (await ping.stream.first).error;
-
-      if (res == null) {
+      if (bonsoirDevices.where((bd) => t.id.contains(bd.name)).isNotEmpty) {
         if (!connected.contains(t)) {
-          AdbUtils.connectWifiDebugging(workDir, ip: t.id);
+          AdbUtils.connectWithMdns(ref, id: t.id);
         }
       }
-      // else {
-      //   if (connected.contains(t)) {
-      //     await AdbUtils.disconnectWirelessDevice(t);
-      //     ref.read(adbProvider.notifier).removeDevice(t);
-      //   }
-      // }
     }
   }
 
@@ -67,7 +56,8 @@ class AutomationUtils {
               .read(configsProvider)
               .firstWhere((conf) => conf.id == configIdtoLaunch);
 
-          ScrcpyUtils.newInstance(ref, t, config);
+          ScrcpyUtils.newInstance(ref,
+              selectedDevice: t, selectedConfig: config);
         }
       }
     }
