@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_context_menu/flutter_context_menu.dart';
@@ -23,6 +26,24 @@ class DeviceListtile extends ConsumerStatefulWidget {
 
 class _DeviceListtileState extends ConsumerState<DeviceListtile> {
   bool loading = false;
+  Ping? ping;
+  int retries = 0;
+  Timer? pingTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((a) {
+      _pingWireless();
+    });
+  }
+
+  @override
+  void dispose() {
+    ping?.stop();
+    pingTimer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +52,8 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
     final isWireless =
         widget.device.id.contains(adbMdns) || widget.device.id.isIpv4;
     final workDir = ref.watch(execDirProvider);
+
+    print(selectedDevice?.modelName);
 
     return GestureDetector(
       onSecondaryTapDown: (details) {
@@ -138,5 +161,24 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
         ),
       ),
     );
+  }
+
+  _pingWireless() async {
+    if (widget.device.ip.isIpv4) {
+      ping = Ping(widget.device.ip!.split(':').first);
+      final workDir = ref.read(execDirProvider);
+
+      ping?.stream.listen((p) {
+        if (p.error != null) {
+          if (retries < 10) {
+            retries += 1;
+            setState(() {});
+          } else {
+            ping?.stop();
+            AdbUtils.disconnectWirelessDevice(workDir, widget.device);
+          }
+        }
+      });
+    }
   }
 }

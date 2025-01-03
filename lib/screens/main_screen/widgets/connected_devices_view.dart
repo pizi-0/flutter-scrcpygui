@@ -1,6 +1,8 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/models/adb_devices.dart';
+import 'package:scrcpygui/providers/bonsoir_devices.dart';
 import 'package:scrcpygui/screens/main_screen/widgets/small/home_small.dart';
 
 import '../../../providers/adb_provider.dart';
@@ -20,6 +22,7 @@ class ConnectedDevicesView extends ConsumerWidget {
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final devices = ref.watch(adbProvider);
     final savedDevices = ref.watch(savedAdbDevicesProvider);
+    final bonsoirDevices = ref.watch(bonsoirDeviceProvider);
     final attention = ref.watch(homeDeviceAttention);
 
     return Column(
@@ -56,11 +59,21 @@ class ConnectedDevicesView extends ConsumerWidget {
                         BorderRadius.circular(looks.widgetRadius * 0.4),
                     child: ListView.separated(
                       itemBuilder: (context, index) {
-                        final dev = devices[index];
+                        final AdbDevices dev = devices[index];
 
-                        final dev2 = savedDevices.firstWhere(
+                        AdbDevices dev2 = savedDevices.firstWhere(
                             (e) => e.id == dev.id,
                             orElse: () => dev);
+
+                        if (bonsoirDevices
+                            .where((b) => dev2.id.contains(b.name))
+                            .isNotEmpty) {
+                          final bd = bonsoirDevices
+                              .firstWhere((f) => dev2.id.contains(f.name));
+
+                          dev2 = dev2.copyWith(
+                              ip: '${bd.toJson()['service.host']}:${bd.port}');
+                        }
 
                         return DeviceListtile(
                             key: ValueKey(dev2.id), device: dev2);
