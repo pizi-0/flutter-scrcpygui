@@ -18,9 +18,11 @@ final pollAdbProvider = StateProvider<void>((ref) async {
         ref.read(adbProvider.notifier).setConnected(newAdb);
       }
       if (ref.read(selectedDeviceProvider) != null &&
-          !newAdb.contains(ref.read(selectedDeviceProvider)) &&
+          newAdb
+              .where((n) => n.id == ref.read(selectedDeviceProvider)!.id)
+              .isEmpty &&
           newAdb.isNotEmpty) {
-        ref.read(selectedDeviceProvider.notifier).state = newAdb.first;
+        ref.read(selectedDeviceProvider.notifier).state = null;
       }
 
       if (newAdb.isEmpty) {
