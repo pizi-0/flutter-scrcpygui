@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/widgets/config_dropdown.dart';
 import 'package:tray_manager/tray_manager.dart';
 
 import '../../../providers/settings_provider.dart';
@@ -25,10 +26,12 @@ class _AppBehaviourSectionState extends ConsumerState<AppBehaviourSection> {
 
     return BodyContainer(
       headerTitle: 'App behaviour',
+      spacing: 4,
       children: [
-        BodyContainerItem(
-          title: 'Show tray icon',
-          trailing: Checkbox(
+        ConfigCustom(
+          childBackgroundColor: Colors.transparent,
+          label: 'Show tray icon',
+          child: Checkbox(
             value: behaviour.traySupport,
             checkColor: colorScheme.surface,
             onChanged: (v) async {
@@ -49,17 +52,23 @@ class _AppBehaviourSectionState extends ConsumerState<AppBehaviourSection> {
             },
           ),
         ),
-        BodyContainerItem(
-          title: 'Quit always kill instances with no window',
-          trailing: Checkbox(
-            value: behaviour.killNoWindowInstance,
-            activeColor: colorScheme.primary,
-            checkColor: colorScheme.secondaryContainer,
+        ConfigCustom(
+          childBackgroundColor: Colors.transparent,
+          label: 'Quitting kill instances with no window',
+          child: Checkbox(
+            value: behaviour.traySupport,
+            checkColor: colorScheme.surface,
             onChanged: (v) async {
               ref.read(settingsProvider.notifier).update((state) => state =
                   state.copyWith(
-                      behaviour:
-                          state.behaviour.copyWith(killNoWindowInstance: v)));
+                      behaviour: state.behaviour.copyWith(traySupport: v)));
+
+              if (v == true) {
+                await trayManager.destroy();
+                await TrayUtils.initTray(ref, context);
+              } else {
+                await trayManager.destroy();
+              }
 
               final newSettings = ref.read(settingsProvider);
 

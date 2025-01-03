@@ -44,16 +44,19 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
           width: appWidth,
           child: Padding(
             padding: const EdgeInsets.all(4.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildMainModeSelector(ref, context, selectedConfig),
-                const SizedBox(height: 4),
-                _buildModeSelector(context, selectedConfig),
-                // const SizedBox(height: 4),
-                // _extraOptions(context, selectedConfig)
-              ],
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildMainModeSelector(ref, context, selectedConfig),
+                  const SizedBox(height: 4),
+                  _buildModeSelector(context, selectedConfig),
+                  // const SizedBox(height: 4),
+                  // _extraOptions(context, selectedConfig)
+                ],
+              ),
             ),
           ),
         ),

@@ -53,8 +53,6 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
         widget.device.id.contains(adbMdns) || widget.device.id.isIpv4;
     final workDir = ref.watch(execDirProvider);
 
-    print(selectedDevice?.modelName);
-
     return GestureDetector(
       onSecondaryTapDown: (details) {
         showContextMenu(

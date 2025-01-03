@@ -10,12 +10,14 @@ class BodyContainer extends ConsumerWidget {
   final String? headerTitle;
   final Widget? headerTrailing;
   final double? height;
+  final double? spacing;
   const BodyContainer({
     super.key,
     required this.children,
     this.headerTitle,
     this.headerTrailing,
     this.height,
+    this.spacing,
   });
 
   @override
@@ -51,14 +53,19 @@ class BodyContainer extends ConsumerWidget {
               borderRadius: BorderRadius.circular(appTheme.widgetRadius),
             ),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(4, 4, 4, 0),
+              padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
               child: ScrollConfiguration(
                 behavior:
                     ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                child: SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  child: Column(
-                    children: children,
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(appTheme.widgetRadius * 0.8),
+                  child: SingleChildScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    child: Column(
+                      spacing: spacing ?? 0,
+                      children: children,
+                    ),
                   ),
                 ),
               ),

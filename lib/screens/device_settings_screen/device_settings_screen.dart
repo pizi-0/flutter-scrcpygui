@@ -1,10 +1,9 @@
-import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/automation.dart';
-import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
@@ -12,8 +11,10 @@ import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/utils/automation_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/body_container.dart';
+import 'package:scrcpygui/widgets/config_dropdown.dart';
 
 import '../../providers/adb_provider.dart';
+import 'widgets/info_container.dart';
 
 // ignore: constant_identifier_names
 const DO_NOTHING = 'Do nothing';
@@ -89,46 +90,54 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     BodyContainer(
+                      spacing: 4,
                       children: [
-                        BodyContainerItem(
-                          title: 'Rename',
-                          trailing: Container(
+                        ConfigCustom(
+                          label: 'Rename',
+                          child: Container(
                             height: 40,
                             width: 150,
-                            margin: const EdgeInsets.all(6),
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             decoration: BoxDecoration(
                                 color: colorSheme.primaryContainer,
                                 borderRadius: BorderRadius.circular(
                                     appTheme.widgetRadius * 0.6)),
-                            child: Center(
-                              child: TextField(
-                                decoration: const InputDecoration.collapsed(
-                                    hintText: ''),
-                                maxLines: 1,
-                                onSubmitted: (value) async {
-                                  dev = dev.copyWith(
-                                      name: namecontroller.text.toUpperCase());
+                            child: TextField(
+                              textAlignVertical: TextAlignVertical.center,
+                              textCapitalization: TextCapitalization.characters,
+                              decoration:
+                                  const InputDecoration.collapsed(hintText: ''),
+                              maxLines: 1,
+                              onSubmitted: (value) async {
+                                dev = dev.copyWith(
+                                    name: namecontroller.text.toUpperCase());
 
-                                  ref
-                                      .read(savedAdbDevicesProvider.notifier)
-                                      .addEditDevices(dev);
+                                ref
+                                    .read(savedAdbDevicesProvider.notifier)
+                                    .addEditDevices(dev);
 
-                                  await AdbUtils.saveAdbDevice(
-                                      ref.read(savedAdbDevicesProvider));
-                                },
-                                controller: namecontroller,
-                                // textAlignVertical: TextAlignVertical.center,
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: colorSheme.inverseSurface),
+                                await AdbUtils.saveAdbDevice(
+                                    ref.read(savedAdbDevicesProvider));
+                              },
+                              inputFormatters: [
+                                TextInputFormatter.withFunction(
+                                  (oldValue, newValue) => newValue.copyWith(
+                                      text: newValue.text.toUpperCase()),
+                                )
+                              ],
+                              controller: namecontroller,
+                              // textAlignVertical: TextAlignVertical.center,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: colorSheme.inverseSurface,
                               ),
                             ),
                           ),
                         ),
-                        BodyContainerItem(
-                          title: 'Autoconnect if available',
-                          trailing: Checkbox(
+                        ConfigCustom(
+                          childBackgroundColor: Colors.transparent,
+                          label: 'Autoconnect if available',
+                          child: Checkbox(
                             value: dev.automationData == null
                                 ? false
                                 : dev.automationData!.actions.contains(
@@ -172,80 +181,51 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                             },
                           ),
                         ),
-                        BodyContainerItem(
-                          title: 'On autoconnect success',
-                          trailing: Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 8, 6, 8),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .primaryContainer,
-                                borderRadius: BorderRadius.circular(
-                                    appTheme.widgetRadius * 0.8),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(left: 6.0),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<String>(
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
-                                    value: ddValue,
-                                    items: [
-                                      const DropdownMenuItem(
-                                        value: DO_NOTHING,
-                                        child: Text('Do nothing'),
-                                      ),
-                                      ...configs
-                                          .where((c) => c != newConfig)
-                                          .map(
-                                            (c) => DropdownMenuItem(
-                                              value: c.id,
-                                              child: Text(c.configName),
-                                            ),
-                                          )
-                                    ],
-                                    onChanged: (v) async {
-                                      setState(() {
-                                        ddValue = v!;
-                                      });
-                                      if (v == DO_NOTHING) {
-                                        var currentAutoData =
-                                            dev.automationData ??
-                                                AutomationData(actions: []);
+                        ConfigDropdownOthers(
+                          initialValue: ddValue,
+                          onSelected: (v) async {
+                            setState(() {
+                              ddValue = v!;
+                            });
+                            if (v == DO_NOTHING) {
+                              var currentAutoData = dev.automationData ??
+                                  AutomationData(actions: []);
 
-                                        currentAutoData.actions.removeWhere(
-                                            (e) =>
-                                                e.type ==
-                                                ActionType.launchConfig);
-                                      } else {
-                                        var currentAutoData =
-                                            dev.automationData ??
-                                                AutomationData(actions: []);
-                                        dev = dev.copyWith(
-                                            automationData: currentAutoData
-                                                .copyWith(actions: [
-                                          ...currentAutoData.actions,
-                                          AutomationAction(
-                                            type: ActionType.launchConfig,
-                                            action: v,
-                                          )
-                                        ]));
-                                      }
-                                      ref
-                                          .read(
-                                              savedAdbDevicesProvider.notifier)
-                                          .addEditDevices(dev);
-                                      final saved =
-                                          ref.read(savedAdbDevicesProvider);
-                                      await AdbUtils.saveAdbDevice(saved);
-                                    },
-                                  ),
-                                ),
-                              ),
+                              currentAutoData.actions.removeWhere(
+                                  (e) => e.type == ActionType.launchConfig);
+                            } else {
+                              var currentAutoData = dev.automationData ??
+                                  AutomationData(actions: []);
+                              dev = dev.copyWith(
+                                  automationData:
+                                      currentAutoData.copyWith(actions: [
+                                ...currentAutoData.actions,
+                                AutomationAction(
+                                  type: ActionType.launchConfig,
+                                  action: v,
+                                )
+                              ]));
+                            }
+                            ref
+                                .read(savedAdbDevicesProvider.notifier)
+                                .addEditDevices(dev);
+                            final saved = ref.read(savedAdbDevicesProvider);
+                            await AdbUtils.saveAdbDevice(saved);
+                          },
+                          items: [
+                            const DropdownMenuItem(
+                              value: DO_NOTHING,
+                              child: Text('Do nothing'),
                             ),
-                          ),
-                        )
+                            ...configs.where((c) => c != newConfig).map(
+                                  (c) => DropdownMenuItem(
+                                    value: c.id,
+                                    child: Text(c.configName),
+                                  ),
+                                )
+                          ],
+                          label: 'On autoconnect success',
+                        ),
                       ],
                     ),
                     BodyContainer(
@@ -258,69 +238,6 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                 ),
               ),
             ),
-    );
-  }
-}
-
-class InfoContainer extends ConsumerWidget {
-  final ScrcpyInfo info;
-  const InfoContainer({super.key, required this.info});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final appTheme = ref.read(settingsProvider).looks;
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return AnimatedContainer(
-      margin: const EdgeInsets.only(bottom: 4),
-      duration: 200.milliseconds,
-      width: double.maxFinite,
-      decoration: BoxDecoration(
-        color: colorScheme.secondaryContainer,
-        borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.85),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Build version: ${info.buildVersion}'),
-            Text('Serial: ${info.device.serialNo}'),
-            Text('Model name: ${info.device.modelName}'),
-            const Text('\nScrcpy details: '),
-            const Text('\nDisplays:'),
-            ...info.displays.map((e) => Row(
-                  children: [
-                    const Text('- '),
-                    Expanded(child: Text(e.toString())),
-                  ],
-                )),
-            const Text('\nCamera:'),
-            ...info.cameras.map((e) => Row(
-                  children: [
-                    const Text('- '),
-                    Text(e.toString()),
-                  ],
-                )),
-            const Text('\nAudio encoder:'),
-            ...info.audioEncoder.map((e) => Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('- '),
-                    Expanded(child: Text(e.toString())),
-                  ],
-                )),
-            const Text('\nVideo encoder:'),
-            ...info.videoEncoders.map((e) => Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('- '),
-                    Expanded(child: Text(e.toString())),
-                  ],
-                )),
-          ],
-        ),
-      ),
     );
   }
 }

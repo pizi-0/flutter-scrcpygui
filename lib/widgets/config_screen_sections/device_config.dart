@@ -38,103 +38,106 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
           width: appWidth,
           child: Padding(
             padding: const EdgeInsets.all(4.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ConfigCustom(
-                  childBackgroundColor: Colors.transparent,
-                  label: 'Stay awake',
-                  child: Tooltip(
-                    message: selectedConfig.windowOptions.noWindow
-                        ? 'Hide window is active'
-                        : '',
-                    child: Checkbox(
-                      value: selectedConfig.deviceOptions.stayAwake,
-                      onChanged: selectedConfig.windowOptions.noWindow
-                          ? null
-                          : (value) => ref
-                              .read(configScreenConfig.notifier)
-                              .update((state) => state = state!.copyWith(
-                                  deviceOptions: state.deviceOptions
-                                      .copyWith(stayAwake: value))),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ConfigCustom(
+                    childBackgroundColor: Colors.transparent,
+                    label: 'Stay awake',
+                    child: Tooltip(
+                      message: selectedConfig.windowOptions.noWindow
+                          ? 'Hide window is active'
+                          : '',
+                      child: Checkbox(
+                        value: selectedConfig.deviceOptions.stayAwake,
+                        onChanged: selectedConfig.windowOptions.noWindow
+                            ? null
+                            : (value) => ref
+                                .read(configScreenConfig.notifier)
+                                .update((state) => state = state!.copyWith(
+                                    deviceOptions: state.deviceOptions
+                                        .copyWith(stayAwake: value))),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                ConfigCustom(
-                  childBackgroundColor: Colors.transparent,
-                  label: 'Show touches',
-                  child: Tooltip(
-                    message: selectedConfig.windowOptions.noWindow
-                        ? 'Hide window is active'
-                        : '',
-                    child: Checkbox(
-                      value: selectedConfig.deviceOptions.showTouches,
-                      onChanged: selectedConfig.windowOptions.noWindow
-                          ? null
-                          : (value) => ref
-                              .read(configScreenConfig.notifier)
-                              .update((state) => state = state!.copyWith(
-                                  deviceOptions: state.deviceOptions
-                                      .copyWith(showTouches: value))),
+                  const SizedBox(height: 4),
+                  ConfigCustom(
+                    childBackgroundColor: Colors.transparent,
+                    label: 'Show touches',
+                    child: Tooltip(
+                      message: selectedConfig.windowOptions.noWindow
+                          ? 'Hide window is active'
+                          : '',
+                      child: Checkbox(
+                        value: selectedConfig.deviceOptions.showTouches,
+                        onChanged: selectedConfig.windowOptions.noWindow
+                            ? null
+                            : (value) => ref
+                                .read(configScreenConfig.notifier)
+                                .update((state) => state = state!.copyWith(
+                                    deviceOptions: state.deviceOptions
+                                        .copyWith(showTouches: value))),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                ConfigCustom(
-                  childBackgroundColor: Colors.transparent,
-                  label: 'Turn off display on start',
-                  child: Tooltip(
-                    message: selectedConfig.windowOptions.noWindow
-                        ? 'Hide window is active'
-                        : '',
-                    child: Checkbox(
-                      value: selectedConfig.deviceOptions.turnOffDisplay,
-                      onChanged: selectedConfig.windowOptions.noWindow
-                          ? null
-                          : (value) => ref
-                              .read(configScreenConfig.notifier)
-                              .update((state) => state = state!.copyWith(
-                                  deviceOptions: state.deviceOptions
-                                      .copyWith(turnOffDisplay: value))),
+                  const SizedBox(height: 4),
+                  ConfigCustom(
+                    childBackgroundColor: Colors.transparent,
+                    label: 'Turn off display on start',
+                    child: Tooltip(
+                      message: selectedConfig.windowOptions.noWindow
+                          ? 'Hide window is active'
+                          : '',
+                      child: Checkbox(
+                        value: selectedConfig.deviceOptions.turnOffDisplay,
+                        onChanged: selectedConfig.windowOptions.noWindow
+                            ? null
+                            : (value) => ref
+                                .read(configScreenConfig.notifier)
+                                .update((state) => state = state!.copyWith(
+                                    deviceOptions: state.deviceOptions
+                                        .copyWith(turnOffDisplay: value))),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                ConfigCustom(
-                  childBackgroundColor: Colors.transparent,
-                  label: 'Turn off display on exit',
-                  child: Tooltip(
-                    message: selectedConfig.windowOptions.noWindow
-                        ? 'Hide window is active'
-                        : '',
-                    child: Checkbox(
-                      value: selectedConfig.deviceOptions.offScreenOnClose,
-                      onChanged: selectedConfig.windowOptions.noWindow
-                          ? null
-                          : (value) => ref
-                              .read(configScreenConfig.notifier)
-                              .update((state) => state = state!.copyWith(
-                                  deviceOptions: state.deviceOptions
-                                      .copyWith(offScreenOnClose: value))),
+                  const SizedBox(height: 4),
+                  ConfigCustom(
+                    childBackgroundColor: Colors.transparent,
+                    label: 'Turn off display on exit',
+                    child: Tooltip(
+                      message: selectedConfig.windowOptions.noWindow
+                          ? 'Hide window is active'
+                          : '',
+                      child: Checkbox(
+                        value: selectedConfig.deviceOptions.offScreenOnClose,
+                        onChanged: selectedConfig.windowOptions.noWindow
+                            ? null
+                            : (value) => ref
+                                .read(configScreenConfig.notifier)
+                                .update((state) => state = state!.copyWith(
+                                    deviceOptions: state.deviceOptions
+                                        .copyWith(offScreenOnClose: value))),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                ConfigCustom(
-                  childBackgroundColor: Colors.transparent,
-                  label: 'Disable screensaver (HOST)',
-                  child: Checkbox(
-                    value: selectedConfig.deviceOptions.noScreensaver,
-                    onChanged: (value) => ref
-                        .read(configScreenConfig.notifier)
-                        .update((state) => state = state!.copyWith(
-                            deviceOptions: state.deviceOptions
-                                .copyWith(noScreensaver: value))),
+                  const SizedBox(height: 4),
+                  ConfigCustom(
+                    childBackgroundColor: Colors.transparent,
+                    label: 'Disable screensaver (HOST)',
+                    child: Checkbox(
+                      value: selectedConfig.deviceOptions.noScreensaver,
+                      onChanged: (value) => ref
+                          .read(configScreenConfig.notifier)
+                          .update((state) => state = state!.copyWith(
+                              deviceOptions: state.deviceOptions
+                                  .copyWith(noScreensaver: value))),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

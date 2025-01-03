@@ -24,12 +24,12 @@ class SectionButton extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     final buttonStyle = ButtonStyle(
-      shape: WidgetStatePropertyAll(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(appTheme.widgetRadius),
+        shape: WidgetStatePropertyAll(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(appTheme.widgetRadius),
+          ),
         ),
-      ),
-    );
+        padding: const WidgetStatePropertyAll(EdgeInsets.zero));
 
     return IconButton(
       style: buttonStyle,

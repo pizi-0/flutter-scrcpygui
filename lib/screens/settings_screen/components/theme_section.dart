@@ -1,6 +1,8 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/widgets/config_dropdown.dart';
+import 'package:scrcpygui/widgets/section_button.dart';
 
 import '../../../providers/settings_provider.dart';
 import '../../../utils/app_utils.dart';
@@ -24,7 +26,8 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
     final advancedVisible = ref.watch(advancedThemingVisible);
 
     return BodyContainer(
-      height: (54 * (advancedVisible ? 6 : 3)) + 4,
+      spacing: 4,
+      height: (44 * (advancedVisible ? 6 : 3)) + 4,
       headerTitle: 'Theme',
       headerTrailing: TextButton.icon(
         style: ButtonStyle(
@@ -43,9 +46,10 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
         iconAlignment: IconAlignment.end,
       ),
       children: [
-        BodyContainerItem(
-          title: 'Brightness',
-          trailing: Row(
+        ConfigCustom(
+          childBackgroundColor: Colors.transparent,
+          label: 'Brightness',
+          child: Row(
             children: [
               Radio(
                 activeColor: colorScheme.primary,
@@ -85,13 +89,15 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
             ],
           ),
         ),
-        BodyContainerItem(
-          title: 'Color',
-          trailing: Row(
+        ConfigCustom(
+          childBackgroundColor: Colors.transparent,
+          label: 'Color',
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              IconButton(
-                tooltip: 'Default',
-                onPressed: () async {
+              SectionButton(
+                tooltipmessage: 'Reset',
+                ontap: () async {
                   ref.read(settingsProvider.notifier).update((state) => state =
                       state.copyWith(
                           looks:
@@ -100,7 +106,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                   final newSettings = ref.read(settingsProvider);
                   await AppUtils.saveAppSettings(newSettings);
                 },
-                icon: const Icon(Icons.refresh_rounded),
+                icondata: Icons.refresh_rounded,
               ),
               InkWell(
                 onTap: () async {
@@ -126,9 +132,10 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
             ],
           ),
         ),
-        BodyContainerItem(
-          title: 'Corner radius',
-          trailing: SliderTheme(
+        ConfigCustom(
+          childBackgroundColor: Colors.transparent,
+          label: 'Corner radius',
+          child: SliderTheme(
             data: SliderThemeData(
               trackShape: CustomTrackShape(),
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
@@ -137,9 +144,9 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                  tooltip: 'Default: 10',
-                  onPressed: () async {
+                SectionButton(
+                  tooltipmessage: 'Default: 10',
+                  ontap: () async {
                     ref.read(settingsProvider.notifier).update((state) =>
                         state = state.copyWith(
                             looks: state.looks.copyWith(
@@ -148,7 +155,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                     final newSettings = ref.read(settingsProvider);
                     await AppUtils.saveAppSettings(newSettings);
                   },
-                  icon: const Icon(Icons.refresh_rounded),
+                  icondata: Icons.refresh_rounded,
                 ),
                 const SizedBox(width: 10),
                 SizedBox(
@@ -178,9 +185,10 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
             ),
           ),
         ),
-        BodyContainerItem(
-          title: 'Background tint level',
-          trailing: SliderTheme(
+        ConfigCustom(
+          childBackgroundColor: Colors.transparent,
+          label: 'Background tint level',
+          child: SliderTheme(
             data: SliderThemeData(
               trackShape: CustomTrackShape(),
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
@@ -189,9 +197,9 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                  tooltip: 'Default',
-                  onPressed: () async {
+                SectionButton(
+                  tooltipmessage: 'Default',
+                  ontap: () async {
                     final currentTint = looks.tintLevel;
                     ref.read(settingsProvider.notifier).update((state) =>
                         state = state.copyWith(
@@ -203,7 +211,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                     final newSettings = ref.read(settingsProvider);
                     await AppUtils.saveAppSettings(newSettings);
                   },
-                  icon: const Icon(Icons.refresh_rounded),
+                  icondata: Icons.refresh_rounded,
                 ),
                 const SizedBox(width: 10),
                 SizedBox(
@@ -237,9 +245,10 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
             ),
           ),
         ),
-        BodyContainerItem(
-          title: 'Primary tint level',
-          trailing: SliderTheme(
+        ConfigCustom(
+          childBackgroundColor: Colors.transparent,
+          label: 'Primary tint level',
+          child: SliderTheme(
             data: SliderThemeData(
               trackShape: CustomTrackShape(),
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
@@ -248,9 +257,9 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                  tooltip: 'Default',
-                  onPressed: () async {
+                SectionButton(
+                  tooltipmessage: 'Default',
+                  ontap: () async {
                     final currentTint = looks.tintLevel;
                     ref.read(settingsProvider.notifier).update((state) =>
                         state = state.copyWith(
@@ -262,7 +271,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                     final newSettings = ref.read(settingsProvider);
                     await AppUtils.saveAppSettings(newSettings);
                   },
-                  icon: const Icon(Icons.refresh_rounded),
+                  icondata: Icons.refresh_rounded,
                 ),
                 const SizedBox(width: 10),
                 SizedBox(
@@ -296,9 +305,10 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
             ),
           ),
         ),
-        BodyContainerItem(
-          title: 'Secondary tint level',
-          trailing: SliderTheme(
+        ConfigCustom(
+          childBackgroundColor: Colors.transparent,
+          label: 'Secondary tint level',
+          child: SliderTheme(
             data: SliderThemeData(
               trackShape: CustomTrackShape(),
               thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 5),
@@ -306,9 +316,9 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                  tooltip: 'Default',
-                  onPressed: () async {
+                SectionButton(
+                  tooltipmessage: 'Default',
+                  ontap: () async {
                     final currentTint = looks.tintLevel;
                     ref.read(settingsProvider.notifier).update((state) =>
                         state = state.copyWith(
@@ -320,7 +330,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                     final newSettings = ref.read(settingsProvider);
                     await AppUtils.saveAppSettings(newSettings);
                   },
-                  icon: const Icon(Icons.refresh_rounded),
+                  icondata: Icons.refresh_rounded,
                 ),
                 const SizedBox(width: 10),
                 SizedBox(

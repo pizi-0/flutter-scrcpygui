@@ -54,91 +54,94 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
           width: appWidth,
           child: Padding(
             padding: const EdgeInsets.all(4.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ConfigCustom(
-                  childBackgroundColor: Colors.transparent,
-                  label: 'Hide window',
-                  child: Checkbox(
-                      value: selectedConfig.windowOptions.noWindow,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ConfigCustom(
+                    childBackgroundColor: Colors.transparent,
+                    label: 'Hide window',
+                    child: Checkbox(
+                        value: selectedConfig.windowOptions.noWindow,
+                        onChanged: (value) {
+                          if (value!) {
+                            ref.read(configScreenConfig.notifier).update(
+                                (state) => state = state!.copyWith(
+                                        deviceOptions:
+                                            state.deviceOptions.copyWith(
+                                      stayAwake: false,
+                                      showTouches: false,
+                                      offScreenOnClose: false,
+                                      turnOffDisplay: false,
+                                    )));
+                          }
+
+                          ref.read(configScreenConfig.notifier).update(
+                                (state) => state = state!.copyWith(
+                                    windowOptions: state.windowOptions
+                                        .copyWith(noWindow: value)),
+                              );
+                        }),
+                  ),
+                  const SizedBox(height: 4),
+                  ConfigCustom(
+                    childBackgroundColor: Colors.transparent,
+                    label: 'Borderless',
+                    child: Checkbox(
+                      value: selectedConfig.windowOptions.noBorder,
+                      onChanged: (value) =>
+                          ref.read(configScreenConfig.notifier).update(
+                                (state) => state = state!.copyWith(
+                                    windowOptions: state.windowOptions
+                                        .copyWith(noBorder: value)),
+                              ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  ConfigCustom(
+                    childBackgroundColor: Colors.transparent,
+                    label: 'Always on top',
+                    child: Checkbox(
+                      value: selectedConfig.windowOptions.alwaysOntop,
+                      onChanged: (value) =>
+                          ref.read(configScreenConfig.notifier).update(
+                                (state) => state = state!.copyWith(
+                                    windowOptions: state.windowOptions
+                                        .copyWith(alwaysOntop: value)),
+                              ),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  ConfigUserInput(
+                      label: 'Time limit',
+                      controller: timeLimitController,
+                      unit: 's',
+                      onTap: () => setState(() {
+                            timeLimitController.selection = TextSelection(
+                                baseOffset: 0,
+                                extentOffset: timeLimitController.text.length);
+                          }),
                       onChanged: (value) {
-                        if (value!) {
+                        if (value.isEmpty) {
                           ref.read(configScreenConfig.notifier).update(
                               (state) => state = state!.copyWith(
-                                      deviceOptions:
-                                          state.deviceOptions.copyWith(
-                                    stayAwake: false,
-                                    showTouches: false,
-                                    offScreenOnClose: false,
-                                    turnOffDisplay: false,
-                                  )));
+                                  windowOptions: state.windowOptions
+                                      .copyWith(timeLimit: 0)));
+
+                          setState(() {
+                            timeLimitController.text = '-';
+                          });
+                        } else {
+                          ref.read(configScreenConfig.notifier).update(
+                              (state) => state = state!.copyWith(
+                                  windowOptions: state.windowOptions
+                                      .copyWith(timeLimit: int.parse(value))));
                         }
-
-                        ref.read(configScreenConfig.notifier).update(
-                              (state) => state = state!.copyWith(
-                                  windowOptions: state.windowOptions
-                                      .copyWith(noWindow: value)),
-                            );
-                      }),
-                ),
-                const SizedBox(height: 4),
-                ConfigCustom(
-                  childBackgroundColor: Colors.transparent,
-                  label: 'Borderless',
-                  child: Checkbox(
-                    value: selectedConfig.windowOptions.noBorder,
-                    onChanged: (value) =>
-                        ref.read(configScreenConfig.notifier).update(
-                              (state) => state = state!.copyWith(
-                                  windowOptions: state.windowOptions
-                                      .copyWith(noBorder: value)),
-                            ),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                ConfigCustom(
-                  childBackgroundColor: Colors.transparent,
-                  label: 'Always on top',
-                  child: Checkbox(
-                    value: selectedConfig.windowOptions.alwaysOntop,
-                    onChanged: (value) =>
-                        ref.read(configScreenConfig.notifier).update(
-                              (state) => state = state!.copyWith(
-                                  windowOptions: state.windowOptions
-                                      .copyWith(alwaysOntop: value)),
-                            ),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                ConfigUserInput(
-                    label: 'Time limit',
-                    controller: timeLimitController,
-                    unit: 's',
-                    onTap: () => setState(() {
-                          timeLimitController.selection = TextSelection(
-                              baseOffset: 0,
-                              extentOffset: timeLimitController.text.length);
-                        }),
-                    onChanged: (value) {
-                      if (value.isEmpty) {
-                        ref.read(configScreenConfig.notifier).update((state) =>
-                            state = state!.copyWith(
-                                windowOptions: state.windowOptions
-                                    .copyWith(timeLimit: 0)));
-
-                        setState(() {
-                          timeLimitController.text = '-';
-                        });
-                      } else {
-                        ref.read(configScreenConfig.notifier).update((state) =>
-                            state = state!.copyWith(
-                                windowOptions: state.windowOptions
-                                    .copyWith(timeLimit: int.parse(value))));
-                      }
-                    })
-              ],
+                      })
+                ],
+              ),
             ),
           ),
         ),

@@ -75,21 +75,25 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
               width: appWidth,
               child: Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildAudioDuplicateOption(
-                        context, selectedConfig, selectedDevice!.info!),
-                    const SizedBox(height: 4),
-                    _buildAudioSourceSelector(
-                        context, selectedConfig, selectedDevice.info!),
-                    const SizedBox(height: 4),
-                    _buildAudioFormatSelector(
-                        context, selectedConfig, selectedDevice.info!),
-                    const SizedBox(height: 4),
-                    _buildAudioBitrate(context),
-                  ],
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(appTheme.widgetRadius * 0.8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildAudioDuplicateOption(
+                          context, selectedConfig, selectedDevice!.info!),
+                      const SizedBox(height: 4),
+                      _buildAudioSourceSelector(
+                          context, selectedConfig, selectedDevice.info!),
+                      const SizedBox(height: 4),
+                      _buildAudioFormatSelector(
+                          context, selectedConfig, selectedDevice.info!),
+                      const SizedBox(height: 4),
+                      _buildAudioBitrate(context),
+                    ],
+                  ),
                 ),
               ),
             ),

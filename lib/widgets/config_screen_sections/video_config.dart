@@ -73,23 +73,29 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
               width: appWidth,
               child: Padding(
                 padding: const EdgeInsets.all(4.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildDisplaySelector(selectedConfig, selectedDevice.info!),
-                    const SizedBox(height: 4),
-                    _buildVideoCodecNFormatSelector(
-                        context, selectedConfig, selectedDevice.info!),
-                    const SizedBox(height: 4),
-                    _buildVideoBitrate(context),
-                    const SizedBox(height: 4),
-                    _buildMaxFPS(selectedConfig),
-                    // const SizedBox(height: 4),
-                    // _buildCrop(selectedConfig, info),
-                    const SizedBox(height: 4),
-                    _buildResolutionScale(selectedConfig, selectedDevice.info!),
-                  ],
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.circular(appTheme.widgetRadius * 0.8),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildDisplaySelector(
+                          selectedConfig, selectedDevice.info!),
+                      const SizedBox(height: 4),
+                      _buildVideoCodecNFormatSelector(
+                          context, selectedConfig, selectedDevice.info!),
+                      const SizedBox(height: 4),
+                      _buildVideoBitrate(context),
+                      const SizedBox(height: 4),
+                      _buildMaxFPS(selectedConfig),
+                      // const SizedBox(height: 4),
+                      // _buildCrop(selectedConfig, info),
+                      const SizedBox(height: 4),
+                      _buildResolutionScale(
+                          selectedConfig, selectedDevice.info!),
+                    ],
+                  ),
                 ),
               ),
             ),
