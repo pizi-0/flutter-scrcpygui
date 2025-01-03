@@ -8,6 +8,7 @@ import 'package:scrcpygui/utils/const.dart';
 class AdbDevices {
   final String? name;
   final String id;
+  final String? ip;
   final String modelName;
   final String serialNo;
   final bool status;
@@ -17,6 +18,7 @@ class AdbDevices {
   AdbDevices({
     this.name,
     required this.id,
+    this.ip,
     required this.modelName,
     required this.serialNo,
     required this.status,
@@ -31,6 +33,7 @@ class AdbDevices {
       'modelName': modelName,
       'serialNo': serialNo,
       'status': status,
+      'ip': ip ?? id,
       'automationData': automationData?.toMap(),
       'info': info?.toMap(),
     };
@@ -40,6 +43,7 @@ class AdbDevices {
     return AdbDevices(
       name: map['name'] != null ? map['name'] as String : map['modelName'],
       id: map['id'] as String,
+      ip: map['ip'] ?? map['id'],
       modelName: map['modelName'] as String,
       serialNo: map['serialNo'] as String,
       status: map['status'] as bool,
@@ -61,6 +65,7 @@ class AdbDevices {
   AdbDevices copyWith({
     String? name,
     String? id,
+    String? ip,
     String? modelName,
     String? serialNo,
     bool? status,
@@ -70,6 +75,7 @@ class AdbDevices {
     return AdbDevices(
       name: name ?? this.name,
       id: id ?? this.id,
+      ip: ip ?? this.ip,
       modelName: modelName ?? this.modelName,
       serialNo: serialNo ?? this.serialNo,
       status: status ?? this.status,
@@ -83,6 +89,7 @@ class AdbDevices {
     if (identical(this, other)) return true;
 
     return other.id == id &&
+        other.ip == ip &&
         other.modelName == modelName &&
         other.serialNo == serialNo &&
         other.status == status;
@@ -91,6 +98,7 @@ class AdbDevices {
   @override
   int get hashCode {
     return id.hashCode ^
+        ip.hashCode ^
         modelName.hashCode ^
         serialNo.hashCode ^
         status.hashCode;
@@ -98,6 +106,6 @@ class AdbDevices {
 
   @override
   String toString() {
-    return 'AdbDevices(name: $name, id: $id, modelName: $modelName, serialNo: $serialNo, status: $status, automationData: $automationData, info: $info)';
+    return 'AdbDevices(name: $name, id: $id, ip: $ip, modelName: $modelName, serialNo: $serialNo, status: $status, automationData: $automationData, info: $info)';
   }
 }
