@@ -7,6 +7,7 @@ import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/utils/prefs_key.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:string_extensions/string_extensions.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../providers/adb_provider.dart';
@@ -63,7 +64,9 @@ class AppUtils {
 
   static Future<void> onAppCloseRequested(
       WidgetRef ref, BuildContext context) async {
-    final wifi = ref.read(adbProvider).where((d) => d.id.contains(':'));
+    final wifi = ref
+        .read(adbProvider)
+        .where((d) => d.id.contains(adbMdns) || d.id.isIpv4);
     final instance = ref.read(scrcpyInstanceProvider);
 
     if (wifi.isNotEmpty || instance.isNotEmpty) {

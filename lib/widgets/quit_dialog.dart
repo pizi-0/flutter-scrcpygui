@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:string_extensions/string_extensions.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../providers/settings_provider.dart';
@@ -40,8 +41,10 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
     TextStyle? style = Theme.of(context).textTheme.titleSmall;
     final colorScheme = Theme.of(context).colorScheme;
     final runningInstance = ref.watch(scrcpyInstanceProvider);
-    final wifiDevices =
-        ref.watch(adbProvider).where((e) => e.id.contains(':')).toList();
+    final wifiDevices = ref
+        .watch(adbProvider)
+        .where((e) => e.id.contains(adbMdns) || e.id.isIpv4)
+        .toList();
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final buttonStyle = ButtonStyle(
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
