@@ -6,8 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb/adb_utils.dart';
+import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../../../models/adb_devices.dart';
@@ -52,6 +54,10 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
     final isWireless =
         widget.device.id.contains(adbMdns) || widget.device.id.isIpv4;
     final workDir = ref.watch(execDirProvider);
+    final instances = ref.watch(scrcpyInstanceProvider);
+
+    final deviceInstance =
+        instances.where((i) => i.device.id == widget.device.id).toList();
 
     return GestureDetector(
       onSecondaryTapDown: (details) {
@@ -61,6 +67,32 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
             position: Offset((details.globalPosition.dx + 2),
                 (details.globalPosition.dy + 2)),
             entries: [
+              MenuItem.submenu(
+                label: 'Kill running scrcpy',
+                items: deviceInstance.isEmpty
+                    ? const [
+                        MenuHeader(
+                            text: 'No running scrcpy', disableUppercase: true)
+                      ]
+                    : deviceInstance
+                        .map(
+                          (ins) => MenuItem(
+                            label: ins.instanceName,
+                            onSelected: () async {
+                              loading = true;
+                              setState(() {});
+
+                              await ScrcpyUtils.killServer(
+                                  ins, ref.read(appPidProvider));
+
+                              loading = false;
+                              setState(() {});
+                            },
+                          ),
+                        )
+                        .toList(),
+              ),
+              const MenuDivider(),
               if (isWireless)
                 MenuItem(
                   label: 'Disconnect',
@@ -136,8 +168,26 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
                 ? Icons.wifi_rounded
                 : Icons.usb_rounded,
           ),
-          title: Text(
-              widget.device.name?.toUpperCase() ?? widget.device.modelName),
+          title: Row(
+            spacing: 10,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                  widget.device.name?.toUpperCase() ?? widget.device.modelName),
+              if (deviceInstance.isNotEmpty)
+                Container(
+                  constraints: const BoxConstraints(maxHeight: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Center(
+                      child: Text('Running: ${deviceInstance.length}')
+                          .fontSize(8)),
+                ),
+            ],
+          ),
           subtitle: Text(
             widget.device.id,
             overflow: TextOverflow.ellipsis,
