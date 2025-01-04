@@ -56,6 +56,8 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
     final workDir = ref.watch(execDirProvider);
     final instances = ref.watch(scrcpyInstanceProvider);
 
+    final selected = selectedDevice == widget.device;
+
     final deviceInstance =
         instances.where((i) => i.device.id == widget.device.id).toList();
 
@@ -176,11 +178,13 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
                   widget.device.name?.toUpperCase() ?? widget.device.modelName),
               if (deviceInstance.isNotEmpty)
                 Container(
-                  constraints: const BoxConstraints(maxHeight: 12),
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  constraints: const BoxConstraints(maxHeight: 14),
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primaryContainer,
-                    borderRadius: BorderRadius.circular(4),
+                    color: selected
+                        ? theme.colorScheme.surface
+                        : theme.colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(2),
                   ),
                   child: Center(
                       child: Text('Running: ${deviceInstance.length}')
