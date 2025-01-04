@@ -24,7 +24,6 @@ class TrayUtils {
 
     if (behaviour.traySupport) {
       final connected = ref.read(adbProvider);
-      final saved = ref.read(savedAdbDevicesProvider);
       final configs = ref.read(configsProvider);
       final running = ref.read(scrcpyInstanceProvider);
 
@@ -55,9 +54,7 @@ class TrayUtils {
             ),
           MenuItem.separator(),
           MenuItem(label: 'New instance:', disabled: true),
-          ...connected.map((d) {
-            final device =
-                saved.firstWhere((s) => s.id == d.id, orElse: () => d);
+          ...connected.map((device) {
             return MenuItem.submenu(
               key: device.id,
               label: device.id.isIpv4 || device.id.contains(adbMdns)
