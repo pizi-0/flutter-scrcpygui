@@ -109,7 +109,9 @@ class AdbUtils {
           ));
     }
 
-    ref.read(adbProvider.notifier).setConnected(connected);
+    final savedDevices = ref.read(savedAdbDevicesProvider);
+
+    ref.read(adbProvider.notifier).setConnected(connected, savedDevices);
 
     bool toSaveExists =
         currentHx.where((h) => h.serialNo == toSave.serialNo).isNotEmpty;

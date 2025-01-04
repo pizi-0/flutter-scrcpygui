@@ -89,7 +89,6 @@ class AdbDevices {
     if (identical(this, other)) return true;
 
     return other.id == id &&
-        other.ip == ip &&
         other.modelName == modelName &&
         other.serialNo == serialNo &&
         other.status == status;
@@ -98,7 +97,6 @@ class AdbDevices {
   @override
   int get hashCode {
     return id.hashCode ^
-        ip.hashCode ^
         modelName.hashCode ^
         serialNo.hashCode ^
         status.hashCode;

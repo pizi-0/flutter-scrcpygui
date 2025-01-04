@@ -55,7 +55,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     }
 
     var adbDevices = await AdbUtils.connectedDevices(workDir);
-    ref.read(adbProvider.notifier).setConnected(adbDevices);
+    ref.read(adbProvider.notifier).setConnected(adbDevices, savedDevices);
 
     var wirelessHistory = await AdbUtils.getWirelessHistory();
     ref

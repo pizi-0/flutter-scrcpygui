@@ -13,10 +13,12 @@ final pollAdbProvider = StateProvider<void>((ref) async {
   while (ref.watch(shouldPollAdb)) {
     await Future.delayed(500.milliseconds);
     final workDir = ref.read(execDirProvider);
+
     AdbUtils.connectedDevices(workDir, showLog: false).then((newAdb) {
-      if (ref.read(shouldPollAdb)) {
-        ref.read(adbProvider.notifier).setConnected(newAdb);
-      }
+      final saved = ref.read(savedAdbDevicesProvider);
+
+      ref.read(adbProvider.notifier).setConnected(newAdb, saved);
+
       if (ref.read(selectedDeviceProvider) != null &&
           newAdb
               .where((n) => n.id == ref.read(selectedDeviceProvider)!.id)

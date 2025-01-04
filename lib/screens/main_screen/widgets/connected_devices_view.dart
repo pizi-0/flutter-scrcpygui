@@ -21,7 +21,6 @@ class ConnectedDevicesView extends ConsumerWidget {
     final theme = Theme.of(context);
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final devices = ref.watch(adbProvider);
-    final savedDevices = ref.watch(savedAdbDevicesProvider);
     final bonsoirDevices = ref.watch(bonsoirDeviceProvider);
     final attention = ref.watch(homeDeviceAttention);
 
@@ -59,24 +58,20 @@ class ConnectedDevicesView extends ConsumerWidget {
                         BorderRadius.circular(looks.widgetRadius * 0.4),
                     child: ListView.separated(
                       itemBuilder: (context, index) {
-                        final AdbDevices dev = devices[index];
-
-                        AdbDevices dev2 = savedDevices.firstWhere(
-                            (e) => e.id == dev.id,
-                            orElse: () => dev);
+                        AdbDevices dev = devices[index];
 
                         if (bonsoirDevices
-                            .where((b) => dev2.id.contains(b.name))
+                            .where((b) => dev.id.contains(b.name))
                             .isNotEmpty) {
                           final bd = bonsoirDevices
-                              .firstWhere((f) => dev2.id.contains(f.name));
+                              .firstWhere((f) => dev.id.contains(f.name));
 
-                          dev2 = dev2.copyWith(
+                          dev = dev.copyWith(
                               ip: '${bd.toJson()['service.host']}:${bd.port}');
                         }
 
                         return DeviceListtile(
-                            key: ValueKey(dev2.id), device: dev2);
+                            key: ValueKey(dev.id), device: dev);
                       },
                       separatorBuilder: (context, index) {
                         return Divider(

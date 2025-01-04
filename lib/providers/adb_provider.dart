@@ -7,7 +7,7 @@ class AdbNotifier extends Notifier<List<AdbDevices>> {
     return [];
   }
 
-  setConnected(List<AdbDevices> connected) {
+  setConnected(List<AdbDevices> connected, List<AdbDevices> savedDevices) {
     List<AdbDevices> currentAdb = state;
 
     if (currentAdb.length > connected.length) {
@@ -16,7 +16,10 @@ class AdbNotifier extends Notifier<List<AdbDevices>> {
       List<AdbDevices> newCurrent =
           currentAdb.where((d) => !diff.contains(d)).toList();
 
-      state = [...newCurrent];
+      state = [
+        ...newCurrent.map((n) =>
+            savedDevices.firstWhere((s) => s.id == n.id, orElse: () => n))
+      ];
 
       //device connected
     } else if (connected.length > currentAdb.length) {
@@ -24,9 +27,15 @@ class AdbNotifier extends Notifier<List<AdbDevices>> {
 
       final newCurrent = [...currentAdb, ...diff];
 
-      state = [...newCurrent];
+      state = [
+        ...newCurrent.map((n) =>
+            savedDevices.firstWhere((s) => s.id == n.id, orElse: () => n))
+      ];
     } else {
-      state = [...state];
+      state = [
+        ...state.map((d) =>
+            savedDevices.firstWhere((s) => s.id == d.id, orElse: () => d))
+      ];
     }
   }
 
