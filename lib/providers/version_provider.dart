@@ -6,6 +6,6 @@ const BUNDLED_VERSION = '3.0';
 
 final appVersionProvider = StateProvider((ref) => "");
 
-final scrcpyVersionProvider = StateProvider((ref) => BUNDLED_VERSION);
+final scrcpyVersionProvider = StateProvider<String>((ref) => BUNDLED_VERSION);
 
 final execDirProvider = StateProvider((ref) => '');

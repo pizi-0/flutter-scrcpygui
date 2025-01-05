@@ -19,6 +19,7 @@ class SetupUtils {
 
   static initScrcpy(WidgetRef ref) async {
     final scrcpyVersion = await _getCurrentScrcpyVersion();
+    print(scrcpyVersion);
     final supportDir = await getApplicationSupportDirectory();
     final separator = Platform.pathSeparator;
     final execDir = Directory('${supportDir.path}${separator}exec');
@@ -68,7 +69,7 @@ class SetupUtils {
 
   static Future<String> _getCurrentScrcpyVersion() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(PKEY_SCRCPYVERSION) ?? '';
+    return prefs.getString(PKEY_SCRCPYVERSION) ?? BUNDLED_VERSION;
   }
 
   // ignore: unused_element

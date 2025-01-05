@@ -91,7 +91,7 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      if (latest == scrcpyVersion)
+                      if (latest != scrcpyVersion)
                         BodyContainer(
                           headerTitle: 'Update available!',
                           children: [
