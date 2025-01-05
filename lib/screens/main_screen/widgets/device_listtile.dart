@@ -10,6 +10,7 @@ import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
+import 'package:scrcpygui/widgets/disconnect_dialog.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../../../models/adb_devices.dart';
@@ -100,21 +101,29 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
                   label: 'Disconnect',
                   icon: Icons.link_off,
                   onSelected: () async {
-                    loading = true;
-                    setState(() {});
+                    final proceed = await showDialog(
+                      context: context,
+                      builder: (context) =>
+                          DisconnectDialog(device: widget.device),
+                    );
 
-                    // await Future.delayed(5.seconds);
-
-                    await AdbUtils.disconnectWirelessDevice(
-                        workDir, widget.device);
-
-                    await Future.delayed(1.5.seconds);
-
-                    // await AdbUtils.connectedDevices(workDir);
-
-                    if (mounted) {
-                      loading = false;
+                    if (proceed) {
+                      loading = true;
                       setState(() {});
+
+                      // await Future.delayed(5.seconds);
+
+                      await AdbUtils.disconnectWirelessDevice(
+                          workDir, widget.device);
+
+                      await Future.delayed(1.5.seconds);
+
+                      // await AdbUtils.connectedDevices(workDir);
+
+                      if (mounted) {
+                        loading = false;
+                        setState(() {});
+                      }
                     }
                   },
                 ),
