@@ -5,7 +5,6 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
@@ -22,7 +21,6 @@ import 'package:scrcpygui/widgets/override_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:tray_manager/tray_manager.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../models/scrcpy_related/scrcpy_flag_check_result.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
@@ -32,11 +30,6 @@ import 'scrcpy_command.dart';
 import 'tray_utils.dart';
 
 class ScrcpyUtils {
-  static openFolder(String p) async {
-    Uri folder = Uri.file(p);
-    await launchUrl(folder);
-  }
-
   static Future<List<ScrcpyConfig>> getSavedConfig() async {
     List<ScrcpyConfig> saved = [];
     final prefs = await SharedPreferences.getInstance();
@@ -98,7 +91,7 @@ class ScrcpyUtils {
 
     List<String> split = (await Isolate.run(() => Process.run('bash', [
               '-c',
-              ' ${Platform.isMacOS ? 'export PATH=/usr/bin:\$PATH; ' : ''}pgrep scrcpy_bin'
+              ' ${Platform.isMacOS ? 'export PATH=/usr/bin:\$PATH; ' : ''}pgrep scrcpy'
             ])))
         .stdout
         .toString()
@@ -380,24 +373,5 @@ class ScrcpyUtils {
     }
 
     return result;
-  }
-
-  static Future<String?> checkForScrcpyUpdate() async {
-    String? latest;
-
-    logger.i('Checking for scrcpy update...');
-
-    try {
-      final res = await Dio().get(scrcpyLatestUrl);
-
-      String version = res.data['tag_name'];
-      latest = version.removeLetters;
-    } catch (e) {
-      logger.e('Error checking for scrcpy update', error: e);
-    }
-
-    logger.i('Latest scrcpy version: $latest');
-
-    return latest;
   }
 }

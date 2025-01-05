@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
@@ -18,8 +17,7 @@ class SetupUtils {
       Directory("$appDir/data/flutter_assets/assets/exec/linux").listSync();
 
   static initScrcpy(WidgetRef ref) async {
-    final scrcpyVersion = await _getCurrentScrcpyVersion();
-    print(scrcpyVersion);
+    final scrcpyVersion = await getCurrentScrcpyVersion();
     final supportDir = await getApplicationSupportDirectory();
     final separator = Platform.pathSeparator;
     final execDir = Directory('${supportDir.path}${separator}exec');
@@ -30,52 +28,53 @@ class SetupUtils {
             ? getLinuxExec
             : getLinuxExec;
 
-    final versionDir = Directory(
+    final bundledVersionDir = Directory(
         '${supportDir.path}${separator}exec$separator$BUNDLED_VERSION');
 
-    if (!execDir.existsSync()) {
-      await execDir.create();
-      await versionDir.create();
+    if (scrcpyVersion == BUNDLED_VERSION) {
+      if (!execDir.existsSync()) {
+        await execDir.create();
+        await bundledVersionDir.create();
 
-      for (final f in execPath) {
-        final byte = File(f.path).readAsBytesSync();
-        final filename = f.path.split(separator).last;
-        await File('${versionDir.path}$separator$filename').writeAsBytes(byte);
+        for (final f in execPath) {
+          final byte = File(f.path).readAsBytesSync();
+          final filename = f.path.split(separator).last;
+          await File('${bundledVersionDir.path}$separator$filename')
+              .writeAsBytes(byte);
+        }
+
+        if (Platform.isLinux || Platform.isMacOS) {
+          await Process.run('bash', ['-c', 'chmod +x adb'],
+              workingDirectory: bundledVersionDir.path);
+
+          await Process.run('bash', ['-c', 'chmod +x scrcpy'],
+              workingDirectory: bundledVersionDir.path);
+        }
+
+        await saveCurrentScrcpyVersion(BUNDLED_VERSION);
       }
+      logger.i('Using scrcpy version $scrcpyVersion');
 
-      if (Platform.isLinux || Platform.isMacOS) {
-        await Process.run('bash', ['-c', 'chmod +x adb'],
-            workingDirectory: versionDir.path);
+      ref.read(scrcpyVersionProvider.notifier).state = scrcpyVersion;
+      ref.read(execDirProvider.notifier).state = bundledVersionDir.path;
+    } else {
+      logger.i('Using scrcpy version $scrcpyVersion');
+      ref.read(scrcpyVersionProvider.notifier).state = scrcpyVersion;
 
-        await Process.run('bash', ['-c', 'chmod +x scrcpy'],
-            workingDirectory: versionDir.path);
-      }
+      final newexec =
+          execDir.listSync().firstWhere((f) => f.path.endsWith(scrcpyVersion));
 
-      await _saveCurrentScrcpyVersion(BUNDLED_VERSION);
+      ref.read(execDirProvider.notifier).state = newexec.path;
     }
-    logger.i('Using scrcpy version $scrcpyVersion');
-    ref.read(scrcpyVersionProvider.notifier).state = scrcpyVersion;
-
-    ref.read(execDirProvider.notifier).state = versionDir.path;
   }
 
-  static Future<void> _saveCurrentScrcpyVersion(String version) async {
+  static Future<void> saveCurrentScrcpyVersion(String version) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(PKEY_SCRCPYVERSION, version);
   }
 
-  static Future<String> _getCurrentScrcpyVersion() async {
+  static Future<String> getCurrentScrcpyVersion() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(PKEY_SCRCPYVERSION) ?? BUNDLED_VERSION;
-  }
-
-  // ignore: unused_element
-  static Future<String> _getLatestScrcpyVersion() async {
-    try {
-      final res = await Dio().get(scrcpyLatestUrl);
-      return res.data['tag_name'];
-    } catch (e) {
-      return '-';
-    }
   }
 }

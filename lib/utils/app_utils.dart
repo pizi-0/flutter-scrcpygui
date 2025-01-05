@@ -8,6 +8,7 @@ import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/utils/prefs_key.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_extensions/string_extensions.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../providers/adb_provider.dart';
@@ -85,5 +86,10 @@ class AppUtils {
     final prefs = await SharedPreferences.getInstance();
 
     prefs.remove(key);
+  }
+
+  static openFolder(String p) async {
+    Uri folder = Uri.file(p);
+    await launchUrl(folder);
   }
 }

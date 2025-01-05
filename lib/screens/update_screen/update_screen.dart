@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/screens/update_screen/components/download_update_widget.dart';
-import 'package:scrcpygui/utils/scrcpy_utils.dart';
+import 'package:scrcpygui/utils/app_utils.dart';
+import 'package:scrcpygui/utils/update_utils.dart';
 import 'package:scrcpygui/widgets/body_container.dart';
 import 'package:scrcpygui/widgets/section_button.dart';
 
@@ -24,12 +25,13 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((a) async {
       setState(() {
         checkingForUpdate = true;
       });
 
-      final res = await ScrcpyUtils.checkForScrcpyUpdate();
+      final res = await UpdateUtils.checkForScrcpyUpdate();
 
       if (res != null) {
         latest = res;
@@ -91,7 +93,7 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      if (latest != scrcpyVersion)
+                      if (!checkingForUpdate && latest != scrcpyVersion)
                         BodyContainer(
                           headerTitle: 'Update available!',
                           children: [
@@ -116,7 +118,7 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
                               icondata: Icons.folder_rounded,
                               tooltipmessage: scrcpyDir,
                               ontap: () async {
-                                await ScrcpyUtils.openFolder(
+                                await AppUtils.openFolder(
                                     scrcpyDir.split(scrcpyVersion).first);
                                 // await ScrcpyUtils.checkForScrcpyUpdate();
                               },

@@ -1,8 +1,10 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
+import 'package:scrcpygui/utils/update_utils.dart';
 
 class DownloadUpdate extends ConsumerStatefulWidget {
   const DownloadUpdate({super.key});
@@ -13,11 +15,12 @@ class DownloadUpdate extends ConsumerStatefulWidget {
 
 class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
   bool updating = false;
-  double progress = 0;
+  late Dio dio;
 
   @override
   Widget build(BuildContext context) {
     final appTheme = ref.watch(settingsProvider).looks;
+    final progress = ref.watch(downloadPercentageProvider);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 4.0),
@@ -35,7 +38,7 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
                 child: LinearProgressIndicator(
                   minHeight: 30,
                   color: Colors.green,
-                  // value: progress,
+                  value: progress / 100,
                   borderRadius:
                       BorderRadius.circular(appTheme.widgetRadius * 0.6),
                 ),
@@ -52,10 +55,17 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        updating = !updating;
-                      });
+                    onTap: () async {
+                      if (!updating) {
+                        dio = Dio();
+                        updating = true;
+                        setState(() {});
+
+                        await UpdateUtils.downloadLatest(ref, dio);
+                      }
+                      updating = false;
+                      setState(() {});
+                      dio.close(force: true);
                     },
                     child: updating
                         ? const Icon(Icons.cancel_outlined, color: Colors.black)
