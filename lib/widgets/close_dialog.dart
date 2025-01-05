@@ -60,6 +60,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
             borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
 
     return AlertDialog(
+      backgroundColor: colorScheme.surface,
       insetPadding: const EdgeInsets.all(16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(appTheme.widgetRadius),

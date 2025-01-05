@@ -70,6 +70,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
             ),
           )
         : AlertDialog(
+            backgroundColor: colorScheme.surface,
             insetPadding: const EdgeInsets.all(16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(appTheme.widgetRadius),

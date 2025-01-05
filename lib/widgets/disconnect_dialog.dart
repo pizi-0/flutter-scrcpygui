@@ -31,6 +31,7 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
   @override
   Widget build(BuildContext context) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     TextStyle? style = Theme.of(context).textTheme.titleSmall;
     final buttonStyle = ButtonStyle(
@@ -60,6 +61,7 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
             ),
           )
         : AlertDialog(
+            backgroundColor: colorScheme.surface,
             insetPadding: const EdgeInsets.all(16),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(appTheme.widgetRadius),

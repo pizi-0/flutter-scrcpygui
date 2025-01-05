@@ -21,8 +21,10 @@ class _ClearPreferencesDialogState
   @override
   Widget build(BuildContext context) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return AlertDialog(
+      backgroundColor: colorScheme.surface,
       insetPadding: const EdgeInsets.all(16),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(appTheme.widgetRadius),
