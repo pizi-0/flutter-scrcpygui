@@ -18,7 +18,7 @@ import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/prefs_key.dart';
 import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
-import 'package:scrcpygui/widgets/start_stop_button.dart';
+import 'package:scrcpygui/widgets/override_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:tray_manager/tray_manager.dart';
@@ -123,9 +123,7 @@ class ScrcpyUtils {
       AdbDevices selectedDevice, ScrcpyConfig selectedConfig) async {
     final workDir = ref.read(execDirProvider);
     final customInstanceName = ref.read(customNameProvider);
-    // final selectedConfig = ref.read(selectedConfigProvider);
     final runningInstance = ref.read(scrcpyInstanceProvider);
-    // final selectedDevice = ref.read(selectedDeviceProvider);
 
     final d = ref.watch(savedAdbDevicesProvider).firstWhere(
         (d) => d.id == selectedDevice.id,
@@ -212,8 +210,6 @@ class ScrcpyUtils {
             key: UniqueKey(),
           ),
         );
-
-    // await ScrcpyUtils.saveLastUsedConfig(ref.read(selectedConfigProvider));
   }
 
   static Future newInstance(WidgetRef ref,
@@ -269,8 +265,6 @@ class ScrcpyUtils {
 
   static Future<List<FlagCheckResult>> checkForIncompatibleFlags(WidgetRef ref,
       ScrcpyConfig selectedConfig, AdbDevices selectedDevice) async {
-    // final selectedConfig = ref.read(selectedConfigProvider);
-
     List<FlagCheckResult> result = [];
 
     bool display = selectedDevice.info!.displays

@@ -61,8 +61,6 @@ class _MyColorPickerState extends ConsumerState<MyColorPicker> {
         decoration: BoxDecoration(
           color: colorScheme.surface,
           borderRadius: BorderRadius.circular(settings.widgetRadius * 0.8),
-          // border:
-          //     Border.all(color: ref.watch(settingsProvider.select((s)=> s.looks)).color, width: 2),
         ),
         width: appWidth,
         child: ConstrainedBox(

@@ -112,23 +112,6 @@ class _MainScreenState extends ConsumerState<MainScreen>
       },
     );
 
-    // ref.read(bonsoirDeviceProvider.notifier).ref.listenSelf(
-    //   (previous, next) {
-    //     final mdnsDevices =
-    //         ref.read(adbProvider).where((d) => d.id.contains(adbMdns));
-
-    //     print('Next: $next');
-    //     print('${mdnsDevices.length} / ${next.length}');
-
-    //     for (final d in mdnsDevices) {
-    //       if (next.where((n) => d.id.contains(n.name)).isEmpty) {
-    //         print('disconnecting');
-    //         AdbUtils.disconnectWirelessDevice(ref.read(execDirProvider), d);
-    //       }
-    //     }
-    //   },
-    // );
-
     WidgetsBinding.instance.addPostFrameCallback((a) {
       autoDevicesPingTimer = Timer.periodic(1.seconds, (a) async {
         await AutomationUtils.autoconnectRunner(ref);

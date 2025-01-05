@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/result/wireless_connect_result.dart';
@@ -281,38 +280,10 @@ class AdbUtils {
     return historyStr.map((s) => AdbDevices.fromJson(s)).toList();
   }
 
-  static Future<List<AdbDevices>> getAutoConnectDevices() async {
-    List<AdbDevices> res = [];
-    final prefs = await SharedPreferences.getInstance();
-
-    final saved = prefs.getStringList(PKEY_AUTO_CONNECT_DEVICES) ?? [];
-
-    res = saved.map((e) => AdbDevices.fromJson(e)).toList();
-
-    return res;
-  }
-
   static Future<void> saveAutoConnectDevices(List<AdbDevices> devs) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setStringList(
         PKEY_AUTO_CONNECT_DEVICES, devs.map((e) => e.toJson()).toList());
-  }
-
-  static Future<void> pingAutoConnectDevices(WidgetRef ref) async {
-    final autoDevices = ref.read(autoConnectDevicesProvider);
-    final connectedDevices = ref.read(adbProvider);
-
-    for (final d in autoDevices) {
-      final ping = Ping(d.id.split(':').first);
-
-      final res = (await ping.stream.first).error;
-
-      if (res == null) {
-        if (!connectedDevices.contains(d)) {
-          await connectWithMdns(ref, id: d.id);
-        }
-      }
-    }
   }
 }
 

@@ -111,14 +111,10 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
                       loading = true;
                       setState(() {});
 
-                      // await Future.delayed(5.seconds);
-
                       await AdbUtils.disconnectWirelessDevice(
                           workDir, widget.device);
 
                       await Future.delayed(1.5.seconds);
-
-                      // await AdbUtils.connectedDevices(workDir);
 
                       if (mounted) {
                         loading = false;
