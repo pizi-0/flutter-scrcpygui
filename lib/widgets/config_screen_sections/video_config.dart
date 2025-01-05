@@ -5,6 +5,7 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 import 'package:scrcpygui/widgets/custom_slider_track_shape.dart';
+import 'package:string_extensions/string_extensions.dart';
 
 import '../../models/scrcpy_related/scrcpy_config.dart';
 import '../../models/scrcpy_related/scrcpy_enum.dart';
@@ -179,6 +180,15 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   Widget _buildResolutionScale(ScrcpyConfig selectedConfig, ScrcpyInfo info) {
     final colorScheme = Theme.of(context).colorScheme;
 
+    final displaySize = info.displays
+        .firstWhere(
+            (f) => f.id == selectedConfig.videoOptions.displayId.toString())
+        .resolution
+        .split('x');
+
+    final max = displaySize.map((e) => int.parse(e.removeLetters!)).toList();
+    max.sort((a, b) => b.compareTo(a));
+
     return ConfigCustom(
       label: 'Resolution scale',
       child: Row(
@@ -189,13 +199,16 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: SliderTheme(
                 data: SliderThemeData(
+                  valueIndicatorShape:
+                      const RectangularSliderValueIndicatorShape(),
+                  valueIndicatorColor: colorScheme.primary,
                   trackShape: CustomTrackShape(),
                   thumbShape:
                       const RoundSliderThumbShape(enabledThumbRadius: 5),
                 ),
                 child: Slider(
-                  label: selectedConfig.videoOptions.resolutionScale
-                      .toStringAsFixed(1),
+                  label:
+                      'max-size=${(selectedConfig.videoOptions.resolutionScale * max.first).toStringAsFixed(0)}',
                   value: selectedConfig.videoOptions.resolutionScale,
                   max: 1,
                   min: 0.3,
