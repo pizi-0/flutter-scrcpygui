@@ -254,7 +254,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
     }
 
     if (wifi) {
-      for (final d in connectedDevices.where((e) => e.id.contains(':'))) {
+      for (final d in connectedDevices
+          .where((e) => e.id.contains(adbMdns) || e.id.isIpv4)) {
         await AdbUtils.disconnectWirelessDevice(workDir, d);
       }
     }
