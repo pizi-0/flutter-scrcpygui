@@ -173,7 +173,7 @@ const scrcpyLatestUrl =
     'https://api.github.com/repos/Genymobile/scrcpy/releases/latest';
 
 const eadb = './adb';
-const escrcpy = './scrcpy_bin';
+const escrcpy = './scrcpy';
 
 final logger = Logger(
   filter: ProductionFilter(),

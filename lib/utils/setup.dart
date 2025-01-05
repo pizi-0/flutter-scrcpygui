@@ -47,9 +47,6 @@ class SetupUtils {
         await Process.run('bash', ['-c', 'chmod +x adb'],
             workingDirectory: versionDir.path);
 
-        await Process.run('bash', ['-c', 'chmod +x scrcpy_bin'],
-            workingDirectory: versionDir.path);
-
         await Process.run('bash', ['-c', 'chmod +x scrcpy'],
             workingDirectory: versionDir.path);
       }
