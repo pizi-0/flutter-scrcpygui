@@ -194,7 +194,7 @@ class ConfigUserInput extends ConsumerWidget {
       ),
       height: 40,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 0.0),
+        padding: const EdgeInsets.only(left: 4.0),
         child: Row(
           children: [
             const SizedBox(width: 5),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/widgets/config_dropdown.dart';
+import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:scrcpygui/widgets/section_button.dart';
 
 import '../../../widgets/body_container.dart';

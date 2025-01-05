@@ -11,7 +11,7 @@ import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/utils/automation_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/body_container.dart';
-import 'package:scrcpygui/widgets/config_dropdown.dart';
+import 'package:scrcpygui/widgets/config_tiles.dart';
 
 import '../../providers/adb_provider.dart';
 import 'widgets/info_container.dart';

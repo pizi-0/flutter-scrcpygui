@@ -9,7 +9,7 @@ import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 import '../../models/scrcpy_related/scrcpy_config.dart';
 import '../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../utils/const.dart';
-import '../config_dropdown.dart';
+import '../config_tiles.dart';
 
 class ModeConfig extends ConsumerStatefulWidget {
   const ModeConfig({super.key});

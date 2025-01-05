@@ -2,7 +2,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/screens/config_screen/config_screen.dart';
-import 'package:scrcpygui/widgets/config_dropdown.dart';
+import 'package:scrcpygui/widgets/config_tiles.dart';
 
 import '../../providers/settings_provider.dart';
 import '../../utils/const.dart';

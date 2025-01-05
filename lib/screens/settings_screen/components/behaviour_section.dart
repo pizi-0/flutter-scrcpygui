@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/widgets/config_dropdown.dart';
+import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:tray_manager/tray_manager.dart';
 
 import '../../../providers/settings_provider.dart';

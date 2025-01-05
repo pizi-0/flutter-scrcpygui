@@ -5,7 +5,7 @@ import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 
 import '../../providers/settings_provider.dart';
 import '../../utils/const.dart';
-import '../config_dropdown.dart';
+import '../config_tiles.dart';
 
 class WindowConfig extends ConsumerStatefulWidget {
   const WindowConfig({super.key});

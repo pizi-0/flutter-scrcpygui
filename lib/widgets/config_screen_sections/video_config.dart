@@ -10,7 +10,7 @@ import '../../models/scrcpy_related/scrcpy_config.dart';
 import '../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../providers/settings_provider.dart';
 import '../../utils/const.dart';
-import '../config_dropdown.dart';
+import '../config_tiles.dart';
 
 class VideoConfig extends ConsumerStatefulWidget {
   const VideoConfig({super.key});
