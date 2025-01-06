@@ -145,7 +145,7 @@ class ConfigDropdownOthers extends ConsumerWidget {
                   child: DropdownButtonHideUnderline(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: DropdownButton<dynamic>(
+                      child: DropdownButton(
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium!

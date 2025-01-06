@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/models/installed_scrcpy.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/screens/update_screen/components/download_update_widget.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
+import 'package:scrcpygui/utils/setup.dart';
 import 'package:scrcpygui/utils/update_utils.dart';
 import 'package:scrcpygui/widgets/body_container.dart';
+import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:scrcpygui/widgets/section_button.dart';
 
 import '../../providers/settings_provider.dart';
@@ -21,12 +24,14 @@ class UpdateScreen extends ConsumerStatefulWidget {
 class _UpdateScreenState extends ConsumerState<UpdateScreen> {
   String latest = BUNDLED_VERSION;
   bool checkingForUpdate = false;
+  List<InstalledScrcpy> installed = [];
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((a) async {
+      installed = await UpdateUtils.listInstalledScrcpy();
       setState(() {
         checkingForUpdate = true;
       });
@@ -99,33 +104,70 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
                           children: [
                             BodyContainerItem(
                               title: 'New version',
-                              trailing: Text('v $latest'),
+                              trailing: Text('v$latest'),
                             ),
                             const DownloadUpdate(),
                           ],
                         ),
                       BodyContainer(
                         headerTitle: 'Scrcpy version',
+                        spacing: 4,
                         children: [
-                          BodyContainerItem(
-                            title: 'Current version',
-                            trailing: Text('v $scrcpyVersion'),
-                          ),
-                          BodyContainerItem(
-                            title: 'Open executable location',
-                            trailingPadding: false,
-                            trailing: SectionButton(
-                              icondata: Icons.folder_rounded,
-                              tooltipmessage: scrcpyDir,
-                              ontap: () async {
-                                await AppUtils.openFolder(
-                                    scrcpyDir.split(scrcpyVersion).first);
-                                // await ScrcpyUtils.checkForScrcpyUpdate();
-                              },
+                          installed.length > 1
+                              ? ConfigDropdownOthers(
+                                  initialValue: installed.firstWhere(
+                                      (i) => i.version == scrcpyVersion),
+                                  items: installed
+                                      .map((ins) => DropdownMenuItem(
+                                            value: ins,
+                                            child: Text(
+                                                ins.version == BUNDLED_VERSION
+                                                    ? '${ins.version} (Bundled)'
+                                                    : ins.version),
+                                          ))
+                                      .toList(),
+                                  label: 'In-use',
+                                  onSelected: (value) async {
+                                    await SetupUtils.saveCurrentScrcpyVersion(
+                                        value.version);
+                                    ref.read(execDirProvider.notifier).state =
+                                        value.path;
+                                    ref
+                                        .read(scrcpyVersionProvider.notifier)
+                                        .state = value.version;
+                                  },
+                                )
+                              : ConfigCustom(
+                                  padRight: 8,
+                                  childBackgroundColor: Colors.transparent,
+                                  label: 'In-use',
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text('v$scrcpyVersion'),
+                                    ],
+                                  ),
+                                ),
+                          ConfigCustom(
+                            childBackgroundColor: Colors.transparent,
+                            label: 'Open executable location',
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                SectionButton(
+                                  icondata: Icons.folder_rounded,
+                                  tooltipmessage: scrcpyDir,
+                                  ontap: () async {
+                                    await AppUtils.openFolder(
+                                        scrcpyDir.split(scrcpyVersion).first);
+                                    // await ScrcpyUtils.checkForScrcpyUpdate();
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),

@@ -21,6 +21,7 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
   Widget build(BuildContext context) {
     final appTheme = ref.watch(settingsProvider).looks;
     final progress = ref.watch(downloadPercentageProvider);
+    final status = ref.watch(updateStatusProvider);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 4.0),
@@ -33,15 +34,20 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
             AnimatedContainer(
               duration: 200.milliseconds,
               width: updating ? appWidth - 125 : 0,
-              child: Padding(
-                padding: const EdgeInsets.only(right: 4.0),
-                child: LinearProgressIndicator(
-                  minHeight: 30,
-                  color: Colors.green,
-                  value: progress / 100,
-                  borderRadius:
-                      BorderRadius.circular(appTheme.widgetRadius * 0.6),
-                ),
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 4.0),
+                    child: LinearProgressIndicator(
+                      minHeight: 30,
+                      color: Colors.green,
+                      value: progress / 100,
+                      borderRadius:
+                          BorderRadius.circular(appTheme.widgetRadius * 0.6),
+                    ),
+                  ),
+                  if (status != '') Center(child: Text(status))
+                ],
               ),
             ),
             Expanded(
@@ -63,8 +69,10 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
 
                         await UpdateUtils.downloadLatest(ref, dio);
                       }
-                      updating = false;
-                      setState(() {});
+                      if (mounted) {
+                        updating = false;
+                        setState(() {});
+                      }
                       dio.close(force: true);
                     },
                     child: updating
