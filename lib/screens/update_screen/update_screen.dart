@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,7 +37,7 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
         checkingForUpdate = true;
       });
 
-      final res = await UpdateUtils.checkForScrcpyUpdate();
+      final res = await UpdateUtils.checkForScrcpyUpdate(ref);
 
       if (res != null) {
         latest = res;
@@ -98,6 +99,8 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      if (checkingForUpdate)
+                        const Center(child: CupertinoActivityIndicator()),
                       if (!checkingForUpdate && latest != scrcpyVersion)
                         BodyContainer(
                           headerTitle: 'Update available!',
@@ -126,7 +129,9 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
                                                     : ins.version),
                                           ))
                                       .toList(),
-                                  label: 'In-use',
+                                  label: latest == scrcpyVersion
+                                      ? 'In-use (latest)'
+                                      : 'In-use',
                                   onSelected: (value) async {
                                     await SetupUtils.saveCurrentScrcpyVersion(
                                         value.version);

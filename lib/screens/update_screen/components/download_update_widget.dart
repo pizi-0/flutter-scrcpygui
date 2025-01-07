@@ -67,7 +67,7 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
                         updating = true;
                         setState(() {});
 
-                        await UpdateUtils.downloadLatest(ref, dio);
+                        await UpdateUtils.startUpdateProcess(ref, dio);
                       }
                       if (mounted) {
                         updating = false;
