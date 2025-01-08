@@ -3,13 +3,13 @@ import 'package:bonsoir/bonsoir.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/bonsoir_devices.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
-import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/utils/bonsoir_utils.dart';
+import 'package:scrcpygui/utils/decorations.dart';
 
 import '../../../../utils/const.dart';
+import '../bonsoir_device_listtile.dart';
 
 class WifiAdbSmall extends ConsumerStatefulWidget {
   const WifiAdbSmall({super.key});
@@ -64,13 +64,8 @@ class _WifiAdbSmallState extends ConsumerState<WifiAdbSmall> {
                     child: Container(
                       width: appWidth,
                       clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                          color: theme.colorScheme.secondaryContainer,
-                          border: Border.all(
-                              width: 4,
-                              color: theme.colorScheme.primaryContainer),
-                          borderRadius:
-                              BorderRadius.circular(looks.widgetRadius)),
+                      decoration: Decorations.secondaryContainer(
+                          theme.colorScheme, looks),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 6, vertical: 8),
@@ -106,93 +101,6 @@ class _WifiAdbSmallState extends ConsumerState<WifiAdbSmall> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class BonsoirDeviceTile extends ConsumerStatefulWidget {
-  final BonsoirService bonsoirDevice;
-
-  const BonsoirDeviceTile({super.key, required this.bonsoirDevice});
-
-  @override
-  ConsumerState<BonsoirDeviceTile> createState() => _BonsoirDeviceTileState();
-}
-
-class _BonsoirDeviceTileState extends ConsumerState<BonsoirDeviceTile> {
-  bool loading = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final connectedDevices = ref.watch(adbProvider);
-    final connected = connectedDevices
-        .where((e) => e.id.contains(widget.bonsoirDevice.name))
-        .isNotEmpty;
-
-    return ListTile(
-      dense: true,
-      enabled: !loading,
-      trailing: connected
-          ? const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(
-                Icons.check_circle,
-                color: Colors.lightGreen,
-              ),
-            )
-          : loading
-              ? const Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: CupertinoActivityIndicator(),
-                )
-              : IconButton(
-                  tooltip: 'Connect',
-                  onPressed: () async {
-                    loading = true;
-                    setState(() {});
-
-                    final start = DateTime.now().millisecondsSinceEpoch;
-                    final result = await AdbUtils.connectWithMdns(ref,
-                        id: widget.bonsoirDevice.name);
-                    final end = DateTime.now().millisecondsSinceEpoch;
-
-                    //purely visual
-                    if ((end - start) < 1500) {
-                      await Future.delayed((1500 - (end - start)).milliseconds);
-                    }
-
-                    loading = false;
-                    setState(() {});
-
-                    if (!result.success) {
-                      showDialog(
-                        // ignore: use_build_context_synchronously
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Connection failed'),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text('Error:\n${result.errorMessage.capitalize}'),
-                              const Text(
-                                  'Try:\nTurn Wireless ADB off and on, and retry'),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Close'),
-                            )
-                          ],
-                        ),
-                      );
-                    }
-                  },
-                  icon: const Icon(Icons.link_rounded),
-                ),
-      title: Text(widget.bonsoirDevice.name),
-      subtitle: Text(
-          '${widget.bonsoirDevice.toJson()['service.host']}:${widget.bonsoirDevice.port}'),
     );
   }
 }

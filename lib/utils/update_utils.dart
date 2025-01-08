@@ -21,12 +21,25 @@ class UpdateUtils {
     try {
       final newversion = await checkForScrcpyUpdate(ref);
 
-      await downloadLatest(ref, dio, newversion!);
+      await _downloadLatest(ref, dio, newversion!);
 
-      await untar(ref, newversion);
+      await _untar(ref, newversion);
     } catch (e) {
       debugPrint(e.toString());
     }
+  }
+
+  static Future<List<InstalledScrcpy>> listInstalledScrcpy() async {
+    final sep = Platform.pathSeparator;
+    final supportDir = await getApplicationSupportDirectory();
+    final execDir = Directory('${supportDir.path}${sep}exec');
+
+    final installed = execDir.listSync();
+
+    return installed
+        .map((i) =>
+            InstalledScrcpy(version: i.path.split(sep).last, path: i.path))
+        .toList();
   }
 
   static Future<String?> checkForScrcpyUpdate(WidgetRef ref) async {
@@ -54,7 +67,7 @@ class UpdateUtils {
     return latest;
   }
 
-  static Future downloadLatest(
+  static Future _downloadLatest(
       WidgetRef ref, Dio dio, String newversion) async {
     final cache = (await getApplicationCacheDirectory()).path;
 
@@ -99,7 +112,7 @@ class UpdateUtils {
     }
   }
 
-  static Future untar(WidgetRef ref, String newversion) async {
+  static Future _untar(WidgetRef ref, String newversion) async {
     final cache = (await getApplicationCacheDirectory()).path;
     final supportDir = (await getApplicationSupportDirectory()).path;
 
@@ -154,18 +167,5 @@ class UpdateUtils {
       throw Exception(
           ['Error extracting update archive: $e', 'File: $filepath']);
     }
-  }
-
-  static Future<List<InstalledScrcpy>> listInstalledScrcpy() async {
-    final sep = Platform.pathSeparator;
-    final supportDir = await getApplicationSupportDirectory();
-    final execDir = Directory('${supportDir.path}${sep}exec');
-
-    final installed = execDir.listSync();
-
-    return installed
-        .map((i) =>
-            InstalledScrcpy(version: i.path.split(sep).last, path: i.path))
-        .toList();
   }
 }
