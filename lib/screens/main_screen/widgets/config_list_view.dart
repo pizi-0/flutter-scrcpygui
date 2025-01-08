@@ -37,13 +37,6 @@ class _ConfigListViewState extends ConsumerState<ConfigListView> {
   @override
   void initState() {
     _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      if (widget.animation.value < 750) {
-        // _scrollController.jumpTo(0);
-        widget.animationController.forward();
-      }
-    });
-
     super.initState();
   }
 
@@ -107,32 +100,42 @@ class _ConfigListViewState extends ConsumerState<ConfigListView> {
                 widget.animationController.forward();
               }
             },
-            child: MouseRegion(
-              onExit: (event) => widget.animationController.reverse(),
-              child: Container(
-                decoration:
-                    Decorations.secondaryContainer(theme.colorScheme, looks),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-                  child: ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context).copyWith(
-                      scrollbars: widget.animationController.isCompleted,
-                    ),
-                    child: ListView.separated(
-                      physics: widget.animationController.isAnimating
-                          ? const NeverScrollableScrollPhysics()
-                          : null,
-                      controller: _scrollController,
-                      itemBuilder: (context, index) {
-                        final config = (allConfigs)[index];
-
-                        return ConfigListTile(index: index, config: config);
-                      },
-                      separatorBuilder: (context, index) => Divider(
-                        color: theme.colorScheme.primaryContainer,
+            child: Listener(
+              onPointerSignal: (event) {
+                if (widget.animation.value < 750) {
+                  widget.animationController.forward();
+                }
+              },
+              child: MouseRegion(
+                onExit: (event) {
+                  _scrollController.jumpTo(0);
+                  widget.animationController.reverse();
+                },
+                child: Container(
+                  decoration:
+                      Decorations.secondaryContainer(theme.colorScheme, looks),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                    child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(
+                        scrollbars: widget.animationController.isCompleted,
                       ),
-                      itemCount: (allConfigs).length,
+                      child: ListView.separated(
+                        physics: widget.animation.value < 750
+                            ? const NeverScrollableScrollPhysics()
+                            : null,
+                        controller: _scrollController,
+                        itemBuilder: (context, index) {
+                          final config = (allConfigs)[index];
+
+                          return ConfigListTile(index: index, config: config);
+                        },
+                        separatorBuilder: (context, index) => Divider(
+                          color: theme.colorScheme.primaryContainer,
+                        ),
+                        itemCount: (allConfigs).length,
+                      ),
                     ),
                   ),
                 ),

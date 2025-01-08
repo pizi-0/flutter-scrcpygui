@@ -8,6 +8,7 @@ class SectionButton extends ConsumerWidget {
   final Function()? ontap;
   final IconData icondata;
   final Color? iconColor;
+  final double? iconSize;
   final Color? nullColor;
   const SectionButton({
     super.key,
@@ -15,6 +16,7 @@ class SectionButton extends ConsumerWidget {
     required this.ontap,
     this.nullColor,
     this.iconColor,
+    this.iconSize,
     this.tooltipmessage,
   });
 
@@ -37,6 +39,7 @@ class SectionButton extends ConsumerWidget {
       onPressed: ontap,
       icon: Icon(
         icondata,
+        size: iconSize,
         color: ontap == null
             ? nullColor ?? Colors.transparent
             : iconColor ?? colorScheme.inverseSurface,

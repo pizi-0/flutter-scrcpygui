@@ -96,7 +96,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               SectionButton(
-                tooltipmessage: 'Reset',
+                iconSize: 20,
                 ontap: () async {
                   ref.read(settingsProvider.notifier).update((state) => state =
                       state.copyWith(
@@ -145,7 +145,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 SectionButton(
-                  tooltipmessage: 'Default: 10',
+                  iconSize: 20,
                   ontap: () async {
                     ref.read(settingsProvider.notifier).update((state) =>
                         state = state.copyWith(
@@ -157,7 +157,6 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                   },
                   icondata: Icons.refresh_rounded,
                 ),
-                const SizedBox(width: 10),
                 SizedBox(
                   width: 100,
                   child: Slider(
@@ -198,7 +197,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 SectionButton(
-                  tooltipmessage: 'Default',
+                  iconSize: 20,
                   ontap: () async {
                     final currentTint = looks.tintLevel;
                     ref.read(settingsProvider.notifier).update((state) =>
@@ -213,7 +212,6 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                   },
                   icondata: Icons.refresh_rounded,
                 ),
-                const SizedBox(width: 10),
                 SizedBox(
                   width: 100,
                   child: Slider(
@@ -236,11 +234,12 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                   ),
                 ),
                 SizedBox(
-                    width: 30,
-                    child: Text(
-                            looks.tintLevel.surfaceTintLevel.toInt().toString())
-                        .textColor(colorScheme.inverseSurface)
-                        .alignAtCenterRight())
+                  width: 30,
+                  child:
+                      Text(looks.tintLevel.surfaceTintLevel.toInt().toString())
+                          .textColor(colorScheme.inverseSurface)
+                          .alignAtCenterRight(),
+                )
               ],
             ),
           ),
@@ -258,6 +257,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 SectionButton(
+                  iconSize: 20,
                   tooltipmessage: 'Default',
                   ontap: () async {
                     final currentTint = looks.tintLevel;
@@ -273,7 +273,6 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                   },
                   icondata: Icons.refresh_rounded,
                 ),
-                const SizedBox(width: 10),
                 SizedBox(
                   width: 100,
                   child: Slider(
@@ -317,6 +316,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 SectionButton(
+                  iconSize: 20,
                   tooltipmessage: 'Default',
                   ontap: () async {
                     final currentTint = looks.tintLevel;
@@ -332,7 +332,6 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                   },
                   icondata: Icons.refresh_rounded,
                 ),
-                const SizedBox(width: 10),
                 SizedBox(
                   width: 100,
                   child: Slider(
