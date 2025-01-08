@@ -1,11 +1,9 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:bonsoir/bonsoir.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/bonsoir_devices.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
-import 'package:scrcpygui/utils/bonsoir_utils.dart';
 import 'package:scrcpygui/utils/decorations.dart';
 
 import '../../../../utils/const.dart';
@@ -19,12 +17,8 @@ class WifiAdbSmall extends ConsumerStatefulWidget {
 }
 
 class _WifiAdbSmallState extends ConsumerState<WifiAdbSmall> {
-  late BonsoirDiscovery discovery;
-
   @override
   void initState() {
-    discovery = BonsoirDiscovery(type: adbMdns);
-    BonsoirUtils.startDiscovery(discovery, ref);
     super.initState();
   }
 

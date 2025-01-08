@@ -3,6 +3,7 @@
 import 'dart:async';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:bonsoir/bonsoir.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,6 +20,8 @@ import 'package:window_manager/window_manager.dart';
 import '../../providers/adb_provider.dart';
 import '../../providers/scrcpy_provider.dart';
 import '../../utils/automation_utils.dart';
+import '../../utils/bonsoir_utils.dart';
+import '../../utils/const.dart';
 import '../../utils/tray_utils.dart';
 import '../../widgets/custom_main_screen_appbar.dart';
 
@@ -31,6 +34,8 @@ class MainScreen extends ConsumerStatefulWidget {
 
 class _MainScreenState extends ConsumerState<MainScreen>
     with WindowListener, TrayListener {
+  late BonsoirDiscovery discovery;
+
   Timer? autoDevicesPingTimer;
   Timer? autoLaunchConfigTimer;
   Timer? runningInstancePingTimer;
@@ -40,7 +45,8 @@ class _MainScreenState extends ConsumerState<MainScreen>
     _init();
     windowManager.addListener(this);
     trayManager.addListener(this);
-
+    discovery = BonsoirDiscovery(type: adbMdns);
+    BonsoirUtils.startDiscovery(discovery, ref);
     super.initState();
   }
 
