@@ -104,10 +104,18 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
                       if (!checkingForUpdate && latest != scrcpyVersion)
                         BodyContainer(
                           headerTitle: 'Update available!',
+                          spacing: 4,
                           children: [
-                            BodyContainerItem(
-                              title: 'New version',
-                              trailing: Text('v$latest'),
+                            ConfigCustom(
+                              padRight: 6,
+                              childBackgroundColor: Colors.transparent,
+                              label: 'New version',
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text('v$latest'),
+                                ],
+                              ),
                             ),
                             const DownloadUpdate(),
                           ],
