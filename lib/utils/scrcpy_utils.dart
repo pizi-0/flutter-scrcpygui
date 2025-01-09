@@ -20,14 +20,12 @@ import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 import 'package:scrcpygui/widgets/override_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_extensions/string_extensions.dart';
-import 'package:tray_manager/tray_manager.dart';
 
 import '../models/scrcpy_related/scrcpy_flag_check_result.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
 import '../widgets/config_override/config_override.dart';
 import 'adb/adb_utils.dart';
 import 'scrcpy_command.dart';
-import 'tray_utils.dart';
 
 class ScrcpyUtils {
   static Future<List<ScrcpyConfig>> getSavedConfig() async {
@@ -68,9 +66,6 @@ class ScrcpyUtils {
     for (var c in conf) {
       savedJson.add(c.toJson());
     }
-
-    await trayManager.destroy();
-    await TrayUtils.initTray(ref, context);
 
     prefs.setStringList(PKEY_SAVED_CONFIG, savedJson);
   }

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/config_screen/config_screen.dart';
+import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/decorations.dart';
@@ -122,7 +125,18 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                                       .read(configsProvider.notifier)
                                       .removeConfig(widget.config);
 
-                                  Navigator.pop(context);
+                                  final newsaved = ref
+                                      .read(savedAdbDevicesProvider)
+                                      .map((s) {
+                                    s.automationData?.actions.removeWhere(
+                                        (a) => a.action == widget.config.id);
+                                    return s;
+                                  }).toList();
+
+                                  ref
+                                      .read(savedAdbDevicesProvider.notifier)
+                                      .setDevices(newsaved);
+
                                   await ScrcpyUtils.saveConfigs(
                                       ref,
                                       context,
@@ -131,6 +145,10 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                                           .where((c) =>
                                               !defaultConfigs.contains(c))
                                           .toList());
+
+                                  await AdbUtils.saveAdbDevice(newsaved);
+
+                                  Navigator.pop(context);
                                 },
                                 child: const Text('Delete')
                                     .textColor(colorScheme.inverseSurface),
@@ -147,8 +165,10 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                           ),
                         );
 
-                        loading = false;
-                        setState(() {});
+                        if (mounted) {
+                          loading = false;
+                          setState(() {});
+                        }
                       },
                     )
                   ],
