@@ -60,7 +60,7 @@ class _ConfigListViewState extends ConsumerState<ConfigListView> {
       },
       child: Listener(
         onPointerSignal: (event) {
-          if (widget.animation.value < 750) {
+          if (widget.animation.value < 750 && !widget.animation.isAnimating) {
             widget.animationController.forward();
           }
         },
