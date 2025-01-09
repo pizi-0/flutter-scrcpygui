@@ -106,7 +106,7 @@ class ConfigDropdownOthers extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final appTheme = ref.watch(settingsProvider).looks;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(

@@ -148,26 +148,27 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   }
 
   Widget _buildDisplaySelector(ScrcpyConfig selectedConfig, ScrcpyInfo info) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final displays =
+        info.displays.where((d) => (int.tryParse(d.id) ?? 11) < 10).toList();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         ConfigDropdownOthers(
           label: 'Display *',
-          initialValue: info.displays.length == 1
-              ? info.displays[0].id
-              : selectedConfig.videoOptions.displayId,
+          initialValue: displays.length == 1
+              ? displays[0].id
+              : selectedConfig.videoOptions.displayId.toString(),
           tooltipMessage: 'Only 1 display detected',
-          items: info.displays
-              .map((d) => DropdownMenuItem(
-                    value: d.id,
-                    child: Text(d.id).textColor(colorScheme.inverseSurface
-                        .withValues(
-                            alpha: info.displays.length == 1 ? 0.3 : 0)),
-                  ))
+          items: displays
+              .map(
+                (d) => DropdownMenuItem(
+                  value: d.id,
+                  child: Text(d.id),
+                ),
+              )
               .toList(),
-          onSelected: info.displays.length == 1
+          onSelected: displays.length == 1
               ? null
               : (value) => ref
                   .read(configScreenConfig.notifier)
