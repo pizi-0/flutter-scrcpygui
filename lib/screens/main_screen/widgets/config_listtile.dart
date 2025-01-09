@@ -124,8 +124,8 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                                       context,
                                       ref
                                           .read(configsProvider)
-                                          .where(
-                                              (c) => defaultConfigs.contains(c))
+                                          .where((c) =>
+                                              !defaultConfigs.contains(c))
                                           .toList());
 
                                   // ignore: use_build_context_synchronously
