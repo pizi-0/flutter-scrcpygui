@@ -184,6 +184,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                         ConfigDropdownOthers(
                           initialValue: ddValue,
                           onSelected: (v) async {
+                            print(v);
                             setState(() {
                               ddValue = v!;
                             });
@@ -196,6 +197,10 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                             } else {
                               var currentAutoData = dev.automationData ??
                                   AutomationData(actions: []);
+
+                              currentAutoData.actions.removeWhere(
+                                  (e) => e.type == ActionType.launchConfig);
+
                               dev = dev.copyWith(
                                   automationData:
                                       currentAutoData.copyWith(actions: [
