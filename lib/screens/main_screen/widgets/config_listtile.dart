@@ -95,6 +95,9 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                       label: 'Delete',
                       icon: Icons.delete_rounded,
                       onSelected: () async {
+                        loading = true;
+                        setState(() {});
+
                         await showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
@@ -119,6 +122,7 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                                       .read(configsProvider.notifier)
                                       .removeConfig(widget.config);
 
+                                  Navigator.pop(context);
                                   await ScrcpyUtils.saveConfigs(
                                       ref,
                                       context,
@@ -127,9 +131,6 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                                           .where((c) =>
                                               !defaultConfigs.contains(c))
                                           .toList());
-
-                                  // ignore: use_build_context_synchronously
-                                  Navigator.pop(context);
                                 },
                                 child: const Text('Delete')
                                     .textColor(colorScheme.inverseSurface),
@@ -145,6 +146,9 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                             ],
                           ),
                         );
+
+                        loading = false;
+                        setState(() {});
                       },
                     )
                   ],
