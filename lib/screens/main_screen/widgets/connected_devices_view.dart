@@ -11,7 +11,11 @@ import '../../../utils/const.dart';
 import 'device_listtile.dart';
 
 class ConnectedDevicesView extends ConsumerWidget {
+  final Animation animation;
+  final AnimationController animationController;
   const ConnectedDevicesView({
+    required this.animation,
+    required this.animationController,
     super.key,
   });
 
@@ -35,51 +39,54 @@ class ConnectedDevicesView extends ConsumerWidget {
               .textStyle(theme.textTheme.bodyLarge),
         ),
         Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(looks.widgetRadius),
-            child: Material(
-              child: AnimatedContainer(
-                duration: 200.milliseconds,
-                width: appWidth,
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                    color: theme.colorScheme.secondaryContainer,
-                    border: Border.all(
-                        width: 4,
-                        color: attention && selectedDevice == null
-                            ? theme.colorScheme.errorContainer
-                            : theme.colorScheme.primaryContainer),
-                    borderRadius: BorderRadius.circular(looks.widgetRadius)),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
-                  child: ClipRRect(
-                    borderRadius:
-                        BorderRadius.circular(looks.widgetRadius * 0.4),
-                    child: ListView.separated(
-                      itemBuilder: (context, index) {
-                        AdbDevices dev = devices[index];
+          child: MouseRegion(
+            onEnter: (event) => animationController.reverse(),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(looks.widgetRadius),
+              child: Material(
+                child: AnimatedContainer(
+                  duration: 200.milliseconds,
+                  width: appWidth,
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                      color: theme.colorScheme.secondaryContainer,
+                      border: Border.all(
+                          width: 4,
+                          color: attention && selectedDevice == null
+                              ? theme.colorScheme.errorContainer
+                              : theme.colorScheme.primaryContainer),
+                      borderRadius: BorderRadius.circular(looks.widgetRadius)),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                    child: ClipRRect(
+                      borderRadius:
+                          BorderRadius.circular(looks.widgetRadius * 0.4),
+                      child: ListView.separated(
+                        itemBuilder: (context, index) {
+                          AdbDevices dev = devices[index];
 
-                        if (bonsoirDevices
-                            .where((b) => dev.id.contains(b.name))
-                            .isNotEmpty) {
-                          final bd = bonsoirDevices
-                              .firstWhere((f) => dev.id.contains(f.name));
+                          if (bonsoirDevices
+                              .where((b) => dev.id.contains(b.name))
+                              .isNotEmpty) {
+                            final bd = bonsoirDevices
+                                .firstWhere((f) => dev.id.contains(f.name));
 
-                          dev = dev.copyWith(
-                              ip: '${bd.toJson()['service.host']}:${bd.port}');
-                        }
+                            dev = dev.copyWith(
+                                ip: '${bd.toJson()['service.host']}:${bd.port}');
+                          }
 
-                        return DeviceListtile(
-                            key: ValueKey(dev.id), device: dev);
-                      },
-                      separatorBuilder: (context, index) {
-                        return Divider(
-                          height: 0,
-                          color: theme.colorScheme.primaryContainer,
-                        );
-                      },
-                      itemCount: devices.length,
+                          return DeviceListtile(
+                              key: ValueKey(dev.id), device: dev);
+                        },
+                        separatorBuilder: (context, index) {
+                          return Divider(
+                            height: 0,
+                            color: theme.colorScheme.primaryContainer,
+                          );
+                        },
+                        itemCount: devices.length,
+                      ),
                     ),
                   ),
                 ),

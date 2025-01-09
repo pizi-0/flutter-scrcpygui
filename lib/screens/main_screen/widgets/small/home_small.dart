@@ -57,9 +57,10 @@ class _HomeTabSmallState extends ConsumerState<HomeTabSmall>
                 children: [
                   Expanded(
                     flex: deviceFlex,
-
-                    // child! == ConnectedDeviceView()
-                    child: child!,
+                    child: ConnectedDevicesView(
+                      animation: _animation,
+                      animationController: _animationController,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Expanded(
@@ -72,7 +73,6 @@ class _HomeTabSmallState extends ConsumerState<HomeTabSmall>
                 ],
               );
             },
-            child: const ConnectedDevicesView(),
           ),
         ),
       ),

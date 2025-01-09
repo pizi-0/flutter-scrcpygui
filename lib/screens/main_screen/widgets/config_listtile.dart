@@ -1,10 +1,14 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
+import 'package:scrcpygui/utils/decorations.dart';
 import 'package:scrcpygui/widgets/section_button.dart';
 
 import '../../../models/scrcpy_related/scrcpy_config.dart';
@@ -12,6 +16,8 @@ import '../../../providers/adb_provider.dart';
 import '../../../utils/scrcpy_utils.dart';
 import '../../../widgets/config_visualizer.dart';
 import 'small/home_small.dart';
+
+final contextMenuOpen = StateProvider((ref) => false);
 
 class ConfigListTile extends ConsumerStatefulWidget {
   final int index;
@@ -29,94 +35,168 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
   Widget build(BuildContext context) {
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final devices = ref.watch(adbProvider);
+    final isDefault = defaultConfigs.contains(widget.config);
+    final colorScheme = Theme.of(context).colorScheme;
+    final looks = ref.watch(settingsProvider).looks;
 
-    return ListTile(
-      enabled: !loading,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-      dense: true,
-      leading: Text('${widget.index + 1}')
-          .textStyle(Theme.of(context).textTheme.bodyMedium),
-      title: Text(widget.config.configName),
-      subtitle: Row(
-        children: [
-          ConfigVisualizer(conf: widget.config),
-        ],
-      ),
-      trailing: loading
-          ? const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: CupertinoActivityIndicator(),
-            )
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (!defaultConfigs.contains(widget.config))
-                  SectionButton(
-                    ontap: () async {
-                      if (selectedDevice == null) {
-                        if (devices.length == 1 && devices.isNotEmpty) {
-                          ref.read(selectedDeviceProvider.notifier).state =
-                              devices.first;
-                          await ScrcpyUtils.newInstance(ref,
-                              selectedConfig: widget.config);
+    return GestureDetector(
+      onSecondaryTapUp: isDefault
+          ? null
+          : (details) async {
+              ref.read(contextMenuOpen.notifier).state = true;
+              await showContextMenu(
+                context,
+                contextMenu: ContextMenu(
+                  position: Offset((details.globalPosition.dx + 2),
+                      (details.globalPosition.dy + 2)),
+                  entries: [
+                    MenuHeader(text: widget.config.configName),
+                    const MenuDivider(),
+                    MenuItem(
+                      label: 'Edit',
+                      icon: Icons.edit_rounded,
+                      onSelected: () async {
+                        if (selectedDevice == null) {
+                          if (devices.length == 1 && devices.isNotEmpty) {
+                            ref.read(selectedDeviceProvider.notifier).state =
+                                devices.first;
+                            ref.read(configScreenConfig.notifier).state =
+                                widget.config;
+
+                            await AppUtils.push(context, const ConfigScreen());
+
+                            await Future.delayed(1.seconds);
+
+                            ref.read(configScreenConfig.notifier).state = null;
+                          } else {
+                            ref.read(homeDeviceAttention.notifier).state = true;
+
+                            loading = false;
+                            setState(() {});
+
+                            await Future.delayed(2.seconds, () {
+                              ref.read(homeDeviceAttention.notifier).state =
+                                  false;
+                            });
+                          }
                         } else {
-                          ref.read(homeDeviceAttention.notifier).state = true;
+                          ref.read(configScreenConfig.notifier).state =
+                              widget.config;
+                          await AppUtils.push(context, const ConfigScreen());
 
-                          loading = false;
-                          setState(() {});
+                          await Future.delayed(1.seconds);
 
-                          await Future.delayed(2.seconds, () {
-                            ref.read(homeDeviceAttention.notifier).state =
-                                false;
-                          });
+                          ref.read(configScreenConfig.notifier).state = null;
                         }
-                      } else {
-                        ref.read(configScreenConfig.notifier).state =
-                            widget.config;
-                        await AppUtils.push(context, const ConfigScreen());
+                      },
+                    ),
+                    const MenuDivider(),
+                    MenuItem(
+                      label: 'Delete',
+                      icon: Icons.delete_rounded,
+                      onSelected: () async {
+                        await showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            backgroundColor: colorScheme.surface,
+                            insetPadding: const EdgeInsets.all(16),
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                  color: colorScheme.primaryContainer),
+                              borderRadius:
+                                  BorderRadius.circular(looks.widgetRadius),
+                            ),
+                            title: Text('Delete ${widget.config.configName}?'),
+                            content: ConstrainedBox(
+                              constraints: const BoxConstraints(
+                                  minWidth: appWidth, maxWidth: appWidth),
+                            ),
+                            actions: [
+                              TextButton(
+                                style: Decorations.textButtonStyle(ref),
+                                onPressed: () async {
+                                  ref
+                                      .read(configsProvider.notifier)
+                                      .removeConfig(widget.config);
 
-                        await Future.delayed(1.seconds);
+                                  await ScrcpyUtils.saveConfigs(
+                                      ref, context, ref.read(configsProvider));
 
-                        ref.read(configScreenConfig.notifier).state = null;
-                      }
-                    },
-                    icondata: Icons.edit_rounded,
-                  ),
-                SectionButton(
-                  ontap: () async {
-                    loading = true;
-                    setState(() {});
+                                  // ignore: use_build_context_synchronously
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Delete')
+                                    .textColor(colorScheme.inverseSurface),
+                              ),
+                              const SizedBox(width: 10),
+                              TextButton(
+                                autofocus: true,
+                                style: Decorations.textButtonStyle(ref),
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text('Cancel')
+                                    .textColor(colorScheme.inverseSurface),
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                    )
+                  ],
+                ),
+              );
+              ref.read(contextMenuOpen.notifier).state = false;
+            },
+      child: ListTile(
+        enabled: !loading,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+        dense: true,
+        leading: Text('${widget.index + 1}')
+            .textStyle(Theme.of(context).textTheme.bodyMedium),
+        title: Text(widget.config.configName),
+        subtitle: Row(
+          children: [
+            ConfigVisualizer(conf: widget.config),
+          ],
+        ),
+        trailing: loading
+            ? const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: CupertinoActivityIndicator(),
+              )
+            : SectionButton(
+                ontap: () async {
+                  loading = true;
+                  setState(() {});
 
-                    if (selectedDevice == null) {
-                      if (devices.length == 1 && devices.isNotEmpty) {
-                        ref.read(selectedDeviceProvider.notifier).state =
-                            devices.first;
-                        await ScrcpyUtils.newInstance(ref,
-                            selectedConfig: widget.config);
-                      } else {
-                        ref.read(homeDeviceAttention.notifier).state = true;
-
-                        loading = false;
-                        setState(() {});
-
-                        await Future.delayed(2.seconds, () {
-                          ref.read(homeDeviceAttention.notifier).state = false;
-                        });
-                      }
-                    } else {
+                  if (selectedDevice == null) {
+                    if (devices.length == 1 && devices.isNotEmpty) {
+                      ref.read(selectedDeviceProvider.notifier).state =
+                          devices.first;
                       await ScrcpyUtils.newInstance(ref,
                           selectedConfig: widget.config);
-                    }
+                    } else {
+                      ref.read(homeDeviceAttention.notifier).state = true;
 
-                    if (loading) {
                       loading = false;
                       setState(() {});
+
+                      await Future.delayed(2.seconds, () {
+                        ref.read(homeDeviceAttention.notifier).state = false;
+                      });
                     }
-                  },
-                  icondata: Icons.play_circle_fill_rounded,
-                ),
-              ],
-            ),
+                  } else {
+                    await ScrcpyUtils.newInstance(ref,
+                        selectedConfig: widget.config);
+                  }
+
+                  if (loading) {
+                    loading = false;
+                    setState(() {});
+                  }
+                },
+                icondata: Icons.play_circle_fill_rounded,
+              ),
+      ),
     );
   }
 }

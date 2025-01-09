@@ -52,98 +52,99 @@ class _ConfigListViewState extends ConsumerState<ConfigListView> {
     final theme = Theme.of(context);
     final looks = ref.watch(settingsProvider).looks;
 
-    return Column(
-      children: [
-        Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text('Configs (${allConfigs.length})')
-                  .textStyle(theme.textTheme.bodyLarge),
-            ),
-            SectionButton(
-              icondata: Icons.add_box_rounded,
-              ontap: () async {
-                final selectedDevice = ref.read(selectedDeviceProvider);
-                final savedDevices = ref.read(savedAdbDevicesProvider);
-                final allDevice = ref.read(adbProvider);
+    return GestureDetector(
+      onTap: () {
+        if (widget.animation.value < 750) {
+          widget.animationController.forward();
+        }
+      },
+      child: Listener(
+        onPointerSignal: (event) {
+          if (widget.animation.value < 750) {
+            widget.animationController.forward();
+          }
+        },
+        child: MouseRegion(
+          onExit: (event) {
+            if (!ref.read(contextMenuOpen)) {
+              _scrollController.jumpTo(0);
+              widget.animationController.reverse();
+            }
+          },
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Configs (${allConfigs.length})')
+                        .textStyle(theme.textTheme.bodyLarge),
+                  ),
+                  SectionButton(
+                    icondata: Icons.add_box_rounded,
+                    ontap: () async {
+                      final selectedDevice = ref.read(selectedDeviceProvider);
+                      final savedDevices = ref.read(savedAdbDevicesProvider);
+                      final allDevice = ref.read(adbProvider);
 
-                if (selectedDevice == null) {
-                  if (allDevice.isNotEmpty && allDevice.length == 1) {
-                    ref.read(selectedDeviceProvider.notifier).state =
-                        savedDevices.firstWhere(
-                      (d) => d.id == allDevice.first.id,
-                      orElse: () => allDevice.first,
-                    );
-                  } else {
-                    ref.read(homeDeviceAttention.notifier).state = true;
-                    await Future.delayed(2.seconds);
-                    if (ref.read(homeDeviceAttention)) {
-                      ref.read(homeDeviceAttention.notifier).state = false;
-                    }
-                  }
-                } else {
-                  ref.read(configScreenConfig.notifier).state =
-                      newConfig.copyWith(id: const Uuid().v4());
-                  await AppUtils.push(context, const ConfigScreen());
-                  await Future.delayed(1.seconds);
-                  ref.read(configScreenConfig.notifier).state = null;
-                }
-              },
-            ),
-          ],
-        ),
-        Expanded(
-          child: GestureDetector(
-            onTap: () {
-              if (widget.animation.value < 750) {
-                widget.animationController.forward();
-              }
-            },
-            child: Listener(
-              onPointerSignal: (event) {
-                if (widget.animation.value < 750) {
-                  widget.animationController.forward();
-                }
-              },
-              child: MouseRegion(
-                onExit: (event) {
-                  _scrollController.jumpTo(0);
-                  widget.animationController.reverse();
-                },
+                      if (selectedDevice == null) {
+                        if (allDevice.isNotEmpty && allDevice.length == 1) {
+                          ref.read(selectedDeviceProvider.notifier).state =
+                              savedDevices.firstWhere(
+                            (d) => d.id == allDevice.first.id,
+                            orElse: () => allDevice.first,
+                          );
+                        } else {
+                          ref.read(homeDeviceAttention.notifier).state = true;
+                          await Future.delayed(2.seconds);
+                          if (ref.read(homeDeviceAttention)) {
+                            ref.read(homeDeviceAttention.notifier).state =
+                                false;
+                          }
+                        }
+                      } else {
+                        ref.read(configScreenConfig.notifier).state =
+                            newConfig.copyWith(id: const Uuid().v4());
+                        await AppUtils.push(context, const ConfigScreen());
+                        await Future.delayed(1.seconds);
+                        ref.read(configScreenConfig.notifier).state = null;
+                      }
+                    },
+                  ),
+                ],
+              ),
+              Expanded(
                 child: Container(
                   decoration:
                       Decorations.secondaryContainer(theme.colorScheme, looks),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-                    child: ScrollConfiguration(
-                      behavior: ScrollConfiguration.of(context).copyWith(
-                        scrollbars: widget.animationController.isCompleted,
-                      ),
-                      child: ListView.separated(
-                        physics: widget.animation.value < 750
-                            ? const NeverScrollableScrollPhysics()
-                            : null,
-                        controller: _scrollController,
-                        itemBuilder: (context, index) {
-                          final config = (allConfigs)[index];
+                  child: ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context).copyWith(
+                      scrollbars: widget.animationController.isCompleted,
+                    ),
+                    child: ListView.separated(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 8),
+                      physics: widget.animation.value < 750
+                          ? const NeverScrollableScrollPhysics()
+                          : null,
+                      controller: _scrollController,
+                      itemBuilder: (context, index) {
+                        final config = (allConfigs)[index];
 
-                          return ConfigListTile(index: index, config: config);
-                        },
-                        separatorBuilder: (context, index) => Divider(
-                          color: theme.colorScheme.primaryContainer,
-                        ),
-                        itemCount: (allConfigs).length,
+                        return ConfigListTile(index: index, config: config);
+                      },
+                      separatorBuilder: (context, index) => Divider(
+                        color: theme.colorScheme.primaryContainer,
                       ),
+                      itemCount: (allConfigs).length,
                     ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 }
