@@ -120,7 +120,13 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                                       .removeConfig(widget.config);
 
                                   await ScrcpyUtils.saveConfigs(
-                                      ref, context, ref.read(configsProvider));
+                                      ref,
+                                      context,
+                                      ref
+                                          .read(configsProvider)
+                                          .where(
+                                              (c) => defaultConfigs.contains(c))
+                                          .toList());
 
                                   // ignore: use_build_context_synchronously
                                   Navigator.pop(context);
