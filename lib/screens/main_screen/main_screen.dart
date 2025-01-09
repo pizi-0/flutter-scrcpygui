@@ -123,6 +123,15 @@ class _MainScreenState extends ConsumerState<MainScreen>
       },
     );
 
+    ref.read(adbProvider.notifier).ref.listenSelf(
+      (a, b) async {
+        if (!listEquals(a, b)) {
+          await trayManager.destroy();
+          await TrayUtils.initTray(ref, context);
+        }
+      },
+    );
+
     WidgetsBinding.instance.addPostFrameCallback((a) {
       autoDevicesPingTimer = Timer.periodic(1.seconds, (a) async {
         await AutomationUtils.autoconnectRunner(ref);
