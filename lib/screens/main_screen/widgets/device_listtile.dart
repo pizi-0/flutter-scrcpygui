@@ -172,8 +172,11 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
           minLeadingWidth: 10,
           leading: Icon(
             widget.device.id.isIpv4 || widget.device.id.contains(adbMdns)
-                ? Icons.wifi_rounded
+                ? retries != 0
+                    ? Icons.perm_scan_wifi_outlined
+                    : Icons.wifi_rounded
                 : Icons.usb_rounded,
+            color: retries != 0 ? Colors.amber : null,
           ),
           title: Row(
             spacing: 10,
@@ -233,6 +236,13 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
           } else {
             ping?.stop();
             AdbUtils.disconnectWirelessDevice(workDir, widget.device);
+          }
+        } else {
+          if (retries != 0) {
+            if (mounted) {
+              retries = 0;
+              setState(() {});
+            }
           }
         }
       });
