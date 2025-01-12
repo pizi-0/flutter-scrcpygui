@@ -6,9 +6,9 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/utils/const.dart';
 
 class AdbDevices {
-  final String? name;
+  String? name;
   final String id;
-  final String? ip;
+  String? ip;
   final String modelName;
   final String serialNo;
   final bool status;
@@ -24,7 +24,10 @@ class AdbDevices {
     required this.status,
     this.automationData,
     this.info,
-  });
+  }) {
+    name = name ?? modelName;
+    ip = ip ?? id.split(':').first;
+  }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
