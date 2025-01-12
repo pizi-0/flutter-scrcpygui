@@ -139,7 +139,7 @@ class AdbUtils {
     res = await Process.run(eadb, ['connect', '$ip:5555'],
             workingDirectory: workDir)
         .timeout(
-      5.seconds,
+      30.seconds,
       onTimeout: () {
         logger.i('Connecting $ip, timed-out');
         return ProcessResult(pid, exitCode, 'timed-out', stderr);
@@ -170,7 +170,7 @@ class AdbUtils {
 
     res = await Process.run(eadb, ['connect', id], workingDirectory: workDir)
         .timeout(
-      5.seconds,
+      30.seconds,
       onTimeout: () {
         logger.i('Connecting $id, timed-out');
         return ProcessResult(pid, exitCode, 'timed-out', stderr);
