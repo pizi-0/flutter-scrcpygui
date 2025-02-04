@@ -84,19 +84,32 @@ class ScrcpyUtils {
   static Future<List<String>> getRunningScrcpy(String appPID) async {
     List<String> pids = [];
 
-    List<String> split = (await Isolate.run(() => Process.run('bash', [
-              '-c',
-              ' ${Platform.isMacOS ? 'export PATH=/usr/bin:\$PATH; ' : ''}pgrep scrcpy'
-            ])))
-        .stdout
-        .toString()
-        .split('\n');
-    split.removeLast();
+    if (Platform.isLinux) {
+      List<String> split = (await Isolate.run(() => Process.run('bash', [
+                '-c',
+                ' ${Platform.isMacOS ? 'export PATH=/usr/bin:\$PATH; ' : ''}pgrep scrcpy'
+              ])))
+          .stdout
+          .toString()
+          .split('\n');
+      split.removeLast();
 
-    pids = split
-        .map((e) => e.trim())
-        .where((el) => el != appPID.trim() && el.trim().isNotEmpty)
-        .toList();
+      pids = split
+          .map((e) => e.trim())
+          .where((el) => el != appPID.trim() && el.trim().isNotEmpty)
+          .toList();
+    }
+
+    if (Platform.isWindows) {
+      final list = (await Process.run('tasklist',
+              ['/fi', 'ImageName eq scrcpy.exe', '/v', '/fo', 'csv']))
+          .stdout
+          .toString();
+      final split = list.splitLines();
+      split.removeAt(0);
+      split.removeWhere((e) => e.isEmpty);
+      pids = split.map((e) => e.replaceAll('"', '').split(',')[1]).toList();
+    }
 
     return pids;
   }
@@ -107,8 +120,9 @@ class ScrcpyUtils {
     }
   }
 
-  static Future<ScrcpyRunningInstance> _startServer(WidgetRef ref,
-      AdbDevices selectedDevice, ScrcpyConfig selectedConfig) async {
+  static Future<ScrcpyRunningInstance> _startServer(
+      WidgetRef ref, AdbDevices selectedDevice, ScrcpyConfig selectedConfig,
+      {bool isTest = true}) async {
     final workDir = ref.read(execDirProvider);
     final customInstanceName = ref.read(customNameProvider);
     final runningInstance = ref.read(scrcpyInstanceProvider);
@@ -134,28 +148,14 @@ class ScrcpyUtils {
       }
     }
 
-    if (selectedConfig.isRecording) {
-      File file = File(
-          '${selectedConfig.savePath}/${customName.replaceAll(' ', '-')}${selectedConfig.videoOptions.videoFormat.command}');
-
-      if (file.existsSync()) {
-        for (int i = 1; i < 100; i++) {
-          file = File(
-              '${selectedConfig.savePath}/${customName.replaceAll(' ', '-')}($i)${selectedConfig.videoOptions.videoFormat.command}');
-
-          if (!file.existsSync()) {
-            customName = '$customName($i)';
-            break;
-          }
-        }
-      }
-    }
-
     comm = ScrcpyCommand.buildCommand(ref, selectedConfig, d,
-        customName: customName);
+        customName: '${isTest ? '[TEST] ' : ''}$customName');
 
-    final process = await Process.start(escrcpy, comm,
-        workingDirectory: workDir, environment: shellEnv);
+    final process = await Process.start(
+      Platform.isWindows ? '$workDir\\scrcpy.exe' : escrcpy,
+      comm,
+      workingDirectory: workDir,
+    );
     await Future.delayed(500.milliseconds);
 
     final now = DateTime.now();
@@ -186,9 +186,11 @@ class ScrcpyUtils {
       });
     }
 
-    final strays = await AdbUtils.getScrcpyServerPIDs();
-    if (strays.isNotEmpty) {
-      ScrcpyUtils.killStrays(strays, ProcessSignal.sigterm);
+    if (Platform.isLinux) {
+      final strays = await AdbUtils.getScrcpyServerPIDs();
+      if (strays.isNotEmpty) {
+        ScrcpyUtils.killStrays(strays, ProcessSignal.sigterm);
+      }
     }
 
     ref.read(toastProvider.notifier).addToast(
@@ -202,7 +204,8 @@ class ScrcpyUtils {
 
   static Future newInstance(WidgetRef ref,
       {AdbDevices? selectedDevice,
-      required ScrcpyConfig selectedConfig}) async {
+      required ScrcpyConfig selectedConfig,
+      bool isTest = false}) async {
     AdbDevices device = selectedDevice ?? ref.read(selectedDeviceProvider)!;
 
     if (device.info == null) {
@@ -230,7 +233,8 @@ class ScrcpyUtils {
     }
 
     if (proceed) {
-      final inst = await _startServer(ref, device, selectedConfig);
+      final inst =
+          await _startServer(ref, device, selectedConfig, isTest: isTest);
 
       ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
     }
@@ -238,7 +242,14 @@ class ScrcpyUtils {
 
   static Future<void> killServer(
       ScrcpyRunningInstance instance, String appPID) async {
-    Process.killPid(int.parse(instance.scrcpyPID));
+    if (Platform.isLinux) {
+      Process.killPid(int.parse(instance.scrcpyPID));
+    }
+
+    if (Platform.isWindows) {
+      final res = await Process.run('taskkill', ['/pid', instance.scrcpyPID]);
+      print(res.stderr);
+    }
   }
 
   static List<ScrcpyRunningInstance> getInstanceForDevice(

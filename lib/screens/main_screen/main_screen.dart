@@ -74,6 +74,25 @@ class _MainScreenState extends ConsumerState<MainScreen>
   }
 
   @override
+  void onTrayIconRightMouseDown() {
+    trayManager.popUpContextMenu();
+    super.onTrayIconRightMouseDown();
+  }
+
+  @override
+  void onTrayIconMouseDown() async {
+    final visible = await windowManager.isVisible();
+
+    if (visible) {
+      await windowManager.hide();
+    } else {
+      await windowManager.show();
+    }
+
+    super.onTrayIconMouseDown();
+  }
+
+  @override
   Widget build(BuildContext context) {
     ref.watch(pollAdbProvider);
 

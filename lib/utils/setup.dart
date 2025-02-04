@@ -16,6 +16,10 @@ class SetupUtils {
   static List<FileSystemEntity> get getLinuxExec =>
       Directory("$appDir/data/flutter_assets/assets/exec/linux").listSync();
 
+  static List<FileSystemEntity> get getWindowsExec =>
+      Directory("$appDir\\data\\flutter_assets\\assets\\exec\\windows")
+          .listSync();
+
   static initScrcpy(WidgetRef ref) async {
     final scrcpyVersion = await getCurrentScrcpyVersion();
 
@@ -59,11 +63,7 @@ class SetupUtils {
         await DirectoryUtils.getScrcpyVersionDir(BUNDLED_VERSION);
     final bundledDirContent = bundledVersionDir.listSync();
 
-    final execPath = Platform.isLinux
-        ? getLinuxExec
-        : Platform.isMacOS
-            ? getLinuxExec
-            : getLinuxExec;
+    final execPath = _getExecPath();
 
     for (final f in execPath) {
       final filename = f.path.split(Platform.pathSeparator).last;
@@ -77,7 +77,9 @@ class SetupUtils {
       }
     }
 
-    _markAsExecutable(bundledVersionDir.path);
+    if (Platform.isLinux) {
+      _markAsExecutable(bundledVersionDir.path);
+    }
   }
 
   static Future<void> _markAsExecutable(String path) async {
@@ -86,6 +88,18 @@ class SetupUtils {
 
       await Process.run('bash', ['-c', 'chmod +x scrcpy'],
           workingDirectory: path);
+    }
+  }
+
+  static _getExecPath() {
+    if (Platform.isLinux) {
+      return getLinuxExec;
+    } else if (Platform.isMacOS) {
+      return getLinuxExec;
+    } else if (Platform.isWindows) {
+      return getWindowsExec;
+    } else {
+      throw Exception('Unsupported platform');
     }
   }
 }

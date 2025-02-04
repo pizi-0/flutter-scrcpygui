@@ -106,8 +106,6 @@ class _ConfigListViewState extends ConsumerState<ConfigListView> {
                         ref.read(configScreenConfig.notifier).state =
                             newConfig.copyWith(id: const Uuid().v4());
                         await AppUtils.push(context, const ConfigScreen());
-                        await Future.delayed(1.seconds);
-                        ref.read(configScreenConfig.notifier).state = null;
                       }
                     },
                   ),

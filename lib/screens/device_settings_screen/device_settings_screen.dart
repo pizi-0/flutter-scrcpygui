@@ -184,7 +184,6 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                         ConfigDropdownOthers(
                           initialValue: ddValue,
                           onSelected: (v) async {
-                            print(v);
                             setState(() {
                               ddValue = v!;
                             });

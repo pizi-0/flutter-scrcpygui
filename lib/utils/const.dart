@@ -106,7 +106,9 @@ final ScrcpyConfig newConfig = ScrcpyConfig(
     timeLimit: 0,
   ),
   additionalFlags: '',
-  savePath: Platform.environment['HOME'],
+  savePath: Platform.isLinux
+      ? Platform.environment['HOME']
+      : '${Platform.environment['HOMEDRIVE']}\\${Platform.environment['HOMEPATH']}',
 );
 
 final ScrcpyConfig defaultRecord = ScrcpyConfig(
@@ -145,7 +147,9 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
     timeLimit: 0,
   ),
   additionalFlags: '',
-  savePath: Platform.environment['HOME'],
+  savePath: Platform.isLinux
+      ? Platform.environment['HOME']
+      : '${Platform.environment['HOMEDRIVE']}\\${Platform.environment['HOMEPATH']}',
 );
 
 final defaultTheme = AppTheme(

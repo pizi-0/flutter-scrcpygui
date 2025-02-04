@@ -94,7 +94,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SelectableText(
-                      'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice!).join(' ')}',
+                      'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice!, customName: '[TEST] ${selectedConfig.configName}').join(' ')}',
                       style: TextStyle(
                           fontSize: 14, color: colorScheme.inverseSurface),
                     ),
@@ -115,7 +115,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                         onPressed: () async {
                           if (!isTestRunning) {
                             await ScrcpyUtils.newInstance(ref,
-                                selectedConfig: selectedConfig);
+                                selectedConfig: selectedConfig, isTest: true);
 
                             timer = Timer.periodic(1.seconds, (a) async {
                               await _isStillRunning();

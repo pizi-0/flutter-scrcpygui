@@ -19,9 +19,10 @@ Future<List<AdbDevices>> getAdbInfos(String workDir,
     try {
       if (status) {
         ProcessResult modelNameRes = await Process.run(
-                eadb, ['-s', id, 'shell', 'getprop', 'ro.product.model'],
+                Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+                ['-s', id, 'shell', 'getprop', 'ro.product.model'],
                 workingDirectory: workDir)
-            .timeout(2.seconds,
+            .timeout(10.seconds,
                 onTimeout: () =>
                     ProcessResult(pid, 124, 'timed-out', 'timed-out'));
 
@@ -32,7 +33,8 @@ Future<List<AdbDevices>> getAdbInfos(String workDir,
         //get serial no if status != offline or unauth
         if (status) {
           final serialNoRes = await Process.run(
-                  eadb, ['-s', id, 'shell', 'getprop', 'ro.boot.serialno'],
+                  Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+                  ['-s', id, 'shell', 'getprop', 'ro.boot.serialno'],
                   workingDirectory: workDir)
               .timeout(2.seconds,
                   onTimeout: () =>

@@ -40,8 +40,22 @@ class AppUtils {
   }
 
   static Future<String> getAppPid() async {
-    String pidof;
-    pidof = (await Process.run('pgrep', ['scrcpygui'])).stdout;
+    String pidof = 'Unknown';
+
+    if (Platform.isLinux) {
+      pidof = (await Process.run('pgrep', ['scrcpygui'])).stdout;
+    }
+
+    if (Platform.isWindows) {
+      String tasklist = (await Process.run('tasklist', [])).stdout;
+
+      pidof = tasklist
+          .splitLines()
+          .firstWhere((e) => e.contains('scrcpygui.exe'))
+          .trimAll
+          .split(' ')[1]
+          .trim();
+    }
 
     return pidof;
   }

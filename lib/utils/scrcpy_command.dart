@@ -39,7 +39,7 @@ class ScrcpyCommand {
     // recording, savepath, video/audio format
     var comm = command.split(' ') +
         [
-          "--window-title='${customName ?? config.configName}'",
+          "--window-title=${customName ?? config.configName}",
           _recordingFormat(config, customName ?? config.configName),
           config.additionalFlags,
         ];
@@ -50,26 +50,29 @@ class ScrcpyCommand {
   }
 
   static String _recordingFormat(ScrcpyConfig config, String filename) {
+    final sep = Platform.pathSeparator;
     if (config.isRecording) {
       switch (config.scrcpyMode) {
         case ScrcpyMode.audioOnly:
-          return "--record='${config.savePath}/${_nameAfterDuplicateCheck(config.savePath!, '$filename${config.audioOptions.audioFormat.command}')}'";
+          return "--record=${config.savePath}$sep${_nameAfterDuplicateCheck(config.savePath!, '$filename${config.audioOptions.audioFormat.command}')}";
 
         default:
-          return "--record=${config.savePath}/${_nameAfterDuplicateCheck(config.savePath!, '$filename${config.videoOptions.videoFormat.command}')}";
+          return "--record=${config.savePath}$sep${_nameAfterDuplicateCheck(config.savePath!, '$filename${config.videoOptions.videoFormat.command}')}";
       }
     } else {
       return '';
     }
   }
 
-  static _nameAfterDuplicateCheck(String savePath, String oldname) {
+  static String _nameAfterDuplicateCheck(String savePath, String oldname) {
     String newname = oldname;
-    File toSave = File('$savePath/$oldname');
+    final sep = Platform.pathSeparator;
+    File toSave = File('$savePath$sep$oldname');
     DateTime now = DateTime.timestamp().toLocal();
 
     if (toSave.existsSync()) {
-      newname = oldname.insertAt(oldname.lastIndexOf('.'), '-$now');
+      newname = oldname.insertAt(
+          oldname.lastIndexOf('.'), '-${now.millisecondsSinceEpoch}');
     }
 
     return newname;

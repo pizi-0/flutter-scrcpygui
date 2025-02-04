@@ -22,7 +22,6 @@ class UpdateUtils {
       final newversion = await checkForScrcpyUpdate(ref);
 
       await _downloadLatest(ref, dio, newversion!);
-
       await _untar(ref, newversion);
     } catch (e) {
       debugPrint(e.toString());
@@ -89,9 +88,13 @@ class UpdateUtils {
           'Downloading scrcpy v$newversion';
       await Future.delayed(500.milliseconds);
 
+      print(downloadPath.path);
+
       await dio.download(
-        'https://github.com/Genymobile/scrcpy/releases/download/v$newversion/scrcpy-linux-x86_64-v$newversion.tar.gz',
-        '${downloadPath.path}/v$newversion.tar.gz',
+        downloadLink(newversion),
+        Platform.isLinux
+            ? '${downloadPath.path}${sep}v$newversion.tar.gz'
+            : '${downloadPath.path}${sep}v$newversion.zip',
         onReceiveProgress: (count, total) => ref
             .read(downloadPercentageProvider.notifier)
             .state = ((count / total) * 100),
@@ -112,6 +115,14 @@ class UpdateUtils {
     }
   }
 
+  static String downloadLink(String newversion) {
+    if (Platform.isWindows) {
+      return 'https://github.com/Genymobile/scrcpy/releases/download/v$newversion/scrcpy-win64-v$newversion.zip';
+    } else {
+      return 'https://github.com/Genymobile/scrcpy/releases/download/v$newversion/scrcpy-linux-x86_64-v$newversion.tar.gz';
+    }
+  }
+
   static Future _untar(WidgetRef ref, String newversion) async {
     final cache = (await getApplicationCacheDirectory()).path;
     final supportDir = (await getApplicationSupportDirectory()).path;
@@ -119,7 +130,9 @@ class UpdateUtils {
     final sep = Platform.pathSeparator;
 
     final downloadPath = Directory('$cache${sep}download');
-    final filepath = '${downloadPath.path}/v$newversion.tar.gz';
+    final filepath = Platform.isLinux
+        ? '${downloadPath.path}${sep}v$newversion.tar.gz'
+        : '${downloadPath.path}${sep}v$newversion.zip';
 
     final newExecDir = Directory('$supportDir${sep}exec');
     final newVersionDir = Directory('${newExecDir.path}$sep$newversion');
@@ -138,11 +151,11 @@ class UpdateUtils {
 
       await entities.last.rename(newVersionDir.path);
 
-      ref.read(updateStatusProvider.notifier).state = 'Marking as executables';
-      await Future.delayed(500.milliseconds);
-
       //set executable
       if (Platform.isLinux || Platform.isMacOS) {
+        ref.read(updateStatusProvider.notifier).state =
+            'Marking as executables';
+        await Future.delayed(500.milliseconds);
         await Process.run('bash', ['-c', 'chmod +x adb'],
             workingDirectory: newVersionDir.path);
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +70,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
       WidgetRef ref, BuildContext context, ScrcpyConfig selectedConfig) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final colorScheme = Theme.of(context).colorScheme;
+    final sep = Platform.pathSeparator;
 
     return AnimatedContainer(
       height: selectedConfig.isRecording ? 84 : 40,
@@ -131,10 +134,9 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
                               child: Center(
                                 child: Text(
                                   (selectedConfig.savePath ?? '')
-                                      .split('/')
+                                      .split(sep)
                                       .last,
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
+                                  style: Theme.of(context).textTheme.titleSmall,
                                 ),
                               ),
                             ),

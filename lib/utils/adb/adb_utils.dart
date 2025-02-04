@@ -24,8 +24,9 @@ import '../const.dart';
 class AdbUtils {
   static Future<List<AdbDevices>> connectedDevices(String workDir,
       {bool showLog = true}) async {
-    final adbDeviceRes =
-        await Process.run(eadb, ['devices'], workingDirectory: workDir);
+    final adbDeviceRes = await Process.run(
+        Platform.isWindows ? '$workDir\\adb.exe' : eadb, ['devices'],
+        workingDirectory: workDir);
 
     final connected = adbDeviceRes.stdout
         .toString()
@@ -43,14 +44,16 @@ class AdbUtils {
   static Future<ScrcpyInfo> getScrcpyDetailsFor(
       String workDir, AdbDevices dev) async {
     final buildVersion = await Process.run(
-      eadb,
+      Platform.isWindows ? '$workDir\\adb.exe' : eadb,
       ['-s', dev.id, 'shell', 'getprop', 'ro.product.build.version.release'],
       workingDirectory: workDir,
     );
 
-    final info = await Process.run(escrcpy,
-        ['-s', dev.id, '--list-encoders', '--list-displays', '--list-cameras'],
-        workingDirectory: workDir, environment: shellEnv);
+    final info = await Process.run(
+      Platform.isWindows ? '$workDir\\scrcpy.exe' : escrcpy,
+      ['-s', dev.id, '--list-encoders', '--list-displays', '--list-cameras'],
+      workingDirectory: workDir,
+    );
 
     final cameraInfo = _getCameraInfo(info.stdout);
     final videoEncoderInfo = _getVideoEncoders(info.stdout);
@@ -71,8 +74,10 @@ class AdbUtils {
       String workDir, AdbDevices dev) async {
     try {
       logger.i('Disconnecting ${dev.id}');
-      await Isolate.run(() =>
-          Process.run(eadb, ['disconnect', dev.id], workingDirectory: workDir));
+      await Isolate.run(() => Process.run(
+          Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+          ['disconnect', dev.id],
+          workingDirectory: workDir));
     } on Exception catch (e) {
       logger.e('Error diconnecting ${dev.id}', error: e);
     }
@@ -136,7 +141,8 @@ class AdbUtils {
       {required String ip}) async {
     ProcessResult? res;
 
-    res = await Process.run(eadb, ['connect', '$ip:5555'],
+    res = await Process.run(Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+            ['connect', '$ip:5555'],
             workingDirectory: workDir)
         .timeout(
       30.seconds,
@@ -149,7 +155,8 @@ class AdbUtils {
     //stop unauth
     if (res.stdout.toString().contains('authenticate')) {
       logger.i('Unauthenticated, check phone');
-      await Process.run(eadb, ['disconnect', '$ip:5555'],
+      await Process.run(Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+          ['disconnect', '$ip:5555'],
           workingDirectory: workDir);
 
       return WiFiResult(success: false, errorMessage: res.stdout);
@@ -168,7 +175,9 @@ class AdbUtils {
     final workDir = ref.read(execDirProvider);
     ProcessResult? res;
 
-    res = await Process.run(eadb, ['connect', id], workingDirectory: workDir)
+    res = await Process.run(
+            Platform.isWindows ? '$workDir\\adb.exe' : eadb, ['connect', id],
+            workingDirectory: workDir)
         .timeout(
       30.seconds,
       onTimeout: () {
@@ -180,7 +189,8 @@ class AdbUtils {
     //stop unauth
     if (res.stdout.toString().contains('authenticate')) {
       logger.i('Unauthenticated, check phone');
-      await Process.run(eadb, ['disconnect', '$id.$adbMdns'],
+      await Process.run(Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+          ['disconnect', '$id.$adbMdns'],
           workingDirectory: workDir);
 
       return WiFiResult(success: false, errorMessage: res.stdout);
@@ -197,7 +207,8 @@ class AdbUtils {
     logger.i('Setting tcp 5555 for $id');
 
     try {
-      await Process.run(eadb, ['-s', id, 'tcpip', '5555'],
+      await Process.run(Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+          ['-s', id, 'tcpip', '5555'],
           workingDirectory: workDir);
     } on Exception catch (e) {
       logger.e('Error setting tcp 5555 for $id', error: e);
@@ -210,7 +221,8 @@ class AdbUtils {
       logger.i('Getting ip for ${dev.id}');
 
       final res = await Process.run(
-          eadb, ['-s', (dev.serialNo), 'shell', 'ip', 'route'],
+          Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+          ['-s', (dev.serialNo), 'shell', 'ip', 'route'],
           workingDirectory: workDir);
 
       final res2 = res.stdout.toString().splitLines();

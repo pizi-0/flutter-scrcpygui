@@ -64,109 +64,109 @@ class _CustomAppbarState extends ConsumerState<CustomAppbar> {
   Widget build(BuildContext context) {
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
-    final appBehaviour = ref.watch(settingsProvider.select((s) => s.behaviour));
-
     final buttonStyle = ButtonStyle(
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
-      children: [
-        IconButton(
-          tooltip: 'Exit',
-          style: buttonStyle,
-          onPressed: () async {
-            await AppUtils.onAppCloseRequested(ref, context);
-          },
-          icon: const Icon(Icons.close_rounded, color: Colors.red),
-        ),
-        IconButton(
-          style: buttonStyle,
-          tooltip: 'Hide window',
-          onPressed: () async {
-            await windowManager.hide();
-            await TrayUtils.initTray(ref, context);
-          },
-          icon: const Icon(Icons.minimize_rounded, color: Colors.orange),
-        ),
-        const Expanded(child: DragToMoveArea(child: SizedBox.expand())),
-        IconButton(
-          style: buttonStyle,
-          tooltip: appBehaviour.toastEnabled
-              ? 'Disable notification popup'
-              : 'Enable notification popup',
-          onPressed: () {
-            final currentToastSettings = appBehaviour.toastEnabled;
-
-            ref.read(settingsProvider.notifier).update((state) => state =
-                state.copyWith(
-                    behaviour: appBehaviour.copyWith(
-                        toastEnabled: !currentToastSettings)));
-
-            final newSettings = ref.read(settingsProvider);
-
-            AppUtils.saveAppSettings(newSettings);
-          },
-          icon: Icon(
-            appBehaviour.toastEnabled
-                ? Icons.notifications_rounded
-                : Icons.notifications_off_rounded,
-            color: appBehaviour.toastEnabled ? Colors.green : Colors.red,
+    return DragToMoveArea(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          IconButton(
+            tooltip: 'Exit',
+            style: buttonStyle,
+            onPressed: () async {
+              await AppUtils.onAppCloseRequested(ref, context);
+            },
+            icon: const Icon(Icons.close_rounded, color: Colors.red),
           ),
-        ),
-        IconButton(
-          style: buttonStyle,
-          tooltip: appTheme.brightness == Brightness.dark
-              ? 'Light mode'
-              : 'Dark mode',
-          onPressed: () {
-            var val = appTheme.brightness;
-
-            if (appTheme.brightness == Brightness.dark) {
-              val = Brightness.light;
-            } else {
-              val = Brightness.dark;
-            }
-
-            ref.read(settingsProvider.notifier).update((state) => state =
-                state.copyWith(looks: state.looks.copyWith(brightness: val)));
-          },
-          icon: Icon(
-            appTheme.brightness == Brightness.dark
-                ? Icons.sunny
-                : Icons.nightlight_round,
-            color: Colors.orange,
+          IconButton(
+            style: buttonStyle,
+            tooltip: 'Hide window',
+            onPressed: () async {
+              await windowManager.hide();
+              await TrayUtils.initTray(ref, context);
+            },
+            icon: const Icon(Icons.minimize_rounded, color: Colors.orange),
           ),
-        ),
-        SectionButton(
-          icondata: Icons.system_update_alt,
-          tooltipmessage: 'Update',
-          ontap: () {
-            Navigator.push(
-                context,
-                PageTransition(
-                    child: const UpdateScreen(),
-                    type: PageTransitionType.rightToLeft));
-          },
-        ),
-        IconButton(
-          style: buttonStyle,
-          tooltip: 'Settings',
-          onPressed: () {
-            Navigator.push(
-                context,
-                PageTransition(
-                    child: const SettingsScreen(),
-                    type: PageTransitionType.rightToLeft));
-          },
-          icon: Icon(
-            Icons.settings_rounded,
-            color: Theme.of(context).colorScheme.onPrimaryContainer,
+          const Spacer(),
+          // IconButton(
+          //   style: buttonStyle,
+          //   tooltip: appBehaviour.toastEnabled
+          //       ? 'Disable notification popup'
+          //       : 'Enable notification popup',
+          //   onPressed: () {
+          //     final currentToastSettings = appBehaviour.toastEnabled;
+
+          //     ref.read(settingsProvider.notifier).update((state) => state =
+          //         state.copyWith(
+          //             behaviour: appBehaviour.copyWith(
+          //                 toastEnabled: !currentToastSettings)));
+
+          //     final newSettings = ref.read(settingsProvider);
+
+          //     AppUtils.saveAppSettings(newSettings);
+          //   },
+          //   icon: Icon(
+          //     appBehaviour.toastEnabled
+          //         ? Icons.notifications_rounded
+          //         : Icons.notifications_off_rounded,
+          //     color: appBehaviour.toastEnabled ? Colors.green : Colors.red,
+          //   ),
+          // ),
+          IconButton(
+            style: buttonStyle,
+            tooltip: appTheme.brightness == Brightness.dark
+                ? 'Light mode'
+                : 'Dark mode',
+            onPressed: () {
+              var val = appTheme.brightness;
+
+              if (appTheme.brightness == Brightness.dark) {
+                val = Brightness.light;
+              } else {
+                val = Brightness.dark;
+              }
+
+              ref.read(settingsProvider.notifier).update((state) => state =
+                  state.copyWith(looks: state.looks.copyWith(brightness: val)));
+            },
+            icon: Icon(
+              appTheme.brightness == Brightness.dark
+                  ? Icons.sunny
+                  : Icons.nightlight_round,
+              color: Colors.orange,
+            ),
           ),
-        ),
-      ],
+          SectionButton(
+            icondata: Icons.system_update_alt,
+            tooltipmessage: 'Update',
+            ontap: () {
+              Navigator.push(
+                  context,
+                  PageTransition(
+                      child: const UpdateScreen(),
+                      type: PageTransitionType.rightToLeft));
+            },
+          ),
+          IconButton(
+            style: buttonStyle,
+            tooltip: 'Settings',
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  PageTransition(
+                      child: const SettingsScreen(),
+                      type: PageTransitionType.rightToLeft));
+            },
+            icon: Icon(
+              Icons.settings_rounded,
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
