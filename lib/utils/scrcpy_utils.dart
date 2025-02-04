@@ -247,8 +247,7 @@ class ScrcpyUtils {
     }
 
     if (Platform.isWindows) {
-      final res = await Process.run('taskkill', ['/pid', instance.scrcpyPID]);
-      print(res.stderr);
+      await Process.run('taskkill', ['/pid', instance.scrcpyPID]);
     }
   }
 

@@ -17,7 +17,6 @@ class InfoContainer extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return AnimatedContainer(
-      margin: const EdgeInsets.only(bottom: 4),
       duration: 200.milliseconds,
       width: double.maxFinite,
       decoration: BoxDecoration(

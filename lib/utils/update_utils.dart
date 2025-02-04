@@ -88,8 +88,6 @@ class UpdateUtils {
           'Downloading scrcpy v$newversion';
       await Future.delayed(500.milliseconds);
 
-      print(downloadPath.path);
-
       await dio.download(
         downloadLink(newversion),
         Platform.isLinux

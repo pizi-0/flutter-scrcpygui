@@ -193,38 +193,52 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                 padding: EdgeInsets.all(8.0),
                 child: CupertinoActivityIndicator(),
               )
-            : SectionButton(
-                ontap: () async {
-                  loading = true;
-                  setState(() {});
-
-                  if (selectedDevice == null) {
-                    if (devices.length == 1 && devices.isNotEmpty) {
-                      ref.read(selectedDeviceProvider.notifier).state =
-                          devices.first;
-                      await ScrcpyUtils.newInstance(ref,
-                          selectedConfig: widget.config);
-                    } else {
-                      ref.read(homeDeviceAttention.notifier).state = true;
-
-                      loading = false;
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (widget.config.isRecording)
+                    SectionButton(
+                      icondata: Icons.folder,
+                      tooltipmessage: widget.config.savePath,
+                      ontap: () {
+                        AppUtils.openFolder(widget.config.savePath!);
+                      },
+                    ),
+                  SectionButton(
+                    ontap: () async {
+                      loading = true;
                       setState(() {});
 
-                      await Future.delayed(2.seconds, () {
-                        ref.read(homeDeviceAttention.notifier).state = false;
-                      });
-                    }
-                  } else {
-                    await ScrcpyUtils.newInstance(ref,
-                        selectedConfig: widget.config);
-                  }
+                      if (selectedDevice == null) {
+                        if (devices.length == 1 && devices.isNotEmpty) {
+                          ref.read(selectedDeviceProvider.notifier).state =
+                              devices.first;
+                          await ScrcpyUtils.newInstance(ref,
+                              selectedConfig: widget.config);
+                        } else {
+                          ref.read(homeDeviceAttention.notifier).state = true;
 
-                  if (loading) {
-                    loading = false;
-                    setState(() {});
-                  }
-                },
-                icondata: Icons.play_circle_fill_rounded,
+                          loading = false;
+                          setState(() {});
+
+                          await Future.delayed(2.seconds, () {
+                            ref.read(homeDeviceAttention.notifier).state =
+                                false;
+                          });
+                        }
+                      } else {
+                        await ScrcpyUtils.newInstance(ref,
+                            selectedConfig: widget.config);
+                      }
+
+                      if (loading) {
+                        loading = false;
+                        setState(() {});
+                      }
+                    },
+                    icondata: Icons.play_circle_fill_rounded,
+                  ),
+                ],
               ),
       ),
     );

@@ -17,7 +17,8 @@ import '../providers/config_provider.dart';
 import 'scrcpy_utils.dart';
 
 class TrayUtils {
-  static const String _trayIcon = 'assets/logo.ico';
+  static final String _trayIcon =
+      Platform.isLinux ? 'assets/logo.png' : 'assets/logo.ico';
 
   static Future<void> initTray(WidgetRef ref, BuildContext context) async {
     final behaviour = ref.read(settingsProvider.select((s) => s.behaviour));

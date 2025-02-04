@@ -20,6 +20,7 @@ import 'package:scrcpygui/widgets/config_screen_sections/mode_config.dart';
 import 'package:scrcpygui/widgets/config_screen_sections/preview_and_test.dart';
 import 'package:scrcpygui/widgets/config_screen_sections/video_config.dart';
 import 'package:scrcpygui/widgets/config_screen_sections/window_config.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../../providers/adb_provider.dart';
 import '../../utils/const.dart';
@@ -78,6 +79,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
     final allConfigs = ref.read(configsProvider);
     final selectedConfig = ref.read(configScreenConfig);
     final testInstance = ref.read(testInstanceProvider);
+    final selectedDevice = ref.read(selectedDeviceProvider);
     final appPID = ref.read(appPidProvider);
 
     if (testInstance != null) {
@@ -86,7 +88,9 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
       ref.read(testInstanceProvider.notifier).state = null;
     }
 
-    if (allConfigs.contains(selectedConfig) || selectedConfig == newConfig) {
+    if (allConfigs.contains(selectedConfig) ||
+        selectedConfig == newConfig ||
+        selectedDevice == null) {
       Navigator.pop(context);
     } else {
       showDialog(
@@ -108,11 +112,16 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
     final selectedConfig = ref.watch(configScreenConfig)!;
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final colorScheme = Theme.of(context).colorScheme;
+    final selectedDevice = ref.watch(selectedDeviceProvider);
 
     final buttonStyle = ButtonStyle(
         iconColor: WidgetStatePropertyAll(colorScheme.inverseSurface),
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
+
+    // if (selectedDevice == null) {
+    //   Navigator.pop(context);
+    // }
 
     return PopScope(
       canPop: false,
@@ -127,49 +136,51 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
             onPressed: () => _handleOnClose(),
             icon: const Icon(Icons.close_rounded),
           ),
-          title: Text(selectedConfig.configName),
+          title: DragToMoveArea(child: Text(selectedConfig.configName)),
         ),
         body: Center(
           child: dev.info == null
               ? const CupertinoActivityIndicator()
-              : SingleChildScrollView(
-                  child: SizedBox(
-                    width: appWidth + 50,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey.withValues(alpha: 0.2),
-                              borderRadius: BorderRadius.circular(
-                                  appTheme.widgetRadius * 0.8),
-                            ),
-                            // width: appWidth,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: const Text('* Device-specific')
-                                  .fontSize(10)
-                                  .italic(),
-                            ),
+              : selectedDevice == null
+                  ? const Text('Device connection lost')
+                  : SingleChildScrollView(
+                      child: SizedBox(
+                        width: appWidth + 50,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withValues(alpha: 0.2),
+                                  borderRadius: BorderRadius.circular(
+                                      appTheme.widgetRadius * 0.8),
+                                ),
+                                // width: appWidth,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: const Text('* Device-specific')
+                                      .fontSize(10)
+                                      .italic(),
+                                ),
+                              ),
+                              const ModeConfig(),
+                              const VideoConfig(),
+                              const AudioConfig(),
+                              const DeviceConfig(),
+                              const WindowConfig(),
+                              const AdditionalFlagsConfig(),
+                              const SizedBox(height: 30),
+                              const Divider(indent: 30, endIndent: 30),
+                              const PreviewAndTest(),
+                              const SizedBox(height: 50),
+                            ],
                           ),
-                          const ModeConfig(),
-                          const VideoConfig(),
-                          const AudioConfig(),
-                          const DeviceConfig(),
-                          const WindowConfig(),
-                          const AdditionalFlagsConfig(),
-                          const SizedBox(height: 30),
-                          const Divider(indent: 30, endIndent: 30),
-                          const PreviewAndTest(),
-                          const SizedBox(height: 50),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
         ),
       ),
     );

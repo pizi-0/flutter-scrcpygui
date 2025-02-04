@@ -12,6 +12,7 @@ import 'package:scrcpygui/utils/automation_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/body_container.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
+import 'package:scrcpygui/widgets/section_button.dart';
 
 import '../../providers/adb_provider.dart';
 import 'widgets/info_container.dart';
@@ -73,15 +74,30 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
     final info = dev.info;
     final configs = ref.watch(configsProvider);
     final appTheme = ref.read(settingsProvider).looks;
-    final colorSheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final buttonStyle = ButtonStyle(
+        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          style: buttonStyle,
+          tooltip: 'ESC',
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.close,
+            color: colorScheme.inverseSurface,
+          ),
+        ),
         title: const Text('Device Settings'),
         centerTitle: true,
-        backgroundColor: colorSheme.surface,
+        backgroundColor: colorScheme.surface,
       ),
-      body: info == null
+      body: info == null || loading
           ? const Center(child: CupertinoActivityIndicator())
           : SingleChildScrollView(
               child: Padding(
@@ -99,7 +115,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                             width: 150,
                             padding: const EdgeInsets.symmetric(horizontal: 8),
                             decoration: BoxDecoration(
-                                color: colorSheme.primaryContainer,
+                                color: colorScheme.primaryContainer,
                                 borderRadius: BorderRadius.circular(
                                     appTheme.widgetRadius * 0.6)),
                             child: TextField(
@@ -129,7 +145,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                               // textAlignVertical: TextAlignVertical.center,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: colorSheme.inverseSurface,
+                                color: colorScheme.inverseSurface,
                               ),
                             ),
                           ),
@@ -234,6 +250,28 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                     ),
                     BodyContainer(
                       headerTitle: 'Info',
+                      headerTrailing: SectionButton(
+                        tooltipmessage: 'Get info',
+                        icondata: Icons.refresh,
+                        ontap: () async {
+                          loading = true;
+                          setState(() {});
+
+                          final info = await AdbUtils.getScrcpyDetailsFor(
+                              ref.read(execDirProvider), dev);
+                          dev = dev.copyWith(info: info);
+                          ref
+                              .read(savedAdbDevicesProvider.notifier)
+                              .addEditDevices(dev);
+                          await AdbUtils.saveAdbDevice(
+                              ref.read(savedAdbDevicesProvider));
+
+                          if (mounted) {
+                            loading = false;
+                            setState(() {});
+                          }
+                        },
+                      ),
                       children: [
                         InfoContainer(info: dev.info!),
                       ],

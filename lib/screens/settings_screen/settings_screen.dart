@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../../utils/const.dart';
 import 'components/behaviour_section.dart';
@@ -48,9 +49,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 color: colorScheme.inverseSurface,
               ),
             ),
-            title: Text(
-              'Settings',
-              style: TextStyle(color: colorScheme.inverseSurface),
+            title: DragToMoveArea(
+              child: Text(
+                'Settings',
+                style: TextStyle(color: colorScheme.inverseSurface),
+              ),
             ),
             centerTitle: true,
             elevation: 0,
