@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
@@ -10,7 +10,6 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
-import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/widgets/config_screen_sections/additional_flags.dart';
@@ -80,10 +79,9 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
     final selectedConfig = ref.read(configScreenConfig);
     final testInstance = ref.read(testInstanceProvider);
     final selectedDevice = ref.read(selectedDeviceProvider);
-    final appPID = ref.read(appPidProvider);
 
     if (testInstance != null) {
-      await ScrcpyUtils.killServer(testInstance, appPID);
+      await ScrcpyUtils.killServer(testInstance);
       ref.read(scrcpyInstanceProvider.notifier).removeInstance(testInstance);
       ref.read(testInstanceProvider.notifier).state = null;
     }
@@ -100,7 +98,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
           return const CloseDialog();
         },
       ).then((v) {
-        if (v ?? false) {
+        if ((v as bool?) ?? false) {
           Navigator.pop(context);
         }
       });
@@ -110,77 +108,66 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig)!;
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final colorScheme = Theme.of(context).colorScheme;
     final selectedDevice = ref.watch(selectedDeviceProvider);
-
-    final buttonStyle = ButtonStyle(
-        iconColor: WidgetStatePropertyAll(colorScheme.inverseSurface),
-        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
-
-    // if (selectedDevice == null) {
-    //   Navigator.pop(context);
-    // }
 
     return PopScope(
       canPop: false,
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Theme.of(context).colorScheme.surface,
-          elevation: 0,
-          scrolledUnderElevation: 0,
+      child: NavigationView(
+        appBar: NavigationAppBar(
           leading: IconButton(
-            style: buttonStyle,
             onPressed: () => _handleOnClose(),
-            icon: const Icon(Icons.close_rounded),
+            icon: const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Icon(FluentIcons.back),
+            ),
           ),
           title: DragToMoveArea(child: Text(selectedConfig.configName)),
         ),
-        body: Center(
-          child: dev.info == null
-              ? const CupertinoActivityIndicator()
-              : selectedDevice == null
-                  ? const Text('Device connection lost')
-                  : SingleChildScrollView(
-                      child: SizedBox(
-                        width: appWidth + 50,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.withValues(alpha: 0.2),
-                                  borderRadius: BorderRadius.circular(
-                                      appTheme.widgetRadius * 0.8),
-                                ),
-                                // width: appWidth,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
+        pane: NavigationPane(
+          menuButton: const SizedBox(),
+          size: const NavigationPaneSize(compactWidth: 0),
+          toggleable: false,
+          displayMode: PaneDisplayMode.compact,
+          items: [
+            PaneItem(
+              icon: const SizedBox(),
+              body: dev.info == null
+                  ? const Center(child: CupertinoActivityIndicator())
+                  : selectedDevice == null
+                      ? const Text('Device connection lost')
+                      : ScaffoldPage.scrollable(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 2),
+                          children: [
+                            Row(
+                              children: [
+                                Card(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 4, vertical: 6),
                                   child: const Text('* Device-specific')
                                       .fontSize(10)
                                       .italic(),
                                 ),
-                              ),
-                              const ModeConfig(),
+                              ],
+                            ),
+                            const ModeConfig(),
+                            if (selectedConfig.scrcpyMode !=
+                                ScrcpyMode.audioOnly)
                               const VideoConfig(),
+                            if (selectedConfig.scrcpyMode !=
+                                ScrcpyMode.videoOnly)
                               const AudioConfig(),
-                              const DeviceConfig(),
-                              const WindowConfig(),
-                              const AdditionalFlagsConfig(),
-                              const SizedBox(height: 30),
-                              const Divider(indent: 30, endIndent: 30),
-                              const PreviewAndTest(),
-                              const SizedBox(height: 50),
-                            ],
-                          ),
+                            const DeviceConfig(),
+                            const WindowConfig(),
+                            const AdditionalFlagsConfig(),
+                            const SizedBox(height: 30),
+                            const Divider(),
+                            const PreviewAndTest(),
+                            const SizedBox(height: 50),
+                          ],
                         ),
-                      ),
-                    ),
+            ),
+          ],
         ),
       ),
     );

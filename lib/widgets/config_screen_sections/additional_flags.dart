@@ -1,12 +1,8 @@
-import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/available_flags.dart';
 import 'package:scrcpygui/screens/config_screen/config_screen.dart';
-
-import '../../providers/settings_provider.dart';
-import '../../utils/const.dart';
 
 class AdditionalFlagsConfig extends ConsumerStatefulWidget {
   const AdditionalFlagsConfig({super.key});
@@ -34,67 +30,61 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
 
   @override
   Widget build(BuildContext context) {
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final colorScheme = Theme.of(context).colorScheme;
-
+    final theme = FluentTheme.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Text(
-            'Additional flags',
-            style: Theme.of(context).textTheme.titleLarge,
-          ).textColor(colorScheme.inverseSurface),
+        const Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Text('Additional flags'),
         ),
-        Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.primaryContainer,
-            borderRadius: BorderRadius.circular(appTheme.widgetRadius),
-          ),
-          width: appWidth,
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: const Text('Add additional flags')
-                      .textColor(colorScheme.inverseSurface),
-                ),
-                const SizedBox(height: 4),
-                Container(
-                  decoration: BoxDecoration(
-                    color: colorScheme.secondaryContainer,
-                    borderRadius:
-                        BorderRadius.circular(appTheme.widgetRadius * 0.8),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      cursorColor: colorScheme.inverseSurface,
-                      style: TextStyle(
-                          fontSize: 14, color: colorScheme.inverseSurface),
-                      controller: add,
-                      decoration: const InputDecoration.collapsed(
-                        hintText: '--flag1 --flag-2 --flag-3=\'3 oh 3\'',
+        Card(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 8,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Add additional flags'),
+              TextBox(
+                controller: add,
+                placeholder: '--flag1 --flag-2 --flag-3=\'3 oh 3\'',
+                maxLines: 5,
+                inputFormatters: [
+                  ...availableFlags
+                      .map((e) => FilteringTextInputFormatter.deny(e))
+                ],
+                onChanged: (val) {
+                  ref.read(configScreenConfig.notifier).update(
+                      (state) => state = state!.copyWith(additionalFlags: val));
+                },
+              ),
+              Card(
+                padding: EdgeInsets.zero,
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 2),
+                  child: Row(
+                    spacing: 8,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Icon(
+                          FluentIcons.info,
+                          size: theme.typography.caption!.fontSize! - 2,
+                        ),
                       ),
-                      maxLines: 5,
-                      inputFormatters: [
-                        ...availableFlags
-                            .map((e) => FilteringTextInputFormatter.deny(e))
-                      ],
-                      onChanged: (val) {
-                        ref.read(configScreenConfig.notifier).update((state) =>
-                            state = state!.copyWith(additionalFlags: val));
-                      },
-                    ),
+                      Expanded(
+                        child: Text(
+                          'avoid using flags that are already an option',
+                          style: theme.typography.caption!.copyWith(
+                              color: theme.typography.caption!.color!
+                                  .withAlpha(150)),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              )
+            ],
           ),
         ),
       ],

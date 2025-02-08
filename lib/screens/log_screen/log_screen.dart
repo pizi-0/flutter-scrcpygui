@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
-
-import '../../providers/settings_provider.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/screens/config_screen/config_screen.dart';
+import 'package:scrcpygui/utils/scrcpy_command.dart';
 
 class LogScreen extends ConsumerStatefulWidget {
   final ScrcpyRunningInstance instance;
@@ -43,43 +43,45 @@ class _LogScreenState extends ConsumerState<LogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
+    final selectedConfig = ref.watch(configScreenConfig);
+    final selectedDevice = ref.watch(selectedDeviceProvider);
 
-    return CallbackShortcuts(
-      bindings: {
-        const SingleActivator(LogicalKeyboardKey.escape): () =>
-            Navigator.pop(context)
-      },
-      child: Focus(
-        autofocus: true,
-        child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.close),
-            ),
-            title: Text('PID: ${widget.instance.scrcpyPID}'),
+    return NavigationView(
+      appBar: NavigationAppBar(
+        title: const Text('Config test log'),
+        actions: IconButton(
+          icon: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Icon(FluentIcons.info),
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox.expand(
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(appTheme.widgetRadius),
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.inverseSurface,
-                    )),
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: logs.map((l) => Text(l)).toList(),
-                    ),
+          onPressed: () {
+            showDialog(
+              context: context,
+              barrierDismissible: true,
+              builder: (context) => ContentDialog(
+                title: const Text('Command'),
+                content: Text(
+                    'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig!, selectedDevice!, customName: '[TEST] ${selectedConfig.configName}').join(' ')}'),
+                actions: [
+                  Button(
+                    child: const Text('Close'),
+                    onPressed: () => Navigator.pop(context),
                   ),
-                ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+      content: SizedBox.expand(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: logs.map((l) => Text(l)).toList(),
               ),
             ),
           ),

@@ -64,6 +64,7 @@ dependencies:
   archive: ^4.0.2
   win32: ^5.10.1
   fluent_ui: ^4.10.0
+  keymap: ^0.0.92
   # circular_reveal_animation: ^2.0.1
 
 dev_dependencies:

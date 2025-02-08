@@ -39,7 +39,7 @@ class ScrcpyCommand {
     // recording, savepath, video/audio format
     var comm = command.split(' ') +
         [
-          "--window-title=${customName ?? config.configName}",
+          "--window-title=\"${customName ?? config.configName}\"",
           _recordingFormat(config, customName ?? config.configName),
           config.additionalFlags,
         ];

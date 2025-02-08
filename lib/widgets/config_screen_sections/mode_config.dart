@@ -1,11 +1,11 @@
 import 'dart:io';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
-import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 
 import '../../models/scrcpy_related/scrcpy_config.dart';
@@ -26,40 +26,23 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig)!;
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Text(
-            'Mode',
-            style: Theme.of(context).textTheme.titleLarge,
-          ).textColor(colorScheme.inverseSurface),
+        const Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Text('Mode'),
         ),
-        Container(
-          decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
-          width: appWidth,
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildMainModeSelector(ref, context, selectedConfig),
-                  const SizedBox(height: 4),
-                  _buildModeSelector(context, selectedConfig),
-                  // const SizedBox(height: 4),
-                  // _extraOptions(context, selectedConfig)
-                ],
-              ),
-            ),
+        Card(
+          padding: const EdgeInsets.all(0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildMainModeSelector(ref, context, selectedConfig),
+              _buildModeSelector(context, selectedConfig),
+            ],
           ),
         ),
       ],
@@ -68,104 +51,72 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
 
   Widget _buildMainModeSelector(
       WidgetRef ref, BuildContext context, ScrcpyConfig selectedConfig) {
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final colorScheme = Theme.of(context).colorScheme;
     final sep = Platform.pathSeparator;
 
-    return AnimatedContainer(
-      height: selectedConfig.isRecording ? 84 : 40,
-      duration: const Duration(milliseconds: 200),
-      child: ScrollConfiguration(
-        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-        child: SingleChildScrollView(
-          physics: const NeverScrollableScrollPhysics(),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ConfigDropdownEnum<MainMode>(
-                items: MainMode.values,
-                label: 'Mode',
-                initialValue: selectedConfig.isRecording
-                    ? MainMode.record
-                    : MainMode.mirror,
-                onSelected: (value) {
-                  bool isRecording = value == MainMode.record;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ConfigDropdownEnum<MainMode>(
+          items: MainMode.values,
+          title: 'Mode',
+          subtitle: !selectedConfig.isRecording
+              ? 'mirror or record, no flag for mirror'
+              : "uses '--record=' flag",
+          initialValue:
+              selectedConfig.isRecording ? MainMode.record : MainMode.mirror,
+          onSelected: (value) {
+            bool isRecording = value == MainMode.record;
 
-                  ref.read(configScreenConfig.notifier).update((state) =>
-                      state = state!.copyWith(isRecording: isRecording));
+            ref.read(configScreenConfig.notifier).update(
+                (state) => state = state!.copyWith(isRecording: isRecording));
 
-                  modeLabel = value!.value;
-                  setState(() {});
+            modeLabel = value!.value;
+            setState(() {});
+          },
+        ),
+        const Divider(),
+        if (selectedConfig.isRecording)
+          FadeIn(
+            duration: 200.milliseconds,
+            child: ConfigCustom(
+              title: 'Save folder',
+              subtitle: "appends save path to '--record=savepath/file'",
+              child: Button(
+                onPressed: () async {
+                  final res = await FilePicker.platform.getDirectoryPath();
+
+                  if (res != null) {
+                    ref.read(configScreenConfig.notifier).update(
+                        (state) => state = state!.copyWith(savePath: res));
+                  }
                 },
-              ),
-              const SizedBox(height: 4),
-              ConfigCustom(
-                label: 'Save folder',
-                child: ClipRRect(
-                  borderRadius:
-                      BorderRadius.circular(appTheme.widgetRadius * 0.8),
-                  child: Tooltip(
-                    message: selectedConfig.savePath ?? '',
-                    child: Material(
-                      shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(appTheme.widgetRadius * 0.8),
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: Row(
+                    spacing: 8,
+                    children: [
+                      const Icon(FluentIcons.folder_horizontal),
+                      Text(
+                        (selectedConfig.savePath ?? '').split(sep).last,
                       ),
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () async {
-                          final res =
-                              await FilePicker.platform.getDirectoryPath();
-
-                          if (res != null) {
-                            ref.read(configScreenConfig.notifier).update(
-                                (state) =>
-                                    state = state!.copyWith(savePath: res));
-                          }
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Center(
-                                child: Text(
-                                  (selectedConfig.savePath ?? '')
-                                      .split(sep)
-                                      .last,
-                                  style: Theme.of(context).textTheme.titleSmall,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Icon(
-                                Icons.folder,
-                                size: 15,
-                                color: colorScheme.inverseSurface,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    ],
                   ),
                 ),
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        const Divider(),
+      ],
     );
   }
 
   Widget _buildModeSelector(BuildContext context, ScrcpyConfig selectedConfig) {
     return ConfigDropdownEnum<ScrcpyMode>(
       items: ScrcpyMode.values,
-      label: modeLabel,
+      title: modeLabel,
+      subtitle: selectedConfig.scrcpyMode == ScrcpyMode.both
+          ? 'defaults to both, no flag'
+          : "uses '${selectedConfig.scrcpyMode.command.trim()}' flag",
       initialValue: selectedConfig.scrcpyMode,
       onSelected: (value) {
         ref

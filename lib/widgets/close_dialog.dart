@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
@@ -9,8 +9,6 @@ import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
-
-import '../providers/settings_provider.dart';
 
 class CloseDialog extends ConsumerStatefulWidget {
   const CloseDialog({super.key});
@@ -52,72 +50,39 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig);
     final selectedDevice = ref.watch(selectedDeviceProvider);
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final colorScheme = Theme.of(context).colorScheme;
 
-    final buttonStyle = ButtonStyle(
-        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
-
-    return AlertDialog(
-      backgroundColor: colorScheme.surface,
-      insetPadding: const EdgeInsets.all(16),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(appTheme.widgetRadius),
-        side: BorderSide(
-          color: notAllowed
-              ? Colors.red
-              : nameExist
-                  ? Theme.of(context).colorScheme.primaryContainer
-                  : Theme.of(context).colorScheme.surface,
-          width: 5,
-        ),
-      ),
+    return ContentDialog(
       title: notAllowed
-          ? const Text(
+          ? Text(
               'Not allowed!',
               style: TextStyle(color: Colors.red),
             )
           : nameExist
-              ? const Text(
-                  'Overwrite?',
+              ? Text(
+                  'Overwrite',
                   style: TextStyle(color: Colors.red),
                 )
-              : const Text('Save?').textColor(colorScheme.inverseSurface),
+              : const Text('Save config'),
       content: ConstrainedBox(
         constraints:
             const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
         child: Column(
+          spacing: 8,
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text('Command preview:')
-                .textColor(colorScheme.inverseSurface),
-            const SizedBox(height: 10),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.circular(appTheme.widgetRadius * 0.8),
-                color: Theme.of(context).colorScheme.primaryContainer,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Center(
-                  child: SelectableText(
-                    'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig!, selectedDevice!, customName: nameController.text).toString().replaceAll(',', '').replaceAll('[', '').replaceAll(']', '')}',
-                    style: TextStyle(
-                        fontSize: 14, color: colorScheme.inverseSurface),
-                  ),
+            const Text('Command preview:'),
+            Card(
+              child: Center(
+                child: Text(
+                  'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig!, selectedDevice!, customName: nameController.text).toString().replaceAll(',', '').replaceAll('[', '').replaceAll(']', '')}',
                 ),
               ),
             ),
-            const SizedBox(height: 10),
-            TextField(
+            const Text('Name:'),
+            TextBox(
               controller: nameController,
-              decoration: InputDecoration(
-                label: const Text('Config name').textColor(
-                    colorScheme.inverseSurface.withValues(alpha: 0.8)),
-              ),
+              placeholder: 'Config name',
               onSubmitted: notAllowed
                   ? null
                   : (value) async {
@@ -181,17 +146,14 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
       actions: [
         Row(
           children: [
-            TextButton(
-              style: buttonStyle,
+            Button(
               onPressed: () {
                 Navigator.pop(context, true);
               },
-              child:
-                  const Text('Discard').textColor(colorScheme.inverseSurface),
+              child: const Text('Discard'),
             ),
             const Spacer(),
-            TextButton(
-              style: buttonStyle,
+            Button(
               onPressed: notAllowed || nameController.text.isEmpty
                   ? null
                   : () async {
@@ -238,16 +200,14 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
 
                       Navigator.pop(context, true);
                     },
-              child: Text(nameExist ? 'Overwrite' : 'Save')
-                  .textColor(colorScheme.inverseSurface),
+              child: Text(nameExist ? 'Overwrite' : 'Save'),
             ),
             const SizedBox(width: 10),
-            TextButton(
-              style: buttonStyle,
+            Button(
               onPressed: () {
                 Navigator.pop(context, false);
               },
-              child: const Text('No').textColor(colorScheme.inverseSurface),
+              child: const Text('No'),
             ),
           ],
         )

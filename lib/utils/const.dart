@@ -149,7 +149,7 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
   additionalFlags: '',
   savePath: Platform.isLinux
       ? Platform.environment['HOME']
-      : '${Platform.environment['HOMEDRIVE']}\\${Platform.environment['HOMEPATH']}',
+      : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}',
 );
 
 final defaultTheme = AppTheme(

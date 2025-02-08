@@ -105,9 +105,38 @@ class ScrcpyUtils {
               ['/fi', 'ImageName eq scrcpy.exe', '/v', '/fo', 'csv']))
           .stdout
           .toString();
+
+      // needed as closing scrcpy window does not remove the process from task manager, unless the main app is closed
+      final strayList = (await Process.run('tasklist', [
+        '/fi',
+        'ImageName eq scrcpy.exe',
+        '/fi',
+        'Status eq NOT RESPONDING',
+        '/v',
+        '/fo',
+        'csv'
+      ]))
+          .stdout
+          .toString();
+
+      final strays = strayList.splitLines();
+      strays.removeAt(0);
+      strays
+          .removeWhere((e) => e.isEmpty || e.contains('OleMainThreadWndName'));
+      // OleMainThreadWndName is in exception because for some reason, instances with no window show not responding as status from tasklist and ends up buing killed as strays
+
+      if (strays.isNotEmpty) {
+        final strayPIDS =
+            strays.map((e) => e.replaceAll('"', '').split(',')[1]).toList();
+
+        killStrays(strayPIDS, ProcessSignal.sigterm);
+      }
+
       final split = list.splitLines();
       split.removeAt(0);
+
       split.removeWhere((e) => e.isEmpty);
+
       pids = split.map((e) => e.replaceAll('"', '').split(',')[1]).toList();
     }
 
@@ -178,10 +207,9 @@ class ScrcpyUtils {
 
   static Future<void> killAllServers(WidgetRef ref) async {
     final runningInstance = ref.read(scrcpyInstanceProvider);
-    final appPID = ref.read(appPidProvider);
 
     for (var p in runningInstance) {
-      ScrcpyUtils.killServer(p, appPID).then((a) async {
+      ScrcpyUtils.killServer(p).then((a) async {
         ref.read(scrcpyInstanceProvider.notifier).removeInstance(p);
       });
     }
@@ -240,14 +268,14 @@ class ScrcpyUtils {
     }
   }
 
-  static Future<void> killServer(
-      ScrcpyRunningInstance instance, String appPID) async {
+  static Future<void> killServer(ScrcpyRunningInstance instance) async {
     if (Platform.isLinux) {
       Process.killPid(int.parse(instance.scrcpyPID));
     }
 
     if (Platform.isWindows) {
       await Process.run('taskkill', ['/pid', instance.scrcpyPID]);
+      Process.killPid(int.parse(instance.scrcpyPID));
     }
   }
 

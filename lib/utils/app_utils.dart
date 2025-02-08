@@ -103,7 +103,8 @@ class AppUtils {
   }
 
   static openFolder(String p) async {
-    Uri folder = Uri.file(p);
+    Uri folder = Uri.file(p, windows: Platform.isWindows);
+
     await launchUrl(folder);
   }
 }

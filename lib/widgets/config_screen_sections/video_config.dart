@@ -1,16 +1,15 @@
-import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:flutter/material.dart';
+import 'package:animate_do/animate_do.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:string_extensions/string_extensions.dart';
+
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/screens/config_screen/config_screen.dart';
-import 'package:scrcpygui/widgets/custom_slider_track_shape.dart';
-import 'package:string_extensions/string_extensions.dart';
 
 import '../../models/scrcpy_related/scrcpy_config.dart';
 import '../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../providers/settings_provider.dart';
-import '../../utils/const.dart';
 import '../config_tiles.dart';
 
 class VideoConfig extends ConsumerStatefulWidget {
@@ -50,79 +49,46 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     final selectedConfig = ref.watch(configScreenConfig)!;
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final colorScheme = Theme.of(context).colorScheme;
 
-    return AnimatedContainer(
-      height: _containerHeight(selectedConfig, selectedDevice!.info!),
-      duration: const Duration(milliseconds: 200),
-      child: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                'Video',
-                style: Theme.of(context).textTheme.titleLarge,
-              ).textColor(colorScheme.inverseSurface),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
-              width: appWidth,
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: ClipRRect(
-                  borderRadius:
-                      BorderRadius.circular(appTheme.widgetRadius * 0.8),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildDisplaySelector(
-                          selectedConfig, selectedDevice.info!),
-                      const SizedBox(height: 4),
-                      _buildVideoCodecNFormatSelector(
-                          context, selectedConfig, selectedDevice.info!),
-                      const SizedBox(height: 4),
-                      _buildVideoBitrate(context),
-                      const SizedBox(height: 4),
-                      _buildMaxFPS(selectedConfig),
-                      // const SizedBox(height: 4),
-                      // _buildCrop(selectedConfig, info),
-                      const SizedBox(height: 4),
-                      _buildResolutionScale(
-                          selectedConfig, selectedDevice.info!),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Text('Video'),
         ),
-      ),
+        Card(
+          padding: EdgeInsets.zero,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildDisplaySelector(selectedConfig, selectedDevice!.info!),
+                const Divider(),
+                _buildVideoCodecNFormatSelector(
+                    context, selectedConfig, selectedDevice.info!),
+                const Divider(),
+                _buildVideoBitrate(context),
+                const Divider(),
+                _buildMaxFPS(selectedConfig),
+                const Divider(),
+                _buildResolutionScale(selectedConfig, selectedDevice.info!),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
-
-  double _containerHeight(ScrcpyConfig selectedConfig, ScrcpyInfo info) {
-    if (selectedConfig.scrcpyMode == ScrcpyMode.audioOnly) return 0;
-
-    if (selectedConfig.isRecording) {
-      return 360;
-    } else {
-      return 316;
-    }
-  }
-
-  // Widget _buildCrop(ScrcpyConfig selectedConfig, ScrcpyInfo info) {
-  //   return const ConfigCustom(label: 'Crop', child: Center(child: Text('WIP')));
-  // }
 
   Widget _buildMaxFPS(ScrcpyConfig selectedConfig) {
     return ConfigUserInput(
       label: 'FPS limit',
+      subtitle: maxFPSController.text == '-'
+          ? 'no flag unless set'
+          : "uses '--max-fps=${maxFPSController.text.trim()}'",
       controller: maxFPSController,
       unit: 'fps',
       onTap: () => setState(() {
@@ -151,36 +117,32 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     final displays =
         info.displays.where((d) => (int.tryParse(d.id) ?? 11) < 10).toList();
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ConfigDropdownOthers(
-          label: 'Display *',
-          initialValue: displays.length == 1
-              ? displays[0].id
-              : selectedConfig.videoOptions.displayId.toString(),
-          tooltipMessage: 'Only 1 display detected',
-          items: displays
-              .map(
-                (d) => DropdownMenuItem(
-                  value: d.id,
-                  child: Text(d.id),
-                ),
-              )
-              .toList(),
-          onSelected: displays.length == 1
-              ? null
-              : (value) => ref
-                  .read(configScreenConfig.notifier)
-                  .update((state) => state = state!.copyWith(displayId: value)),
-        ),
-      ],
+    return ConfigDropdownOthers(
+      label: 'Display *',
+      initialValue: displays.length == 1
+          ? displays[0].id
+          : selectedConfig.videoOptions.displayId.toString(),
+      tooltipMessage: 'Only 1 display detected',
+      subtitle: selectedConfig.videoOptions.displayId == 0
+          ? "defaults to first available, no flag; virtual displays is not listed"
+          : "uses '--display-id='",
+      items: displays
+          .map(
+            (d) => ComboBoxItem(
+              value: d.id,
+              child: Text(d.id),
+            ),
+          )
+          .toList(),
+      onSelected: displays.length == 1
+          ? null
+          : (value) => ref
+              .read(configScreenConfig.notifier)
+              .update((state) => state = state!.copyWith(displayId: value)),
     );
   }
 
   Widget _buildResolutionScale(ScrcpyConfig selectedConfig, ScrcpyInfo info) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     final displaySize = info.displays
         .firstWhere(
             (f) => f.id == selectedConfig.videoOptions.displayId.toString())
@@ -191,44 +153,36 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     max.sort((a, b) => b.compareTo(a));
 
     return ConfigCustom(
-      label: 'Resolution scale',
+      title: 'Resolution scale',
+      subtitle: selectedConfig.videoOptions.resolutionScale == 1.0
+          ? 'calculated based on device\'s resolution, no flag unless set'
+          : "uses '--max-size=${(selectedConfig.videoOptions.resolutionScale * max.first).toStringAsFixed(0)}'",
       child: Row(
         children: [
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 150),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: SliderTheme(
-                data: SliderThemeData(
-                  valueIndicatorShape:
-                      const RectangularSliderValueIndicatorShape(),
-                  valueIndicatorColor: colorScheme.primary,
-                  trackShape: CustomTrackShape(),
-                  thumbShape:
-                      const RoundSliderThumbShape(enabledThumbRadius: 5),
-                ),
-                child: Slider(
-                  label:
-                      'max-size=${(selectedConfig.videoOptions.resolutionScale * max.first).toStringAsFixed(0)}',
-                  value: selectedConfig.videoOptions.resolutionScale,
-                  max: 1,
-                  min: 0.3,
-                  divisions: 7,
-                  onChanged: (value) {
-                    ref.read(configScreenConfig.notifier).update((state) =>
-                        state = state!.copyWith(
-                            videoOptions: state.videoOptions
-                                .copyWith(resolutionScale: value)));
-                  },
-                ),
+              child: Slider(
+                label:
+                    'max-size=${(selectedConfig.videoOptions.resolutionScale * max.first).toStringAsFixed(0)}',
+                value: selectedConfig.videoOptions.resolutionScale,
+                max: 1,
+                min: 0.3,
+                divisions: 7,
+                onChanged: (value) {
+                  ref.read(configScreenConfig.notifier).update((state) =>
+                      state = state!.copyWith(
+                          videoOptions: state.videoOptions
+                              .copyWith(resolutionScale: value)));
+                },
               ),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
-            child: Text(selectedConfig.videoOptions.resolutionScale
-                    .toStringAsFixed(1))
-                .textColor(colorScheme.inverseSurface),
+            child: Text(
+                selectedConfig.videoOptions.resolutionScale.toStringAsFixed(1)),
           ),
         ],
       ),
@@ -237,92 +191,84 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
 
   Widget _buildVideoCodecNFormatSelector(
       BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return AnimatedContainer(
-      height: selectedConfig.isRecording ? 128 : 84,
-      duration: const Duration(milliseconds: 200),
-      child: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ConfigDropdownOthers(
-              initialValue: selectedConfig.videoOptions.videoCodec,
-              onSelected: (value) {
-                ref.read(configScreenConfig.notifier).update((state) => state =
-                    state!.copyWith(
-                        videoOptions: state.videoOptions.copyWith(
-                            videoCodec: value, videoEncoder: 'default')));
-              },
-              items: info.videoEncoders
-                  .map((e) =>
-                      DropdownMenuItem(value: e.codec, child: Text(e.codec)))
-                  .toList(),
-              label: 'Codec *',
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ConfigDropdownOthers(
+          initialValue: selectedConfig.videoOptions.videoCodec,
+          onSelected: (value) {
+            ref.read(configScreenConfig.notifier).update((state) => state =
+                state!.copyWith(
+                    videoOptions: state.videoOptions
+                        .copyWith(videoCodec: value, videoEncoder: 'default')));
+          },
+          items: info.videoEncoders
+              .map((e) => ComboBoxItem(value: e.codec, child: Text(e.codec)))
+              .toList(),
+          label: 'Codec *',
+          subtitle: selectedConfig.videoOptions.videoCodec == 'h264'
+              ? "defaults to h264, no flag"
+              : "uses '--video-codec=${selectedConfig.videoOptions.videoCodec}'",
+        ),
+        const Divider(),
+        ConfigDropdownOthers(
+          initialValue: selectedConfig.videoOptions.videoEncoder,
+          onSelected: (value) {
+            ref.read(configScreenConfig.notifier).update((state) => state =
+                state!.copyWith(
+                    videoOptions:
+                        state.videoOptions.copyWith(videoEncoder: value)));
+          },
+          items: [
+            const ComboBoxItem(
+              value: 'default',
+              child: Text('Default'),
             ),
-            const SizedBox(height: 4),
-            ConfigDropdownOthers(
-              initialValue: selectedConfig.videoOptions.videoEncoder,
+            ...info.videoEncoders
+                .firstWhere((ve) =>
+                    ve.codec ==
+                    ref.read(configScreenConfig)!.videoOptions.videoCodec)
+                .encoder
+                .map(
+                  (enc) => ComboBoxItem(
+                    value: enc,
+                    child: Text(enc),
+                  ),
+                )
+          ],
+          label: 'Encoder *',
+          subtitle: selectedConfig.videoOptions.videoEncoder == 'default'
+              ? 'defaults to first available, no flag'
+              : "uses '--video-encoder=${selectedConfig.videoOptions.videoEncoder}'",
+        ),
+        const Divider(),
+        if (selectedConfig.isRecording)
+          FadeIn(
+            child: ConfigDropdownEnum<VideoFormat>(
+              items: VideoFormat.values,
+              title: 'Format',
+              subtitle:
+                  "appends format to '--record=savepath/file${selectedConfig.videoOptions.videoFormat.command}'",
+              initialValue: selectedConfig.videoOptions.videoFormat,
+              toTitleCase: false,
               onSelected: (value) {
                 ref.read(configScreenConfig.notifier).update((state) => state =
                     state!.copyWith(
                         videoOptions:
-                            state.videoOptions.copyWith(videoEncoder: value)));
+                            state.videoOptions.copyWith(videoFormat: value)));
               },
-              items: [
-                DropdownMenuItem(
-                  value: 'default',
-                  child: const Text('Default')
-                      .textColor(colorScheme.inverseSurface),
-                ),
-                ...info.videoEncoders
-                    .firstWhere((ve) =>
-                        ve.codec ==
-                        ref.read(configScreenConfig)!.videoOptions.videoCodec)
-                    .encoder
-                    .map(
-                      (enc) => DropdownMenuItem(
-                        value: enc,
-                        child: Text(enc),
-                      ),
-                    )
-              ],
-              label: 'Encoder *',
             ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              height: !selectedConfig.isRecording ? 0 : 44,
-              child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 4),
-                    ConfigDropdownEnum<VideoFormat>(
-                      items: VideoFormat.values,
-                      label: 'Format',
-                      initialValue: selectedConfig.videoOptions.videoFormat,
-                      toTitleCase: false,
-                      onSelected: (value) {
-                        ref.read(configScreenConfig.notifier).update((state) =>
-                            state = state!.copyWith(
-                                videoOptions: state.videoOptions
-                                    .copyWith(videoFormat: value)));
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
+          )
+      ],
     );
   }
 
   Widget _buildVideoBitrate(BuildContext context) {
     return ConfigUserInput(
       label: 'Bitrate',
+      subtitle: videoBitrateController.text == '8'
+          ? 'defaults to 8M, no flag'
+          : "uses '--video-bit-rate=${videoBitrateController.text.trimAll}M'",
       controller: videoBitrateController,
       unit: 'M',
       onChanged: (value) {

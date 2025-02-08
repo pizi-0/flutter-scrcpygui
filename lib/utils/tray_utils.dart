@@ -96,8 +96,7 @@ class TrayUtils {
                         toolTip: 'Kill instance',
                         label: r.instanceName,
                         onClick: (menuItem) async {
-                          final appPID = ref.read(appPidProvider);
-                          await ScrcpyUtils.killServer(r, appPID);
+                          await ScrcpyUtils.killServer(r);
                           ref
                               .read(scrcpyInstanceProvider.notifier)
                               .removeInstance(r);

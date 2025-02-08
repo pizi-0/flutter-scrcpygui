@@ -1,10 +1,7 @@
-import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 
-import '../../providers/settings_provider.dart';
-import '../../utils/const.dart';
 import '../config_tiles.dart';
 
 class WindowConfig extends ConsumerStatefulWidget {
@@ -34,115 +31,122 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig)!;
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Text(
-            'Window',
-            style: Theme.of(context).textTheme.titleLarge,
-          ).textColor(colorScheme.inverseSurface),
+        const Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Text('Window'),
         ),
-        Container(
-          decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
-          width: appWidth,
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ConfigCustom(
-                    childBackgroundColor: Colors.transparent,
-                    label: 'Hide window',
-                    child: Checkbox(
-                        value: selectedConfig.windowOptions.noWindow,
-                        onChanged: (value) {
-                          if (value!) {
-                            ref.read(configScreenConfig.notifier).update(
-                                (state) => state = state!.copyWith(
-                                        deviceOptions:
-                                            state.deviceOptions.copyWith(
-                                      stayAwake: false,
-                                      showTouches: false,
-                                      offScreenOnClose: false,
-                                      turnOffDisplay: false,
-                                    )));
-                          }
-
-                          ref.read(configScreenConfig.notifier).update(
-                                (state) => state = state!.copyWith(
-                                    windowOptions: state.windowOptions
-                                        .copyWith(noWindow: value)),
-                              );
-                        }),
-                  ),
-                  const SizedBox(height: 4),
-                  ConfigCustom(
-                    childBackgroundColor: Colors.transparent,
-                    label: 'Borderless',
-                    child: Checkbox(
-                      value: selectedConfig.windowOptions.noBorder,
-                      onChanged: (value) =>
-                          ref.read(configScreenConfig.notifier).update(
-                                (state) => state = state!.copyWith(
-                                    windowOptions: state.windowOptions
-                                        .copyWith(noBorder: value)),
-                              ),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  ConfigCustom(
-                    childBackgroundColor: Colors.transparent,
-                    label: 'Always on top',
-                    child: Checkbox(
-                      value: selectedConfig.windowOptions.alwaysOntop,
-                      onChanged: (value) =>
-                          ref.read(configScreenConfig.notifier).update(
-                                (state) => state = state!.copyWith(
-                                    windowOptions: state.windowOptions
-                                        .copyWith(alwaysOntop: value)),
-                              ),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  ConfigUserInput(
-                      label: 'Time limit',
-                      controller: timeLimitController,
-                      unit: 's',
-                      onTap: () => setState(() {
-                            timeLimitController.selection = TextSelection(
-                                baseOffset: 0,
-                                extentOffset: timeLimitController.text.length);
-                          }),
+        Card(
+          padding: EdgeInsets.zero,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ConfigCustom(
+                childBackgroundColor: Colors.transparent,
+                title: 'Hide window',
+                subtitle: selectedConfig.windowOptions.noWindow
+                    ? "uses '--no-window' flag"
+                    : "start scrcpy with no window",
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Checkbox(
+                      checked: selectedConfig.windowOptions.noWindow,
                       onChanged: (value) {
-                        if (value.isEmpty) {
+                        if (value!) {
                           ref.read(configScreenConfig.notifier).update(
                               (state) => state = state!.copyWith(
-                                  windowOptions: state.windowOptions
-                                      .copyWith(timeLimit: 0)));
-
-                          setState(() {
-                            timeLimitController.text = '-';
-                          });
-                        } else {
-                          ref.read(configScreenConfig.notifier).update(
-                              (state) => state = state!.copyWith(
-                                  windowOptions: state.windowOptions
-                                      .copyWith(timeLimit: int.parse(value))));
+                                      deviceOptions:
+                                          state.deviceOptions.copyWith(
+                                    stayAwake: false,
+                                    showTouches: false,
+                                    offScreenOnClose: false,
+                                    turnOffDisplay: false,
+                                  )));
                         }
-                      })
-                ],
+
+                        ref.read(configScreenConfig.notifier).update(
+                              (state) => state = state!.copyWith(
+                                  windowOptions: state.windowOptions
+                                      .copyWith(noWindow: value)),
+                            );
+                      }),
+                ),
               ),
-            ),
+              const Divider(),
+              ConfigCustom(
+                childBackgroundColor: Colors.transparent,
+                title: 'Borderless',
+                subtitle: selectedConfig.windowOptions.noBorder
+                    ? "uses '--window-borderless' flag"
+                    : 'disable window decorations',
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Checkbox(
+                    checked: selectedConfig.windowOptions.noBorder,
+                    onChanged: (value) =>
+                        ref.read(configScreenConfig.notifier).update(
+                              (state) => state = state!.copyWith(
+                                  windowOptions: state.windowOptions
+                                      .copyWith(noBorder: value)),
+                            ),
+                  ),
+                ),
+              ),
+              const Divider(),
+              ConfigCustom(
+                childBackgroundColor: Colors.transparent,
+                title: 'Always on top',
+                subtitle: selectedConfig.windowOptions.alwaysOntop
+                    ? "uses '--always-on-top' flag"
+                    : 'scrcpy window always on top',
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Checkbox(
+                    checked: selectedConfig.windowOptions.alwaysOntop,
+                    onChanged: (value) =>
+                        ref.read(configScreenConfig.notifier).update(
+                              (state) => state = state!.copyWith(
+                                  windowOptions: state.windowOptions
+                                      .copyWith(alwaysOntop: value)),
+                            ),
+                  ),
+                ),
+              ),
+              const Divider(),
+              ConfigUserInput(
+                  label: 'Time limit',
+                  controller: timeLimitController,
+                  subtitle: timeLimitController.text == '-'
+                      ? 'limits scrcpy session, in seconds'
+                      : "uses '--time-limit=${timeLimitController.text.trim()}' flag",
+                  unit: 's',
+                  onTap: () => setState(() {
+                        timeLimitController.selection = TextSelection(
+                            baseOffset: 0,
+                            extentOffset: timeLimitController.text.length);
+                      }),
+                  onChanged: (value) {
+                    if (value.isEmpty) {
+                      ref.read(configScreenConfig.notifier).update((state) =>
+                          state = state!.copyWith(
+                              windowOptions:
+                                  state.windowOptions.copyWith(timeLimit: 0)));
+
+                      setState(() {
+                        timeLimitController.text = '-';
+                      });
+                    } else {
+                      ref.read(configScreenConfig.notifier).update((state) =>
+                          state = state!.copyWith(
+                              windowOptions: state.windowOptions
+                                  .copyWith(timeLimit: int.parse(value))));
+                    }
+                  })
+            ],
           ),
         ),
       ],

@@ -137,8 +137,9 @@ class AdbUtils {
   }
 
   //using ip
-  static Future<WiFiResult> connectWithIp(String workDir,
+  static Future<WiFiResult> connectWithIp(WidgetRef ref,
       {required String ip}) async {
+    final workDir = ref.read(execDirProvider);
     ProcessResult? res;
 
     res = await Process.run(Platform.isWindows ? '$workDir\\adb.exe' : eadb,

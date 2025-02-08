@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
@@ -38,8 +38,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle? style = Theme.of(context).textTheme.titleSmall;
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = FluentTheme.of(context);
+
     final runningInstance = ref.watch(scrcpyInstanceProvider);
     final wifiDevices = ref
         .watch(adbProvider)
@@ -50,10 +50,6 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
         shape: WidgetStatePropertyAll(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
 
-    final noWin = runningInstance
-        .where((ins) => ins.config.windowOptions.noWindow)
-        .toList();
-
     return loading
         ? const Center(
             child: Column(
@@ -62,20 +58,15 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                 SizedBox(
                   height: 30,
                   width: 30,
-                  child: CircularProgressIndicator.adaptive(),
+                  child: ProgressRing(),
                 ),
                 SizedBox(height: 20),
-                Material(child: Text('Closing')),
+                Text('Closing'),
               ],
             ),
           )
-        : AlertDialog(
-            backgroundColor: colorScheme.surface,
-            insetPadding: const EdgeInsets.all(16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(appTheme.widgetRadius),
-            ),
-            title: const Text('Quit?'),
+        : ContentDialog(
+            title: const Text('Quit Scrcpy GUI?'),
             content: ConstrainedBox(
               constraints:
                   const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
@@ -83,77 +74,48 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  if (noWin.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(
-                        '*Servers with no window will be killed regardless. (${noWin.length})',
-                        style: style,
-                      )
-                          .italic()
-                          .fontSize(11)
-                          .textColor(colorScheme.inverseSurface),
-                    ),
-                  if (noWin.isNotEmpty) const SizedBox(height: 5),
                   if (runningInstance.isNotEmpty)
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 4),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                        borderRadius:
-                            BorderRadius.circular(appTheme.widgetRadius * 0.8),
-                      ),
-                      child: ListTile(
-                        onTap: () {
-                          setState(() {
-                            instance = !instance;
-                          });
-                        },
-                        trailing: Checkbox(
-                            value: instance,
-                            onChanged: (v) {
-                              setState(() {
-                                instance = !instance;
-                              });
-                            }),
-                        title: Text(
-                          'Kill running servers?',
-                          style: style,
-                        ).textColor(colorScheme.inverseSurface),
-                        subtitle: Text(
-                          '${runningInstance.length} server(s)',
-                        ).textColor(
-                            colorScheme.inverseSurface.withValues(alpha: 0.8)),
+                    ListTile(
+                      tileColor: WidgetStatePropertyAll(theme.cardColor),
+                      onPressed: () {
+                        setState(() {
+                          instance = !instance;
+                        });
+                      },
+                      trailing: Checkbox(
+                          checked: instance,
+                          onChanged: (v) {
+                            setState(() {
+                              instance = !instance;
+                            });
+                          }),
+                      title: const Text('Kill running servers?'),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0),
+                        child: Text('${runningInstance.length} server(s)'),
                       ),
                     ),
                   if (wifiDevices.isNotEmpty)
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primaryContainer,
-                        borderRadius:
-                            BorderRadius.circular(appTheme.widgetRadius * 0.8),
-                      ),
-                      child: ListTile(
-                        onTap: () {
-                          setState(() {
-                            wifi = !wifi;
-                          });
-                        },
-                        trailing: Checkbox(
-                            value: wifi,
-                            onChanged: (v) {
-                              setState(() {
-                                wifi = !wifi;
-                              });
-                            }),
-                        title: Text(
-                          'Disconnect Wireless ADB?',
-                          style: style,
-                        ).textColor(colorScheme.inverseSurface),
-                        subtitle: Text(
+                    ListTile(
+                      tileColor: WidgetStatePropertyAll(theme.cardColor),
+                      onPressed: () {
+                        setState(() {
+                          wifi = !wifi;
+                        });
+                      },
+                      trailing: Checkbox(
+                          checked: wifi,
+                          onChanged: (v) {
+                            setState(() {
+                              wifi = !wifi;
+                            });
+                          }),
+                      title: const Text('Disconnect Wireless ADB?'),
+                      subtitle: Padding(
+                        padding: const EdgeInsets.only(bottom: 4.0),
+                        child: Text(
                           '${wifiDevices.length} device(s)',
-                        ).textColor(
-                            colorScheme.inverseSurface.withValues(alpha: 0.8)),
+                        ),
                       ),
                     )
                 ],
@@ -165,16 +127,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
-                    Checkbox(
-                      tristate: true,
-                      value: wifi && instance
-                          ? true
-                          : wifi
-                              ? null
-                              : instance
-                                  ? null
-                                  : false,
-                      onChanged: (v) {
+                    Button(
+                      onPressed: () {
                         if (wifi && instance) {
                           wifi = false;
                           instance = false;
@@ -185,39 +139,24 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
 
                         setState(() {});
                       },
+                      child: const Text('Select all'),
                     ),
-                  if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
-                    InkWell(
-                        onTap: () {
-                          if (wifi && instance) {
-                            wifi = false;
-                            instance = false;
-                          } else {
-                            wifi = true;
-                            instance = true;
-                          }
-
-                          setState(() {});
-                        },
-                        child: const Text('Select all')),
                   const Spacer(),
-                  TextButton(
+                  Button(
                     style: buttonStyle,
                     onPressed: () {
                       _onClose(wifi, instance);
                     },
-                    child: const Text('Quit')
-                        .textColor(colorScheme.inverseSurface),
+                    child: const Text('Quit'),
                   ),
                   const SizedBox(width: 10),
-                  TextButton(
+                  Button(
                     autofocus: true,
                     style: buttonStyle,
                     onPressed: () {
                       Navigator.pop(context, false);
                     },
-                    child: const Text('Cancel')
-                        .textColor(colorScheme.inverseSurface),
+                    child: const Text('Cancel'),
                   ),
                 ],
               )
@@ -231,19 +170,18 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
     });
     final connectedDevices = ref.read(adbProvider);
     final runningInstances = ref.read(scrcpyInstanceProvider);
-    final appPID = ref.read(appPidProvider);
     final workDir = ref.read(execDirProvider);
 
     for (final i
         in runningInstances.where((ins) => ins.config.windowOptions.noWindow)) {
-      ScrcpyUtils.killServer(i, appPID).then((a) {
+      ScrcpyUtils.killServer(i).then((a) {
         ref.read(scrcpyInstanceProvider.notifier).removeInstance(i);
       });
     }
 
     if (instance) {
       for (final i in runningInstances) {
-        ScrcpyUtils.killServer(i, appPID).then((a) {
+        ScrcpyUtils.killServer(i).then((a) {
           ref.read(scrcpyInstanceProvider.notifier).removeInstance(i);
         });
       }

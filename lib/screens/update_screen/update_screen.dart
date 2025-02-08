@@ -1,5 +1,5 @@
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/installed_scrcpy.dart';
@@ -12,7 +12,6 @@ import 'package:scrcpygui/widgets/body_container.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:scrcpygui/widgets/section_button.dart';
 
-import '../../providers/settings_provider.dart';
 import '../../utils/const.dart';
 
 class UpdateScreen extends ConsumerStatefulWidget {
@@ -51,14 +50,8 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
     final scrcpyVersion = ref.watch(scrcpyVersionProvider);
     final scrcpyDir = ref.watch(execDirProvider);
-
-    final buttonStyle = ButtonStyle(
-        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
 
     return CallbackShortcuts(
       bindings: {
@@ -67,29 +60,8 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
       },
       child: Focus(
         autofocus: true,
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: colorScheme.surface,
-            scrolledUnderElevation: 0,
-            leading: IconButton(
-              style: buttonStyle,
-              tooltip: 'ESC',
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.close,
-                color: colorScheme.inverseSurface,
-              ),
-            ),
-            title: Text(
-              'Update',
-              style: TextStyle(color: colorScheme.inverseSurface),
-            ),
-            centerTitle: true,
-            elevation: 0,
-          ),
-          body: Center(
+        child: ScaffoldPage(
+          content: Center(
             child: SizedBox(
               width: appWidth,
               child: SingleChildScrollView(
@@ -109,7 +81,7 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
                             ConfigCustom(
                               padRight: 6,
                               childBackgroundColor: Colors.transparent,
-                              label: 'New version',
+                              title: 'New version',
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
@@ -129,7 +101,7 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
                                   initialValue: installed.firstWhere(
                                       (i) => i.version == scrcpyVersion),
                                   items: installed
-                                      .map((ins) => DropdownMenuItem(
+                                      .map((ins) => ComboBoxItem(
                                             value: ins,
                                             child: Text(
                                                 ins.version == BUNDLED_VERSION
@@ -153,7 +125,7 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
                               : ConfigCustom(
                                   padRight: 8,
                                   childBackgroundColor: Colors.transparent,
-                                  label: 'In-use',
+                                  title: 'In-use',
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
@@ -163,12 +135,12 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
                                 ),
                           ConfigCustom(
                             childBackgroundColor: Colors.transparent,
-                            label: 'Open executable location',
+                            title: 'Open executable location',
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 SectionButton(
-                                  icondata: Icons.folder_rounded,
+                                  icondata: FluentIcons.folder_horizontal,
                                   tooltipmessage: scrcpyDir,
                                   ontap: () async {
                                     await AppUtils.openFolder(

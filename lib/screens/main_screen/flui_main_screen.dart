@@ -2,19 +2,19 @@
 
 import 'dart:async';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/main.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
-import 'package:scrcpygui/screens/main_screen/small.dart';
+import 'package:scrcpygui/screens/main_screen/widgets/small/home.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
-import 'package:scrcpygui/utils/theme_utils.dart';
-import 'package:scrcpygui/widgets/simple_toast/simple_toast_container.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:scrcpygui/widgets/title_bar_button.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -24,7 +24,6 @@ import '../../utils/automation_utils.dart';
 import '../../utils/bonsoir_utils.dart';
 import '../../utils/const.dart';
 import '../../utils/tray_utils.dart';
-import '../../widgets/custom_main_screen_appbar.dart';
 
 final mainScreenPage = StateProvider((ref) => 0);
 
@@ -36,7 +35,7 @@ class FlUIMainScreen extends ConsumerStatefulWidget {
 }
 
 class _FlUIMainScreenState extends ConsumerState<FlUIMainScreen>
-    with WindowListener, TrayListener {
+    with WindowListener, TrayListener, AutomaticKeepAliveClientMixin {
   late BonsoirDiscovery discovery;
 
   Timer? autoDevicesPingTimer;
@@ -70,7 +69,7 @@ class _FlUIMainScreenState extends ConsumerState<FlUIMainScreen>
     }
 
     if (eventName == kWindowEventResize) {
-      await windowManager.setMinimumSize(const Size(400, 590));
+      await windowManager.setMinimumSize(const Size(450, 590));
     }
 
     super.onWindowEvent(eventName);
@@ -97,16 +96,65 @@ class _FlUIMainScreenState extends ConsumerState<FlUIMainScreen>
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     ref.watch(pollAdbProvider);
     final currentPage = ref.watch(mainScreenPage);
 
     return ResponsiveBuilder(
       builder: (context, sizingInformation) {
         return NavigationView(
+          appBar: NavigationAppBar(
+            automaticallyImplyLeading: false,
+            title: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 8,
+              children: [
+                Image.asset(
+                  'assets/logo.png',
+                  height: 20,
+                  width: 20,
+                ),
+                Expanded(
+                    child: DragToMoveArea(
+                        child: Row(
+                  spacing: 4,
+                  children: [
+                    const Text('Scrcpy GUI').alignAtCenterLeft(),
+                    const Text('by pizi-0', style: TextStyle(fontSize: 8))
+                  ],
+                ))),
+                Center(
+                  child: IconButton(
+                    icon: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Icon(FluentIcons.sunny),
+                    ),
+                    onPressed: () {
+                      final mode = ref.read(tempThemeMode);
+                      if (mode == ThemeMode.dark) {
+                        ref.read(tempThemeMode.notifier).state =
+                            ThemeMode.light;
+                      } else {
+                        ref.read(tempThemeMode.notifier).state = ThemeMode.dark;
+                      }
+                    },
+                  ),
+                ),
+                const Divider(
+                  direction: Axis.vertical,
+                ),
+                const TitleBarButton(),
+              ],
+            ),
+          ),
+          transitionBuilder: (child, animation) => FadeInUp(
+            duration: 100.milliseconds,
+            child: child,
+          ),
+          onDisplayModeChanged: (value) {},
           pane: NavigationPane(
             selected: currentPage,
-            displayMode: _paneDisplayMode(sizingInformation),
-            toggleable: false,
+            displayMode: PaneDisplayMode.compact,
             // header: const Text('SSL'),
             onChanged: (value) {
               ref.read(mainScreenPage.notifier).state = value;
@@ -115,19 +163,26 @@ class _FlUIMainScreenState extends ConsumerState<FlUIMainScreen>
               PaneItem(
                 icon: const Icon(FluentIcons.home),
                 title: const Text('Home'),
-                body: const Text('home'),
+                body: const Home(),
               ),
               PaneItem(
-                icon: const Icon(FluentIcons.home),
-                title: const Text('Home'),
-                body: const Text('home'),
+                icon: const Icon(FluentIcons.link),
+                title: const Text('Connect'),
+                body: const Text('Connect'),
               ),
             ],
             footerItems: [
               PaneItemAction(
                 icon: const Icon(FluentIcons.sunny),
                 title: const Text('Light mode'),
-                onTap: () {},
+                onTap: () {
+                  final mode = ref.read(tempThemeMode);
+                  if (mode == ThemeMode.dark) {
+                    ref.read(tempThemeMode.notifier).state = ThemeMode.light;
+                  } else {
+                    ref.read(tempThemeMode.notifier).state = ThemeMode.dark;
+                  }
+                },
               ),
               PaneItem(
                 icon: const Icon(FluentIcons.settings),
@@ -139,15 +194,6 @@ class _FlUIMainScreenState extends ConsumerState<FlUIMainScreen>
         );
       },
     );
-  }
-
-  _paneDisplayMode(SizingInformation size) {
-    switch (size.deviceScreenType) {
-      case DeviceScreenType.mobile:
-        return PaneDisplayMode.auto;
-      default:
-        return PaneDisplayMode.compact;
-    }
   }
 
   _init() async {
@@ -189,4 +235,7 @@ class _FlUIMainScreenState extends ConsumerState<FlUIMainScreen>
       });
     });
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

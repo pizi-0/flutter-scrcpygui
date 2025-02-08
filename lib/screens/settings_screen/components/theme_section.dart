@@ -48,7 +48,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
       children: [
         ConfigCustom(
           childBackgroundColor: Colors.transparent,
-          label: 'Brightness',
+          title: 'Brightness',
           child: Row(
             children: [
               Radio(
@@ -91,7 +91,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
         ),
         ConfigCustom(
           childBackgroundColor: Colors.transparent,
-          label: 'Color',
+          title: 'Color',
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -134,7 +134,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
         ),
         ConfigCustom(
           childBackgroundColor: Colors.transparent,
-          label: 'Corner radius',
+          title: 'Corner radius',
           child: SliderTheme(
             data: SliderThemeData(
               trackShape: CustomTrackShape(),
@@ -186,7 +186,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
         ),
         ConfigCustom(
           childBackgroundColor: Colors.transparent,
-          label: 'Background tint level',
+          title: 'Background tint level',
           child: SliderTheme(
             data: SliderThemeData(
               trackShape: CustomTrackShape(),
@@ -246,7 +246,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
         ),
         ConfigCustom(
           childBackgroundColor: Colors.transparent,
-          label: 'Primary tint level',
+          title: 'Primary tint level',
           child: SliderTheme(
             data: SliderThemeData(
               trackShape: CustomTrackShape(),
@@ -306,7 +306,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
         ),
         ConfigCustom(
           childBackgroundColor: Colors.transparent,
-          label: 'Secondary tint level',
+          title: 'Secondary tint level',
           child: SliderTheme(
             data: SliderThemeData(
               trackShape: CustomTrackShape(),

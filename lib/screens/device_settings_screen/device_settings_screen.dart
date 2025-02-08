@@ -1,24 +1,19 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
-import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb/adb_utils.dart';
-import 'package:scrcpygui/utils/automation_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
-import 'package:scrcpygui/widgets/body_container.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
-import 'package:scrcpygui/widgets/section_button.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../../providers/adb_provider.dart';
-import 'widgets/info_container.dart';
 
 // ignore: constant_identifier_names
 const DO_NOTHING = 'Do nothing';
@@ -37,6 +32,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   late String ddValue;
   late TextEditingController namecontroller;
   bool loading = false;
+  FocusNode textBox = FocusNode();
 
   @override
   void initState() {
@@ -52,6 +48,8 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                 orElse: () => AutomationAction(type: null))
             .action ??
         DO_NOTHING;
+
+    textBox.addListener(_onLoseFocus);
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((a) async {
@@ -69,251 +67,169 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   @override
   void dispose() {
     namecontroller.dispose();
+    textBox.removeListener(_onLoseFocus);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final info = dev.info;
-    final configs = ref.watch(configsProvider);
-    final appTheme = ref.read(settingsProvider).looks;
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = FluentTheme.of(context);
+    final allconfigs = ref.watch(configsProvider);
+    final isWireless =
+        dev.id.isIpv4 || dev.id.isIpv6 || dev.id.contains(adbMdns);
 
-    final buttonStyle = ButtonStyle(
-        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
+    final autoConnect = (dev.automationData?.actions
+                .where((a) => a.type == ActionType.autoconnect) ??
+            [])
+        .isNotEmpty;
 
-    return Scaffold(
-      appBar: AppBar(
+    return NavigationView(
+      appBar: NavigationAppBar(
+        title: Text('Settings / ${dev.name}').textStyle(theme.typography.body),
         leading: IconButton(
-          style: buttonStyle,
-          tooltip: 'ESC',
+          icon: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Icon(FluentIcons.back),
+          ),
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
-            Icons.close,
-            color: colorScheme.inverseSurface,
-          ),
         ),
-        title: const Text('Device Settings'),
-        centerTitle: true,
-        backgroundColor: colorScheme.surface,
       ),
-      body: info == null || loading
-          ? const Center(child: CupertinoActivityIndicator())
-          : SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    BodyContainer(
-                      spacing: 4,
-                      children: [
-                        ConfigCustom(
-                          label: 'Rename',
-                          child: Container(
-                            height: 40,
-                            width: 150,
-                            padding: const EdgeInsets.symmetric(horizontal: 8),
-                            decoration: BoxDecoration(
-                                color: colorScheme.primaryContainer,
-                                borderRadius: BorderRadius.circular(
-                                    appTheme.widgetRadius * 0.6)),
-                            child: TextField(
-                              textAlignVertical: TextAlignVertical.center,
-                              textCapitalization: TextCapitalization.characters,
-                              decoration:
-                                  const InputDecoration.collapsed(hintText: ''),
-                              maxLines: 1,
-                              onSubmitted: (value) async {
-                                dev = dev.copyWith(
-                                    name: namecontroller.text.toUpperCase());
-
-                                ref
-                                    .read(savedAdbDevicesProvider.notifier)
-                                    .addEditDevices(dev);
-
-                                await AdbUtils.saveAdbDevice(
-                                    ref.read(savedAdbDevicesProvider));
-                              },
-                              inputFormatters: [
-                                TextInputFormatter.withFunction(
-                                  (oldValue, newValue) => newValue.copyWith(
-                                      text: newValue.text.toUpperCase()),
-                                )
-                              ],
-                              controller: namecontroller,
-                              // textAlignVertical: TextAlignVertical.center,
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: colorScheme.inverseSurface,
-                              ),
-                            ),
-                          ),
-                        ),
-                        if (dev.id.isIpv4 ||
-                            dev.id.isIpv6 ||
-                            dev.id.contains(adbMdns))
-                          ConfigCustom(
-                            childBackgroundColor: Colors.transparent,
-                            label: 'Autoconnect if available',
-                            child: Checkbox(
-                              value: _autoConnectCheckBoxValue(),
-                              onChanged: (v) => _checkBoxOnChanged(),
-                            ),
-                          ),
-                        ConfigDropdownOthers(
-                          initialValue: ddValue,
-                          onSelected: (v) => _onDDSelect(v),
-                          items: [
-                            const DropdownMenuItem(
-                              value: DO_NOTHING,
-                              child: Text('Do nothing'),
-                            ),
-                            ...configs.where((c) => c != newConfig).map(
-                                  (c) => DropdownMenuItem(
-                                    value: c.id,
-                                    child: Text(c.configName),
+      pane: NavigationPane(
+        displayMode: PaneDisplayMode.compact,
+        size: const NavigationPaneSize(compactWidth: 0),
+        menuButton: const SizedBox(),
+        toggleable: false,
+        items: [
+          PaneItem(
+            icon: const SizedBox(),
+            body: info == null || loading
+                ? const Center(child: CupertinoActivityIndicator())
+                : ScaffoldPage.withPadding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    content: SingleChildScrollView(
+                      child: Column(
+                        spacing: 4,
+                        children: [
+                          Card(
+                            padding: EdgeInsets.zero,
+                            child: Column(
+                              children: [
+                                ConfigCustom(
+                                  title: 'Rename',
+                                  child: SizedBox(
+                                    width: 180,
+                                    child: TextBox(
+                                      focusNode: textBox,
+                                      placeholder: dev.name,
+                                      controller: namecontroller,
+                                      onChanged: (value) {
+                                        namecontroller.value = TextEditingValue(
+                                          text: value.toUpperCase(),
+                                          selection: namecontroller.selection,
+                                        );
+                                      },
+                                      onSubmitted: (v) async {
+                                        dev =
+                                            dev.copyWith(name: v.toUpperCase());
+                                        ref
+                                            .read(savedAdbDevicesProvider
+                                                .notifier)
+                                            .addEditDevices(dev);
+                                        await AdbUtils.saveAdbDevice(
+                                            ref.read(savedAdbDevicesProvider));
+                                      },
+                                    ),
                                   ),
-                                )
-                          ],
-                          label: 'On connected',
-                        ),
-                      ],
-                    ),
-                    BodyContainer(
-                      headerTitle: 'Info',
-                      headerTrailing: SectionButton(
-                        tooltipmessage: 'Get info',
-                        icondata: Icons.refresh,
-                        ontap: _refreshInfo,
+                                ),
+                                if (isWireless) const Divider(),
+                                if (isWireless)
+                                  ConfigCustom(
+                                    title: 'Auto-connect',
+                                    child: ToggleSwitch(
+                                      checked: autoConnect,
+                                      onChanged: (v) async {
+                                        List<AutomationAction>
+                                            currentAutomation =
+                                            dev.automationData?.actions ?? [];
+
+                                        if (autoConnect) {
+                                          currentAutomation.remove(
+                                              AutomationAction(
+                                                  type:
+                                                      ActionType.autoconnect));
+                                        } else {
+                                          currentAutomation.add(
+                                              AutomationAction(
+                                                  type:
+                                                      ActionType.autoconnect));
+                                        }
+                                        dev = dev.copyWith(
+                                            automationData: AutomationData(
+                                                actions: currentAutomation));
+
+                                        ref
+                                            .read(savedAdbDevicesProvider
+                                                .notifier)
+                                            .addEditDevices(dev);
+                                        await AdbUtils.saveAdbDevice(
+                                            ref.read(savedAdbDevicesProvider));
+
+                                        setState(() {});
+                                      },
+                                    ),
+                                  ),
+                                const Divider(),
+                                ConfigCustom(
+                                  title: 'On connected',
+                                  child: ComboBox(
+                                    placeholder: const Text('Do nothing'),
+                                    value: null,
+                                    onChanged: (value) {
+                                      print(value!.id);
+                                    },
+                                    items: allconfigs
+                                        .map(
+                                          (c) => ComboBoxItem(
+                                            value: c,
+                                            child: Text(c.configName),
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          PageHeader(
+                            title: const Text('Info'),
+                            commandBar: CommandBar(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              primaryItems: [
+                                CommandBarButton(
+                                  onPressed: () {},
+                                  icon: const Icon(FluentIcons.refresh),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
-                      children: [
-                        InfoContainer(info: dev.info!),
-                      ],
                     ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
+          )
+        ],
+      ),
     );
   }
 
-  bool _autoConnectCheckBoxValue() {
-    return dev.automationData == null
-        ? false
-        : dev.automationData!.actions
-            .contains(AutomationAction(type: ActionType.autoconnect));
-  }
-
-  _checkBoxOnChanged() async {
-    bool enabled = dev.automationData?.actions
-            .contains(AutomationAction(type: ActionType.autoconnect)) ??
-        false;
-
-    if (enabled) {
-      final current = dev.automationData ?? defaultAutomationData;
-
-      current.actions.removeWhere((e) => e.type == ActionType.autoconnect);
-
-      dev = dev.copyWith(
-          automationData: current.copyWith(actions: current.actions));
-
-      setState(() {});
-    } else {
-      final current = dev.automationData ?? defaultAutomationData;
-
-      current.actions.add(AutomationAction(type: ActionType.autoconnect));
-
-      dev = dev.copyWith(
-        automationData: current.copyWith(actions: current.actions),
-      );
-
-      setState(() {});
-    }
-    AutomationUtils.setAutoConnect(ref, dev);
-    final saved = ref.read(savedAdbDevicesProvider);
-    await AdbUtils.saveAdbDevice(saved);
-  }
-
-  _onDDSelect(String v) async {
-    setState(() {
-      ddValue = v;
-    });
-    if (v == DO_NOTHING) {
-      var currentAutoData = dev.automationData ?? AutomationData(actions: []);
-
-      currentAutoData.actions
-          .removeWhere((e) => e.type == ActionType.launchConfig);
-    } else {
-      var currentAutoData = dev.automationData ?? AutomationData(actions: []);
-
-      currentAutoData.actions
-          .removeWhere((e) => e.type == ActionType.launchConfig);
-
-      dev = dev.copyWith(
-          automationData: currentAutoData.copyWith(actions: [
-        ...currentAutoData.actions,
-        AutomationAction(
-          type: ActionType.launchConfig,
-          action: v,
-        )
-      ]));
-    }
-    ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
-    final saved = ref.read(savedAdbDevicesProvider);
-    await AdbUtils.saveAdbDevice(saved);
-  }
-
-  _refreshInfo() async {
-    final colorScheme = Theme.of(context).colorScheme;
-    final looks = ref.read(settingsProvider).looks;
-    loading = true;
-    setState(() {});
-
-    try {
-      final info =
-          await AdbUtils.getScrcpyDetailsFor(ref.read(execDirProvider), dev);
-      dev = dev.copyWith(info: info);
-      ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
-      await AdbUtils.saveAdbDevice(ref.read(savedAdbDevicesProvider));
-    } on Exception catch (e) {
-      showAdaptiveDialog(
-        context: context,
-        builder: (context) => AlertDialog.adaptive(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(looks.widgetRadius)),
-          contentPadding: const EdgeInsets.all(16),
-          backgroundColor: colorScheme.secondaryContainer,
-          title: const Text('Error getting info'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ...e.toString().splitLines().map((e) => Text(e.trim())),
-            ],
-          ),
-          actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _refreshInfo();
-                },
-                child: const Text('Retry')),
-            TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('Cancel')),
-          ],
-        ),
-      );
-    }
-
-    if (mounted) {
-      loading = false;
+  _onLoseFocus() {
+    if (!textBox.hasFocus) {
+      namecontroller =
+          TextEditingController(text: dev.name?.toUpperCase() ?? dev.modelName);
       setState(() {});
     }
   }

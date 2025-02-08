@@ -8,6 +8,7 @@ import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
+import 'package:string_extensions/string_extensions.dart';
 
 class AutomationUtils {
   static autoconnectRunner(WidgetRef ref) async {
@@ -16,7 +17,7 @@ class AutomationUtils {
     final task = ref
         .read(savedAdbDevicesProvider)
         .where((e) =>
-            e.id.contains(adbMdns) &&
+            (e.id.isIpv4 || e.id.contains(adbMdns)) &&
             e.automationData != null &&
             e.automationData!.actions
                 .where((a) => a.type == ActionType.autoconnect)
@@ -24,9 +25,18 @@ class AutomationUtils {
         .toList();
 
     for (final t in task) {
-      if (bonsoirDevices.where((bd) => t.id.contains(bd.name)).isNotEmpty) {
+      if (t.id.contains(adbMdns)) {
+        if (bonsoirDevices.where((bd) => t.id.contains(bd.name)).isNotEmpty) {
+          if (!connected.contains(t)) {
+            AdbUtils.connectWithMdns(ref, id: t.id);
+          }
+        }
+      }
+
+      if (t.id.isIpv4 || t.id.isIpv6) {
         if (!connected.contains(t)) {
-          AdbUtils.connectWithMdns(ref, id: t.id);
+          AdbUtils.connectWithIp(ref,
+              ip: t.id.replaceRange(t.id.lastIndexOf(':'), t.id.length, ''));
         }
       }
     }

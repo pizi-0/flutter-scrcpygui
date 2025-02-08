@@ -1,15 +1,13 @@
-import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:string_extensions/string_extensions.dart';
+
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/screens/config_screen/config_screen.dart';
-import 'package:string_extensions/string_extensions.dart';
 
 import '../../models/scrcpy_related/scrcpy_config.dart';
 import '../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../providers/adb_provider.dart';
-import '../../providers/settings_provider.dart';
-import '../../utils/const.dart';
 import '../config_tiles.dart';
 
 class AudioConfig extends ConsumerStatefulWidget {
@@ -42,71 +40,39 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig)!;
     final selectedDevice = ref.watch(selectedDeviceProvider);
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final colorScheme = Theme.of(context).colorScheme;
 
-    return AnimatedContainer(
-      height: selectedConfig.scrcpyMode == ScrcpyMode.videoOnly
-          ? 0
-          : selectedConfig.scrcpyMode == ScrcpyMode.audioOnly &&
-                  selectedConfig.isRecording
-              ? 316
-              : selectedConfig.scrcpyMode == ScrcpyMode.audioOnly &&
-                      !selectedConfig.isRecording
-                  ? 272
-                  : 272,
-      duration: const Duration(milliseconds: 200),
-      child: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Text(
-                'Audio',
-                style: Theme.of(context).textTheme.titleLarge,
-              ).textColor(colorScheme.inverseSurface),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
-              width: appWidth,
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: ClipRRect(
-                  borderRadius:
-                      BorderRadius.circular(appTheme.widgetRadius * 0.8),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildAudioDuplicateOption(
-                          context, selectedConfig, selectedDevice!.info!),
-                      const SizedBox(height: 4),
-                      _buildAudioSourceSelector(
-                          context, selectedConfig, selectedDevice.info!),
-                      const SizedBox(height: 4),
-                      _buildAudioFormatSelector(
-                          context, selectedConfig, selectedDevice.info!),
-                      const SizedBox(height: 4),
-                      _buildAudioBitrate(context),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(10.0),
+          child: Text('Audio'),
         ),
-      ),
+        Card(
+          padding: EdgeInsets.zero,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildAudioDuplicateOption(
+                  context, selectedConfig, selectedDevice!.info!),
+              const Divider(),
+              _buildAudioSourceSelector(
+                  context, selectedConfig, selectedDevice.info!),
+              const Divider(),
+              _buildAudioFormatSelector(
+                  context, selectedConfig, selectedDevice.info!),
+              const Divider(),
+              _buildAudioBitrate(context),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildAudioDuplicateOption(
       BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return ConfigDropdownOthers(
       initialValue: selectedConfig.audioOptions.duplicateAudio,
       onSelected: (info.buildVersion.toInt() ?? 0) < 13
@@ -129,18 +95,20 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
                             .copyWith(audioSource: AudioSource.output)));
               }
             },
-      items: [
-        DropdownMenuItem(
+      items: const [
+        ComboBoxItem(
           value: true,
-          child: const Text('Yes').textColor(colorScheme.inverseSurface),
+          child: Text('Yes'),
         ),
-        DropdownMenuItem(
+        ComboBoxItem(
           value: false,
-          child: const Text('No').textColor(colorScheme.inverseSurface),
+          child: Text('No'),
         ),
       ],
       label: 'Duplicate audio *',
-      tooltipMessage: 'Only for Android 13 and up',
+      subtitle: selectedConfig.audioOptions.duplicateAudio
+          ? "uses '--audio-dup' flag"
+          : 'only for Android 13 and above',
     );
   }
 
@@ -152,7 +120,12 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
               ? s.value != 'playback'
               : true)
           .toList(),
-      label: 'Source',
+      title: 'Source',
+      subtitle: selectedConfig.audioOptions.audioSource == AudioSource.output
+          ? "defaults to output, no flag"
+          : selectedConfig.audioOptions.duplicateAudio
+              ? "implied to 'Playback' with '--audio-dup', no flag"
+              : "uses '${selectedConfig.audioOptions.audioSource.command.trimAll}'",
       initialValue: selectedConfig.audioOptions.audioSource,
       onSelected: selectedConfig.audioOptions.duplicateAudio
           ? null
@@ -167,105 +140,81 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
 
   Widget _buildAudioFormatSelector(
       BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      height: selectedConfig.isRecording &&
-              selectedConfig.scrcpyMode == ScrcpyMode.audioOnly
-          ? 128
-          : 84,
-      child: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ConfigDropdownOthers(
-              initialValue: selectedConfig.audioOptions.audioCodec,
-              onSelected: _isNotRecordingAudioOnly(selectedConfig)
-                  ? null
-                  : (value) {
-                      ref.read(configScreenConfig.notifier).update((state) =>
-                          state = state!.copyWith(
-                              audioOptions: state.audioOptions.copyWith(
-                                  audioCodec: value, audioEncoder: 'default')));
-                    },
-              items: [
-                ...info.audioEncoder.map((e) => DropdownMenuItem(
-                    value: e.codec,
-                    child:
-                        Text(e.codec).textColor(colorScheme.inverseSurface))),
-                if (selectedConfig.audioOptions.audioFormat != AudioFormat.m4a)
-                  DropdownMenuItem(
-                      value: 'raw',
-                      child: const Text('raw')
-                          .textColor(colorScheme.inverseSurface))
-              ],
-              label: 'Codec *',
-              tooltipMessage:
-                  'Format: ${selectedConfig.audioOptions.audioFormat.value}, requires Codec: ${selectedConfig.audioOptions.audioCodec}',
-            ),
-            const SizedBox(height: 4),
-            ConfigDropdownOthers(
-              initialValue: selectedConfig.audioOptions.audioEncoder,
-              onSelected: (value) {
-                ref.read(configScreenConfig.notifier).update((state) => state =
-                    state!.copyWith(
-                        audioOptions:
-                            state.audioOptions.copyWith(audioEncoder: value)));
-              },
-              items: [
-                DropdownMenuItem(
-                  value: 'default',
-                  child: const Text('Default')
-                      .textColor(colorScheme.inverseSurface),
-                ),
-                if (selectedConfig.audioOptions.audioCodec != 'raw')
-                  ...info.audioEncoder
-                      .firstWhere((ae) =>
-                          ae.codec ==
-                          ref.read(configScreenConfig)!.audioOptions.audioCodec)
-                      .encoder
-                      .map(
-                        (enc) => DropdownMenuItem(
-                          value: enc,
-                          child:
-                              Text(enc).textColor(colorScheme.inverseSurface),
-                        ),
-                      )
-              ],
-              label: 'Encoder *',
-            ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              height: selectedConfig.isRecording &&
-                      selectedConfig.scrcpyMode == ScrcpyMode.audioOnly
-                  ? 44
-                  : 0,
-              child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const SizedBox(height: 4),
-                    ConfigDropdownEnum<AudioFormat>(
-                      items: AudioFormat.values,
-                      label: 'Format',
-                      initialValue: selectedConfig.audioOptions.audioFormat,
-                      toTitleCase: false,
-                      onSelected: _onFormatSelected,
-                    ),
-                  ],
-                ),
-              ),
-            ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (selectedConfig.isRecording &&
+            selectedConfig.scrcpyMode == ScrcpyMode.audioOnly)
+          ConfigDropdownEnum<AudioFormat>(
+            items: AudioFormat.values,
+            title: 'Format',
+            initialValue: selectedConfig.audioOptions.audioFormat,
+            toTitleCase: false,
+            onSelected: _onFormatSelected,
+          ),
+        if (selectedConfig.isRecording &&
+            selectedConfig.scrcpyMode == ScrcpyMode.audioOnly)
+          const Divider(),
+        ConfigDropdownOthers(
+          initialValue: selectedConfig.audioOptions.audioCodec,
+          onSelected: _isRecordingAudioOnly(selectedConfig)
+              ? null
+              : (value) {
+                  ref.read(configScreenConfig.notifier).update((state) =>
+                      state = state!.copyWith(
+                          audioOptions: state.audioOptions.copyWith(
+                              audioCodec: value, audioEncoder: 'default')));
+                },
+          items: [
+            ...info.audioEncoder
+                .map((e) => ComboBoxItem(value: e.codec, child: Text(e.codec))),
+            if (selectedConfig.audioOptions.audioFormat != AudioFormat.m4a)
+              const ComboBoxItem(value: 'raw', child: Text('raw'))
           ],
+          label: 'Codec *',
+          subtitle: _isRecordingAudioOnly(selectedConfig)
+              ? 'Format: ${selectedConfig.audioOptions.audioFormat.value}, requires Codec: ${selectedConfig.audioOptions.audioCodec}'
+              : selectedConfig.audioOptions.audioCodec == 'opus'
+                  ? 'defaults to opus, no flag'
+                  : "uses '--audio-codec=${selectedConfig.audioOptions.audioCodec}'",
         ),
-      ),
+        const Divider(),
+        ConfigDropdownOthers(
+          initialValue: selectedConfig.audioOptions.audioEncoder,
+          onSelected: (value) {
+            ref.read(configScreenConfig.notifier).update((state) => state =
+                state!.copyWith(
+                    audioOptions:
+                        state.audioOptions.copyWith(audioEncoder: value)));
+          },
+          items: [
+            const ComboBoxItem(
+              value: 'default',
+              child: Text('Default'),
+            ),
+            if (selectedConfig.audioOptions.audioCodec != 'raw')
+              ...info.audioEncoder
+                  .firstWhere((ae) =>
+                      ae.codec ==
+                      ref.read(configScreenConfig)!.audioOptions.audioCodec)
+                  .encoder
+                  .map(
+                    (enc) => ComboBoxItem(
+                      value: enc,
+                      child: Text(enc),
+                    ),
+                  )
+          ],
+          label: 'Encoder *',
+          subtitle: selectedConfig.audioOptions.audioEncoder == 'default'
+              ? 'defaults to first available, no flag'
+              : "uses '--audio-encoder=${selectedConfig.audioOptions.audioEncoder}' flag",
+        ),
+      ],
     );
   }
 
-  bool _isNotRecordingAudioOnly(ScrcpyConfig selectedConfig) {
+  bool _isRecordingAudioOnly(ScrcpyConfig selectedConfig) {
     if (selectedConfig.scrcpyMode == ScrcpyMode.audioOnly &&
         selectedConfig.isRecording) {
       if (selectedConfig.audioOptions.audioFormat != AudioFormat.mka &&
@@ -338,6 +287,9 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
         audioBitrateController.selection = TextSelection(
             baseOffset: 0, extentOffset: audioBitrateController.text.length);
       }),
+      subtitle: audioBitrateController.text == '128'
+          ? 'defaults to 128k, no flag'
+          : "uses '--audio-bit-rate=${audioBitrateController.text.trim()}K'",
     );
   }
 }

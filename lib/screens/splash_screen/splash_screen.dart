@@ -1,24 +1,22 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/screens/main_screen/flui_main_screen.dart';
-import 'package:scrcpygui/models/settings_model/app_theme.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/utils/setup.dart';
-import 'package:scrcpygui/utils/theme_utils.dart';
 
 import '../../utils/app_utils.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
-  final AppTheme theme;
-  const SplashScreen(this.theme, {super.key});
+  const SplashScreen({super.key});
 
   @override
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
@@ -30,10 +28,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _init().then((value) {
-        Navigator.pushReplacement(
-            context,
-            PageTransition(
-                child: const FlUIMainScreen(), type: PageTransitionType.fade));
+        Navigator.pushReplacement(context,
+            FluentPageRoute(builder: (context) => const FlUIMainScreen()));
       });
     });
   }
@@ -75,22 +71,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeUtils.themeData(ref),
-      home: const Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.adb_rounded,
-                size: 50,
-              ),
-              SizedBox(height: 20),
-              Text('Loading..')
-            ],
-          ),
+    return NavigationView(
+      content: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/logo.png',
+              height: 50,
+            ),
+            const SizedBox(height: 20),
+            const Text('Loading..')
+          ],
         ),
       ),
     );

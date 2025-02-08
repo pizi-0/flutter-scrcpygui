@@ -1,17 +1,16 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:string_extensions/string_extensions.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 
-const double _minWidth = 100;
-
 class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
   final List<T> items;
-  final String label;
+  final String title;
+  final String? subtitle;
+
   final T? initialValue;
   final ValueChanged<T?>? onSelected;
   final bool toTitleCase;
@@ -19,7 +18,8 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
   const ConfigDropdownEnum({
     super.key,
     required this.items,
-    required this.label,
+    required this.title,
+    this.subtitle,
     this.initialValue,
     this.onSelected,
     this.toTitleCase = true,
@@ -27,70 +27,64 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = FluentTheme.of(context);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondaryContainer,
-        // borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
-      ),
-      height: 40,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: Row(
-          children: [
-            const SizedBox(width: 5),
-            Expanded(
-                child: Text(
-              label.toTitleCase,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ).textColor(colorScheme.inverseSurface)),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: _minWidth),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                    borderRadius:
-                        BorderRadius.circular(appTheme.widgetRadius * 0.6),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: DropdownButton(
-                        borderRadius:
-                            BorderRadius.circular(appTheme.widgetRadius * 0.6),
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        focusColor: Theme.of(context).colorScheme.onPrimary,
-                        value: initialValue,
-                        onChanged: onSelected,
-                        items: items
-                            .map((e) => DropdownMenuItem(
-                                  value: e,
-                                  child: Text(toTitleCase
-                                          ? e.value.toString().toTitleCase
-                                          : e.value.toString())
-                                      .textColor(colorScheme.inverseSurface),
-                                ))
-                            .toList(),
-                      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          contentPadding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+          title: Text(title).textStyle(theme.typography.body),
+          trailing: ComboBox(
+            value: initialValue,
+            onChanged: onSelected,
+            items: items
+                .map((e) => ComboBoxItem(
+                    value: e,
+                    child: Text(toTitleCase
+                        ? e.value.toString().toTitleCase
+                        : e.value.toString())))
+                .toList(),
+          ),
+        ),
+        if (subtitle != null)
+          Card(
+            margin: const EdgeInsets.fromLTRB(16, 0, 14, 10),
+            padding: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 4, 2),
+              child: Row(
+                spacing: 8,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Icon(
+                      FluentIcons.info,
+                      size: theme.typography.caption!.fontSize! - 2,
                     ),
                   ),
-                ),
+                  Expanded(
+                    child: Text(
+                      '$subtitle',
+                      style: theme.typography.caption!.copyWith(
+                          color:
+                              theme.typography.caption!.color!.withAlpha(150)),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
+          )
+      ],
     );
   }
 }
 
 class ConfigDropdownOthers extends ConsumerWidget {
-  final List<DropdownMenuItem> items;
+  final List<ComboBoxItem> items;
   final String label;
+  final String? subtitle;
+  final Widget? placeholder;
   final Object? initialValue;
   final ValueChanged? onSelected;
   final String? tooltipMessage;
@@ -99,6 +93,8 @@ class ConfigDropdownOthers extends ConsumerWidget {
     super.key,
     required this.items,
     required this.label,
+    this.placeholder,
+    this.subtitle,
     this.initialValue,
     this.onSelected,
     this.tooltipMessage,
@@ -106,68 +102,57 @@ class ConfigDropdownOthers extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appTheme = ref.watch(settingsProvider).looks;
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = FluentTheme.of(context);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondaryContainer,
-        // borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
-      ),
-      height: 40,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: Row(
-          children: [
-            const SizedBox(width: 5),
-            Expanded(
-                child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ).textColor(colorScheme.inverseSurface)),
-            if (onSelected == null)
-              Tooltip(
-                message: tooltipMessage ?? '',
-                preferBelow: false,
-                child: const Icon(Icons.info, size: 20),
-              ),
-            const SizedBox(width: 5),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(minWidth: _minWidth),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer,
-                    borderRadius:
-                        BorderRadius.circular(appTheme.widgetRadius * 0.6),
-                  ),
-                  child: DropdownButtonHideUnderline(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: DropdownButton(
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyMedium!
-                            .copyWith(color: colorScheme.inverseSurface),
-                        value: initialValue,
-                        onChanged: onSelected,
-                        items: items,
-                      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          contentPadding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+          title: Text(label).textStyle(theme.typography.body),
+          trailing: ComboBox(
+            placeholder: placeholder,
+            value: initialValue,
+            onChanged: onSelected,
+            items: items,
+          ),
+        ),
+        if (subtitle != null)
+          Card(
+            margin: const EdgeInsets.fromLTRB(16, 0, 14, 10),
+            padding: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 4, 2),
+              child: Row(
+                spacing: 8,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Icon(
+                      FluentIcons.info,
+                      size: theme.typography.caption!.fontSize! - 2,
                     ),
                   ),
-                ),
+                  Expanded(
+                    child: Text(
+                      '$subtitle',
+                      style: theme.typography.caption!.copyWith(
+                          color:
+                              theme.typography.caption!.color!.withAlpha(150)),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
+          )
+      ],
     );
   }
 }
 
 class ConfigUserInput extends ConsumerWidget {
   final String label;
+  final String? subtitle;
   final TextEditingController controller;
   final String? unit;
   final ValueChanged<String> onChanged;
@@ -177,6 +162,7 @@ class ConfigUserInput extends ConsumerWidget {
     super.key,
     required this.label,
     required this.controller,
+    this.subtitle,
     this.unit,
     required this.onChanged,
     this.onTap,
@@ -184,84 +170,65 @@ class ConfigUserInput extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = FluentTheme.of(context);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondaryContainer,
-        // borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
-      ),
-      height: 40,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 4.0),
-        child: Row(
-          children: [
-            const SizedBox(width: 5),
-            Expanded(
-                child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ).textColor(colorScheme.inverseSurface)),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  minWidth: _minWidth,
-                  maxWidth: _minWidth,
-                ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primaryContainer,
-                          borderRadius: BorderRadius.circular(
-                              appTheme.widgetRadius * 0.6),
-                        ),
-                        child: Center(
-                          child: TextField(
-                            inputFormatters: [
-                              FilteringTextInputFormatter.allow(
-                                  RegExp(r'[0-9,\.]'))
-                            ],
-                            textAlign: TextAlign.center,
-                            controller: controller,
-                            decoration:
-                                const InputDecoration.collapsed(hintText: ''),
-                            onChanged: onChanged,
-                            onTap: onTap,
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: colorScheme.inverseSurface),
-                          ),
-                        ),
-                      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          contentPadding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+          title: Text(label).textStyle(theme.typography.body),
+          trailing: SizedBox(
+            width: 100,
+            child: TextBox(
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+              ],
+              suffix: Text(unit != null ? '$unit ' : ''),
+              textAlign: TextAlign.center,
+              controller: controller,
+              onChanged: onChanged,
+              onTap: onTap,
+              style: const TextStyle(fontSize: 14),
+            ),
+          ),
+        ),
+        if (subtitle != null)
+          Card(
+            margin: const EdgeInsets.fromLTRB(16, 0, 14, 10),
+            padding: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 4, 2),
+              child: Row(
+                spacing: 8,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Icon(
+                      FluentIcons.info,
+                      size: theme.typography.caption!.fontSize! - 2,
                     ),
-                    if (unit != null)
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(unit!,
-                                  style: Theme.of(context).textTheme.bodyMedium)
-                              .textColor(colorScheme.inverseSurface),
-                        ),
-                      ),
-                    const SizedBox(width: 5),
-                  ],
-                ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      '$subtitle',
+                      style: theme.typography.caption!.copyWith(
+                          color:
+                              theme.typography.caption!.color!.withAlpha(150)),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
+          )
+      ],
     );
   }
 }
 
 class ConfigCustom extends ConsumerWidget {
-  final String label;
+  final String title;
+  final String? subtitle;
   final Widget child;
   final BoxConstraints? boxConstraints;
   final Color? childBackgroundColor;
@@ -269,8 +236,9 @@ class ConfigCustom extends ConsumerWidget {
 
   const ConfigCustom({
     super.key,
-    required this.label,
+    required this.title,
     required this.child,
+    this.subtitle,
     this.boxConstraints,
     this.childBackgroundColor,
     this.padRight,
@@ -278,48 +246,45 @@ class ConfigCustom extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = FluentTheme.of(context);
 
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondaryContainer,
-        // borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
-      ),
-      height: 40,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: Row(
-          children: [
-            const SizedBox(width: 5),
-            Expanded(
-                flex: 4,
-                child: Text(
-                  label,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ).textColor(colorScheme.inverseSurface)),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: ConstrainedBox(
-                constraints:
-                    boxConstraints ?? const BoxConstraints(minWidth: _minWidth),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: childBackgroundColor ??
-                        Theme.of(context).colorScheme.primaryContainer,
-                    borderRadius:
-                        BorderRadius.circular(appTheme.widgetRadius * 0.6),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          contentPadding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+          title: Text(title).textStyle(theme.typography.body),
+          trailing: child,
+        ),
+        if (subtitle != null)
+          Card(
+            margin: const EdgeInsets.fromLTRB(16, 0, 14, 10),
+            padding: EdgeInsets.zero,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(0, 0, 4, 2),
+              child: Row(
+                spacing: 8,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Icon(
+                      FluentIcons.info,
+                      size: theme.typography.caption!.fontSize! - 2,
+                    ),
                   ),
-                  child: Padding(
-                    padding: EdgeInsets.only(right: padRight ?? 0),
-                    child: child,
+                  Expanded(
+                    child: Text(
+                      '$subtitle',
+                      style: theme.typography.caption!.copyWith(
+                          color:
+                              theme.typography.caption!.color!.withAlpha(150)),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
+          )
+      ],
     );
   }
 }

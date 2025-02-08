@@ -85,8 +85,7 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
                               loading = true;
                               setState(() {});
 
-                              await ScrcpyUtils.killServer(
-                                  ins, ref.read(appPidProvider));
+                              await ScrcpyUtils.killServer(ins);
 
                               loading = false;
                               setState(() {});
@@ -143,7 +142,7 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
 
                       connected = await AdbUtils.connectedDevices(workDir);
 
-                      await AdbUtils.connectWithIp(workDir, ip: ip);
+                      await AdbUtils.connectWithIp(ref, ip: ip);
                     }
 
                     if (mounted) {

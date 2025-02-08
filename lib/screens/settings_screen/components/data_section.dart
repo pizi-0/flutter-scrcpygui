@@ -21,7 +21,7 @@ class _DataSectionState extends ConsumerState<DataSection> {
       children: [
         ConfigCustom(
           childBackgroundColor: Colors.transparent,
-          label: 'Clear preferences',
+          title: 'Clear preferences',
           child: SectionButton(
             ontap: () async {
               showAdaptiveDialog(

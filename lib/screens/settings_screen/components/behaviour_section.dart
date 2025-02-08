@@ -30,7 +30,7 @@ class _AppBehaviourSectionState extends ConsumerState<AppBehaviourSection> {
       children: [
         ConfigCustom(
           childBackgroundColor: Colors.transparent,
-          label: 'Show tray icon',
+          title: 'Show tray icon',
           child: Checkbox(
             value: behaviour.traySupport,
             checkColor: colorScheme.surface,
@@ -54,7 +54,7 @@ class _AppBehaviourSectionState extends ConsumerState<AppBehaviourSection> {
         ),
         ConfigCustom(
           childBackgroundColor: Colors.transparent,
-          label: 'Quitting kill instances with no window',
+          title: 'Quitting kill instances with no window',
           child: Checkbox(
             value: behaviour.traySupport,
             checkColor: colorScheme.surface,
