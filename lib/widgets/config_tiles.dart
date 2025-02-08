@@ -1,6 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
@@ -28,6 +29,11 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = FluentTheme.of(context);
+    final showinfo = ref.watch(configScreenShowInfo);
+
+    final subColor = theme.brightness == Brightness.dark
+        ? theme.cardColor.lighten(5)
+        : theme.cardColor.lighten(50);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,10 +53,11 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
                 .toList(),
           ),
         ),
-        if (subtitle != null)
+        if (subtitle != null && showinfo)
           Card(
             margin: const EdgeInsets.fromLTRB(16, 0, 14, 10),
             padding: EdgeInsets.zero,
+            backgroundColor: subColor,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 4, 2),
               child: Row(
@@ -103,6 +110,11 @@ class ConfigDropdownOthers extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = FluentTheme.of(context);
+    final showinfo = ref.watch(configScreenShowInfo);
+
+    final subColor = theme.brightness == Brightness.dark
+        ? theme.cardColor.lighten(5)
+        : theme.cardColor.lighten(50);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -117,9 +129,10 @@ class ConfigDropdownOthers extends ConsumerWidget {
             items: items,
           ),
         ),
-        if (subtitle != null)
+        if (subtitle != null && showinfo)
           Card(
             margin: const EdgeInsets.fromLTRB(16, 0, 14, 10),
+            backgroundColor: subColor,
             padding: EdgeInsets.zero,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 4, 2),
@@ -171,6 +184,11 @@ class ConfigUserInput extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = FluentTheme.of(context);
+    final showinfo = ref.watch(configScreenShowInfo);
+
+    final subColor = theme.brightness == Brightness.dark
+        ? theme.cardColor.lighten(5)
+        : theme.cardColor.lighten(50);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -193,9 +211,10 @@ class ConfigUserInput extends ConsumerWidget {
             ),
           ),
         ),
-        if (subtitle != null)
+        if (subtitle != null && showinfo)
           Card(
             margin: const EdgeInsets.fromLTRB(16, 0, 14, 10),
+            backgroundColor: subColor,
             padding: EdgeInsets.zero,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 4, 2),
@@ -247,6 +266,11 @@ class ConfigCustom extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = FluentTheme.of(context);
+    final showinfo = ref.watch(configScreenShowInfo);
+
+    final subColor = theme.brightness == Brightness.dark
+        ? theme.cardColor.lighten(5)
+        : theme.cardColor.lighten(50);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,10 +280,11 @@ class ConfigCustom extends ConsumerWidget {
           title: Text(title).textStyle(theme.typography.body),
           trailing: child,
         ),
-        if (subtitle != null)
+        if (subtitle != null && showinfo)
           Card(
             margin: const EdgeInsets.fromLTRB(16, 0, 14, 10),
             padding: EdgeInsets.zero,
+            backgroundColor: subColor,
             child: Padding(
               padding: const EdgeInsets.fromLTRB(0, 0, 4, 2),
               child: Row(

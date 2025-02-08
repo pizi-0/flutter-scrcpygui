@@ -202,8 +202,10 @@ class _FlUIMainScreenState extends ConsumerState<FlUIMainScreen>
 
     ref.read(scrcpyInstanceProvider.notifier).ref.listenSelf((a, b) async {
       if (!listEquals(a, b)) {
-        await trayManager.destroy();
-        await TrayUtils.initTray(ref, context);
+        if (mounted) {
+          await trayManager.destroy();
+          await TrayUtils.initTray(ref, context);
+        }
       }
     });
 

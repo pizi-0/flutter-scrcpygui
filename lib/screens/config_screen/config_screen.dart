@@ -27,6 +27,7 @@ import '../../utils/scrcpy_utils.dart';
 import '../../widgets/close_dialog.dart';
 
 final configScreenConfig = StateProvider<ScrcpyConfig?>((ref) => null);
+final configScreenShowInfo = StateProvider((ref) => false);
 
 class ConfigScreen extends ConsumerStatefulWidget {
   const ConfigScreen({super.key});
@@ -109,6 +110,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig)!;
     final selectedDevice = ref.watch(selectedDeviceProvider);
+    final showInfo = ref.watch(configScreenShowInfo);
 
     return PopScope(
       canPop: false,
@@ -121,6 +123,27 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
               child: Icon(FluentIcons.back),
             ),
           ),
+          actions: Align(
+            alignment: Alignment.centerRight,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 16.0),
+              child: Row(
+                spacing: 8,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Info'),
+                  Checkbox(
+                    checked: showInfo,
+                    onChanged: (v) {
+                      ref
+                          .read(configScreenShowInfo.notifier)
+                          .update((state) => !state);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
           title: DragToMoveArea(child: Text(selectedConfig.configName)),
         ),
         pane: NavigationPane(
@@ -128,6 +151,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
           size: const NavigationPaneSize(compactWidth: 0),
           toggleable: false,
           displayMode: PaneDisplayMode.compact,
+          selected: 0,
           items: [
             PaneItem(
               icon: const SizedBox(),

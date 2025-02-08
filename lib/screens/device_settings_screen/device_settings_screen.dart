@@ -102,6 +102,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
         size: const NavigationPaneSize(compactWidth: 0),
         menuButton: const SizedBox(),
         toggleable: false,
+        selected: 0,
         items: [
           PaneItem(
             icon: const SizedBox(),

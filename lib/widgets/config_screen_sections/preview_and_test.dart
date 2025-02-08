@@ -88,9 +88,10 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                 ],
               ),
               Card(
+                  backgroundColor: theme.cardColor.lighten(80),
                   child: Text(
-                'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice!, customName: '[TEST] ${selectedConfig.configName}').join(' ')}',
-              )),
+                    'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice!, customName: '[TEST] ${selectedConfig.configName}').join(' ')}',
+                  )),
               Row(
                 children: [
                   Expanded(
@@ -138,7 +139,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                         setState(() {});
                       },
                       child: !isTestRunning
-                          ? const Text('Test config')
+                          ? const Text('Test config').textColor(Colors.white)
                           : const Text('Stop').textColor(Colors.white).bold(),
                     ),
                   ),

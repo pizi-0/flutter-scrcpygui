@@ -73,19 +73,27 @@ class _MyAppState extends ConsumerState<MyApp> {
       theme: FluentThemeData(
         accentColor: color,
         navigationPaneTheme: NavigationPaneThemeData(
-          backgroundColor: color.lighten(85),
+          backgroundColor: color.lighten(95),
+          overlayBackgroundColor: color.lighten(95),
         ),
-        cardColor: color.lighten(85),
-        menuColor: color.lighten(85),
+        cardColor: color.lighten(95),
+        scaffoldBackgroundColor: color.lighten(100),
+        menuColor: color.lighten(95),
+        // cardColor: color.darken(90),
+        // micaBackgroundColor: color.darken(90),
       ),
       darkTheme: FluentThemeData(
         brightness: Brightness.dark,
         accentColor: color,
         navigationPaneTheme: NavigationPaneThemeData(
           backgroundColor: color.darken(90),
+          overlayBackgroundColor: color.darken(90),
         ),
-        menuColor: color.darken(90),
-        cardColor: color.darken(90),
+
+        cardColor: const ResourceDictionary.dark()
+            .layerOnMicaBaseAltFillColorSecondary,
+        menuColor: color.darken(60),
+        // cardColor: color.darken(90),
         micaBackgroundColor: color.darken(80),
       ),
       themeMode: mode,
