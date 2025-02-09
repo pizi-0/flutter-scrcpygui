@@ -5,12 +5,13 @@ import 'package:bonsoir/bonsoir.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:multicast_dns/multicast_dns.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/bonsoir_devices.dart';
 import 'package:scrcpygui/utils/adb/adb_utils.dart';
-import 'package:scrcpygui/utils/bonsoir_utils.dart';
+import 'package:uuid/uuid.dart';
 
 class WifiScanner extends ConsumerStatefulWidget {
   const WifiScanner({super.key});
@@ -37,9 +38,21 @@ class _WifiScannerState extends ConsumerState<WifiScanner> {
                 padding: EdgeInsets.all(8.0),
                 child: Icon(FluentIcons.q_r_code),
               ),
-              onPressed: () {
-                showDialog(
-                    context: context, builder: (context) => WifiQrPairing());
+              onPressed: () async {
+                final res = await showDialog(
+                  barrierDismissible: true,
+                  context: context,
+                  builder: (context) => const WifiQrPairing(),
+                );
+
+                displayInfoBar(
+                  context,
+                  builder: (context, close) => ((res as bool?) == null)
+                      ? const InfoBar(title: Text('Pairing cancelled'))
+                      : (res as bool)
+                          ? const InfoBar(title: Text('Pairing successful'))
+                          : const InfoBar(title: Text('Pairing failed')),
+                );
               },
             ),
           ],
@@ -174,6 +187,15 @@ class _BdTileState extends ConsumerState<BdTile> {
                           title: 'Failed',
                           content: [
                             Text(res.errorMessage.capitalizeFirst),
+                            const Text(
+                                'Make sure your device is paired to your PC\'s adb.'),
+                            const Text(
+                                'Otherwise, try turning wireless Adb off and on.'),
+                            const Text('\nIf not paired:'),
+                            const Text(
+                                '1. Right click on the device and click pair and follow the instructions, or,'),
+                            const Text(
+                                '2. Plug you device into your PC, allow debugging, and retry.'),
                           ],
                         ),
                       );
@@ -221,51 +243,147 @@ class WifiQrPairing extends ConsumerStatefulWidget {
 }
 
 class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
-  late BonsoirDiscovery discovery;
+  final String id = const Uuid().v1();
+  bool loading = false;
+  late Stream stream;
+
   @override
   void initState() {
-    discovery = BonsoirDiscovery(type: '_adb-tls-pairing._tcp');
-    BonsoirUtils.startPairingDiscovery(discovery, ref);
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (a) {
+        _startScan();
+      },
+    );
   }
 
   @override
   void dispose() {
-    discovery.stop();
     super.dispose();
+  }
+
+  _startScan() async {
+    MDnsClient client = MDnsClient();
+
+    await client.start();
+    debugPrint('Start scan for device to pair');
+
+    stream = client.lookup<PtrResourceRecord>(
+        ResourceRecordQuery.serverPointer('_adb-tls-pairing._tcp'),
+        timeout: 180.seconds);
+
+    final res = await stream.first;
+
+    client.stop();
+
+    if (mounted) {
+      loading = true;
+      setState(() {});
+    }
+
+    debugPrint('Start pairing');
+
+    final pairRes = await AdbUtils.pairWithCode(
+        res.domainName.replaceAll('._adb-tls-pairing._tcp.local', ''),
+        'scrcpygui',
+        ref);
+
+    Navigator.pop(context, pairRes.contains('Successfully paired to'));
   }
 
   @override
   Widget build(BuildContext context) {
-    final pairingDevice = ref.watch(pairingDeviceProvider);
-
-    for (final i in pairingDevice) {
-      print(i.name);
-    }
-
     return ContentDialog(
-      title: Text('Pair device'),
+      title: const Text('Pair device'),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         spacing: 10,
         children: [
-          Text(
+          const Text(
               '[Developer option] > [Wireless debugging] > [Pair device with QR code]'),
           Center(
-            child: QrImageView(
-              data: 'WIFI:T:ADB;S:ADB_WIFI_Scrcpygui;P:scrcpygui;',
-              size: 200,
-              backgroundColor: Colors.white,
+            child: SizedBox(
+              height: 200,
+              width: 200,
+              child: Stack(
+                children: [
+                  QrImageView(
+                    data: 'WIFI:T:ADB;S:ADB_WIFI_$id;P:scrcpygui;',
+                    size: 200,
+                    backgroundColor: Colors.white,
+                  ),
+                  if (loading)
+                    SizedBox.expand(
+                      child: Container(
+                        color: Colors.grey.withAlpha(200),
+                        child: const Center(
+                          child: ProgressRing(),
+                        ),
+                      ),
+                    )
+                ],
+              ),
             ),
           ),
         ],
       ),
       actions: [
         Button(
-          child: Text('Close'),
-          onPressed: () {},
+          child: const Text('Close'),
+          onPressed: () => Navigator.pop(context),
         )
+      ],
+    );
+  }
+}
+
+class PairDialog extends ConsumerStatefulWidget {
+  final BonsoirService service;
+  const PairDialog({super.key, required this.service});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _PairDialogState();
+}
+
+class _PairDialogState extends ConsumerState<PairDialog> {
+  bool loading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return ContentDialog(
+      title: const Text('Pairing'),
+      content: loading
+          ? const Center(child: ProgressRing())
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              spacing: 2,
+              children: [
+                Text('Attempting to pair with ${widget.service.name}'),
+                const Text('\nInstruction:'),
+                const Text(
+                    'Go to [Developer options] > [Wireless debugging] > [Pair device with pairing code]'),
+                const SizedBox(height: 10),
+                TextBox(
+                  placeholder: 'Insert code and press [Enter]',
+                  onSubmitted: (value) async {
+                    loading = true;
+                    setState(() {});
+                    await AdbUtils.pairWithCode(
+                        widget.service.name, value.trim(), ref);
+
+                    await AdbUtils.connectWithMdns(ref,
+                        id: widget.service.name);
+
+                    loading = false;
+                    setState(() {});
+                  },
+                ),
+              ],
+            ),
+      actions: [
+        Button(child: const Text('Cancel'), onPressed: () {}),
       ],
     );
   }

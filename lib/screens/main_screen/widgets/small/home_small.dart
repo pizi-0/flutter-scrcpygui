@@ -262,7 +262,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                       await AdbUtils.disconnectWirelessDevice(
                           workDir, widget.device);
                     } on Exception catch (e) {
-                      print(e.toString());
+                      debugPrint(e.toString());
                     }
 
                     if (mounted) {
@@ -287,7 +287,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
 
                     await AdbUtils.connectWithIp(ref, ipport: '$ip:5555');
                   } on Exception catch (e) {
-                    print(e.toString());
+                    debugPrint(e.toString());
                   }
 
                   if (mounted) {

@@ -187,8 +187,6 @@ class AdbUtils {
       },
     );
 
-    print(res);
-
     //stop unauth
     if (res.stdout.toString().contains('authenticate')) {
       logger.i('Unauthenticated, check phone');
@@ -218,8 +216,42 @@ class AdbUtils {
     }
   }
 
-  //wireles pair
-  static Future<void> pairWithQr() async {}
+  //wireless pair
+  static Future<String> pairWithCode(
+      String deviceName, String code, WidgetRef ref) async {
+    final workDir = ref.read(execDirProvider);
+
+    await Process.run(
+      Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+      ['kill-server'],
+      workingDirectory: workDir,
+    );
+
+    await Process.run(
+      Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+      ['start-server'],
+      workingDirectory: workDir,
+    );
+
+    final res = await Process.run(
+      Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+      ['pair', deviceName, code],
+      workingDirectory: workDir,
+    );
+
+    debugPrint(res.stdout);
+
+    return res.stdout;
+  }
+
+  static Future<void> pairWithQr(
+      String deviceName, String code, WidgetRef ref) async {
+    final workDir = ref.read(execDirProvider);
+
+    await Process.run(Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+        ['pair', deviceName, code],
+        workingDirectory: workDir);
+  }
 
   static Future<String> getIpForUSB(String workDir, AdbDevices dev) async {
     String? ip;

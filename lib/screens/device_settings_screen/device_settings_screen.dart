@@ -189,9 +189,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                                   child: ComboBox(
                                     placeholder: const Text('Do nothing'),
                                     value: null,
-                                    onChanged: (value) {
-                                      print(value!.id);
-                                    },
+                                    onChanged: (value) {},
                                     items: allconfigs
                                         .map(
                                           (c) => ComboBoxItem(
