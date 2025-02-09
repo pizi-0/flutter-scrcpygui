@@ -138,17 +138,17 @@ class AdbUtils {
 
   //using ip
   static Future<WiFiResult> connectWithIp(WidgetRef ref,
-      {required String ip}) async {
+      {required String ipport}) async {
     final workDir = ref.read(execDirProvider);
     ProcessResult? res;
 
     res = await Process.run(Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-            ['connect', '$ip:5555'],
+            ['connect', ipport],
             workingDirectory: workDir)
         .timeout(
       30.seconds,
       onTimeout: () {
-        logger.i('Connecting $ip, timed-out');
+        logger.i('Connecting $ipport, timed-out');
         return ProcessResult(pid, exitCode, 'timed-out', stderr);
       },
     );
@@ -157,7 +157,7 @@ class AdbUtils {
     if (res.stdout.toString().contains('authenticate')) {
       logger.i('Unauthenticated, check phone');
       await Process.run(Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-          ['disconnect', '$ip:5555'],
+          ['disconnect', ipport],
           workingDirectory: workDir);
 
       return WiFiResult(success: false, errorMessage: res.stdout);
@@ -172,7 +172,7 @@ class AdbUtils {
 
   //using mdns
   static Future<WiFiResult> connectWithMdns(WidgetRef ref,
-      {required String id}) async {
+      {required String id, String? ipPort}) async {
     final workDir = ref.read(execDirProvider);
     ProcessResult? res;
 
@@ -186,6 +186,8 @@ class AdbUtils {
         return ProcessResult(pid, exitCode, 'timed-out', stderr);
       },
     );
+
+    print(res);
 
     //stop unauth
     if (res.stdout.toString().contains('authenticate')) {
@@ -215,6 +217,9 @@ class AdbUtils {
       logger.e('Error setting tcp 5555 for $id', error: e);
     }
   }
+
+  //wireles pair
+  static Future<void> pairWithQr() async {}
 
   static Future<String> getIpForUSB(String workDir, AdbDevices dev) async {
     String? ip;

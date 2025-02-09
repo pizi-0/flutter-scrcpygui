@@ -142,7 +142,7 @@ class _DeviceListtileState extends ConsumerState<DeviceListtile> {
 
                       connected = await AdbUtils.connectedDevices(workDir);
 
-                      await AdbUtils.connectWithIp(ref, ip: ip);
+                      await AdbUtils.connectWithIp(ref, ipport: '$ip:5555');
                     }
 
                     if (mounted) {

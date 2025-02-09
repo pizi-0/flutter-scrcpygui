@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/main.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
 import 'package:scrcpygui/screens/main_screen/widgets/small/home.dart';
+import 'package:scrcpygui/screens/main_screen/widgets/small/wifi_adb_small.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -168,7 +169,7 @@ class _FlUIMainScreenState extends ConsumerState<FlUIMainScreen>
               PaneItem(
                 icon: const Icon(FluentIcons.link),
                 title: const Text('Connect'),
-                body: const Text('Connect'),
+                body: const WifiScanner(),
               ),
             ],
             footerItems: [

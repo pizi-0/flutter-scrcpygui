@@ -35,8 +35,7 @@ class AutomationUtils {
 
       if (t.id.isIpv4 || t.id.isIpv6) {
         if (!connected.contains(t)) {
-          AdbUtils.connectWithIp(ref,
-              ip: t.id.replaceRange(t.id.lastIndexOf(':'), t.id.length, ''));
+          AdbUtils.connectWithIp(ref, ipport: t.id);
         }
       }
     }

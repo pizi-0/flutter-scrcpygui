@@ -285,7 +285,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
 
                     await AdbUtils.tcpip5555(workDir, widget.device.id);
 
-                    await AdbUtils.connectWithIp(ref, ip: ip);
+                    await AdbUtils.connectWithIp(ref, ipport: '$ip:5555');
                   } on Exception catch (e) {
                     print(e.toString());
                   }

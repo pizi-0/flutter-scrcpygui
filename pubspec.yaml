@@ -60,11 +60,11 @@ dependencies:
   logger: ^2.5.0
   bonsoir: ^5.1.10
   fpdart: ^1.1.1
-  ffi: ^2.1.3
   archive: ^4.0.2
-  win32: ^5.10.1
   fluent_ui: ^4.10.0
   keymap: ^0.0.92
+  qr_flutter: ^4.1.0
+  multicast_dns: ^0.3.2+8
   # circular_reveal_animation: ^2.0.1
 
 dev_dependencies:

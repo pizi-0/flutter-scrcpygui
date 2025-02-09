@@ -28,3 +28,31 @@ class BonsoirNotifier extends Notifier<List<BonsoirService>> {
 final bonsoirDeviceProvider =
     NotifierProvider<BonsoirNotifier, List<BonsoirService>>(
         () => BonsoirNotifier());
+
+class BonsoirPairingNotifier extends Notifier<List<BonsoirService>> {
+  @override
+  build() {
+    return [];
+  }
+
+  addService(BonsoirService service) {
+    final newstate = state;
+
+    newstate.removeWhere((e) => e.name == service.name);
+    newstate.add(service);
+
+    state = [...newstate];
+  }
+
+  removeService(BonsoirService service) {
+    final newstate = state;
+
+    newstate.removeWhere((e) => e.name == service.name);
+
+    state = [...newstate];
+  }
+}
+
+final pairingDeviceProvider =
+    NotifierProvider<BonsoirPairingNotifier, List<BonsoirService>>(
+        () => BonsoirPairingNotifier());
