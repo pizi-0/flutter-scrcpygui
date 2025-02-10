@@ -31,8 +31,9 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                 title: 'Theme mode',
                 child: ComboBox(
                   value: looks.themeMode,
-                  onChanged: (ThemeMode? mode) {
+                  onChanged: (ThemeMode? mode) async {
                     ref.read(settingsProvider.notifier).changeThememode(mode!);
+                    await AppUtils.saveAppSettings(ref.read(settingsProvider));
                   },
                   items: const [
                     ComboBoxItem(

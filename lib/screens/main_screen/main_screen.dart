@@ -136,7 +136,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
                       padding: EdgeInsets.all(8.0),
                       child: Icon(FluentIcons.sunny),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       final mode = ref
                           .read(settingsProvider.select((sett) => sett.looks))
                           .themeMode;
@@ -149,6 +149,8 @@ class _MainScreenState extends ConsumerState<MainScreen>
                             .read(settingsProvider.notifier)
                             .changeThememode(ThemeMode.dark);
                       }
+                      await AppUtils.saveAppSettings(
+                          ref.read(settingsProvider));
                     },
                   ),
                 ),
