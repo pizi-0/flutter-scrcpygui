@@ -91,8 +91,9 @@ class AppUtils {
         builder: (context) => const QuitDialog(),
       );
     } else {
+      await windowManager.isPreventClose();
       await windowManager.setPreventClose(false);
-      windowManager.destroy();
+      await windowManager.destroy();
     }
   }
 

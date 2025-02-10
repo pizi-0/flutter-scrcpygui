@@ -127,22 +127,8 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                                       focusNode: textBox,
                                       placeholder: dev.name,
                                       controller: namecontroller,
-                                      onChanged: (value) {
-                                        namecontroller.value = TextEditingValue(
-                                          text: value.toUpperCase(),
-                                          selection: namecontroller.selection,
-                                        );
-                                      },
-                                      onSubmitted: (v) async {
-                                        dev =
-                                            dev.copyWith(name: v.toUpperCase());
-                                        ref
-                                            .read(savedAdbDevicesProvider
-                                                .notifier)
-                                            .addEditDevices(dev);
-                                        await AdbUtils.saveAdbDevice(
-                                            ref.read(savedAdbDevicesProvider));
-                                      },
+                                      onChanged: _toAllCaps,
+                                      onSubmitted: _onTextBoxSubmit,
                                     ),
                                   ),
                                 ),
@@ -152,53 +138,25 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                                     title: 'Auto-connect',
                                     child: ToggleSwitch(
                                       checked: autoConnect,
-                                      onChanged: (v) async {
-                                        List<AutomationAction>
-                                            currentAutomation =
-                                            dev.automationData?.actions ?? [];
-
-                                        if (autoConnect) {
-                                          currentAutomation.remove(
-                                              AutomationAction(
-                                                  type:
-                                                      ActionType.autoconnect));
-                                        } else {
-                                          currentAutomation.add(
-                                              AutomationAction(
-                                                  type:
-                                                      ActionType.autoconnect));
-                                        }
-                                        dev = dev.copyWith(
-                                            automationData: AutomationData(
-                                                actions: currentAutomation));
-
-                                        ref
-                                            .read(savedAdbDevicesProvider
-                                                .notifier)
-                                            .addEditDevices(dev);
-                                        await AdbUtils.saveAdbDevice(
-                                            ref.read(savedAdbDevicesProvider));
-
-                                        setState(() {});
-                                      },
+                                      onChanged: _onAutoConnectToggled,
                                     ),
                                   ),
                                 const Divider(),
                                 ConfigCustom(
                                   title: 'On connected',
                                   child: ComboBox(
-                                    placeholder: const Text('Do nothing'),
-                                    value: null,
-                                    onChanged: (value) {},
-                                    items: allconfigs
-                                        .map(
-                                          (c) => ComboBoxItem(
-                                            value: c,
-                                            child: Text(c.configName),
-                                          ),
-                                        )
-                                        .toList(),
-                                  ),
+                                      placeholder: const Text('Do nothing'),
+                                      value: ddValue,
+                                      onChanged: _onConnectConfig,
+                                      items: [
+                                        const ComboBoxItem(
+                                          value: DO_NOTHING,
+                                          child: Text('Do nothing'),
+                                        ),
+                                        ...allconfigs.map((c) => ComboBoxItem(
+                                            value: c.id,
+                                            child: Text(c.configName)))
+                                      ]),
                                 ),
                               ],
                             ),
@@ -223,6 +181,65 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
         ],
       ),
     );
+  }
+
+  void _onConnectConfig(value) async {
+    List<AutomationAction> currentAutomation =
+        dev.automationData?.actions ?? [];
+
+    if (ddValue == DO_NOTHING) {
+      currentAutomation
+          .add(AutomationAction(type: ActionType.launchConfig, action: value));
+
+      dev = dev.copyWith(
+          automationData: AutomationData(actions: currentAutomation));
+    } else {
+      currentAutomation.removeWhere((e) => e.type == ActionType.launchConfig);
+      dev = dev.copyWith(
+          automationData: AutomationData(actions: currentAutomation));
+    }
+
+    ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
+    await AdbUtils.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+
+    ddValue = value;
+    setState(() {});
+  }
+
+  void _toAllCaps(value) {
+    namecontroller.value = TextEditingValue(
+      text: value.toUpperCase(),
+      selection: namecontroller.selection,
+    );
+  }
+
+  void _onTextBoxSubmit(value) async {
+    dev = dev.copyWith(name: value.toUpperCase());
+    ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
+    await AdbUtils.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+  }
+
+  void _onAutoConnectToggled(value) async {
+    final autoConnect = (dev.automationData?.actions
+                .where((a) => a.type == ActionType.autoconnect) ??
+            [])
+        .isNotEmpty;
+
+    List<AutomationAction> currentAutomation =
+        dev.automationData?.actions ?? [];
+
+    if (autoConnect) {
+      currentAutomation.remove(AutomationAction(type: ActionType.autoconnect));
+    } else {
+      currentAutomation.add(AutomationAction(type: ActionType.autoconnect));
+    }
+    dev = dev.copyWith(
+        automationData: AutomationData(actions: currentAutomation));
+
+    ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
+    await AdbUtils.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+
+    setState(() {});
   }
 
   _onLoseFocus() {

@@ -198,7 +198,9 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
         await AdbUtils.disconnectWirelessDevice(workDir, d);
       }
     }
+    await windowManager.isPreventClose();
     await windowManager.setPreventClose(false);
     await windowManager.destroy();
+    exit(0);
   }
 }

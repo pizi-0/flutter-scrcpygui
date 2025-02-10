@@ -207,8 +207,7 @@ class _CopyButtonState extends State<CopyButton> {
           // ignore: use_build_context_synchronously
           context,
           builder: (context, close) => const Card(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            backgroundColor: Colors.grey,
+            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
             child: InfoLabel.rich(
               label: TextSpan(text: 'Copied'),
             ),

@@ -172,9 +172,11 @@ class AdbUtils {
 
   //using mdns
   static Future<WiFiResult> connectWithMdns(WidgetRef ref,
-      {required String id, String? ipPort}) async {
+      {required String id, required String from}) async {
     final workDir = ref.read(execDirProvider);
     ProcessResult? res;
+
+    debugPrint('Connecting $id from $from');
 
     res = await Process.run(
             Platform.isWindows ? '$workDir\\adb.exe' : eadb, ['connect', id],
@@ -199,7 +201,8 @@ class AdbUtils {
 
     return WiFiResult(
       success: !res.stdout.toString().contains('failed') &&
-          !res.stdout.toString().contains('timed-out'),
+          !res.stdout.toString().contains('timed-out') &&
+          !res.stdout.toString().contains('cannot resolve host'),
       errorMessage: res.stdout,
     );
   }
@@ -221,17 +224,24 @@ class AdbUtils {
       String deviceName, String code, WidgetRef ref) async {
     final workDir = ref.read(execDirProvider);
 
-    await Process.run(
-      Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-      ['kill-server'],
-      workingDirectory: workDir,
-    );
+    //for some reason this is not needed in windows
+    if (Platform.isLinux) {
+      final kill = await Process.run(
+        Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+        ['kill-server'],
+        workingDirectory: workDir,
+      );
 
-    await Process.run(
-      Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-      ['start-server'],
-      workingDirectory: workDir,
-    );
+      debugPrint('kill-server\nOut: ${kill.stdout},\nErr: ${kill.stderr}');
+    }
+
+    // final start = await Process.run(
+    //   Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+    //   ['start-server'],
+    //   workingDirectory: workDir,
+    // );
+
+    // print('start-server\nOut: ${start.stdout},\nErr: ${start.stderr}');
 
     final res = await Process.run(
       Platform.isWindows ? '$workDir\\adb.exe' : eadb,
@@ -239,7 +249,7 @@ class AdbUtils {
       workingDirectory: workDir,
     );
 
-    debugPrint(res.stdout);
+    debugPrint('Out: ${res.stdout},\nErr: ${res.stderr}');
 
     return res.stdout;
   }

@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -163,31 +162,14 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 2),
                           children: [
-                            Row(
-                              children: [
-                                Card(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 4, vertical: 6),
-                                  child: const Text('* Device-specific')
-                                      .fontSize(10)
-                                      .italic(),
-                                ),
-                              ],
-                            ),
-                            const ModeConfig(),
-                            if (selectedConfig.scrcpyMode !=
-                                ScrcpyMode.audioOnly)
-                              const VideoConfig(),
-                            if (selectedConfig.scrcpyMode !=
-                                ScrcpyMode.videoOnly)
-                              const AudioConfig(),
-                            const DeviceConfig(),
-                            const WindowConfig(),
-                            const AdditionalFlagsConfig(),
-                            const SizedBox(height: 30),
-                            const Divider(),
-                            const PreviewAndTest(),
-                            const SizedBox(height: 50),
+                            Center(
+                              child: Wrap(
+                                direction: Axis.horizontal,
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: mobileList(selectedConfig),
+                              ),
+                            )
                           ],
                         ),
             ),
@@ -195,5 +177,28 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
         ),
       ),
     );
+  }
+
+  List<Widget> mobileList(ScrcpyConfig selectedConfig) {
+    return [
+      const SizedBox(width: appWidth, child: ModeConfig()),
+      if (selectedConfig.scrcpyMode != ScrcpyMode.audioOnly)
+        const SizedBox(width: appWidth, child: VideoConfig()),
+      if (selectedConfig.scrcpyMode != ScrcpyMode.videoOnly)
+        const SizedBox(width: appWidth, child: AudioConfig()),
+      const SizedBox(width: appWidth, child: DeviceConfig()),
+      const SizedBox(width: appWidth, child: WindowConfig()),
+      const SizedBox(width: appWidth, child: AdditionalFlagsConfig()),
+      const SizedBox(
+          width: appWidth,
+          child: Column(
+            children: [
+              SizedBox(height: 30),
+              Divider(),
+              PreviewAndTest(),
+              SizedBox(height: 30),
+            ],
+          )),
+    ];
   }
 }

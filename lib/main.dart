@@ -15,8 +15,8 @@ void main() async {
   await windowManager.ensureInitialized();
 
   WindowOptions windowOptions = const WindowOptions(
-    size: Size(450, 590),
-    minimumSize: Size(450, 590),
+    size: Size(500, 500),
+    minimumSize: Size(500, 500),
     center: true,
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.hidden,
@@ -80,7 +80,7 @@ class _MyAppState extends ConsumerState<MyApp> {
         scaffoldBackgroundColor: color.lighten(100),
         menuColor: color.lighten(95),
         // cardColor: color.darken(90),
-        // micaBackgroundColor: color.darken(90),
+        micaBackgroundColor: color.lighten(80),
       ),
       darkTheme: FluentThemeData(
         brightness: Brightness.dark,

@@ -9,6 +9,7 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/video_options.dart
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/window_options.dart';
 import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
 import 'package:scrcpygui/models/settings_model/app_settings.dart';
+import 'package:scrcpygui/screens/device_settings_screen/device_settings_screen.dart';
 
 import '../models/scrcpy_related/scrcpy_config.dart';
 import '../models/scrcpy_related/scrcpy_enum.dart';
@@ -110,6 +111,9 @@ final ScrcpyConfig newConfig = ScrcpyConfig(
       ? Platform.environment['HOME']
       : '${Platform.environment['HOMEDRIVE']}\\${Platform.environment['HOMEPATH']}',
 );
+
+final ScrcpyConfig doNothing =
+    newConfig.copyWith(configName: DO_NOTHING, id: DO_NOTHING);
 
 final ScrcpyConfig defaultRecord = ScrcpyConfig(
   id: 'default-record',

@@ -28,7 +28,8 @@ class AutomationUtils {
       if (t.id.contains(adbMdns)) {
         if (bonsoirDevices.where((bd) => t.id.contains(bd.name)).isNotEmpty) {
           if (!connected.contains(t)) {
-            AdbUtils.connectWithMdns(ref, id: t.id);
+            AdbUtils.connectWithMdns(ref,
+                id: t.id.replaceAll('.$adbMdns', ''), from: 'autconnect');
           }
         }
       }

@@ -4,7 +4,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
-import 'package:scrcpygui/screens/main_screen/flui_main_screen.dart';
+import 'package:scrcpygui/screens/main_screen/main_screen.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
@@ -27,8 +27,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _init().then((value) {
-        Navigator.pushReplacement(context,
-            FluentPageRoute(builder: (context) => const FlUIMainScreen()));
+        Navigator.pushReplacement(
+            context, FluentPageRoute(builder: (context) => const MainScreen()));
       });
     });
   }

@@ -47,11 +47,15 @@ class _WifiScannerState extends ConsumerState<WifiScanner> {
 
                 displayInfoBar(
                   context,
-                  builder: (context, close) => ((res as bool?) == null)
-                      ? const InfoBar(title: Text('Pairing cancelled'))
-                      : (res as bool)
-                          ? const InfoBar(title: Text('Pairing successful'))
-                          : const InfoBar(title: Text('Pairing failed')),
+                  builder: (context, close) => Card(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    child: ((res as bool?) == null)
+                        ? InfoLabel(label: 'Pairing cancelled')
+                        : (res as bool)
+                            ? InfoLabel(label: 'Pairing successful')
+                            : InfoLabel(label: 'Pairing failed'),
+                  ),
                 );
               },
             ),
@@ -161,49 +165,48 @@ class _BdTileState extends ConsumerState<BdTile> {
               : () async {
                   loading = true;
                   setState(() {});
-
                   final res = await AdbUtils.connectWithMdns(ref,
-                      id: bd.name,
-                      ipPort: '${bd.toJson()['service.host']}:${bd.port}');
+                      id: bd.name, from: 'device tile');
 
-                  if (!res.success) {
-                    if (res.errorMessage
-                        .toLowerCase()
-                        .contains('unauthenticated')) {
-                      showDialog(
-                        context: context,
-                        builder: (context) => const ErrorDialog(
-                          title: 'Unauthenticated',
-                          content: [
-                            Text('Check your phone.'),
-                            Text('Click allow debugging.')
-                          ],
-                        ),
-                      );
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) => ErrorDialog(
-                          title: 'Failed',
-                          content: [
-                            Text(res.errorMessage.capitalizeFirst),
-                            const Text(
-                                'Make sure your device is paired to your PC\'s adb.'),
-                            const Text(
-                                'Otherwise, try turning wireless Adb off and on.'),
-                            const Text('\nIf not paired:'),
-                            const Text(
-                                '1. Right click on the device and click pair and follow the instructions, or,'),
-                            const Text(
-                                '2. Plug you device into your PC, allow debugging, and retry.'),
-                          ],
-                        ),
-                      );
+                  if (mounted) {
+                    if (!res.success) {
+                      if (res.errorMessage
+                          .toLowerCase()
+                          .contains('unauthenticated')) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => const ErrorDialog(
+                            title: 'Unauthenticated',
+                            content: [
+                              Text('Check your phone.'),
+                              Text('Click allow debugging.')
+                            ],
+                          ),
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (context) => ErrorDialog(
+                            title: 'Failed',
+                            content: [
+                              Text(res.errorMessage.capitalizeFirst),
+                              const Text(
+                                  'Make sure your device is paired to your PC\'s adb.'),
+                              const Text(
+                                  'Otherwise, try turning wireless Adb off and on.'),
+                              const Text('\nIf not paired:'),
+                              const Text(
+                                  '1. Use the pair windows (top-right button) '),
+                              const Text(
+                                  '2. Plug you device into your PC, allow debugging, and retry.'),
+                            ],
+                          ),
+                        );
+                      }
                     }
+                    loading = false;
+                    setState(() {});
                   }
-
-                  loading = false;
-                  setState(() {});
                 },
         ),
       ),
@@ -243,6 +246,7 @@ class WifiQrPairing extends ConsumerStatefulWidget {
 }
 
 class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
+  late MDnsClient client;
   final String id = const Uuid().v1();
   bool loading = false;
   late Stream stream;
@@ -259,11 +263,14 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
 
   @override
   void dispose() {
+    client.stop();
     super.dispose();
   }
 
   _startScan() async {
-    MDnsClient client = MDnsClient();
+    client = MDnsClient();
+    late PtrResourceRecord? scanResult;
+    late String pairRes;
 
     await client.start();
     debugPrint('Start scan for device to pair');
@@ -272,23 +279,30 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
         ResourceRecordQuery.serverPointer('_adb-tls-pairing._tcp'),
         timeout: 180.seconds);
 
-    final res = await stream.first;
+    scanResult = await stream.first.onError((error, stackTrace) => null);
 
     client.stop();
 
-    if (mounted) {
-      loading = true;
-      setState(() {});
+    if (scanResult != null) {
+      if (mounted) {
+        loading = true;
+        setState(() {});
+      }
+
+      debugPrint('Start pairing');
+
+      pairRes = await AdbUtils.pairWithCode(
+          scanResult.domainName.replaceAll('._adb-tls-pairing._tcp.local', ''),
+          'scrcpygui',
+          ref);
+
+      Navigator.pop(context, pairRes.contains('Successfully paired to'));
+    } else {
+      debugPrint('scan is null');
+      if (mounted) {
+        Navigator.pop(context, false);
+      }
     }
-
-    debugPrint('Start pairing');
-
-    final pairRes = await AdbUtils.pairWithCode(
-        res.domainName.replaceAll('._adb-tls-pairing._tcp.local', ''),
-        'scrcpygui',
-        ref);
-
-    Navigator.pop(context, pairRes.contains('Successfully paired to'));
   }
 
   @override
@@ -373,8 +387,11 @@ class _PairDialogState extends ConsumerState<PairDialog> {
                     await AdbUtils.pairWithCode(
                         widget.service.name, value.trim(), ref);
 
-                    await AdbUtils.connectWithMdns(ref,
-                        id: widget.service.name);
+                    await AdbUtils.connectWithMdns(
+                      ref,
+                      id: widget.service.name,
+                      from: 'pair dialog',
+                    );
 
                     loading = false;
                     setState(() {});
