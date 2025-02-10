@@ -73,10 +73,11 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(FluentIcons.download),
+                      Icon(FluentIcons.download,
+                          color: theme.accentColor.basedOnLuminance()),
                       const Text('Update')
                           .textStyle(theme.typography.caption!)
-                          .textColor(Colors.white),
+                          .textColor(theme.accentColor.basedOnLuminance()),
                     ],
                   ),
           ),

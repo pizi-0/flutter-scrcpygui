@@ -8,10 +8,11 @@ import 'package:bonsoir/bonsoir.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/main.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/main_screen/widgets/small/home.dart';
 import 'package:scrcpygui/screens/main_screen/widgets/small/wifi_adb_small.dart';
+import 'package:scrcpygui/screens/settings_screen/settings_screen.dart';
 import 'package:scrcpygui/screens/update_screen/update_screen.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
@@ -136,12 +137,17 @@ class _MainScreenState extends ConsumerState<MainScreen>
                       child: Icon(FluentIcons.sunny),
                     ),
                     onPressed: () {
-                      final mode = ref.read(tempThemeMode);
+                      final mode = ref
+                          .read(settingsProvider.select((sett) => sett.looks))
+                          .themeMode;
                       if (mode == ThemeMode.dark) {
-                        ref.read(tempThemeMode.notifier).state =
-                            ThemeMode.light;
+                        ref
+                            .read(settingsProvider.notifier)
+                            .changeThememode(ThemeMode.light);
                       } else {
-                        ref.read(tempThemeMode.notifier).state = ThemeMode.dark;
+                        ref
+                            .read(settingsProvider.notifier)
+                            .changeThememode(ThemeMode.dark);
                       }
                     },
                   ),
@@ -186,7 +192,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
               PaneItem(
                 icon: const Icon(FluentIcons.settings),
                 title: const Text('Settings'),
-                body: const Text('Settings'),
+                body: const SettingsScreen(),
               ),
             ],
           ),

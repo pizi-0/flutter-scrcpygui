@@ -1,5 +1,4 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/installed_scrcpy.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
@@ -38,9 +37,11 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
         latest = res;
       }
 
-      setState(() {
-        checkingForUpdate = false;
-      });
+      if (mounted) {
+        setState(() {
+          checkingForUpdate = false;
+        });
+      }
     });
   }
 

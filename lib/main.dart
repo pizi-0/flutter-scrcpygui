@@ -30,9 +30,7 @@ void main() async {
   AppUtils.getAppSettings().then((settings) {
     runApp(
       ProviderScope(
-        child: MyApp(
-          settings: settings,
-        ),
+        child: MyApp(settings: settings),
       ),
     );
   });
@@ -52,9 +50,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((c) async {
-      ref
-          .read(settingsProvider.notifier)
-          .update((state) => state = widget.settings);
+      ref.read(settingsProvider.notifier).setSettings(widget.settings);
     });
   }
 
@@ -65,38 +61,37 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final color = Colors.blue;
-    final mode = ref.watch(tempThemeMode);
+    final looks = ref.watch(settingsProvider.select((sett) => sett.looks));
 
     return FluentApp(
       debugShowCheckedModeBanner: false,
       theme: FluentThemeData(
-        accentColor: color,
+        accentColor: looks.accentColor,
         navigationPaneTheme: NavigationPaneThemeData(
-          backgroundColor: color.lighten(95),
-          overlayBackgroundColor: color.lighten(95),
+          backgroundColor: looks.accentColor.lighten(95),
+          overlayBackgroundColor: looks.accentColor.lighten(95),
         ),
-        cardColor: color.lighten(95),
-        scaffoldBackgroundColor: color.lighten(100),
-        menuColor: color.lighten(95),
-        // cardColor: color.darken(90),
-        micaBackgroundColor: color.lighten(80),
+        cardColor: looks.accentColor.lighten(95),
+        scaffoldBackgroundColor: looks.accentColor.lighten(100),
+        menuColor: looks.accentColor.lighten(95),
+        // cardColor: looks.accentColor.darken(90),
+        micaBackgroundColor: looks.accentColor.lighten(80),
       ),
       darkTheme: FluentThemeData(
         brightness: Brightness.dark,
-        accentColor: color,
+        accentColor: looks.accentColor,
         navigationPaneTheme: NavigationPaneThemeData(
-          backgroundColor: color.darken(90),
-          overlayBackgroundColor: color.darken(90),
+          backgroundColor: looks.accentColor.darken(90),
+          overlayBackgroundColor: looks.accentColor.darken(90),
         ),
 
         cardColor: const ResourceDictionary.dark()
             .layerOnMicaBaseAltFillColorSecondary,
-        menuColor: color.darken(60),
-        // cardColor: color.darken(90),
-        micaBackgroundColor: color.darken(80),
+        menuColor: looks.accentColor.darken(60),
+        // cardColor: looks.accentColor.darken(90),
+        micaBackgroundColor: looks.accentColor.darken(80),
       ),
-      themeMode: mode,
+      themeMode: looks.themeMode,
       home: const SplashScreen(),
     );
   }

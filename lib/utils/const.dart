@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:logger/logger.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
@@ -22,16 +22,16 @@ final List<ScrcpyConfig> defaultConfigs = [
 
 const double appWidth = 450;
 
-const List<DropdownMenuItem> yesno = [
-  DropdownMenuItem(
-    value: true,
-    child: Text('Yes'),
-  ),
-  DropdownMenuItem(
-    value: false,
-    child: Text('No'),
-  ),
-];
+// const List<DropdownMenuItem> yesno = [
+//   DropdownMenuItem(
+//     value: true,
+//     child: Text('Yes'),
+//   ),
+//   DropdownMenuItem(
+//     value: false,
+//     child: Text('No'),
+//   ),
+// ];
 
 final ScrcpyConfig defaultMirror = ScrcpyConfig(
   id: 'default-mirror',
@@ -158,10 +158,10 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
 
 final defaultTheme = AppTheme(
   widgetRadius: 10,
-  color: const Color(0xff00b8d4),
-  brightness: Brightness.dark,
+  accentColor: Colors.blue,
+  themeMode: ThemeMode.dark,
   fromWall: false,
-  tintLevel: ColorTintLevel(),
+  accentTintLevel: 90,
 );
 
 final defaultAppBehaviour = AppBehaviour(

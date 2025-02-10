@@ -47,9 +47,9 @@ class _BdTileState extends ConsumerState<BdTile> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = FluentTheme.of(context);
     final savedDevices = ref.watch(savedAdbDevicesProvider);
     final connectedDevices = ref.watch(adbProvider);
-    final theme = FluentTheme.of(context);
     AdbDevices? device;
     final bd = widget.bonsoirDevice;
     final isSaved =
@@ -76,9 +76,10 @@ class _BdTileState extends ConsumerState<BdTile> {
                     dimension: theme.iconTheme.size! - 4,
                     child: const ProgressRing())
                 : connected
-                    ? const Icon(
+                    ? Icon(
                         FluentIcons.check_mark,
-                        color: Colors.successPrimaryColor,
+                        color: theme.navigationPaneTheme.backgroundColor!
+                            .basedOnLuminance(),
                       )
                     : const Icon(FluentIcons.link),
           ),
