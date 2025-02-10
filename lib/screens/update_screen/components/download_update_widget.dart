@@ -1,9 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/providers/settings_provider.dart';
-import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/update_utils.dart';
 
 class DownloadUpdate extends ConsumerStatefulWidget {
@@ -19,85 +17,71 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
 
   @override
   Widget build(BuildContext context) {
-    final appTheme = ref.watch(settingsProvider).looks;
     final progress = ref.watch(downloadPercentageProvider);
     final status = ref.watch(updateStatusProvider);
+    final theme = FluentTheme.of(context);
 
-    return ConstrainedBox(
-      constraints: const BoxConstraints(
-          maxWidth: appWidth, maxHeight: 30, minHeight: 30),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AnimatedContainer(
-            duration: 200.milliseconds,
-            width: updating ? appWidth - 125 : 0,
-            child: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 4.0),
-                  child: LinearProgressIndicator(
-                    minHeight: 30,
-                    color: Colors.green,
-                    value: progress / 100,
-                    borderRadius:
-                        BorderRadius.circular(appTheme.widgetRadius * 0.6),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (updating)
+          Expanded(
+            flex: 5,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ProgressBar(
+                    strokeWidth: 5,
+                    value: progress,
                   ),
-                ),
-                if (status != '') Center(child: Text(status))
-              ],
+                  Center(
+                      child: Text(status).textStyle(theme.typography.caption)),
+                ],
+              ),
             ),
           ),
-          Expanded(
-            child: Container(
-              clipBehavior: Clip.hardEdge,
-              height: 40,
-              decoration: BoxDecoration(
-                color: updating ? Colors.red : Colors.green,
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () async {
-                    if (!updating) {
-                      dio = Dio();
-                      updating = true;
-                      setState(() {});
-
-                      await UpdateUtils.startUpdateProcess(ref, dio);
-                    }
-                    if (mounted) {
-                      updating = false;
-                      setState(() {});
-                    }
-                    dio.close(force: true);
-                  },
-                  child: updating
-                      ? const Icon(Icons.cancel_outlined, color: Colors.black)
-                      : Center(
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            physics: const NeverScrollableScrollPhysics(),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.download,
-                                        color: Colors.black, size: 18)
-                                    .paddingOnly(right: 4),
-                                const Text('Update')
-                                    .textColor(Colors.black)
-                                    .bold(),
-                              ],
-                            ),
-                          ),
-                        ),
-                ),
-              ),
+        Expanded(
+          child: Button(
+            style: ButtonStyle(
+              padding: const WidgetStatePropertyAll(EdgeInsets.all(8)),
+              backgroundColor: WidgetStatePropertyAll(
+                  updating ? Colors.errorPrimaryColor : theme.accentColor),
+              foregroundColor: const WidgetStatePropertyAll(Colors.white),
             ),
-          )
-        ],
-      ),
+            onPressed: () async {
+              if (!updating) {
+                dio = Dio();
+                updating = true;
+                setState(() {});
+
+                await UpdateUtils.startUpdateProcess(ref, dio);
+              }
+              if (mounted) {
+                updating = false;
+                setState(() {});
+              }
+              dio.close(force: true);
+            },
+            child: updating
+                ? const Padding(
+                    padding: EdgeInsets.all(1.0),
+                    child: Icon(FluentIcons.cancel),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(FluentIcons.download),
+                      const Text('Update')
+                          .textStyle(theme.typography.caption!)
+                          .textColor(Colors.white),
+                    ],
+                  ),
+          ),
+        )
+      ],
     );
   }
 }

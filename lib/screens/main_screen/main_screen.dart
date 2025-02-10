@@ -12,6 +12,7 @@ import 'package:scrcpygui/main.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
 import 'package:scrcpygui/screens/main_screen/widgets/small/home.dart';
 import 'package:scrcpygui/screens/main_screen/widgets/small/wifi_adb_small.dart';
+import 'package:scrcpygui/screens/update_screen/update_screen.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -74,7 +75,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
     }
 
     if (eventName == kWindowEventResize) {
-      await windowManager.setMinimumSize(const Size(500, 500));
+      await windowManager.setMinimumSize(const Size(480, 500));
     }
 
     super.onWindowEvent(eventName);
@@ -177,6 +178,11 @@ class _MainScreenState extends ConsumerState<MainScreen>
               ),
             ],
             footerItems: [
+              PaneItem(
+                icon: const Icon(FluentIcons.movers),
+                title: const Text('Update'),
+                body: const UpdateScreen(),
+              ),
               PaneItem(
                 icon: const Icon(FluentIcons.settings),
                 title: const Text('Settings'),
