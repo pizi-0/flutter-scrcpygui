@@ -35,13 +35,15 @@ Refer [scrcpy](https://github.com/Genymobile/scrcpy?tab=readme-ov-file#get-the-a
 ## Preview
 
 ### Dark
-| Device list  | Wifi ADB discovery | Wifi QR pairing | Scrcpy manager | Config (small) | Config (big)
-| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- 
-| ![alt text](screenshot/dark/1.dev-list.png)  | ![alt text](screenshot/dark/2.scan.png)  | ![alt text](screenshot/dark/3.pair.png) | ![alt text](screenshot/dark/4.manager.png) | ![alt text](screenshot/dark/5.config-small.png) | ![alt text](screenshot/dark/6.config-big.png)
+| Device list  | Wifi ADB discovery | Wifi QR pairing | Scrcpy manager | Config (small) | Config (big) | Config (big, w info)
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | -------------
+| ![alt text](screenshot/dark/1.dev-list.png)  | ![alt text](screenshot/dark/2.scan.png)  | ![alt text](screenshot/dark/3.pair.png) | ![alt text](screenshot/dark/4.manager.png) | ![alt text](screenshot/dark/5.config-small.png) | ![alt text](screenshot/dark/6.config-big.png) | ![alt text](screenshot/dark/7.config-big-info.png)
 
-| Main-Dark  | Main-Light | Running instance | Settings | Config
-| ------------- | ------------- | ------------- | ------------- | -------------
-| ![alt text](screenshot/1-maindark.png)  | ![alt text](screenshot/2-mainlight.png)  | ![alt text](screenshot/3-runninginstance.png) | ![alt text](screenshot/4-settings.png) | ![alt text](screenshot/5-config.png)
+### Light
+
+| Device list  | Wifi ADB discovery | Wifi QR pairing | Scrcpy manager | Config (small) | Config (big) | Config (big, w info)
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | -------------
+| ![alt text](screenshot/light/1.dev-list.png)  | ![alt text](screenshot/light/2.scan.png)  | ![alt text](screenshot/light/3.pair.png) | ![alt text](screenshot/light/4.manager.png) | ![alt text](screenshot/light/5.config-small.png) | ![alt text](screenshot/light/6.config-big.png) | ![alt text](screenshot/light/7.config-big-info.png)
 
 ## License
 
