@@ -68,7 +68,11 @@ class _WifiScannerState extends ConsumerState<WifiScanner> {
               Text('Discovered devices (${bonsoirDevices.length})')
                   .textStyle(theme.typography.body)
                   .fontWeight(FontWeight.w600),
-              const SizedBox.square(dimension: 18, child: ProgressRing()),
+              const SizedBox.square(
+                  dimension: 18,
+                  child: ProgressRing(
+                    activeColor: Colors.grey,
+                  )),
             ],
           ),
           const Expanded(
