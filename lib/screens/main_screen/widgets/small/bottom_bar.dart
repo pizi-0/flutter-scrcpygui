@@ -38,32 +38,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
                 .fontWeight(FontWeight.w600),
             const Spacer(),
             HyperlinkButton(
-              child: const Text('New config'),
-              onPressed: () {
-                final selectedDevice = ref.read(selectedDeviceProvider);
-                if (selectedDevice != null) {
-                  final newconfig = newConfig.copyWith(id: const Uuid().v4());
-                  ref.read(configScreenConfig.notifier).state = newconfig;
-                  Navigator.pushNamed(context, '/create_config');
-                } else {
-                  showDialog(
-                    barrierDismissible: true,
-                    context: context,
-                    builder: (context) => ContentDialog(
-                      title: const Text('Device'),
-                      content: const Text(
-                          'No device selected.\nSelect a device to create scrcpy config.'),
-                      actions: [
-                        Button(
-                          child: const Text('Close'),
-                          onPressed: () => Navigator.pop(context),
-                        )
-                      ],
-                    ),
-                  );
-                }
-              },
-            )
+                onPressed: _onNewConfigPressed, child: const Text('New config'))
           ],
         ),
         Card(
@@ -116,6 +91,31 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
         ),
       ],
     );
+  }
+
+  _onNewConfigPressed() {
+    final selectedDevice = ref.read(selectedDeviceProvider);
+    if (selectedDevice != null) {
+      final newconfig = newConfig.copyWith(id: const Uuid().v4());
+      ref.read(configScreenConfig.notifier).state = newconfig;
+      Navigator.pushNamed(context, '/create_config');
+    } else {
+      showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (context) => ContentDialog(
+          title: const Text('Device'),
+          content: const Text(
+              'No device selected.\nSelect a device to create scrcpy config.'),
+          actions: [
+            Button(
+              child: const Text('Close'),
+              onPressed: () => Navigator.pop(context),
+            )
+          ],
+        ),
+      );
+    }
   }
 
   _start() async {
