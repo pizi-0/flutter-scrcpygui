@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
+import 'package:scrcpygui/utils/extension.dart';
+
+import '../models/installed_scrcpy.dart';
 
 enum Mode { mirroring, recording }
 
@@ -33,3 +36,25 @@ final scrcpyInstanceProvider =
 final appPidProvider = StateProvider<String>((ref) => '');
 
 final customNameProvider = StateProvider<String>((ref) => '');
+
+class InstalledScrcpyNotifier extends Notifier<List<InstalledScrcpy>> {
+  @override
+  List<InstalledScrcpy> build() {
+    return [];
+  }
+
+  setInstalled(List<InstalledScrcpy> installed) {
+    state = installed;
+  }
+
+  addVersion(InstalledScrcpy version) {
+    var newstate = [...state];
+    newstate.addIfNotExist(version);
+
+    state = newstate;
+  }
+}
+
+final installedScrcpyProvider =
+    NotifierProvider<InstalledScrcpyNotifier, List<InstalledScrcpy>>(
+        () => InstalledScrcpyNotifier());

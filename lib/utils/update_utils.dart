@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:scrcpygui/models/installed_scrcpy.dart';
+import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/setup.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -166,6 +167,9 @@ class UpdateUtils {
 
       await SetupUtils.saveCurrentScrcpyVersion(newversion);
       await Future.delayed(500.milliseconds);
+
+      ref.read(installedScrcpyProvider.notifier).addVersion(
+          InstalledScrcpy(version: newversion, path: newVersionDir.path));
 
       ref.read(execDirProvider.notifier).state = newVersionDir.path;
       ref.read(scrcpyVersionProvider.notifier).state = newversion;

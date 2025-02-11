@@ -1,6 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/models/installed_scrcpy.dart';
+import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/screens/update_screen/components/download_update_widget.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
@@ -16,40 +18,66 @@ class UpdateScreen extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _UpdateScreenState();
 }
 
-class _UpdateScreenState extends ConsumerState<UpdateScreen> {
+class _UpdateScreenState extends ConsumerState<UpdateScreen>
+    with AutomaticKeepAliveClientMixin {
   String latest = BUNDLED_VERSION;
   bool checkingForUpdate = false;
-  List<InstalledScrcpy> installed = [];
 
   @override
   void initState() {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((a) async {
-      installed = await UpdateUtils.listInstalledScrcpy();
-      setState(() {
-        checkingForUpdate = true;
-      });
+      final installed = await UpdateUtils.listInstalledScrcpy();
+      ref.read(installedScrcpyProvider.notifier).setInstalled(installed);
 
-      final res = await UpdateUtils.checkForScrcpyUpdate(ref);
-
-      if (res != null) {
-        latest = res;
-      }
-
-      if (mounted) {
-        setState(() {
-          checkingForUpdate = false;
-        });
+      try {
+        await _checkForUpdate();
+      } on Exception catch (e) {
+        debugPrint(e.toString());
+        displayInfoBar(context,
+            builder: (context, close) => Card(
+                padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                child: InfoLabel(label: 'Error checking for update')));
       }
     });
   }
 
+  _checkForUpdate() async {
+    checkingForUpdate = true;
+    setState(() {});
+
+    final res = await UpdateUtils.checkForScrcpyUpdate(ref);
+
+    if (res != null) {
+      latest = res;
+      if (res == ref.read(scrcpyVersionProvider)) {
+        displayInfoBar(context,
+            builder: (context, close) => Card(
+                padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+                child: InfoLabel(label: 'No update available')));
+      }
+    } else {
+      displayInfoBar(context,
+          builder: (context, close) => Card(
+              padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+              child: InfoLabel(label: 'No update available')));
+    }
+
+    if (mounted) {
+      checkingForUpdate = false;
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final scrcpyVersion = ref.watch(scrcpyVersionProvider);
     final scrcpyDir = ref.watch(execDirProvider);
     final theme = FluentTheme.of(context);
+    final installed = ref.watch(installedScrcpyProvider);
 
     return ScaffoldPage.withPadding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -67,7 +95,13 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
                       child: const ProgressRing())
                   : const Icon(FluentIcons.update_restore),
             ),
-            onPressed: () {},
+            onPressed: () async {
+              try {
+                await _checkForUpdate();
+              } on Exception catch (e) {
+                debugPrint(e.toString());
+              }
+            },
           )
         ],
       )),
@@ -170,4 +204,7 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
