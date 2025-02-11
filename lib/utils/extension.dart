@@ -22,3 +22,11 @@ extension HexColor on Color {
     return Color(int.parse(buffer.toString(), radix: 16));
   }
 }
+
+extension ListExtension on List {
+  void addIfNotExist(dynamic value) {
+    if (!contains(value)) {
+      add(value);
+    }
+  }
+}
