@@ -45,37 +45,37 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // ConfigCustom(
-              //   childBackgroundColor: Colors.transparent,
-              //   title: 'Hide window',
-              //   subtitle: selectedConfig.windowOptions.noWindow
-              //       ? "uses '--no-window' flag"
-              //       : "start scrcpy with no window",
-              //   child: Padding(
-              //     padding: const EdgeInsets.symmetric(vertical: 4.0),
-              //     child: Checkbox(
-              //         checked: selectedConfig.windowOptions.noWindow,
-              //         onChanged: (value) {
-              //           if (value!) {
-              //             ref.read(configScreenConfig.notifier).update(
-              //                 (state) => state = state!.copyWith(
-              //                         deviceOptions:
-              //                             state.deviceOptions.copyWith(
-              //                       stayAwake: false,
-              //                       showTouches: false,
-              //                       offScreenOnClose: false,
-              //                       turnOffDisplay: false,
-              //                     )));
-              //           }
+              ConfigCustom(
+                childBackgroundColor: Colors.transparent,
+                title: 'Hide window',
+                subtitle: selectedConfig.windowOptions.noWindow
+                    ? "uses '--no-window' flag"
+                    : "start scrcpy with no window",
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Checkbox(
+                      checked: selectedConfig.windowOptions.noWindow,
+                      onChanged: (value) {
+                        if (value!) {
+                          ref.read(configScreenConfig.notifier).update(
+                              (state) => state = state!.copyWith(
+                                      deviceOptions:
+                                          state.deviceOptions.copyWith(
+                                    stayAwake: false,
+                                    showTouches: false,
+                                    offScreenOnClose: false,
+                                    turnOffDisplay: false,
+                                  )));
+                        }
 
-              //           ref.read(configScreenConfig.notifier).update(
-              //                 (state) => state = state!.copyWith(
-              //                     windowOptions: state.windowOptions
-              //                         .copyWith(noWindow: value)),
-              //               );
-              //         }),
-              //   ),
-              // ),
+                        ref.read(configScreenConfig.notifier).update(
+                              (state) => state = state!.copyWith(
+                                  windowOptions: state.windowOptions
+                                      .copyWith(noWindow: value)),
+                            );
+                      }),
+                ),
+              ),
               const Divider(),
               ConfigCustom(
                 childBackgroundColor: Colors.transparent,
