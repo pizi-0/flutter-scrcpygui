@@ -1,6 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../models/scrcpy_related/scrcpy_config.dart';
@@ -11,6 +15,8 @@ import '../../../../utils/const.dart';
 import '../../../../utils/scrcpy_utils.dart';
 import '../../../config_screen/config_screen.dart';
 
+final configKey = GlobalKey<ComboBoxState>(debugLabel: 'config list combo box');
+
 class HomeBottomBar extends ConsumerStatefulWidget {
   const HomeBottomBar({super.key});
 
@@ -19,13 +25,13 @@ class HomeBottomBar extends ConsumerStatefulWidget {
 }
 
 class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
-  ScrcpyConfig? selectedConfig;
   bool loading = false;
 
   @override
   Widget build(BuildContext context) {
     final theme = FluentTheme.of(context);
     final allconfigs = ref.watch(configsProvider);
+    final selectedConfig = ref.watch(selectedConfigProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -49,30 +55,19 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
             children: [
               Expanded(
                 child: ComboBox(
+                  key: configKey,
                   isExpanded: true,
                   placeholder: const Text('Select a config'),
                   value: selectedConfig,
                   onChanged: (value) {
-                    selectedConfig = value;
+                    ref.read(selectedConfigProvider.notifier).state = value;
                     setState(() {});
                   },
                   items: allconfigs
-                      .map((c) => ComboBoxItem(
-                            value: c,
-                            child: Row(
-                              children: [
-                                Text(c.configName),
-                                const Spacer(),
-                                if (c.isRecording)
-                                  IconButton(
-                                    icon: const Icon(
-                                        FluentIcons.open_folder_horizontal),
-                                    onPressed: () =>
-                                        AppUtils.openFolder(c.savePath!),
-                                  )
-                              ],
-                            ),
-                          ))
+                      .map(
+                        (c) => ComboBoxItem(
+                            value: c, child: ConfigDropDownItem(config: c)),
+                      )
                       .toList(),
                 ),
               ),
@@ -120,6 +115,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
 
   _start() async {
     final selectedDevice = ref.read(selectedDeviceProvider);
+    final selectedConfig = ref.read(selectedConfigProvider);
     if (selectedConfig == null) {
       showDialog(
         context: context,
@@ -156,7 +152,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
       } else {
         loading = true;
         setState(() {});
-        await ScrcpyUtils.newInstance(ref, selectedConfig: selectedConfig!);
+        await ScrcpyUtils.newInstance(ref, selectedConfig: selectedConfig);
 
         if (mounted) {
           loading = false;
@@ -164,5 +160,243 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
         }
       }
     }
+  }
+}
+
+class ConfigDropDownItem extends ConsumerStatefulWidget {
+  final ScrcpyConfig config;
+  const ConfigDropDownItem({super.key, required this.config});
+
+  @override
+  ConsumerState<ConfigDropDownItem> createState() => _ConfigDropDownItemState();
+}
+
+class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Tooltip(
+          message: 'Config summary',
+          child: IconButton(
+            icon: const Icon(FluentIcons.info),
+            onPressed: _onDetailPressed,
+          ),
+        ),
+        Expanded(
+          child: Text(
+            widget.config.configName,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.start,
+          ),
+        ),
+        if (widget.config.isRecording)
+          Tooltip(
+            message: 'Open save folder',
+            child: IconButton(
+              icon: const Icon(FluentIcons.open_folder_horizontal),
+              onPressed: () => AppUtils.openFolder(widget.config.savePath!),
+            ),
+          ),
+        if (widget.config.isRecording &&
+            !defaultConfigs.contains(widget.config))
+          const Divider(
+            direction: Axis.vertical,
+            size: 18,
+          ),
+        if (!defaultConfigs.contains(widget.config))
+          Tooltip(
+            message: 'Edit config',
+            child: IconButton(
+              icon: const Icon(FluentIcons.edit),
+              onPressed: () => _onEditPressed(widget.config),
+            ),
+          ),
+        if (!defaultConfigs.contains(widget.config))
+          const Divider(
+            direction: Axis.vertical,
+            size: 18,
+          ),
+        if (!defaultConfigs.contains(widget.config))
+          Tooltip(
+            message: 'Edit config',
+            child: IconButton(
+              icon: const Icon(FluentIcons.delete),
+              onPressed: _onRemoveConfigPressed,
+            ),
+          ),
+      ],
+    );
+  }
+
+  _onDetailPressed() {
+    configKey.currentState?.closePopup();
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => ConfigDetailDialog(config: widget.config),
+    );
+  }
+
+  _onRemoveConfigPressed() async {
+    configKey.currentState?.closePopup();
+    final delete = await showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => ContentDialog(
+        title: const Text('Confirm'),
+        content: Text('Delete ${widget.config.configName}?'),
+        actions: [
+          Button(
+              child: const Text('Delete'),
+              onPressed: () => Navigator.pop(context, true)),
+          Button(
+              child: const Text('Cancel'),
+              onPressed: () => Navigator.pop(context)),
+        ],
+      ),
+    );
+
+    if ((delete as bool?) ?? false) {
+      ref.read(selectedConfigProvider.notifier).state = ref
+          .read(configsProvider)
+          .where((e) => e.id != widget.config.id)
+          .first;
+      ref.read(configsProvider.notifier).removeConfig(widget.config);
+      await ScrcpyUtils.saveConfigs(
+          ref,
+          context,
+          ref
+              .read(configsProvider)
+              .where((e) => !defaultConfigs.contains(e))
+              .toList());
+    }
+  }
+
+  _onEditPressed(ScrcpyConfig config) {
+    ref.read(configScreenConfig.notifier).state = config;
+    Navigator.push(context,
+        CupertinoPageRoute(builder: (context) => const ConfigScreen()));
+  }
+}
+
+class ConfigDetailDialog extends ConsumerStatefulWidget {
+  final ScrcpyConfig config;
+  const ConfigDetailDialog({super.key, required this.config});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _ConfigDetailDialogState();
+}
+
+class _ConfigDetailDialogState extends ConsumerState<ConfigDetailDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return ContentDialog(
+      title: const Text('Config info'),
+      content: SingleChildScrollView(
+        child: Column(
+          spacing: 6,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Name: ${widget.config.configName}'),
+            Text('Mode: ${widget.config.scrcpyMode.value.capitalizeFirst}'),
+            Text('Record: ${widget.config.isRecording}'),
+            if (widget.config.isRecording)
+              Text('Save folder: ${widget.config.savePath}'),
+            if (widget.config.scrcpyMode != ScrcpyMode.audioOnly)
+              Column(
+                spacing: 2,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Divider(),
+                  const Text('Video options:'),
+                  if (widget.config.isRecording)
+                    Text(
+                        '  - format: ${widget.config.videoOptions.videoFormat.value}'),
+                  Text('  - codec: ${widget.config.videoOptions.videoCodec}'),
+                  Text(
+                      '  - encoder: ${widget.config.videoOptions.videoEncoder}'),
+                  Text(
+                      '  - bitrate: ${widget.config.videoOptions.videoBitrate}M'),
+                  Text(
+                      '  - resolution scale: ${widget.config.videoOptions.resolutionScale}'),
+                  Text(
+                      '  - display id: ${widget.config.videoOptions.displayId}'),
+                ],
+              ),
+            if (widget.config.scrcpyMode != ScrcpyMode.videoOnly)
+              Column(
+                spacing: 2,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Divider(),
+                  const Text('Audio options:'),
+                  if (widget.config.isRecording)
+                    Text(
+                        '  - format: ${widget.config.audioOptions.audioFormat.value}'),
+                  Text('  - codec: ${widget.config.audioOptions.audioCodec}'),
+                  Text(
+                      '  - encoder: ${widget.config.audioOptions.audioCodec == 'opus' ? 'default' : widget.config.audioOptions.audioEncoder}'),
+                  Text(
+                      '  - bitrate: ${widget.config.audioOptions.audioBitrate}K'),
+                ],
+              ),
+            Column(
+              spacing: 2,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Divider(),
+                const Text('Device options:'),
+                if (widget.config.deviceOptions.stayAwake)
+                  const Text('  - stay awake'),
+                if (widget.config.deviceOptions.showTouches)
+                  const Text('  - show touches'),
+                if (widget.config.deviceOptions.turnOffDisplay)
+                  const Text('  - turn off display on start'),
+                if (widget.config.deviceOptions.offScreenOnClose)
+                  const Text('  - turn off display on on exit'),
+                if (widget.config.deviceOptions.noScreensaver)
+                  const Text('  - disable screensaver (HOST)'),
+              ],
+            ),
+            Column(
+              spacing: 2,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Divider(),
+                const Text('Window options:'),
+                if (widget.config.windowOptions.noBorder)
+                  const Text('  - borderless'),
+                if (widget.config.windowOptions.alwaysOntop)
+                  const Text('  - always on top'),
+                if (widget.config.windowOptions.timeLimit != 0)
+                  Text(
+                      '  - time limit: ${widget.config.windowOptions.timeLimit}s'),
+              ],
+            ),
+            Column(
+              spacing: 2,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Divider(),
+                const Text('Additional flags:'),
+                ...widget.config.additionalFlags
+                    .split('--')
+                    .where((e) => e.isNotEmpty)
+                    .map((e) => Text('  - --${e.trim()}'))
+              ],
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        Button(
+          child: const Text('Close'),
+          onPressed: () => Navigator.pop(context),
+        )
+      ],
+    );
   }
 }
