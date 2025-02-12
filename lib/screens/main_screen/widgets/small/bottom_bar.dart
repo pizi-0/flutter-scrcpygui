@@ -240,43 +240,11 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
 
   _onRemoveConfigPressed() async {
     configKey.currentState?.closePopup();
-    final delete = await showDialog(
+    await showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (context) => ContentDialog(
-        title: const Text('Confirm'),
-        content: Text('Delete ${widget.config.configName}?'),
-        actions: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            spacing: 8,
-            children: [
-              Button(
-                  child: const Text('Delete'),
-                  onPressed: () => Navigator.pop(context, true)),
-              Button(
-                  child: const Text('Cancel'),
-                  onPressed: () => Navigator.pop(context)),
-            ],
-          ),
-        ],
-      ),
+      builder: (context) => ConfigDeleteDialog(config: widget.config),
     );
-
-    if ((delete as bool?) ?? false) {
-      ref.read(selectedConfigProvider.notifier).state = ref
-          .read(configsProvider)
-          .where((e) => e.id != widget.config.id)
-          .first;
-      ref.read(configsProvider.notifier).removeConfig(widget.config);
-      await ScrcpyUtils.saveConfigs(
-          ref,
-          context,
-          ref
-              .read(configsProvider)
-              .where((e) => !defaultConfigs.contains(e))
-              .toList());
-    }
   }
 
   _onEditPressed(ScrcpyConfig config) {
@@ -403,6 +371,56 @@ class _ConfigDetailDialogState extends ConsumerState<ConfigDetailDialog> {
           child: const Text('Close'),
           onPressed: () => Navigator.pop(context),
         )
+      ],
+    );
+  }
+}
+
+class ConfigDeleteDialog extends ConsumerStatefulWidget {
+  final ScrcpyConfig config;
+  const ConfigDeleteDialog({super.key, required this.config});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _ConfigDeleteDialogState();
+}
+
+class _ConfigDeleteDialogState extends ConsumerState<ConfigDeleteDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return ContentDialog(
+      title: const Text('Confirm'),
+      content: Text('Delete ${widget.config.configName}?'),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          spacing: 8,
+          children: [
+            Button(
+              child: const Text('Delete'),
+              onPressed: () async {
+                if (ref.read(selectedConfigProvider) == widget.config) {
+                  ref.read(selectedConfigProvider.notifier).state = ref
+                      .read(configsProvider)
+                      .where((e) => e.id != widget.config.id)
+                      .first;
+                }
+                ref.read(configsProvider.notifier).removeConfig(widget.config);
+                await ScrcpyUtils.saveConfigs(
+                    ref,
+                    context,
+                    ref
+                        .read(configsProvider)
+                        .where((e) => !defaultConfigs.contains(e))
+                        .toList());
+                Navigator.pop(context, true);
+              },
+            ),
+            Button(
+                child: const Text('Cancel'),
+                onPressed: () => Navigator.pop(context)),
+          ],
+        ),
       ],
     );
   }
