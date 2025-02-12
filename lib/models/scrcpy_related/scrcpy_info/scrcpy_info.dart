@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:scrcpygui/models/adb_devices.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_app_list.dart';
 
 import 'scrcpy_camera.dart';
 import 'scrcpy_display.dart';
@@ -14,6 +15,7 @@ class ScrcpyInfo {
   final List<ScrcpyDisplay> displays;
   final List<VideoEncoder> videoEncoders;
   final List<AudioEncoder> audioEncoder;
+  List<ScrcpyApp>? appList;
 
   ScrcpyInfo({
     required this.device,
@@ -22,7 +24,10 @@ class ScrcpyInfo {
     required this.displays,
     required this.videoEncoders,
     required this.audioEncoder,
-  });
+    this.appList,
+  }) {
+    appList = appList ?? [];
+  }
 
   ScrcpyInfo copyWith({
     AdbDevices? device,
@@ -31,6 +36,7 @@ class ScrcpyInfo {
     List<ScrcpyDisplay>? displays,
     List<VideoEncoder>? videoEncoders,
     List<AudioEncoder>? audioEncoder,
+    List<ScrcpyApp>? appList,
   }) {
     return ScrcpyInfo(
       device: device ?? this.device,
@@ -39,6 +45,7 @@ class ScrcpyInfo {
       displays: displays ?? this.displays,
       videoEncoders: videoEncoders ?? this.videoEncoders,
       audioEncoder: audioEncoder ?? this.audioEncoder,
+      appList: appList ?? this.appList,
     );
   }
 
@@ -50,6 +57,7 @@ class ScrcpyInfo {
       'displays': displays.map((x) => x.toMap()).toList(),
       'videoEncoders': videoEncoders.map((x) => x.toMap()).toList(),
       'audioEncoder': audioEncoder.map((x) => x.toMap()).toList(),
+      'appList': (appList ?? []).map((x) => x.toMap()).toList(),
     };
   }
 
@@ -75,6 +83,11 @@ class ScrcpyInfo {
       audioEncoder: List<AudioEncoder>.from(
         (map['audioEncoder']).map<AudioEncoder>(
           (x) => AudioEncoder.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
+      appList: List<ScrcpyApp>.from(
+        (map['appList']).map<ScrcpyApp>(
+          (x) => ScrcpyApp.fromMap(x as Map<String, dynamic>),
         ),
       ),
     );
