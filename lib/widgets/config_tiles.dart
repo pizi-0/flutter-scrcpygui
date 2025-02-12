@@ -6,13 +6,11 @@ import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 
-import '../providers/config_provider.dart';
-
 class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
   final List<T> items;
   final String title;
   final String? subtitle;
-
+  final bool showinfo;
   final T? initialValue;
   final ValueChanged<T?>? onSelected;
   final bool toTitleCase;
@@ -24,13 +22,13 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
     this.subtitle,
     this.initialValue,
     this.onSelected,
+    this.showinfo = false,
     this.toTitleCase = true,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = FluentTheme.of(context);
-    final showinfo = ref.watch(configScreenShowInfo);
 
     final subColor = theme.brightness == Brightness.dark
         ? theme.cardColor.lighten(5)
@@ -96,11 +94,13 @@ class ConfigDropdownOthers extends ConsumerWidget {
   final Object? initialValue;
   final ValueChanged? onSelected;
   final String? tooltipMessage;
+  final bool showinfo;
 
   const ConfigDropdownOthers({
     super.key,
     required this.items,
     required this.label,
+    this.showinfo = false,
     this.placeholder,
     this.subtitle,
     this.initialValue,
@@ -111,7 +111,6 @@ class ConfigDropdownOthers extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = FluentTheme.of(context);
-    final showinfo = ref.watch(configScreenShowInfo);
 
     final subColor = theme.brightness == Brightness.dark
         ? theme.cardColor.lighten(5)
@@ -171,10 +170,12 @@ class ConfigUserInput extends ConsumerWidget {
   final String? unit;
   final ValueChanged<String> onChanged;
   final Function()? onTap;
+  final bool showinfo;
 
   const ConfigUserInput({
     super.key,
     required this.label,
+    this.showinfo = false,
     required this.controller,
     this.subtitle,
     this.unit,
@@ -185,7 +186,6 @@ class ConfigUserInput extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = FluentTheme.of(context);
-    final showinfo = ref.watch(configScreenShowInfo);
 
     final subColor = theme.brightness == Brightness.dark
         ? theme.cardColor.lighten(5)
@@ -253,12 +253,14 @@ class ConfigCustom extends ConsumerWidget {
   final BoxConstraints? boxConstraints;
   final Color? childBackgroundColor;
   final double? padRight;
+  final bool showinfo;
 
   const ConfigCustom({
     super.key,
     required this.title,
     required this.child,
     this.subtitle,
+    this.showinfo = false,
     this.boxConstraints,
     this.childBackgroundColor,
     this.padRight,
@@ -267,7 +269,6 @@ class ConfigCustom extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = FluentTheme.of(context);
-    final showinfo = ref.watch(configScreenShowInfo);
 
     final subColor = theme.brightness == Brightness.dark
         ? theme.cardColor.lighten(5)
