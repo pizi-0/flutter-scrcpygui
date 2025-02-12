@@ -5,6 +5,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/result/wireless_connect_result.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_app_list.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_camera.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_display.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_encoder.dart';
@@ -22,6 +23,21 @@ import '../../widgets/simple_toast/simple_toast_item.dart';
 import '../const.dart';
 
 class AdbUtils {
+  static Future<ProcessResult> runAdbCommand(WidgetRef ref, AdbDevices device,
+      {List<String> args = const []}) async {
+    final workDir = ref.read(execDirProvider);
+
+    if (Platform.isWindows) {
+      return await Process.run('$workDir\\adb.exe', ['-s', device.id, ...args],
+          workingDirectory: workDir);
+    } else if (Platform.isLinux) {
+      return await Process.run('$workDir/adb', ['-s', device.id, ...args],
+          workingDirectory: workDir);
+    } else {
+      throw Exception('Unsupported platform');
+    }
+  }
+
   static Future<List<AdbDevices>> connectedDevices(String workDir,
       {bool showLog = true}) async {
     final adbDeviceRes = await Process.run(
@@ -51,7 +67,14 @@ class AdbUtils {
 
     final info = await Process.run(
       Platform.isWindows ? '$workDir\\scrcpy.exe' : escrcpy,
-      ['-s', dev.id, '--list-encoders', '--list-displays', '--list-cameras'],
+      [
+        '-s',
+        dev.id,
+        '--list-encoders',
+        '--list-displays',
+        '--list-cameras',
+        '--list-apps'
+      ],
       workingDirectory: workDir,
     );
 
@@ -59,6 +82,7 @@ class AdbUtils {
     final videoEncoderInfo = _getVideoEncoders(info.stdout);
     final audioEncoderInfo = _getAudioEncoders(info.stdout);
     final displayInfo = _getDisplays(info.stdout);
+    final appsList = _getAppsList(info.stdout);
 
     return ScrcpyInfo(
       device: dev,
@@ -67,6 +91,7 @@ class AdbUtils {
       displays: displayInfo,
       videoEncoders: videoEncoderInfo,
       audioEncoder: audioEncoderInfo,
+      appList: appsList,
     );
   }
 
@@ -466,4 +491,25 @@ List<ScrcpyDisplay> _getDisplays(String res) {
   }
 
   return displays;
+}
+
+List<ScrcpyApp> _getAppsList(String res) {
+  List<ScrcpyApp> apps = [];
+
+  final split = res.split('[server] INFO: List of apps:');
+  final cleaned = split.last
+      .trim()
+      .splitLines()
+      .map((e) => e.trimAll.replaceLast(' ', 'split').split('split'))
+      .toList();
+
+  apps = cleaned
+      .map(
+        (e) => ScrcpyApp(
+            name: e.first.replaceAtIndex(index: 0, replacement: '').trim(),
+            packageName: e.last),
+      )
+      .toList();
+
+  return apps;
 }
