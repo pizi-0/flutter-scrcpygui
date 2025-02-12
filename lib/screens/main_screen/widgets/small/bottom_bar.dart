@@ -247,12 +247,18 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
         title: const Text('Confirm'),
         content: Text('Delete ${widget.config.configName}?'),
         actions: [
-          Button(
-              child: const Text('Delete'),
-              onPressed: () => Navigator.pop(context, true)),
-          Button(
-              child: const Text('Cancel'),
-              onPressed: () => Navigator.pop(context)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            spacing: 8,
+            children: [
+              Button(
+                  child: const Text('Delete'),
+                  onPressed: () => Navigator.pop(context, true)),
+              Button(
+                  child: const Text('Cancel'),
+                  onPressed: () => Navigator.pop(context)),
+            ],
+          ),
         ],
       ),
     );

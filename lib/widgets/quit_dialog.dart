@@ -117,33 +117,39 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
               ),
             ),
             actions: [
-              if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
-                Button(
-                  onPressed: () {
-                    if (wifi && instance) {
-                      wifi = false;
-                      instance = false;
-                    } else {
-                      wifi = true;
-                      instance = true;
-                    }
+              Row(
+                spacing: 8,
+                children: [
+                  if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
+                    Button(
+                      onPressed: () {
+                        if (wifi && instance) {
+                          wifi = false;
+                          instance = false;
+                        } else {
+                          wifi = true;
+                          instance = true;
+                        }
 
-                    setState(() {});
-                  },
-                  child: const Text('Select all'),
-                ),
-              Button(
-                onPressed: () {
-                  _onClose(wifi, instance);
-                },
-                child: const Text('Quit'),
+                        setState(() {});
+                      },
+                      child: const Text('Select all'),
+                    ),
+                  const Spacer(),
+                  Button(
+                    onPressed: () {
+                      _onClose(wifi, instance);
+                    },
+                    child: const Text('Quit'),
+                  ),
+                  Button(
+                    onPressed: () {
+                      Navigator.pop(context, false);
+                    },
+                    child: const Text('Cancel'),
+                  )
+                ],
               ),
-              Button(
-                onPressed: () {
-                  Navigator.pop(context, false);
-                },
-                child: const Text('Cancel'),
-              )
             ],
           );
   }
