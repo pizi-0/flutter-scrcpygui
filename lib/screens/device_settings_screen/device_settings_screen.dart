@@ -107,7 +107,15 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
           PaneItem(
             icon: const SizedBox(),
             body: info == null || loading
-                ? const Center(child: CupertinoActivityIndicator())
+                ? const Center(
+                    child: Column(
+                    spacing: 8,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox.square(dimension: 18, child: ProgressRing()),
+                      Text('Getting scrcpy info')
+                    ],
+                  ))
                 : ScaffoldPage.withPadding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
