@@ -41,7 +41,7 @@ class ScrcpyCommand {
         [
           "--window-title=\"${customName ?? config.configName}\"",
           _recordingFormat(config, customName ?? config.configName),
-          config.additionalFlags,
+          ...config.additionalFlags.trim().split(' '),
         ];
 
     comm.removeWhere((e) => e.trim().isEmpty);
