@@ -250,15 +250,15 @@ class AdbUtils {
     final workDir = ref.read(execDirProvider);
 
     //for some reason this is not needed in windows
-    if (Platform.isLinux) {
-      final kill = await Process.run(
-        Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-        ['kill-server'],
-        workingDirectory: workDir,
-      );
+    // if (Platform.isLinux) {
+    //   final kill = await Process.run(
+    //     Platform.isWindows ? '$workDir\\adb.exe' : eadb,
+    //     ['kill-server'],
+    //     workingDirectory: workDir,
+    //   );
 
-      debugPrint('kill-server\nOut: ${kill.stdout},\nErr: ${kill.stderr}');
-    }
+    //   debugPrint('kill-server\nOut: ${kill.stdout},\nErr: ${kill.stderr}');
+    // }
 
     // final start = await Process.run(
     //   Platform.isWindows ? '$workDir\\adb.exe' : eadb,
