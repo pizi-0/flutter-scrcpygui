@@ -274,6 +274,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
   }
 
   _onEditPressed(ScrcpyConfig config) {
+    configKey.currentState?.closePopup();
     ref.read(configScreenConfig.notifier).state = config;
     Navigator.push(context,
         CupertinoPageRoute(builder: (context) => const ConfigScreen()));
