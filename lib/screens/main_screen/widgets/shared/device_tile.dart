@@ -3,6 +3,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/screens/main_screen/widgets/small/device_control_dialog.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../../../../models/adb_devices.dart';
@@ -86,19 +87,39 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                         ),
                     ],
                   ),
-                  subtitle: Text(widget.device.id),
-                  trailing: IconButton(
-                    icon: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(FluentIcons.settings),
-                    ),
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        '/dev_settings',
-                        arguments: widget.device,
-                      );
-                    },
+                  subtitle: Text(
+                    widget.device.id,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  trailing: Row(
+                    children: [
+                      IconButton(
+                        icon: const Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Icon(FluentIcons.app_icon_default),
+                        ),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (context) =>
+                                  ControlDialog(widget.device));
+                        },
+                      ),
+                      IconButton(
+                        icon: const Padding(
+                          padding: EdgeInsets.all(4.0),
+                          child: Icon(FluentIcons.settings),
+                        ),
+                        onPressed: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/dev_settings',
+                            arguments: widget.device,
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -129,7 +150,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                 items: (context) => deviceInstance
                     .map(
                       (i) => MenuFlyoutItem(
-                          text: Text(i.instanceName),
+                          text: Text('${i.instanceName}/${i.scrcpyPID}'),
                           onPressed: () {
                             try {
                               ScrcpyUtils.killServer(i);
