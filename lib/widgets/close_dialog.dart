@@ -9,14 +9,16 @@ import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
-class CloseDialog extends ConsumerStatefulWidget {
-  const CloseDialog({super.key});
+class ConfigScreenCloseDialog extends ConsumerStatefulWidget {
+  const ConfigScreenCloseDialog({super.key});
 
   @override
-  ConsumerState<CloseDialog> createState() => _CloseDialogState();
+  ConsumerState<ConfigScreenCloseDialog> createState() =>
+      _ConfigScreenCloseDialogState();
 }
 
-class _CloseDialogState extends ConsumerState<CloseDialog> {
+class _ConfigScreenCloseDialogState
+    extends ConsumerState<ConfigScreenCloseDialog> {
   bool nameExist = false;
   List<String> name = ['New config', 'Default (Mirror)', 'Default (Record)'];
   bool notAllowed = false;
@@ -82,51 +84,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
             TextBox(
               controller: nameController,
               placeholder: 'Config name',
-              onSubmitted: notAllowed
-                  ? null
-                  : (value) async {
-                      final selectedConfig = ref.read(configScreenConfig)!;
-
-                      var currentConfig = selectedConfig;
-
-                      currentConfig = currentConfig.copyWith(
-                          configName: nameController.text);
-
-                      if (nameExist) {
-                        final allConfigs = ref.read(configsProvider);
-                        final toRemove = allConfigs.firstWhere((e) =>
-                            e.id == currentConfig.id ||
-                            e.configName == currentConfig.configName);
-                        ref
-                            .read(configsProvider.notifier)
-                            .overwriteConfig(toRemove, currentConfig);
-                      } else {
-                        final allConfigs = ref.read(configsProvider);
-
-                        if (allConfigs
-                            .where((c) => c.id == currentConfig.id)
-                            .isNotEmpty) {
-                          final toRemove = allConfigs
-                              .firstWhere((e) => e.id == currentConfig.id);
-                          ref
-                              .read(configsProvider.notifier)
-                              .overwriteConfig(toRemove, currentConfig);
-                        } else {
-                          ref
-                              .read(configsProvider.notifier)
-                              .addConfig(currentConfig);
-                        }
-                      }
-
-                      final toSave = ref
-                          .read(configsProvider)
-                          .where((e) => !defaultConfigs.contains(e))
-                          .toList();
-
-                      await ScrcpyUtils.saveConfigs(ref, context, toSave);
-
-                      Navigator.pop(context, true);
-                    },
+              onSubmitted: notAllowed ? null : (v) => _submitEdit(),
               onChanged: (value) {
                 final allConfigs = ref.read(configsProvider);
                 nameExist =
@@ -155,50 +113,7 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
             Button(
               onPressed: notAllowed || nameController.text.isEmpty
                   ? null
-                  : () async {
-                      final selectedConfig = ref.read(configScreenConfig)!;
-
-                      var currentConfig = selectedConfig;
-
-                      currentConfig = currentConfig.copyWith(
-                          configName: nameController.text);
-
-                      if (nameExist) {
-                        final allConfigs = ref.read(configsProvider);
-                        final toRemove = allConfigs.firstWhere((e) =>
-                            e.id == currentConfig.id ||
-                            e.configName == currentConfig.configName);
-                        ref
-                            .read(configsProvider.notifier)
-                            .overwriteConfig(toRemove, currentConfig);
-                      } else {
-                        final allConfigs = ref.read(configsProvider);
-
-                        if (allConfigs
-                            .where((c) => c.id == currentConfig.id)
-                            .isNotEmpty) {
-                          final allConfigs = ref.read(configsProvider);
-                          final toRemove = allConfigs
-                              .firstWhere((e) => e.id == currentConfig.id);
-                          ref
-                              .read(configsProvider.notifier)
-                              .overwriteConfig(toRemove, currentConfig);
-                        } else {
-                          ref
-                              .read(configsProvider.notifier)
-                              .addConfig(currentConfig);
-                        }
-                      }
-
-                      final toSave = ref
-                          .read(configsProvider)
-                          .where((e) => !defaultConfigs.contains(e))
-                          .toList();
-
-                      await ScrcpyUtils.saveConfigs(ref, context, toSave);
-
-                      Navigator.pop(context, true);
-                    },
+                  : _submitEdit,
               child: Text(nameExist ? 'Overwrite' : 'Save'),
             ),
             const SizedBox(width: 10),
@@ -212,5 +127,83 @@ class _CloseDialogState extends ConsumerState<CloseDialog> {
         )
       ],
     );
+  }
+
+  _submitEdit() async {
+    final selectedConfig = ref.read(configScreenConfig)!;
+
+    var currentConfig = selectedConfig;
+
+    currentConfig = currentConfig.copyWith(configName: nameController.text);
+    final allConfigs = ref.read(configsProvider);
+
+    if (nameExist) {
+      final toRemove = allConfigs.firstWhere((e) =>
+          e.id == currentConfig.id || e.configName == currentConfig.configName);
+      ref
+          .read(configsProvider.notifier)
+          .overwriteConfig(toRemove, currentConfig);
+    } else {
+      if (allConfigs.where((c) => c.id == currentConfig.id).isNotEmpty) {
+        final toRemove = allConfigs.firstWhere((e) => e.id == currentConfig.id);
+        ref
+            .read(configsProvider.notifier)
+            .overwriteConfig(toRemove, currentConfig);
+      } else {
+        ref.read(configsProvider.notifier).addConfig(currentConfig);
+      }
+    }
+
+    final toSave = ref
+        .read(configsProvider)
+        .where((e) => !defaultConfigs.contains(e))
+        .toList();
+
+    ref.read(selectedConfigProvider.notifier).state = ref
+        .read(configsProvider)
+        .firstWhere((c) => c.id == currentConfig.id,
+            orElse: () => defaultMirror);
+
+    await ScrcpyUtils.saveConfigs(ref, context, toSave);
+
+    Navigator.pop(context, true);
+  }
+
+  a() async {
+    final selectedConfig = ref.read(configScreenConfig)!;
+
+    var currentConfig = selectedConfig;
+
+    currentConfig = currentConfig.copyWith(configName: nameController.text);
+
+    if (nameExist) {
+      final allConfigs = ref.read(configsProvider);
+      final toRemove = allConfigs.firstWhere((e) =>
+          e.id == currentConfig.id || e.configName == currentConfig.configName);
+      ref
+          .read(configsProvider.notifier)
+          .overwriteConfig(toRemove, currentConfig);
+    } else {
+      final allConfigs = ref.read(configsProvider);
+
+      if (allConfigs.where((c) => c.id == currentConfig.id).isNotEmpty) {
+        final allConfigs = ref.read(configsProvider);
+        final toRemove = allConfigs.firstWhere((e) => e.id == currentConfig.id);
+        ref
+            .read(configsProvider.notifier)
+            .overwriteConfig(toRemove, currentConfig);
+      } else {
+        ref.read(configsProvider.notifier).addConfig(currentConfig);
+      }
+    }
+
+    final toSave = ref
+        .read(configsProvider)
+        .where((e) => !defaultConfigs.contains(e))
+        .toList();
+
+    await ScrcpyUtils.saveConfigs(ref, context, toSave);
+
+    Navigator.pop(context, true);
   }
 }
