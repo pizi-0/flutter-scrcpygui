@@ -1,8 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
+import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 
 class AdbDevices {
@@ -85,6 +88,13 @@ class AdbDevices {
       automationData: automationData ?? this.automationData,
       info: info ?? this.info,
     );
+  }
+
+  Future<ProcessResult> sendKeyEvent(WidgetRef ref, String key) async {
+    final res = await AdbUtils.runAdbCommand(ref, this,
+        args: ['shell', 'input', 'keyevent', key]);
+
+    return res;
   }
 
   @override
