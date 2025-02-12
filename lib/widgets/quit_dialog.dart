@@ -8,7 +8,6 @@ import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../providers/settings_provider.dart';
 import '../providers/version_provider.dart';
 import '../utils/adb/adb_utils.dart';
 import '../utils/const.dart';
@@ -45,10 +44,6 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
         .watch(adbProvider)
         .where((e) => e.id.contains(adbMdns) || e.id.isIpv4)
         .toList();
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final buttonStyle = ButtonStyle(
-        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(appTheme.widgetRadius))));
 
     return loading
         ? const Center(
@@ -122,43 +117,32 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
               ),
             ),
             actions: [
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
-                    Button(
-                      onPressed: () {
-                        if (wifi && instance) {
-                          wifi = false;
-                          instance = false;
-                        } else {
-                          wifi = true;
-                          instance = true;
-                        }
+              if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
+                Button(
+                  onPressed: () {
+                    if (wifi && instance) {
+                      wifi = false;
+                      instance = false;
+                    } else {
+                      wifi = true;
+                      instance = true;
+                    }
 
-                        setState(() {});
-                      },
-                      child: const Text('Select all'),
-                    ),
-                  const Spacer(),
-                  Button(
-                    style: buttonStyle,
-                    onPressed: () {
-                      _onClose(wifi, instance);
-                    },
-                    child: const Text('Quit'),
-                  ),
-                  const SizedBox(width: 10),
-                  Button(
-                    autofocus: true,
-                    style: buttonStyle,
-                    onPressed: () {
-                      Navigator.pop(context, false);
-                    },
-                    child: const Text('Cancel'),
-                  ),
-                ],
+                    setState(() {});
+                  },
+                  child: const Text('Select all'),
+                ),
+              Button(
+                onPressed: () {
+                  _onClose(wifi, instance);
+                },
+                child: const Text('Quit'),
+              ),
+              Button(
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+                child: const Text('Cancel'),
               )
             ],
           );
