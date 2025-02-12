@@ -28,6 +28,25 @@ import 'adb/adb_utils.dart';
 import 'scrcpy_command.dart';
 
 class ScrcpyUtils {
+  static Future<ProcessResult> runScrcpyCommand(
+      WidgetRef ref, AdbDevices device,
+      {List<String> args = const []}) async {
+    final workDir = ref.read(execDirProvider);
+    if (Platform.isWindows) {
+      final res = await Process.run(
+          '$workDir\\scrcpy.exe', ['-s', device.id, ...args],
+          workingDirectory: workDir);
+      return res;
+    } else if (Platform.isLinux) {
+      final res = await Process.run(
+          '$workDir/scrcpy', ['-s', device.id, ...args],
+          workingDirectory: workDir);
+      return res;
+    } else {
+      throw Exception('Unsupported platform');
+    }
+  }
+
   static Future<List<ScrcpyConfig>> getSavedConfig() async {
     List<ScrcpyConfig> saved = [];
     final prefs = await SharedPreferences.getInstance();
@@ -268,7 +287,8 @@ class ScrcpyUtils {
     }
   }
 
-  static Future<void> killServer(ScrcpyRunningInstance instance) async {
+  static Future<void> killServer(ScrcpyRunningInstance instance,
+      {bool forceKill = false}) async {
     if (Platform.isLinux) {
       Process.killPid(int.parse(instance.scrcpyPID));
     }
