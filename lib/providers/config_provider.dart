@@ -30,3 +30,7 @@ class ConfigsNotifier extends Notifier<List<ScrcpyConfig>> {
 
 final configsProvider = NotifierProvider<ConfigsNotifier, List<ScrcpyConfig>>(
     () => ConfigsNotifier());
+
+final selectedConfigProvider = StateProvider<ScrcpyConfig?>((ref) => null);
+final configScreenConfig = StateProvider<ScrcpyConfig?>((ref) => null);
+final configScreenShowInfo = StateProvider((ref) => false);
