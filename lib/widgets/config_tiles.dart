@@ -1,11 +1,12 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
+
+import '../providers/config_provider.dart';
 
 class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
   final List<T> items;

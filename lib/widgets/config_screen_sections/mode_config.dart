@@ -6,10 +6,10 @@ import 'package:file_picker/file_picker.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
-import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 
 import '../../models/scrcpy_related/scrcpy_config.dart';
 import '../../models/scrcpy_related/scrcpy_enum.dart';
+import '../../providers/config_provider.dart';
 import '../../utils/const.dart';
 import '../config_tiles.dart';
 

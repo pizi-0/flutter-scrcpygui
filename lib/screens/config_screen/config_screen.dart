@@ -25,9 +25,6 @@ import '../../utils/const.dart';
 import '../../utils/scrcpy_utils.dart';
 import '../../widgets/close_dialog.dart';
 
-final configScreenConfig = StateProvider<ScrcpyConfig?>((ref) => null);
-final configScreenShowInfo = StateProvider((ref) => false);
-
 class ConfigScreen extends ConsumerStatefulWidget {
   const ConfigScreen({super.key});
 

@@ -2,7 +2,8 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/available_flags.dart';
-import 'package:scrcpygui/screens/config_screen/config_screen.dart';
+
+import '../../providers/config_provider.dart';
 
 class AdditionalFlagsConfig extends ConsumerStatefulWidget {
   const AdditionalFlagsConfig({super.key});

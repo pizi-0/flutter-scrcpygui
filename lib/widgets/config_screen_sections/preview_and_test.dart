@@ -10,10 +10,10 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
-import 'package:scrcpygui/screens/config_screen/config_screen.dart';
 import 'package:scrcpygui/screens/log_screen/log_screen.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
 
+import '../../providers/config_provider.dart';
 import '../../utils/scrcpy_utils.dart';
 
 final testInstanceProvider =
