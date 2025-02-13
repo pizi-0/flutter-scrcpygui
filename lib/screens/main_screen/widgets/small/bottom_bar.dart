@@ -249,9 +249,30 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
 
   _onEditPressed(ScrcpyConfig config) {
     configKey.currentState?.closePopup();
-    ref.read(configScreenConfig.notifier).state = config;
-    Navigator.push(context,
-        CupertinoPageRoute(builder: (context) => const ConfigScreen()));
+
+    ref.read(selectedConfigProvider.notifier).state = config;
+
+    if (ref.read(selectedDeviceProvider) == null) {
+      showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (context) => ContentDialog(
+          title: const Text('Device'),
+          content: const Text(
+              'No device selected.\nSelect a device to edit scrcpy config.'),
+          actions: [
+            Button(
+              child: const Text('Close'),
+              onPressed: () => Navigator.pop(context),
+            )
+          ],
+        ),
+      );
+    } else {
+      ref.read(configScreenConfig.notifier).state = config;
+      Navigator.push(context,
+          CupertinoPageRoute(builder: (context) => const ConfigScreen()));
+    }
   }
 }
 
