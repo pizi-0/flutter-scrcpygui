@@ -18,7 +18,6 @@ import 'package:scrcpygui/widgets/config_screen_sections/mode_config.dart';
 import 'package:scrcpygui/widgets/config_screen_sections/preview_and_test.dart';
 import 'package:scrcpygui/widgets/config_screen_sections/video_config.dart';
 import 'package:scrcpygui/widgets/config_screen_sections/window_config.dart';
-import 'package:window_manager/window_manager.dart';
 
 import '../../providers/adb_provider.dart';
 import '../../utils/const.dart';
@@ -33,20 +32,25 @@ class ConfigScreen extends ConsumerStatefulWidget {
 }
 
 class _ConfigScreenState extends ConsumerState<ConfigScreen> {
+  TextEditingController namecontroller = TextEditingController();
   late AdbDevices dev;
+  FocusNode nameBox = FocusNode();
 
   String modeLabel = MainMode.mirror.value;
-
-  bool editname = false;
 
   @override
   void initState() {
     final selectedDevice = ref.read(selectedDeviceProvider)!;
+    final config = ref.read(configScreenConfig);
     final workDir = ref.read(execDirProvider);
 
     dev = ref.read(savedAdbDevicesProvider).firstWhere(
         (d) => d.id == selectedDevice.id,
         orElse: () => selectedDevice);
+
+    namecontroller = TextEditingController(text: config!.configName);
+
+    nameBox.addListener(_onFocusLost);
 
     super.initState();
 
@@ -68,6 +72,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
 
   @override
   void dispose() {
+    nameBox.removeListener(_onFocusLost);
     super.dispose();
   }
 
@@ -140,7 +145,30 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
               ),
             ),
           ),
-          title: DragToMoveArea(child: Text(selectedConfig.configName)),
+          title: SizedBox(
+            width: 200,
+            height: 30,
+            child: TextBox(
+              focusNode: nameBox,
+              controller: namecontroller,
+              onSubmitted: (value) async {
+                ref.read(configScreenConfig.notifier).update(
+                    (state) => state!.copyWith(configName: value.trim()));
+
+                ref.read(configsProvider.notifier).overwriteConfig(
+                    ref.read(configScreenConfig)!,
+                    ref.read(configScreenConfig)!);
+
+                await ScrcpyUtils.saveConfigs(
+                    ref,
+                    context,
+                    ref
+                        .read(configsProvider)
+                        .where((c) => !defaultConfigs.contains(c))
+                        .toList());
+              },
+            ),
+          ),
         ),
         pane: NavigationPane(
           menuButton: const SizedBox(),
@@ -174,6 +202,11 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
         ),
       ),
     );
+  }
+
+  _onFocusLost() {
+    namecontroller.text = ref.read(configScreenConfig)!.configName;
+    setState(() {});
   }
 
   List<Widget> mobileList(ScrcpyConfig selectedConfig) {
