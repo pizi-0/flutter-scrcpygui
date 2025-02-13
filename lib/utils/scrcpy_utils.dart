@@ -14,6 +14,7 @@ import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/toast_providers.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
+import 'package:scrcpygui/utils/command_runner.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/prefs_key.dart';
 import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
@@ -28,25 +29,6 @@ import 'adb/adb_utils.dart';
 import 'scrcpy_command.dart';
 
 class ScrcpyUtils {
-  static Future<ProcessResult> runScrcpyCommand(
-      WidgetRef ref, AdbDevices device,
-      {List<String> args = const []}) async {
-    final workDir = ref.read(execDirProvider);
-    if (Platform.isWindows) {
-      final res = await Process.run(
-          '$workDir\\scrcpy.exe', ['-s', device.id, ...args],
-          workingDirectory: workDir);
-      return res;
-    } else if (Platform.isLinux) {
-      final res = await Process.run(
-          '$workDir/scrcpy', ['-s', device.id, ...args],
-          workingDirectory: workDir);
-      return res;
-    } else {
-      throw Exception('Unsupported platform');
-    }
-  }
-
   static Future<List<ScrcpyConfig>> getSavedConfig() async {
     List<ScrcpyConfig> saved = [];
     final prefs = await SharedPreferences.getInstance();
@@ -100,6 +82,7 @@ class ScrcpyUtils {
     }
   }
 
+  //TODO: find a better way
   static Future<List<String>> getRunningScrcpy(String appPID) async {
     List<String> pids = [];
 
@@ -199,14 +182,10 @@ class ScrcpyUtils {
     comm = ScrcpyCommand.buildCommand(ref, selectedConfig, d,
         customName: '${isTest ? '[TEST] ' : ''}$customName');
 
-    final process = await Process.start(
-      Platform.isWindows ? '$workDir\\scrcpy.exe' : escrcpy,
-      comm,
-      workingDirectory: workDir,
-    );
+    final process = await CommandRunner.startScrcpyCommand(
+        workDir, selectedDevice,
+        args: comm);
     await Future.delayed(500.milliseconds);
-
-    print(process.pid);
 
     final now = DateTime.now();
 

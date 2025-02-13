@@ -1,0 +1,52 @@
+import 'dart:io';
+
+import '../models/adb_devices.dart';
+
+class CommandRunner {
+  static Future<ProcessResult> runAdbCommand(String workDir,
+      {List<String> args = const []}) async {
+    if (Platform.isWindows) {
+      return await Process.run('$workDir\\adb.exe', args,
+          workingDirectory: workDir);
+    } else if (Platform.isLinux) {
+      return await Process.run('$workDir/adb', args, workingDirectory: workDir);
+    } else {
+      throw Exception('Unsupported platform');
+    }
+  }
+
+  static Future<ProcessResult> runScrcpyCommand(
+      String workDir, AdbDevices device,
+      {List<String> args = const []}) async {
+    if (Platform.isWindows) {
+      final res = await Process.run(
+          '$workDir\\scrcpy.exe', ['-s', device.id, ...args],
+          workingDirectory: workDir);
+      return res;
+    } else if (Platform.isLinux) {
+      final res = await Process.run(
+          '$workDir/scrcpy', ['-s', device.id, ...args],
+          workingDirectory: workDir);
+      return res;
+    } else {
+      throw Exception('Unsupported platform');
+    }
+  }
+
+  static Future<Process> startScrcpyCommand(String workDir, AdbDevices device,
+      {List<String> args = const []}) async {
+    if (Platform.isWindows) {
+      final res = await Process.start(
+          '$workDir\\scrcpy.exe', ['-s', device.id, ...args],
+          workingDirectory: workDir);
+      return res;
+    } else if (Platform.isLinux) {
+      final res = await Process.start(
+          '$workDir/scrcpy', ['-s', device.id, ...args],
+          workingDirectory: workDir);
+      return res;
+    } else {
+      throw Exception('Unsupported platform');
+    }
+  }
+}

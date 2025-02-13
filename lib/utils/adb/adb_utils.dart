@@ -1,9 +1,11 @@
 import 'dart:io';
-import 'dart:isolate';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:string_extensions/string_extensions.dart';
+
 import 'package:scrcpygui/models/result/wireless_connect_result.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_app_list.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_camera.dart';
@@ -12,37 +14,24 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_encoder.dart'
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb/_adb_utils.dart';
+import 'package:scrcpygui/utils/command_runner.dart';
 import 'package:scrcpygui/utils/prefs_key.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:string_extensions/string_extensions.dart';
 
 import '../../models/adb_devices.dart';
-import '../../providers/adb_provider.dart';
-import '../../providers/toast_providers.dart';
-import '../../widgets/simple_toast/simple_toast_item.dart';
 import '../const.dart';
 
 class AdbUtils {
-  static Future<ProcessResult> runAdbCommand(WidgetRef ref, AdbDevices device,
+  static Future<ProcessResult> runAdbShellCommand(
+      String workDir, AdbDevices device,
       {List<String> args = const []}) async {
-    final workDir = ref.read(execDirProvider);
-
-    if (Platform.isWindows) {
-      return await Process.run('$workDir\\adb.exe', ['-s', device.id, ...args],
-          workingDirectory: workDir);
-    } else if (Platform.isLinux) {
-      return await Process.run('$workDir/adb', ['-s', device.id, ...args],
-          workingDirectory: workDir);
-    } else {
-      throw Exception('Unsupported platform');
-    }
+    return await CommandRunner.runAdbCommand(workDir,
+        args: ['-s', device.id, ...args]);
   }
 
   static Future<List<AdbDevices>> connectedDevices(String workDir,
       {bool showLog = true}) async {
-    final adbDeviceRes = await Process.run(
-        Platform.isWindows ? '$workDir\\adb.exe' : eadb, ['devices'],
-        workingDirectory: workDir);
+    final adbDeviceRes =
+        await CommandRunner.runAdbCommand(workDir, args: ['devices']);
 
     final connected = adbDeviceRes.stdout
         .toString()
@@ -59,23 +48,23 @@ class AdbUtils {
 
   static Future<ScrcpyInfo> getScrcpyDetailsFor(
       String workDir, AdbDevices dev) async {
-    final buildVersion = await Process.run(
-      Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-      ['-s', dev.id, 'shell', 'getprop', 'ro.product.build.version.release'],
-      workingDirectory: workDir,
-    );
+    final buildVersion = await CommandRunner.runAdbCommand(workDir, args: [
+      '-s',
+      dev.id,
+      'shell',
+      'getprop',
+      'ro.product.build.version.release'
+    ]);
 
-    final info = await Process.run(
-      Platform.isWindows ? '$workDir\\scrcpy.exe' : escrcpy,
-      [
-        '-s',
-        dev.id,
+    final info = await CommandRunner.runScrcpyCommand(
+      workDir,
+      dev,
+      args: [
         '--list-encoders',
         '--list-displays',
         '--list-cameras',
         '--list-apps'
       ],
-      workingDirectory: workDir,
     );
 
     final cameraInfo = _getCameraInfo(info.stdout);
@@ -97,69 +86,61 @@ class AdbUtils {
 
   static Future<void> disconnectWirelessDevice(
       String workDir, AdbDevices dev) async {
-    try {
-      logger.i('Disconnecting ${dev.id}');
-      await Isolate.run(() => Process.run(
-          Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-          ['disconnect', dev.id],
-          workingDirectory: workDir));
-    } on Exception catch (e) {
-      logger.e('Error diconnecting ${dev.id}', error: e);
-    }
+    await CommandRunner.runAdbCommand(workDir, args: ['disconnect', dev.id]);
   }
 
-  static Future<void> saveWirelessDeviceHistory(
-      WidgetRef ref, String ip) async {
-    final workDir = ref.read(execDirProvider);
-    final connected = await AdbUtils.connectedDevices(workDir);
+  // static Future<void> saveWirelessDeviceHistory(
+  //     WidgetRef ref, String ip) async {
+  //   final workDir = ref.read(execDirProvider);
+  //   final connected = await AdbUtils.connectedDevices(workDir);
 
-    final currentHx = [...ref.read(wirelessDevicesHistoryProvider)];
+  //   final currentHx = [...ref.read(wirelessDevicesHistoryProvider)];
 
-    final toSave = connected.firstWhere((c) {
-      return c.id.split(':').first == ip.split(':').first;
-    });
+  //   final toSave = connected.firstWhere((c) {
+  //     return c.id.split(':').first == ip.split(':').first;
+  //   });
 
-    final named = ref.read(savedAdbDevicesProvider);
+  //   final named = ref.read(savedAdbDevicesProvider);
 
-    if (named.where((d) => d.serialNo == toSave.serialNo).isNotEmpty) {
-      final dev = named.firstWhere((d) => d.serialNo == toSave.serialNo);
-      ref.read(toastProvider.notifier).addToast(SimpleToastItem(
-            icon: Icons.link_rounded,
-            message: '${dev.name!.toUpperCase()} connected',
-            toastStyle: SimpleToastStyle.success,
-            key: UniqueKey(),
-          ));
-    } else {
-      ref.read(toastProvider.notifier).addToast(SimpleToastItem(
-            icon: Icons.link_rounded,
-            message: '${toSave.serialNo.toUpperCase()} connected',
-            toastStyle: SimpleToastStyle.success,
-            key: UniqueKey(),
-          ));
-    }
+  //   if (named.where((d) => d.serialNo == toSave.serialNo).isNotEmpty) {
+  //     final dev = named.firstWhere((d) => d.serialNo == toSave.serialNo);
+  //     ref.read(toastProvider.notifier).addToast(SimpleToastItem(
+  //           icon: Icons.link_rounded,
+  //           message: '${dev.name!.toUpperCase()} connected',
+  //           toastStyle: SimpleToastStyle.success,
+  //           key: UniqueKey(),
+  //         ));
+  //   } else {
+  //     ref.read(toastProvider.notifier).addToast(SimpleToastItem(
+  //           icon: Icons.link_rounded,
+  //           message: '${toSave.serialNo.toUpperCase()} connected',
+  //           toastStyle: SimpleToastStyle.success,
+  //           key: UniqueKey(),
+  //         ));
+  //   }
 
-    final savedDevices = ref.read(savedAdbDevicesProvider);
+  //   final savedDevices = ref.read(savedAdbDevicesProvider);
 
-    ref.read(adbProvider.notifier).setConnected(connected, savedDevices);
+  //   ref.read(adbProvider.notifier).setConnected(connected, savedDevices);
 
-    bool toSaveExists =
-        currentHx.where((h) => h.serialNo == toSave.serialNo).isNotEmpty;
+  //   bool toSaveExists =
+  //       currentHx.where((h) => h.serialNo == toSave.serialNo).isNotEmpty;
 
-    if (!toSaveExists) {
-      currentHx.add(toSave);
+  //   if (!toSaveExists) {
+  //     currentHx.add(toSave);
 
-      ref.read(wirelessDevicesHistoryProvider.notifier).state = currentHx;
-      AdbUtils.saveWirelessHistory(currentHx);
-    } else {
-      int idx = currentHx.indexWhere((h) => h.serialNo == toSave.serialNo);
+  //     ref.read(wirelessDevicesHistoryProvider.notifier).state = currentHx;
+  //     AdbUtils.saveWirelessHistory(currentHx);
+  //   } else {
+  //     int idx = currentHx.indexWhere((h) => h.serialNo == toSave.serialNo);
 
-      currentHx.removeAt(idx);
-      currentHx.insert(idx, toSave);
+  //     currentHx.removeAt(idx);
+  //     currentHx.insert(idx, toSave);
 
-      ref.read(wirelessDevicesHistoryProvider.notifier).state = currentHx;
-      AdbUtils.saveWirelessHistory(currentHx);
-    }
-  }
+  //     ref.read(wirelessDevicesHistoryProvider.notifier).state = currentHx;
+  //     AdbUtils.saveWirelessHistory(currentHx);
+  //   }
+  // }
 
   //using ip
   static Future<WiFiResult> connectWithIp(WidgetRef ref,
@@ -167,9 +148,7 @@ class AdbUtils {
     final workDir = ref.read(execDirProvider);
     ProcessResult? res;
 
-    res = await Process.run(Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-            ['connect', ipport],
-            workingDirectory: workDir)
+    res = await CommandRunner.runAdbCommand(workDir, args: ['connect', ipport])
         .timeout(
       30.seconds,
       onTimeout: () {
@@ -181,9 +160,7 @@ class AdbUtils {
     //stop unauth
     if (res.stdout.toString().contains('authenticate')) {
       logger.i('Unauthenticated, check phone');
-      await Process.run(Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-          ['disconnect', ipport],
-          workingDirectory: workDir);
+      await CommandRunner.runAdbCommand(workDir, args: ['disconnect', ipport]);
 
       return WiFiResult(success: false, errorMessage: res.stdout);
     }
@@ -203,9 +180,7 @@ class AdbUtils {
 
     debugPrint('Connecting $id from $from');
 
-    res = await Process.run(
-            Platform.isWindows ? '$workDir\\adb.exe' : eadb, ['connect', id],
-            workingDirectory: workDir)
+    res = await CommandRunner.runAdbCommand(workDir, args: ['connect', id])
         .timeout(
       30.seconds,
       onTimeout: () {
@@ -217,9 +192,8 @@ class AdbUtils {
     //stop unauth
     if (res.stdout.toString().contains('authenticate')) {
       logger.i('Unauthenticated, check phone');
-      await Process.run(Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-          ['disconnect', '$id.$adbMdns'],
-          workingDirectory: workDir);
+      await CommandRunner.runAdbCommand(workDir,
+          args: ['disconnect', '$id.$adbMdns']);
 
       return WiFiResult(success: false, errorMessage: res.stdout);
     }
@@ -236,9 +210,8 @@ class AdbUtils {
     logger.i('Setting tcp 5555 for $id');
 
     try {
-      await Process.run(Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-          ['-s', id, 'tcpip', '5555'],
-          workingDirectory: workDir);
+      await CommandRunner.runAdbCommand(workDir,
+          args: ['-s', id, 'tcpip', '5555']);
     } on Exception catch (e) {
       logger.e('Error setting tcp 5555 for $id', error: e);
     }
@@ -249,30 +222,8 @@ class AdbUtils {
       String deviceName, String code, WidgetRef ref) async {
     final workDir = ref.read(execDirProvider);
 
-    //for some reason this is not needed in windows
-    // if (Platform.isLinux) {
-    //   final kill = await Process.run(
-    //     Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-    //     ['kill-server'],
-    //     workingDirectory: workDir,
-    //   );
-
-    //   debugPrint('kill-server\nOut: ${kill.stdout},\nErr: ${kill.stderr}');
-    // }
-
-    // final start = await Process.run(
-    //   Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-    //   ['start-server'],
-    //   workingDirectory: workDir,
-    // );
-
-    // print('start-server\nOut: ${start.stdout},\nErr: ${start.stderr}');
-
-    final res = await Process.run(
-      Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-      ['pair', deviceName, code],
-      workingDirectory: workDir,
-    );
+    final res = await CommandRunner.runAdbCommand(workDir,
+        args: ['pair', deviceName, code]);
 
     debugPrint('Out: ${res.stdout},\nErr: ${res.stderr}');
 
@@ -283,9 +234,8 @@ class AdbUtils {
       String deviceName, String code, WidgetRef ref) async {
     final workDir = ref.read(execDirProvider);
 
-    await Process.run(Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-        ['pair', deviceName, code],
-        workingDirectory: workDir);
+    await CommandRunner.runAdbCommand(workDir,
+        args: ['pair', deviceName, code]);
   }
 
   static Future<String> getIpForUSB(String workDir, AdbDevices dev) async {
@@ -293,10 +243,8 @@ class AdbUtils {
     try {
       logger.i('Getting ip for ${dev.id}');
 
-      final res = await Process.run(
-          Platform.isWindows ? '$workDir\\adb.exe' : eadb,
-          ['-s', (dev.serialNo), 'shell', 'ip', 'route'],
-          workingDirectory: workDir);
+      final res = await CommandRunner.runAdbCommand(workDir,
+          args: ['-s', (dev.serialNo), 'shell', 'ip', 'route']);
 
       final res2 = res.stdout.toString().splitLines();
 

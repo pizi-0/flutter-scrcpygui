@@ -125,10 +125,11 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
   }
 
   _buttonList() {
+    final workDir = ref.read(execDirProvider);
     return [
       Button(
         child: const Icon(FluentIcons.power_button).paddingAll(2),
-        onPressed: () => widget.device.sendKeyEvent(ref, DeviceKey.power),
+        onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.power),
       ),
       const Divider(
         direction: Axis.vertical,
@@ -136,15 +137,15 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
       ),
       Button(
         child: const Icon(FluentIcons.back).paddingAll(2),
-        onPressed: () => widget.device.sendKeyEvent(ref, DeviceKey.back),
+        onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.back),
       ),
       Button(
         child: const Icon(FluentIcons.home).paddingAll(2),
-        onPressed: () => widget.device.sendKeyEvent(ref, DeviceKey.home),
+        onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.home),
       ),
       Button(
         child: const Icon(FluentIcons.recent).paddingAll(2),
-        onPressed: () => widget.device.sendKeyEvent(ref, DeviceKey.recent),
+        onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.recent),
       ),
       const Divider(
         direction: Axis.vertical,
@@ -153,15 +154,17 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
       Button(
         child: const Icon(FluentIcons.previous).paddingAll(2),
         onPressed: () =>
-            widget.device.sendKeyEvent(ref, DeviceKey.mediaPrevious),
+            widget.device.sendKeyEvent(workDir, DeviceKey.mediaPrevious),
       ),
       Button(
         child: const Icon(FluentIcons.play).paddingAll(2),
-        onPressed: () => widget.device.sendKeyEvent(ref, DeviceKey.playPause),
+        onPressed: () =>
+            widget.device.sendKeyEvent(workDir, DeviceKey.playPause),
       ),
       Button(
         child: const Icon(FluentIcons.next).paddingAll(2),
-        onPressed: () => widget.device.sendKeyEvent(ref, DeviceKey.mediaNext),
+        onPressed: () =>
+            widget.device.sendKeyEvent(workDir, DeviceKey.mediaNext),
       ),
     ];
   }
