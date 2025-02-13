@@ -168,42 +168,4 @@ class _ConfigScreenCloseDialogState
 
     Navigator.pop(context, true);
   }
-
-  a() async {
-    final selectedConfig = ref.read(configScreenConfig)!;
-
-    var currentConfig = selectedConfig;
-
-    currentConfig = currentConfig.copyWith(configName: nameController.text);
-
-    if (nameExist) {
-      final allConfigs = ref.read(configsProvider);
-      final toRemove = allConfigs.firstWhere((e) =>
-          e.id == currentConfig.id || e.configName == currentConfig.configName);
-      ref
-          .read(configsProvider.notifier)
-          .overwriteConfig(toRemove, currentConfig);
-    } else {
-      final allConfigs = ref.read(configsProvider);
-
-      if (allConfigs.where((c) => c.id == currentConfig.id).isNotEmpty) {
-        final allConfigs = ref.read(configsProvider);
-        final toRemove = allConfigs.firstWhere((e) => e.id == currentConfig.id);
-        ref
-            .read(configsProvider.notifier)
-            .overwriteConfig(toRemove, currentConfig);
-      } else {
-        ref.read(configsProvider.notifier).addConfig(currentConfig);
-      }
-    }
-
-    final toSave = ref
-        .read(configsProvider)
-        .where((e) => !defaultConfigs.contains(e))
-        .toList();
-
-    await ScrcpyUtils.saveConfigs(ref, context, toSave);
-
-    Navigator.pop(context, true);
-  }
 }
