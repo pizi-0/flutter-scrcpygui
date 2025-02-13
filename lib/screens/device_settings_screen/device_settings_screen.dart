@@ -16,6 +16,7 @@ import '../../providers/adb_provider.dart';
 
 // ignore: constant_identifier_names
 const DO_NOTHING = 'Do nothing';
+final deviceSettingsShowInfo = StateProvider((ref) => false);
 
 class DeviceSettingsScreen extends ConsumerStatefulWidget {
   final AdbDevices device;
@@ -30,6 +31,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   late AdbDevices dev;
   late String ddValue;
   late TextEditingController namecontroller;
+  ScrollController scrollController = ScrollController();
   bool loading = false;
   FocusNode textBox = FocusNode();
 
@@ -53,12 +55,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((a) async {
       if (dev.info == null) {
-        final info =
-            await AdbUtils.getScrcpyDetailsFor(ref.read(execDirProvider), dev);
-        dev = dev.copyWith(info: info);
-        ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
-        await AdbUtils.saveAdbDevice(ref.read(savedAdbDevicesProvider));
-        setState(() {});
+        _getScrcpyInfo();
       }
     });
   }
@@ -72,7 +69,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final info = dev.info;
+    final showInfo = ref.watch(deviceSettingsShowInfo);
     final theme = FluentTheme.of(context);
     final allconfigs = ref.watch(configsProvider);
     final isWireless =
@@ -95,6 +92,27 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
             Navigator.pop(context);
           },
         ),
+        actions: Align(
+          alignment: Alignment.centerRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: Row(
+              spacing: 8,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text('Info'),
+                Checkbox(
+                  checked: showInfo,
+                  onChanged: (v) {
+                    ref
+                        .read(deviceSettingsShowInfo.notifier)
+                        .update((state) => !state);
+                  },
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
       pane: NavigationPane(
         displayMode: PaneDisplayMode.compact,
@@ -105,89 +123,254 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
         items: [
           PaneItem(
             icon: const SizedBox(),
-            body: info == null || loading
-                ? const Center(
-                    child: Column(
-                    spacing: 8,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox.square(dimension: 18, child: ProgressRing()),
-                      Text('Getting scrcpy info')
-                    ],
-                  ))
-                : ScaffoldPage.withPadding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                    content: SingleChildScrollView(
-                      child: Column(
-                        spacing: 4,
-                        children: [
-                          Card(
-                            padding: EdgeInsets.zero,
+            body: Scrollbar(
+              controller: scrollController,
+              child: ScaffoldPage.withPadding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+                content: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: appWidth * 1.3),
+                  child: CustomScrollView(
+                    scrollBehavior: ScrollConfiguration.of(context)
+                        .copyWith(scrollbars: false),
+                    controller: scrollController,
+                    slivers: [
+                      const SliverToBoxAdapter(
+                          child: ConfigCustom(
+                              title: 'Settings', child: SizedBox())),
+                      SliverToBoxAdapter(
+                        child: Card(
+                          padding: EdgeInsets.zero,
+                          child: Column(
+                            children: [
+                              ConfigCustom(
+                                title: 'Rename',
+                                subtitle: 'Press [Enter] to apply name',
+                                showinfo: showInfo,
+                                child: SizedBox(
+                                  width: 180,
+                                  child: TextBox(
+                                    focusNode: textBox,
+                                    placeholder: dev.name,
+                                    controller: namecontroller,
+                                    onChanged: _toAllCaps,
+                                    onSubmitted: _onTextBoxSubmit,
+                                  ),
+                                ),
+                              ),
+                              if (isWireless) const Divider(),
+                              if (isWireless)
+                                ConfigCustom(
+                                  title: 'Auto-connect',
+                                  subtitle: 'Auto connect wireless device',
+                                  showinfo: showInfo,
+                                  child: ToggleSwitch(
+                                    checked: autoConnect,
+                                    onChanged: _onAutoConnectToggled,
+                                  ),
+                                ),
+                              const Divider(),
+                              ConfigCustom(
+                                title: 'On connected',
+                                subtitle:
+                                    'Start (1) scrcpy instance with selected config on device connection',
+                                showinfo: showInfo,
+                                child: ComboBox(
+                                    placeholder: const Text('Do nothing'),
+                                    value: ddValue,
+                                    onChanged: _onConnectConfig,
+                                    items: [
+                                      const ComboBoxItem(
+                                        value: DO_NOTHING,
+                                        child: Text('Do nothing'),
+                                      ),
+                                      ...allconfigs.map((c) => ComboBoxItem(
+                                          value: c.id,
+                                          child: Text(c.configName)))
+                                    ]),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      if (loading)
+                        const SliverFillRemaining(
+                          fillOverscroll: false,
+                          hasScrollBody: false,
+                          child: Center(
                             child: Column(
+                              spacing: 8,
+                              mainAxisSize: MainAxisSize.min,
                               children: [
-                                ConfigCustom(
-                                  title: 'Rename',
-                                  child: SizedBox(
-                                    width: 180,
-                                    child: TextBox(
-                                      focusNode: textBox,
-                                      placeholder: dev.name,
-                                      controller: namecontroller,
-                                      onChanged: _toAllCaps,
-                                      onSubmitted: _onTextBoxSubmit,
-                                    ),
-                                  ),
-                                ),
-                                if (isWireless) const Divider(),
-                                if (isWireless)
-                                  ConfigCustom(
-                                    title: 'Auto-connect',
-                                    child: ToggleSwitch(
-                                      checked: autoConnect,
-                                      onChanged: _onAutoConnectToggled,
-                                    ),
-                                  ),
-                                const Divider(),
-                                ConfigCustom(
-                                  title: 'On connected',
-                                  child: ComboBox(
-                                      placeholder: const Text('Do nothing'),
-                                      value: ddValue,
-                                      onChanged: _onConnectConfig,
-                                      items: [
-                                        const ComboBoxItem(
-                                          value: DO_NOTHING,
-                                          child: Text('Do nothing'),
-                                        ),
-                                        ...allconfigs.map((c) => ComboBoxItem(
-                                            value: c.id,
-                                            child: Text(c.configName)))
-                                      ]),
-                                ),
+                                SizedBox.square(
+                                    dimension: 18, child: ProgressRing()),
+                                Text('Getting scrcpy info')
                               ],
                             ),
                           ),
-                          PageHeader(
-                            title: const Text('Info'),
-                            commandBar: CommandBar(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              primaryItems: [
-                                CommandBarButton(
-                                  onPressed: () {},
-                                  icon: const Icon(FluentIcons.refresh),
+                        ),
+                      if (!loading)
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Column(
+                              children: [
+                                ConfigCustom(
+                                  title: 'Scrcpy info',
+                                  showinfo: showInfo,
+                                  subtitle:
+                                      'from --list-displays --list-cameras --list-encoders --list-apps',
+                                  child: Tooltip(
+                                    message: 'Refresh Info',
+                                    child: IconButton(
+                                      icon: const Icon(FluentIcons.refresh),
+                                      onPressed: _getScrcpyInfo,
+                                    ),
+                                  ),
                                 ),
+                                Card(
+                                  padding: const EdgeInsets.all(0),
+                                  margin:
+                                      const EdgeInsets.only(top: 0, bottom: 16),
+                                  child: Column(
+                                    children: [
+                                      ConfigCustom(
+                                          title: 'Name: ${dev.name}',
+                                          child: const SizedBox()),
+                                      ConfigCustom(
+                                          title:
+                                              'ID: ${dev.id.replaceAll('.$adbMdns', '')}',
+                                          child: const SizedBox()),
+                                      ConfigCustom(
+                                          title: 'Model: ${dev.modelName}',
+                                          child: const SizedBox()),
+                                      ConfigCustom(
+                                          title:
+                                              'Android version: ${dev.info!.buildVersion}',
+                                          child: const SizedBox()),
+                                      Expander(
+                                        initiallyExpanded: true,
+                                        headerBackgroundColor:
+                                            const WidgetStatePropertyAll(
+                                                Colors.transparent),
+                                        header: Text(
+                                            'Displays (${dev.info!.displays.length})'),
+                                        content: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: dev.info!.displays
+                                              .map((d) =>
+                                                  Text('- ${d.toString()}'))
+                                              .toList(),
+                                        ),
+                                      ),
+                                      Expander(
+                                        initiallyExpanded: true,
+                                        headerBackgroundColor:
+                                            const WidgetStatePropertyAll(
+                                                Colors.transparent),
+                                        header: Text(
+                                            'Cameras (${dev.info!.cameras.length})'),
+                                        content: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: dev.info!.cameras
+                                              .map((c) =>
+                                                  Text('- ${c.toString()}'))
+                                              .toList(),
+                                        ),
+                                      ),
+                                      Expander(
+                                        initiallyExpanded: true,
+                                        contentPadding: EdgeInsets.zero,
+                                        headerBackgroundColor:
+                                            const WidgetStatePropertyAll(
+                                                Colors.transparent),
+                                        header: const Text('Video encoders'),
+                                        content: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: dev.info!.videoEncoders
+                                              .map((c) => Expander(
+                                                    contentPadding:
+                                                        const EdgeInsets
+                                                            .fromLTRB(
+                                                            24, 0, 24, 8),
+                                                    header:
+                                                        Text('- ${c.codec}'),
+                                                    content: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: c.encoder
+                                                          .map((en) =>
+                                                              Text('- $en'))
+                                                          .toList(),
+                                                    ),
+                                                  ))
+                                              .toList(),
+                                        ),
+                                      ),
+                                      Expander(
+                                        initiallyExpanded: true,
+                                        contentPadding: EdgeInsets.zero,
+                                        headerBackgroundColor:
+                                            const WidgetStatePropertyAll(
+                                                Colors.transparent),
+                                        header: const Text('Audio encoders'),
+                                        content: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: dev.info!.audioEncoder
+                                              .map((c) => Expander(
+                                                    contentPadding:
+                                                        const EdgeInsets
+                                                            .fromLTRB(
+                                                            24, 0, 24, 8),
+                                                    header:
+                                                        Text('- ${c.codec}'),
+                                                    content: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: c.encoder
+                                                          .map((en) =>
+                                                              Text('- $en'))
+                                                          .toList(),
+                                                    ),
+                                                  ))
+                                              .toList(),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
-                          )
-                        ],
-                      ),
-                    ),
+                          ),
+                        ),
+                    ],
                   ),
+                ),
+              ),
+            ),
           )
         ],
       ),
     );
+  }
+
+  _getScrcpyInfo() async {
+    loading = true;
+    setState(() {});
+
+    final info =
+        await AdbUtils.getScrcpyDetailsFor(ref.read(execDirProvider), dev);
+    dev = dev.copyWith(info: info);
+    ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
+    await AdbUtils.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+
+    loading = false;
+    setState(() {});
   }
 
   void _onConnectConfig(value) async {
