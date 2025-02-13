@@ -7,8 +7,6 @@ import 'package:scrcpygui/screens/splash_screen/splash_screen.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:window_manager/window_manager.dart';
 
-final tempThemeMode = StateProvider((ref) => ThemeMode.dark);
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -68,28 +66,36 @@ class _MyAppState extends ConsumerState<MyApp> {
       theme: FluentThemeData(
         accentColor: looks.accentColor,
         navigationPaneTheme: NavigationPaneThemeData(
-          backgroundColor: looks.accentColor.lighten(95),
-          overlayBackgroundColor: looks.accentColor.lighten(95),
+          backgroundColor:
+              looks.accentColor.lighten(looks.accentTintLevel.toInt()),
+          overlayBackgroundColor:
+              looks.accentColor.lighten(looks.accentTintLevel.toInt()),
         ),
-        cardColor: looks.accentColor.lighten(95),
-        scaffoldBackgroundColor: looks.accentColor.lighten(100),
-        menuColor: looks.accentColor.lighten(95),
+        cardColor: looks.accentColor.lighten(looks.accentTintLevel.toInt()),
+        scaffoldBackgroundColor: looks.accentColor
+            .lighten((looks.accentTintLevel.toInt() + 10).clamp(0, 100)),
+        // menuColor: looks.accentColor.lighten((looks.accentTintLevel.toInt() * 0.95).toInt()),
         // cardColor: looks.accentColor.darken(90),
-        micaBackgroundColor: looks.accentColor.lighten(80),
+        micaBackgroundColor: looks.accentColor
+            .lighten((looks.accentTintLevel.toInt() * 0.85).toInt()),
       ),
       darkTheme: FluentThemeData(
         brightness: Brightness.dark,
         accentColor: looks.accentColor,
         navigationPaneTheme: NavigationPaneThemeData(
-          backgroundColor: looks.accentColor.darken(90),
-          overlayBackgroundColor: looks.accentColor.darken(90),
+          backgroundColor:
+              looks.accentColor.darken(looks.accentTintLevel.toInt()),
+          overlayBackgroundColor:
+              looks.accentColor.darken(looks.accentTintLevel.toInt()),
         ),
 
         cardColor: const ResourceDictionary.dark()
             .layerOnMicaBaseAltFillColorSecondary,
-        menuColor: looks.accentColor.darken(60),
+        menuColor: looks.accentColor
+            .darken((looks.accentTintLevel.toInt() * 0.8).toInt()),
         // cardColor: looks.accentColor.darken(90),
-        micaBackgroundColor: looks.accentColor.darken(80),
+        micaBackgroundColor: looks.accentColor
+            .darken((looks.accentTintLevel.toInt() * 0.85).toInt()),
       ),
       themeMode: looks.themeMode,
       home: const SplashScreen(),

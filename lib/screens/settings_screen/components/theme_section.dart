@@ -110,6 +110,43 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                   ],
                 ),
               ),
+              const Divider(),
+              ConfigCustom(
+                childBackgroundColor: Colors.transparent,
+                title: 'Tint level',
+                child: Row(
+                  children: [
+                    Tooltip(
+                      message: 'Default: 90',
+                      child: IconButton(
+                        icon: const Icon(FluentIcons.reset),
+                        onPressed: () async {
+                          ref
+                              .read(settingsProvider.notifier)
+                              .changeTintLevel(90);
+
+                          await AppUtils.saveAppSettings(
+                              ref.read(settingsProvider));
+                        },
+                      ),
+                    ),
+                    Slider(
+                      min: 50,
+                      value: looks.accentTintLevel,
+                      label: looks.accentTintLevel.toStringAsFixed(0),
+                      onChanged: (val) async {
+                        ref
+                            .read(settingsProvider.notifier)
+                            .changeTintLevel(val);
+                      },
+                      onChangeEnd: (value) async {
+                        await AppUtils.saveAppSettings(
+                            ref.read(settingsProvider));
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

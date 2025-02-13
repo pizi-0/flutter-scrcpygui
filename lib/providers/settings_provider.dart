@@ -22,6 +22,12 @@ class SettingsNotifier extends Notifier<AppSettings> {
     var currentLooks = state.looks;
     state = state.copyWith(looks: currentLooks.copyWith(accentColor: color));
   }
+
+  changeTintLevel(double tintLevel) {
+    var currentLooks = state.looks;
+    state = state.copyWith(
+        looks: currentLooks.copyWith(accentTintLevel: tintLevel));
+  }
 }
 
 final settingsProvider =
