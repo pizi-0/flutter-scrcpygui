@@ -1,7 +1,7 @@
-import 'package:awesome_extensions/awesome_extensions.dart' show StyledText;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/widgets/config_tiles.dart';
 
 import '../shared/device_tile.dart';
 import 'bottom_bar.dart';
@@ -13,7 +13,6 @@ class HomeSmall extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = FluentTheme.of(context);
     final connected = ref.watch(adbProvider);
 
     return ScaffoldPage.withPadding(
@@ -22,9 +21,7 @@ class HomeSmall extends ConsumerWidget {
         spacing: 8,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Connected devices (${connected.length})')
-              .textStyle(theme.typography.body)
-              .fontWeight(FontWeight.w600),
+          ConfigCustom(title: 'Connected devices (${connected.length})'),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(0),

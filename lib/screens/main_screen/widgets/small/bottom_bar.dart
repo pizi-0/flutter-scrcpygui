@@ -5,6 +5,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
+import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../models/scrcpy_related/scrcpy_config.dart';
@@ -29,24 +30,17 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
     final allconfigs = ref.watch(configsProvider);
     final selectedConfig = ref.watch(selectedConfigProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: 8,
       children: [
-        Row(
-          children: [
-            const Text('Start scrcpy')
-                .textStyle(theme.typography.body)
-                .fontWeight(FontWeight.w600),
-            const Spacer(),
-            HyperlinkButton(
-                onPressed: _onNewConfigPressed, child: const Text('New config'))
-          ],
-        ),
+        ConfigCustom(
+            title: 'Start scrcpy',
+            child: HyperlinkButton(
+                onPressed: _onNewConfigPressed,
+                child: const Text('New config'))),
         Card(
           padding: const EdgeInsets.all(8),
           margin: const EdgeInsets.only(bottom: 16),
