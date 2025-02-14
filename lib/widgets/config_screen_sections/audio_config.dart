@@ -70,8 +70,11 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
 
   Widget _buildAudioDuplicateOption(
       BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+    final showInfo = ref.watch(configScreenShowInfo);
+
     return ConfigDropdownOthers(
       initialValue: selectedConfig.audioOptions.duplicateAudio,
+      showinfo: showInfo,
       onSelected: (info.buildVersion.toInt() ?? 0) < 13
           ? null
           : (value) {
@@ -111,6 +114,8 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
 
   Widget _buildAudioSourceSelector(
       BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+    final showInfo = ref.watch(configScreenShowInfo);
+
     return ConfigDropdownEnum<AudioSource>(
       items: AudioSource.values
           .where((s) => (info.buildVersion.toInt() ?? 0) < 13
@@ -118,6 +123,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
               : true)
           .toList(),
       title: 'Source',
+      showinfo: showInfo,
       subtitle: selectedConfig.audioOptions.audioSource == AudioSource.output
           ? "defaults to output, no flag"
           : selectedConfig.audioOptions.duplicateAudio
@@ -137,6 +143,8 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
 
   Widget _buildAudioFormatSelector(
       BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+    final showInfo = ref.watch(configScreenShowInfo);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -145,6 +153,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
           ConfigDropdownEnum<AudioFormat>(
             items: AudioFormat.values,
             title: 'Format',
+            showinfo: showInfo,
             initialValue: selectedConfig.audioOptions.audioFormat,
             toTitleCase: false,
             onSelected: _onFormatSelected,
@@ -154,6 +163,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
           const Divider(),
         ConfigDropdownOthers(
           initialValue: selectedConfig.audioOptions.audioCodec,
+          showinfo: showInfo,
           onSelected: _isRecordingAudioOnly(selectedConfig)
               ? null
               : (value) {
@@ -177,6 +187,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
         ),
         const Divider(),
         ConfigDropdownOthers(
+          showinfo: showInfo,
           initialValue: selectedConfig.audioOptions.audioEncoder,
           onSelected: (value) {
             ref.read(configScreenConfig.notifier).update((state) => state =
@@ -261,8 +272,11 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
   }
 
   Widget _buildAudioBitrate(BuildContext context) {
+    final showInfo = ref.watch(configScreenShowInfo);
+
     return ConfigUserInput(
       label: 'Bitrate',
+      showinfo: showInfo,
       controller: audioBitrateController,
       unit: 'K',
       onChanged: (value) {

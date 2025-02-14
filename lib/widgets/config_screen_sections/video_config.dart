@@ -81,8 +81,11 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   }
 
   Widget _buildMaxFPS(ScrcpyConfig selectedConfig) {
+    final showInfo = ref.watch(configScreenShowInfo);
+
     return ConfigUserInput(
       label: 'FPS limit',
+      showinfo: showInfo,
       subtitle: maxFPSController.text == '-'
           ? 'no flag unless set'
           : "uses '--max-fps=${maxFPSController.text.trim()}'",
@@ -111,6 +114,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   }
 
   Widget _buildDisplaySelector(ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+    final showInfo = ref.watch(configScreenShowInfo);
+
     final displays =
         info.displays.where((d) => (int.tryParse(d.id) ?? 11) < 10).toList();
 
@@ -120,6 +125,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
           ? displays[0].id
           : selectedConfig.videoOptions.displayId.toString(),
       tooltipMessage: 'Only 1 display detected',
+      showinfo: showInfo,
       subtitle: selectedConfig.videoOptions.displayId == 0
           ? "defaults to first available, no flag; virtual displays is not listed"
           : "uses '--display-id='",
@@ -140,6 +146,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   }
 
   Widget _buildResolutionScale(ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+    final showInfo = ref.watch(configScreenShowInfo);
+
     final displaySize = info.displays
         .firstWhere(
             (f) => f.id == selectedConfig.videoOptions.displayId.toString())
@@ -151,6 +159,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
 
     return ConfigCustom(
       title: 'Resolution scale',
+      showinfo: showInfo,
       subtitle: selectedConfig.videoOptions.resolutionScale == 1.0
           ? 'calculated based on device\'s resolution, no flag unless set'
           : "uses '--max-size=${(selectedConfig.videoOptions.resolutionScale * max.first).toStringAsFixed(0)}'",
@@ -188,10 +197,13 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
 
   Widget _buildVideoCodecNFormatSelector(
       BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+    final showInfo = ref.watch(configScreenShowInfo);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         ConfigDropdownOthers(
+          showinfo: showInfo,
           initialValue: selectedConfig.videoOptions.videoCodec,
           onSelected: (value) {
             ref.read(configScreenConfig.notifier).update((state) => state =
@@ -209,6 +221,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
         ),
         const Divider(),
         ConfigDropdownOthers(
+          showinfo: showInfo,
           initialValue: selectedConfig.videoOptions.videoEncoder,
           onSelected: (value) {
             ref.read(configScreenConfig.notifier).update((state) => state =
@@ -242,6 +255,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
         if (selectedConfig.isRecording)
           FadeIn(
             child: ConfigDropdownEnum<VideoFormat>(
+              showinfo: showInfo,
               items: VideoFormat.values,
               title: 'Format',
               subtitle:
@@ -261,12 +275,15 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   }
 
   Widget _buildVideoBitrate(BuildContext context) {
+    final showInfo = ref.watch(configScreenShowInfo);
+
     return ConfigUserInput(
       label: 'Bitrate',
       subtitle: videoBitrateController.text == '8'
           ? 'defaults to 8M, no flag'
           : "uses '--video-bit-rate=${videoBitrateController.text.trimAll}M'",
       controller: videoBitrateController,
+      showinfo: showInfo,
       unit: 'M',
       onChanged: (value) {
         if (value.isEmpty) {

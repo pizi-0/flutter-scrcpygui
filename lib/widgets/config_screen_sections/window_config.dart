@@ -31,6 +31,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig)!;
+    final showInfo = ref.watch(configScreenShowInfo);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -45,6 +46,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
               ConfigCustom(
                 childBackgroundColor: Colors.transparent,
                 title: 'Hide window',
+                showinfo: showInfo,
                 subtitle: selectedConfig.windowOptions.noWindow
                     ? "uses '--no-window' flag"
                     : "start scrcpy with no window",
@@ -75,6 +77,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
               ),
               const Divider(),
               ConfigCustom(
+                showinfo: showInfo,
                 childBackgroundColor: Colors.transparent,
                 title: 'Borderless',
                 subtitle: selectedConfig.windowOptions.noBorder
@@ -95,6 +98,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
               ),
               const Divider(),
               ConfigCustom(
+                showinfo: showInfo,
                 childBackgroundColor: Colors.transparent,
                 title: 'Always on top',
                 subtitle: selectedConfig.windowOptions.alwaysOntop
@@ -115,6 +119,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
               ),
               const Divider(),
               ConfigUserInput(
+                  showinfo: showInfo,
                   label: 'Time limit',
                   controller: timeLimitController,
                   subtitle: timeLimitController.text == '-'

@@ -49,6 +49,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
   Widget _buildMainModeSelector(
       WidgetRef ref, BuildContext context, ScrcpyConfig selectedConfig) {
     final sep = Platform.pathSeparator;
+    final showInfo = ref.watch(configScreenShowInfo);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -59,6 +60,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
           subtitle: !selectedConfig.isRecording
               ? 'mirror or record, no flag for mirror'
               : "uses '--record=' flag",
+          showinfo: showInfo,
           initialValue:
               selectedConfig.isRecording ? MainMode.record : MainMode.mirror,
           onSelected: (value) {
@@ -78,6 +80,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
             child: ConfigCustom(
               title: 'Save folder',
               subtitle: "appends save path to '--record=savepath/file'",
+              showinfo: showInfo,
               child: Button(
                 onPressed: () async {
                   final res = await FilePicker.platform.getDirectoryPath();
@@ -108,12 +111,15 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
   }
 
   Widget _buildModeSelector(BuildContext context, ScrcpyConfig selectedConfig) {
+    final showInfo = ref.watch(configScreenShowInfo);
+
     return ConfigDropdownEnum<ScrcpyMode>(
       items: ScrcpyMode.values,
       title: modeLabel,
       subtitle: selectedConfig.scrcpyMode == ScrcpyMode.both
           ? 'defaults to both, no flag'
           : "uses '${selectedConfig.scrcpyMode.command.trim()}' flag",
+      showinfo: showInfo,
       initialValue: selectedConfig.scrcpyMode,
       onSelected: (value) {
         ref

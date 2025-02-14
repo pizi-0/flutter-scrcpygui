@@ -16,6 +16,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig)!;
+    final showInfo = ref.watch(configScreenShowInfo);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -31,6 +32,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
               ConfigCustom(
                 childBackgroundColor: Colors.transparent,
                 title: 'Stay awake',
+                showinfo: showInfo,
                 subtitle: selectedConfig.deviceOptions.stayAwake
                     ? "uses '--stay-awake' flag"
                     : "prevent the device from sleeping, only works with usb connection",
@@ -55,6 +57,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
               ),
               const Divider(),
               ConfigCustom(
+                showinfo: showInfo,
                 childBackgroundColor: Colors.transparent,
                 title: 'Show touches',
                 subtitle: selectedConfig.deviceOptions.showTouches
@@ -81,6 +84,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
               ),
               const Divider(),
               ConfigCustom(
+                showinfo: showInfo,
                 childBackgroundColor: Colors.transparent,
                 title: 'Turn off display on start',
                 subtitle: selectedConfig.deviceOptions.turnOffDisplay
@@ -107,6 +111,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
               ),
               const Divider(),
               ConfigCustom(
+                showinfo: showInfo,
                 childBackgroundColor: Colors.transparent,
                 title: 'Turn off display on exit',
                 subtitle: selectedConfig.deviceOptions.offScreenOnClose
@@ -133,6 +138,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
               ),
               const Divider(),
               ConfigCustom(
+                showinfo: showInfo,
                 childBackgroundColor: Colors.transparent,
                 title: 'Disable screensaver (HOST)',
                 subtitle: selectedConfig.deviceOptions.noScreensaver
