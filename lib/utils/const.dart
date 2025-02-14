@@ -168,6 +168,7 @@ final defaultAppBehaviour = AppBehaviour(
   killNoWindowInstance: true,
   traySupport: true,
   toastEnabled: true,
+  minimizeAction: MinimizeAction.toTaskBar,
 );
 
 final defaultSettings = AppSettings(

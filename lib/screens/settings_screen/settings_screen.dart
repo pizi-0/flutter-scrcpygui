@@ -2,6 +2,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/screens/settings_screen/components/behaviour_section.dart';
 
 import 'components/theme_section.dart';
 
@@ -27,6 +28,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         ),
         children: const [
           ThemeSection(),
+          BehaviourSection(),
         ],
       ),
     );

@@ -1,82 +1,49 @@
-// // ignore_for_file: use_build_context_synchronously
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:scrcpygui/widgets/config_tiles.dart';
 
-// import 'package:flutter/material.dart';
-// import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:scrcpygui/widgets/config_tiles.dart';
-// import 'package:tray_manager/tray_manager.dart';
+class BehaviourSection extends ConsumerStatefulWidget {
+  const BehaviourSection({super.key});
 
-// import '../../../providers/settings_provider.dart';
-// import '../../../utils/app_utils.dart';
-// import '../../../utils/tray_utils.dart';
-// import '../../../widgets/body_container.dart';
+  @override
+  ConsumerState<BehaviourSection> createState() => _BehaviourSectionState();
+}
 
-// class AppBehaviourSection extends ConsumerStatefulWidget {
-//   const AppBehaviourSection({super.key});
+class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
+  @override
+  Widget build(BuildContext context) {
+    final behaviour =
+        ref.watch(settingsProvider.select((sett) => sett.behaviour));
 
-//   @override
-//   ConsumerState<AppBehaviourSection> createState() =>
-//       _AppBehaviourSectionState();
-// }
-
-// class _AppBehaviourSectionState extends ConsumerState<AppBehaviourSection> {
-//   @override
-//   Widget build(BuildContext context) {
-//     final behaviour = ref.watch(settingsProvider.select((s) => s.behaviour));
-//     final colorScheme = Theme.of(context).colorScheme;
-
-//     return BodyContainer(
-//       headerTitle: 'App behaviour',
-//       spacing: 4,
-//       children: [
-//         ConfigCustom(
-//           childBackgroundColor: Colors.transparent,
-//           title: 'Show tray icon',
-//           child: Checkbox(
-//             value: behaviour.traySupport,
-//             checkColor: colorScheme.surface,
-//             onChanged: (v) async {
-//               ref.read(settingsProvider.notifier).update((state) => state =
-//                   state.copyWith(
-//                       behaviour: state.behaviour.copyWith(traySupport: v)));
-
-//               if (v == true) {
-//                 await trayManager.destroy();
-//                 await TrayUtils.initTray(ref, context);
-//               } else {
-//                 await trayManager.destroy();
-//               }
-
-//               final newSettings = ref.read(settingsProvider);
-
-//               await AppUtils.saveAppSettings(newSettings);
-//             },
-//           ),
-//         ),
-//         ConfigCustom(
-//           childBackgroundColor: Colors.transparent,
-//           title: 'Quitting kill instances with no window',
-//           child: Checkbox(
-//             value: behaviour.traySupport,
-//             checkColor: colorScheme.surface,
-//             onChanged: (v) async {
-//               ref.read(settingsProvider.notifier).update((state) => state =
-//                   state.copyWith(
-//                       behaviour: state.behaviour.copyWith(traySupport: v)));
-
-//               if (v == true) {
-//                 await trayManager.destroy();
-//                 await TrayUtils.initTray(ref, context);
-//               } else {
-//                 await trayManager.destroy();
-//               }
-
-//               final newSettings = ref.read(settingsProvider);
-
-//               await AppUtils.saveAppSettings(newSettings);
-//             },
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
+    return Column(
+      spacing: 8,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const ConfigCustom(title: 'App behavior', child: SizedBox()),
+        Card(
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              ConfigCustom(
+                childBackgroundColor: Colors.transparent,
+                title: 'Minimize',
+                subtitle: 'app behaviour when minimize triggered',
+                child: ComboBox(
+                    value: behaviour.minimizeAction,
+                    onChanged: (value) {},
+                    items: MinimizeAction.values
+                        .map((v) => ComboBoxItem(
+                              value: v,
+                              child: Text(v.name),
+                            ))
+                        .toList()),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}

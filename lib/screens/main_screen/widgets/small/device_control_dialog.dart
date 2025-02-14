@@ -8,7 +8,6 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb/adb_utils.dart';
-import 'package:scrcpygui/utils/scrcpy_command.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
 class ControlDialog extends ConsumerStatefulWidget {
@@ -90,12 +89,6 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
                       : (config) {
                           selectedConfig = config as ScrcpyConfig?;
 
-                          print(ScrcpyCommand.buildCommand(
-                              ref,
-                              selectedConfig!.copyWith(
-                                  additionalFlags:
-                                      '--new-display --start-app=$selectedApp'),
-                              widget.device));
                           setState(() {});
                         },
                   placeholder: const Text('Select config to launch the app on'),
