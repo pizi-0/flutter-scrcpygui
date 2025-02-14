@@ -249,7 +249,7 @@ class ConfigUserInput extends ConsumerWidget {
 class ConfigCustom extends ConsumerWidget {
   final String title;
   final String? subtitle;
-  final Widget child;
+  final Widget? child;
   final BoxConstraints? boxConstraints;
   final Color? childBackgroundColor;
   final double? padRight;
@@ -258,7 +258,7 @@ class ConfigCustom extends ConsumerWidget {
   const ConfigCustom({
     super.key,
     required this.title,
-    required this.child,
+    this.child,
     this.subtitle,
     this.showinfo = false,
     this.boxConstraints,

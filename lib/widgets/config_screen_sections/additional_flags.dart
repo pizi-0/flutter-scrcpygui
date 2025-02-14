@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/available_flags.dart';
 
 import '../../providers/config_provider.dart';
+import '../config_tiles.dart';
 
 class AdditionalFlagsConfig extends ConsumerStatefulWidget {
   const AdditionalFlagsConfig({super.key});
@@ -35,9 +36,9 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Text('Additional flags'),
+        const ConfigCustom(
+          title: 'Additional flags',
+          child: Icon(FluentIcons.flag),
         ),
         Card(
           child: Column(

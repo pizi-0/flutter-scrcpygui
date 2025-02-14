@@ -30,10 +30,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Text('Mode'),
-        ),
+        const ConfigCustom(title: 'Mode'),
         Card(
           padding: const EdgeInsets.all(0),
           child: Column(

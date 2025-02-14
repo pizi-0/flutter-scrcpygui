@@ -53,10 +53,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Text('Video'),
-        ),
+        const ConfigCustom(title: 'Video', child: Icon(FluentIcons.video)),
         Card(
           padding: EdgeInsets.zero,
           child: ClipRRect(

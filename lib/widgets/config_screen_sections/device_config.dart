@@ -20,10 +20,8 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Text('Device'),
-        ),
+        const ConfigCustom(
+            title: 'Device', child: Icon(FluentIcons.cell_phone)),
         Card(
           padding: EdgeInsets.zero,
           child: Column(

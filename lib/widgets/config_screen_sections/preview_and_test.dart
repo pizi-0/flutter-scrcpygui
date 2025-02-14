@@ -15,6 +15,7 @@ import 'package:scrcpygui/utils/scrcpy_command.dart';
 
 import '../../providers/config_provider.dart';
 import '../../utils/scrcpy_utils.dart';
+import '../config_tiles.dart';
 
 final testInstanceProvider =
     StateProvider<ScrcpyRunningInstance?>((ref) => null);
@@ -66,10 +67,8 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Text('Test config'),
-        ),
+        const ConfigCustom(
+            title: 'Test config', child: Icon(FluentIcons.test_beaker)),
         Card(
           child: Column(
             mainAxisSize: MainAxisSize.min,

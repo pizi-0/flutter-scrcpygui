@@ -44,10 +44,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Text('Audio'),
-        ),
+        const ConfigCustom(title: 'Audio', child: Icon(FluentIcons.speakers)),
         Card(
           padding: EdgeInsets.zero,
           child: Column(

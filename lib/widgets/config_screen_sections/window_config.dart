@@ -35,10 +35,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Text('Window'),
-        ),
+        const ConfigCustom(title: 'Window', child: Icon(FluentIcons.favicon)),
         Card(
           padding: EdgeInsets.zero,
           child: Column(
