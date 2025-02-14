@@ -1,11 +1,16 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
 import 'package:scrcpygui/models/settings_model/app_settings.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/utils/prefs_key.dart';
+import 'package:scrcpygui/utils/tray_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -94,6 +99,28 @@ class AppUtils {
       await windowManager.isPreventClose();
       await windowManager.setPreventClose(false);
       await windowManager.destroy();
+    }
+  }
+
+  static Future<void> onAppMinimizeRequested(
+      WidgetRef ref, BuildContext context) async {
+    final behaviour = ref.read(settingsProvider).behaviour;
+
+    switch (behaviour.minimizeAction) {
+      case MinimizeAction.toTaskBar:
+        await windowManager.minimize();
+      case MinimizeAction.toTray:
+        await windowManager.hide();
+        await TrayUtils.initTray(ref, context);
+    }
+  }
+
+  static Future<void> onAppMaximizeRequested() async {
+    if (await windowManager.isMaximized()) {
+      await windowManager.restore();
+    }
+    if (!(await windowManager.isMaximized())) {
+      await windowManager.maximize();
     }
   }
 

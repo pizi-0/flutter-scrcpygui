@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
 import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/utils/const.dart';
 
@@ -27,6 +28,13 @@ class SettingsNotifier extends Notifier<AppSettings> {
     var currentLooks = state.looks;
     state = state.copyWith(
         looks: currentLooks.copyWith(accentTintLevel: tintLevel));
+  }
+
+  changeMinimizeBehaviour(MinimizeAction behaviour) {
+    var currentBehaviour = state.behaviour;
+
+    state = state.copyWith(
+        behaviour: currentBehaviour.copyWith(minimizeAction: behaviour));
   }
 }
 

@@ -1,7 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
-import 'package:window_manager/window_manager.dart';
 
 class TitleBarButton extends ConsumerWidget {
   const TitleBarButton({super.key});
@@ -16,7 +15,7 @@ class TitleBarButton extends ConsumerWidget {
             child: Icon(FluentIcons.calculator_subtract),
           ),
           onPressed: () {
-            windowManager.minimize();
+            AppUtils.onAppMinimizeRequested(ref, context);
           },
         ),
         IconButton(
@@ -24,7 +23,9 @@ class TitleBarButton extends ConsumerWidget {
             padding: EdgeInsets.all(8.0),
             child: Icon(FluentIcons.square_shape),
           ),
-          onPressed: () {},
+          onPressed: () {
+            AppUtils.onAppMaximizeRequested();
+          },
         ),
         IconButton(
           icon: const Padding(
