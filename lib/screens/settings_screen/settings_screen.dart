@@ -23,8 +23,9 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       },
       child: ScaffoldPage.scrollable(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        header: const PageHeader(
-          title: Text('Settings'),
+        header: const Padding(
+          padding: EdgeInsets.only(top: 8.0),
+          child: PageHeader(title: Text('Settings')),
         ),
         children: const [
           ThemeSection(),

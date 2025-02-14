@@ -11,7 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/main_screen/widgets/small/home.dart';
-import 'package:scrcpygui/screens/main_screen/widgets/small/wifi_adb_small.dart';
+import 'package:scrcpygui/screens/main_screen/widgets/small/mdns_scanner.dart';
 import 'package:scrcpygui/screens/settings_screen/settings_screen.dart';
 import 'package:scrcpygui/screens/update_screen/update_screen.dart';
 import 'package:scrcpygui/utils/app_utils.dart';

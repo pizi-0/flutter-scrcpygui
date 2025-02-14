@@ -32,8 +32,11 @@ class _HomeState extends ConsumerState<Home> {
         return FluentPageRoute(
           builder: (context) => ScaffoldPage.withPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            header: const PageHeader(
-              title: Text('Home'),
+            header: const Padding(
+              padding: EdgeInsets.only(top: 8.0),
+              child: PageHeader(
+                title: Text('Home'),
+              ),
             ),
             content: ResponsiveBuilder(
               builder: (context, sizingInformation) {

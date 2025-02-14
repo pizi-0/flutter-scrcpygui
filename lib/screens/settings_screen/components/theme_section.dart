@@ -21,7 +21,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
       spacing: 8,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Looks'),
+        const ConfigCustom(title: 'Looks', child: SizedBox()),
         Card(
           padding: EdgeInsets.zero,
           child: Column(
