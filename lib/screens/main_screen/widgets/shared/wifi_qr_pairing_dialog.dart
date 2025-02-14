@@ -51,26 +51,29 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
           const Text(
               '[Developer option] > [Wireless debugging] > [Pair device with QR code]'),
           Center(
-            child: SizedBox(
-              height: 200,
-              width: 200,
-              child: Stack(
-                children: [
-                  QrImageView(
-                    data: 'WIFI:T:ADB;S:ADB_WIFI_$id;P:${id.removeSpecial};',
-                    size: 200,
-                    backgroundColor: Colors.white,
-                  ),
-                  if (loading)
-                    SizedBox.expand(
-                      child: Container(
-                        color: Colors.grey.withAlpha(200),
-                        child: const Center(
-                          child: ProgressRing(),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SizedBox(
+                height: 200,
+                width: 200,
+                child: Stack(
+                  children: [
+                    QrImageView(
+                      data: 'WIFI:T:ADB;S:ADB_WIFI_$id;P:${id.removeSpecial};',
+                      size: 200,
+                      backgroundColor: Colors.white,
+                    ),
+                    if (loading)
+                      SizedBox.expand(
+                        child: Container(
+                          color: Colors.grey.withAlpha(200),
+                          child: const Center(
+                            child: ProgressRing(),
+                          ),
                         ),
-                      ),
-                    )
-                ],
+                      )
+                  ],
+                ),
               ),
             ),
           ),
