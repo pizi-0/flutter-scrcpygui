@@ -161,6 +161,7 @@ class _UpdateScreenState extends ConsumerState<UpdateScreen>
                               ],
                             ),
                           ),
+                    const Divider(),
                     ConfigCustom(
                       childBackgroundColor: Colors.transparent,
                       title: 'Open executable location',
