@@ -93,15 +93,20 @@ class Db {
     prefs.setString(PKEY_LASTUSED_CONFIG, config.id);
   }
 
-  static Future<ScrcpyConfig> getLastUsedConfig(WidgetRef ref) async {
-    final prefs = await SharedPreferences.getInstance();
-    final allConfig = ref.read(configsProvider);
+  static Future<ScrcpyConfig?> getLastUsedConfig(WidgetRef ref) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final allConfig = ref.read(configsProvider);
 
-    final res = prefs.getString(PKEY_LASTUSED_CONFIG) ?? defaultMirror.id;
+      final res = prefs.getString(PKEY_LASTUSED_CONFIG) ?? defaultMirror.id;
 
-    final lastUsed = allConfig.firstWhere((c) => c.id == res);
+      final lastUsed = allConfig.firstWhere((c) => c.id == res);
 
-    return lastUsed;
+      return lastUsed;
+    } on StateError catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
   }
 
   static Future<void> saveConfigs(

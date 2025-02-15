@@ -39,20 +39,23 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     await SetupUtils.initScrcpy(ref);
 
     final workDir = ref.read(execDirProvider);
-    var savedDevices = await Db.getSavedAdbDevice();
+    final savedDevices = await Db.getSavedAdbDevice();
 
     ref.read(savedAdbDevicesProvider.notifier).setDevices(savedDevices);
 
-    var confs = await Db.getSavedConfig();
+    final confs = await Db.getSavedConfig();
 
     for (final c in confs) {
       ref.read(configsProvider.notifier).addConfig(c);
     }
 
-    var adbDevices = await AdbUtils.connectedDevices(workDir);
+    final lastUsedConfig = await Db.getLastUsedConfig(ref);
+    ref.read(selectedConfigProvider.notifier).state = lastUsedConfig;
+
+    final adbDevices = await AdbUtils.connectedDevices(workDir);
     ref.read(adbProvider.notifier).setConnected(adbDevices, savedDevices);
 
-    var wirelessHistory = await Db.getWirelessHistory();
+    final wirelessHistory = await Db.getWirelessHistory();
     ref
         .read(wirelessDevicesHistoryProvider.notifier)
         .update((state) => wirelessHistory);

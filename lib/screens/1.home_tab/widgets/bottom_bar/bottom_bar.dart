@@ -129,25 +129,33 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
       );
     } else {
       if (selectedDevice == null) {
-        showDialog(
-          context: context,
-          barrierDismissible: true,
-          builder: (context) => ContentDialog(
-            title: const Text('Device'),
-            content: const Text(
-                'No device selected.\nSelect a device to start scrcpy.'),
-            actions: [
-              Button(
-                child: const Text('Close'),
-                onPressed: () => Navigator.pop(context),
-              )
-            ],
-          ),
-        );
+        if (ref.read(adbProvider).length == 1) {
+          ref.read(selectedDeviceProvider.notifier).state =
+              ref.read(adbProvider).first;
+
+          _start();
+        } else {
+          showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (context) => ContentDialog(
+              title: const Text('Device'),
+              content: const Text(
+                  'No device selected.\nSelect a device to start scrcpy.'),
+              actions: [
+                Button(
+                  child: const Text('Close'),
+                  onPressed: () => Navigator.pop(context),
+                )
+              ],
+            ),
+          );
+        }
       } else {
         loading = true;
         setState(() {});
         await ScrcpyUtils.newInstance(ref, selectedConfig: selectedConfig);
+        await Db.saveLastUsedConfig(selectedConfig);
 
         if (mounted) {
           loading = false;
