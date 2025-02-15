@@ -155,6 +155,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
   }
 
   _onClose(bool wifi, bool instance) async {
+    print('closing');
+    await windowManager.setPreventClose(true);
     setState(() {
       loading = true;
     });
@@ -164,21 +166,21 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
 
     for (final i
         in runningInstances.where((ins) => ins.config.windowOptions.noWindow)) {
-      ScrcpyUtils.killServer(i).then((a) {
+      await ScrcpyUtils.killServer(i).then((a) {
         ref.read(scrcpyInstanceProvider.notifier).removeInstance(i);
       });
     }
 
     if (instance) {
       for (final i in runningInstances) {
-        ScrcpyUtils.killServer(i).then((a) {
+        await ScrcpyUtils.killServer(i).then((a) {
           ref.read(scrcpyInstanceProvider.notifier).removeInstance(i);
         });
       }
 
       final strays = await AdbUtils.getScrcpyServerPIDs();
       if (strays.isNotEmpty) {
-        ScrcpyUtils.killStrays(strays, ProcessSignal.sigterm);
+        await ScrcpyUtils.killStrays(strays, ProcessSignal.sigterm);
       }
     }
 
