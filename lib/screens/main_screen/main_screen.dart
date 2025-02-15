@@ -29,6 +29,7 @@ import '../../utils/const.dart';
 import '../../utils/tray_utils.dart';
 
 final mainScreenPage = StateProvider((ref) => 0);
+final mainScreenNavViewKey = GlobalKey<NavigationViewState>();
 
 class MainScreen extends ConsumerStatefulWidget {
   const MainScreen({super.key});
@@ -110,6 +111,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
     return ResponsiveBuilder(
       builder: (context, sizingInformation) {
         return NavigationView(
+          key: mainScreenNavViewKey,
           appBar: NavigationAppBar(
             automaticallyImplyLeading: false,
             title: Row(
@@ -176,7 +178,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
             items: [
               PaneItem(
                 icon: const Icon(FluentIcons.home),
-                title: const Text('Home'),
+                title: const Text('Home (Alt + 1)'),
                 body: const Home(),
               ),
               PaneItem(
