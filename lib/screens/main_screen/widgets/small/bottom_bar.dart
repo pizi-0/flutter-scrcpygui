@@ -171,7 +171,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
     return Row(
       children: [
         Tooltip(
-          message: 'Config summary',
+          message: 'Show details',
           child: IconButton(
             icon: const Icon(FluentIcons.info),
             onPressed: _onDetailPressed,
@@ -357,6 +357,8 @@ class _ConfigDetailDialogState extends ConsumerState<ConfigDetailDialog> {
               children: [
                 const Divider(),
                 const Text('Window options:'),
+                if (widget.config.windowOptions.noWindow)
+                  const Text('  - hide window'),
                 if (widget.config.windowOptions.noBorder)
                   const Text('  - borderless'),
                 if (widget.config.windowOptions.alwaysOntop)
