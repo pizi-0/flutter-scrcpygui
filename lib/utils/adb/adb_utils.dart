@@ -445,13 +445,16 @@ List<ScrcpyApp> _getAppsList(String res) {
   List<ScrcpyApp> apps = [];
 
   final split = res.split('[server] INFO: List of apps:');
+
   final cleaned = split.last
       .trim()
       .splitLines()
+      .where((e) => e.trim().startsWith('-') || e.trim().startsWith('*'))
       .map((e) => e.trimAll.replaceLast(' ', 'split').split('split'))
       .toList();
 
   apps = cleaned
+      .where((c) => !c.contains(adbMdns))
       .map(
         (e) => ScrcpyApp(
             name: e.first.replaceAtIndex(index: 0, replacement: '').trim(),
