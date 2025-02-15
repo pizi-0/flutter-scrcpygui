@@ -99,6 +99,7 @@ class AppUtils {
       await windowManager.isPreventClose();
       await windowManager.setPreventClose(false);
       await windowManager.destroy();
+      exit(0);
     }
   }
 
