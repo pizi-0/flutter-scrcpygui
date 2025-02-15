@@ -155,7 +155,6 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
   }
 
   _onClose(bool wifi, bool instance) async {
-    print('closing');
     await windowManager.setPreventClose(true);
     setState(() {
       loading = true;

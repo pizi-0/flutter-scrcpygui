@@ -7,20 +7,17 @@ import 'dart:isolate';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:string_extensions/string_extensions.dart';
+
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
-import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/toast_providers.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/command_runner.dart';
-import 'package:scrcpygui/utils/const.dart';
-import 'package:scrcpygui/utils/prefs_key.dart';
-import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 import 'package:scrcpygui/widgets/override_dialog.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:string_extensions/string_extensions.dart';
+import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 
 import '../models/scrcpy_related/scrcpy_flag_check_result.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
@@ -29,48 +26,6 @@ import 'adb/adb_utils.dart';
 import 'scrcpy_command.dart';
 
 class ScrcpyUtils {
-  static Future<List<ScrcpyConfig>> getSavedConfig() async {
-    List<ScrcpyConfig> saved = [];
-    final prefs = await SharedPreferences.getInstance();
-
-    final res = prefs.getStringList(PKEY_SAVED_CONFIG) ?? [];
-
-    for (var r in res) {
-      saved.add(ScrcpyConfig.fromJson(r));
-    }
-
-    return saved;
-  }
-
-  static Future<void> saveLastUsedConfig(ScrcpyConfig config) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    prefs.setString(PKEY_LASTUSED_CONFIG, config.id);
-  }
-
-  static Future<ScrcpyConfig> getLastUsedConfig(WidgetRef ref) async {
-    final prefs = await SharedPreferences.getInstance();
-    final allConfig = ref.read(configsProvider);
-
-    final res = prefs.getString(PKEY_LASTUSED_CONFIG) ?? defaultMirror.id;
-
-    final lastUsed = allConfig.firstWhere((c) => c.id == res);
-
-    return lastUsed;
-  }
-
-  static Future<void> saveConfigs(
-      WidgetRef ref, BuildContext context, List<ScrcpyConfig> conf) async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String> savedJson = [];
-
-    for (var c in conf) {
-      savedJson.add(c.toJson());
-    }
-
-    prefs.setStringList(PKEY_SAVED_CONFIG, savedJson);
-  }
-
   static Future<void> pingRunning(WidgetRef ref) async {
     final running = ref.read(scrcpyInstanceProvider);
     final actual = await getRunningScrcpy(ref.read(appPidProvider));

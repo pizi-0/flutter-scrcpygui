@@ -5,16 +5,14 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
-import 'package:scrcpygui/models/settings_model/app_settings.dart';
-import 'package:scrcpygui/providers/settings_provider.dart';
-import 'package:scrcpygui/utils/extension.dart';
-import 'package:scrcpygui/utils/prefs_key.dart';
-import 'package:scrcpygui/utils/tray_utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
+
+import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:scrcpygui/utils/extension.dart';
+import 'package:scrcpygui/utils/tray_utils.dart';
 
 import '../providers/adb_provider.dart';
 import '../providers/scrcpy_provider.dart';
@@ -65,23 +63,6 @@ class AppUtils {
     return pidof;
   }
 
-  static Future<void> saveAppSettings(AppSettings appSettings) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    prefs.setString(PKEY_APP_SETTINGS, appSettings.toJson());
-  }
-
-  static Future<AppSettings> getAppSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    final jsons = prefs.getString(PKEY_APP_SETTINGS);
-
-    if (jsons == null) {
-      return defaultSettings;
-    } else {
-      return AppSettings.fromJson(jsons);
-    }
-  }
-
   static Future<void> onAppCloseRequested(
       WidgetRef ref, BuildContext context) async {
     final wifi = ref
@@ -123,12 +104,6 @@ class AppUtils {
     if (!(await windowManager.isMaximized())) {
       await windowManager.maximize();
     }
-  }
-
-  static Future<void> clearSharedPrefs(String key) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    prefs.remove(key);
   }
 
   static openFolder(String p) async {

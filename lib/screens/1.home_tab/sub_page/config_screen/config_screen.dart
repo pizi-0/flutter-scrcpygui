@@ -3,6 +3,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 
@@ -64,7 +65,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
 
         final newsaved = ref.read(savedAdbDevicesProvider);
 
-        await AdbUtils.saveAdbDevice(newsaved);
+        await Db.saveAdbDevice(newsaved);
         setState(() {});
       }
     });
@@ -159,7 +160,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
                     ref.read(configScreenConfig)!,
                     ref.read(configScreenConfig)!);
 
-                await ScrcpyUtils.saveConfigs(
+                await Db.saveConfigs(
                     ref,
                     context,
                     ref

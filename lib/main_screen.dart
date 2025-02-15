@@ -8,6 +8,7 @@ import 'package:bonsoir/bonsoir.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
@@ -151,8 +152,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
                             .read(settingsProvider.notifier)
                             .changeThememode(ThemeMode.dark);
                       }
-                      await AppUtils.saveAppSettings(
-                          ref.read(settingsProvider));
+                      await Db.saveAppSettings(ref.read(settingsProvider));
                     },
                   ),
                 ),

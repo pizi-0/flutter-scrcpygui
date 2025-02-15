@@ -2,11 +2,11 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/main_screen.dart';
 import 'package:scrcpygui/screens/0.splash_screen/splash_screen.dart';
-import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -27,7 +27,7 @@ void main() async {
     await windowManager.focus();
   });
 
-  AppUtils.getAppSettings().then((settings) {
+  Db.getAppSettings().then((settings) {
     runApp(
       ProviderScope(
         child: MyApp(settings: settings),

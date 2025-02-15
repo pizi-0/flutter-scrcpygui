@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/result/wireless_connect_result.dart';
@@ -15,7 +14,6 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb/_adb_utils.dart';
 import 'package:scrcpygui/utils/command_runner.dart';
-import 'package:scrcpygui/utils/prefs_key.dart';
 
 import '../../models/adb_devices.dart';
 import '../const.dart';
@@ -282,41 +280,6 @@ class AdbUtils {
     }
 
     return adbPIDs;
-  }
-
-  static Future<void> saveAdbDevice(List<AdbDevices> dev) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList(
-        PKEY_SAVED_DEVICES, dev.map((e) => e.toJson()).toList());
-    // prefs.remove(PKEY_SAVED_DEVICES);
-  }
-
-  static Future<List<AdbDevices>> getSavedAdbDevice() async {
-    final prefs = await SharedPreferences.getInstance();
-    // prefs.remove(PKEY_SAVED_DEVICES);
-    final jsons = prefs.getStringList(PKEY_SAVED_DEVICES) ?? [];
-
-    return jsons.map((e) => AdbDevices.fromJson(e)).toList();
-  }
-
-  static Future<void> saveWirelessHistory(List<AdbDevices> devs) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(
-        PKEY_WIRELESS_DEVICE_HX, devs.map((d) => d.toJson()).toList());
-  }
-
-  static Future<List<AdbDevices>> getWirelessHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    List<String> historyStr =
-        prefs.getStringList(PKEY_WIRELESS_DEVICE_HX) ?? [];
-
-    return historyStr.map((s) => AdbDevices.fromJson(s)).toList();
-  }
-
-  static Future<void> saveAutoConnectDevices(List<AdbDevices> devs) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList(
-        PKEY_AUTO_CONNECT_DEVICES, devs.map((e) => e.toJson()).toList());
   }
 }
 

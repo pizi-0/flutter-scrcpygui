@@ -3,13 +3,13 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/main_screen.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/adb/adb_utils.dart';
-import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/utils/setup.dart';
 
 import '../../utils/app_utils.dart';
@@ -39,11 +39,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     await SetupUtils.initScrcpy(ref);
 
     final workDir = ref.read(execDirProvider);
-    var savedDevices = await AdbUtils.getSavedAdbDevice();
+    var savedDevices = await Db.getSavedAdbDevice();
 
     ref.read(savedAdbDevicesProvider.notifier).setDevices(savedDevices);
 
-    var confs = await ScrcpyUtils.getSavedConfig();
+    var confs = await Db.getSavedConfig();
 
     for (final c in confs) {
       ref.read(configsProvider.notifier).addConfig(c);
@@ -52,7 +52,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     var adbDevices = await AdbUtils.connectedDevices(workDir);
     ref.read(adbProvider.notifier).setConnected(adbDevices, savedDevices);
 
-    var wirelessHistory = await AdbUtils.getWirelessHistory();
+    var wirelessHistory = await Db.getWirelessHistory();
     ref
         .read(wirelessDevicesHistoryProvider.notifier)
         .update((state) => wirelessHistory);

@@ -3,6 +3,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
@@ -367,7 +368,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
         await AdbUtils.getScrcpyDetailsFor(ref.read(execDirProvider), dev);
     dev = dev.copyWith(info: info);
     ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
-    await AdbUtils.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+    await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
 
     loading = false;
     setState(() {});
@@ -390,7 +391,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
     }
 
     ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
-    await AdbUtils.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+    await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
 
     ddValue = value;
     setState(() {});
@@ -406,7 +407,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   void _onTextBoxSubmit(value) async {
     dev = dev.copyWith(name: value.toUpperCase());
     ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
-    await AdbUtils.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+    await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
   }
 
   void _onAutoConnectToggled(value) async {
@@ -427,7 +428,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
         automationData: AutomationData(actions: currentAutomation));
 
     ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
-    await AdbUtils.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+    await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
 
     setState(() {});
   }

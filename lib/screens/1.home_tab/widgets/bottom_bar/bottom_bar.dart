@@ -4,6 +4,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:uuid/uuid.dart';
@@ -423,7 +424,7 @@ class _ConfigDeleteDialogState extends ConsumerState<ConfigDeleteDialog> {
                       .first;
                 }
                 ref.read(configsProvider.notifier).removeConfig(widget.config);
-                await ScrcpyUtils.saveConfigs(
+                await Db.saveConfigs(
                     ref,
                     context,
                     ref

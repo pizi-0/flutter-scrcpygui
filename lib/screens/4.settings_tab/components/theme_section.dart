@@ -1,8 +1,8 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
-import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 
 class ThemeSection extends ConsumerStatefulWidget {
@@ -33,7 +33,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                   value: looks.themeMode,
                   onChanged: (ThemeMode? mode) async {
                     ref.read(settingsProvider.notifier).changeThememode(mode!);
-                    await AppUtils.saveAppSettings(ref.read(settingsProvider));
+                    await Db.saveAppSettings(ref.read(settingsProvider));
                   },
                   items: const [
                     ComboBoxItem(
@@ -64,8 +64,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                             .read(settingsProvider.notifier)
                             .changeAccentColor(Colors.blue);
 
-                        await AppUtils.saveAppSettings(
-                            ref.read(settingsProvider));
+                        await Db.saveAppSettings(ref.read(settingsProvider));
                       },
                     ),
                     Button(
@@ -98,7 +97,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                                       .read(settingsProvider.notifier)
                                       .changeAccentColor(color.toAccentColor());
 
-                                  await AppUtils.saveAppSettings(
+                                  await Db.saveAppSettings(
                                       ref.read(settingsProvider));
                                 },
                               ),
@@ -125,8 +124,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                               .read(settingsProvider.notifier)
                               .changeTintLevel(90);
 
-                          await AppUtils.saveAppSettings(
-                              ref.read(settingsProvider));
+                          await Db.saveAppSettings(ref.read(settingsProvider));
                         },
                       ),
                     ),
@@ -140,8 +138,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                             .changeTintLevel(val);
                       },
                       onChangeEnd: (value) async {
-                        await AppUtils.saveAppSettings(
-                            ref.read(settingsProvider));
+                        await Db.saveAppSettings(ref.read(settingsProvider));
                       },
                     ),
                   ],

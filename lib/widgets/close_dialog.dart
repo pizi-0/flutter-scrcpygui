@@ -3,11 +3,11 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
-import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
 class ConfigScreenCloseDialog extends ConsumerStatefulWidget {
   const ConfigScreenCloseDialog({super.key});
@@ -164,7 +164,7 @@ class _ConfigScreenCloseDialogState
         .firstWhere((c) => c.id == currentConfig.id,
             orElse: () => defaultMirror);
 
-    await ScrcpyUtils.saveConfigs(ref, context, toSave);
+    await Db.saveConfigs(ref, context, toSave);
 
     Navigator.pop(context, true);
   }

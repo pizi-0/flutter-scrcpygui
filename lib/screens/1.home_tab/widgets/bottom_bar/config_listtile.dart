@@ -5,10 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/config_screen.dart';
-import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/decorations.dart';
@@ -137,7 +137,7 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                                       .read(savedAdbDevicesProvider.notifier)
                                       .setDevices(newsaved);
 
-                                  await ScrcpyUtils.saveConfigs(
+                                  await Db.saveConfigs(
                                       ref,
                                       context,
                                       ref
@@ -146,7 +146,7 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                                               !defaultConfigs.contains(c))
                                           .toList());
 
-                                  await AdbUtils.saveAdbDevice(newsaved);
+                                  await Db.saveAdbDevice(newsaved);
 
                                   Navigator.pop(context);
                                 },

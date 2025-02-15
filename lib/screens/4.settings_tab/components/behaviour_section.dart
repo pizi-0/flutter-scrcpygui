@@ -1,8 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
-import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 
 class BehaviourSection extends ConsumerStatefulWidget {
@@ -38,7 +38,7 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
                         .read(settingsProvider.notifier)
                         .changeMinimizeBehaviour(value!);
 
-                    await AppUtils.saveAppSettings(ref.read(settingsProvider));
+                    await Db.saveAppSettings(ref.read(settingsProvider));
                   },
                   items: MinimizeAction.values
                       .map((v) => ComboBoxItem(value: v, child: Text(v.name)))
