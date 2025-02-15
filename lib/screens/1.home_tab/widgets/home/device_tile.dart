@@ -3,7 +3,6 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/screens/main_screen/widgets/small/device_control_dialog.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../../../../models/adb_devices.dart';
@@ -14,6 +13,7 @@ import '../../../../providers/version_provider.dart';
 import '../../../../utils/adb/adb_utils.dart';
 import '../../../../utils/const.dart';
 import '../../../../utils/scrcpy_utils.dart';
+import 'device_control_dialog.dart';
 
 class DeviceTile extends ConsumerStatefulWidget {
   const DeviceTile({

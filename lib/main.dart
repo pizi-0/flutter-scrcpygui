@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
-import 'package:scrcpygui/screens/main_screen/main_screen.dart';
-import 'package:scrcpygui/screens/splash_screen/splash_screen.dart';
+import 'package:scrcpygui/main_screen.dart';
+import 'package:scrcpygui/screens/0.splash_screen/splash_screen.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:window_manager/window_manager.dart';
 

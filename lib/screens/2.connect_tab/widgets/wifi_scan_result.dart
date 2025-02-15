@@ -5,11 +5,11 @@ import 'package:bonsoir/bonsoir.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../models/adb_devices.dart';
-import '../../../../providers/adb_provider.dart';
-import '../../../../providers/bonsoir_devices.dart';
-import '../../../../utils/adb/adb_utils.dart';
-import 'connection_error_dialog.dart';
+import '../../../models/adb_devices.dart';
+import '../../../providers/adb_provider.dart';
+import '../../../providers/bonsoir_devices.dart';
+import '../../../utils/adb/adb_utils.dart';
+import '../../1.home_tab/widgets/home/connection_error_dialog.dart';
 
 class BonsoirResults extends ConsumerStatefulWidget {
   const BonsoirResults({super.key});

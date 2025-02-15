@@ -8,7 +8,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../utils/adb/adb_utils.dart';
+import '../../../utils/adb/adb_utils.dart';
 
 class WifiQrPairing extends ConsumerStatefulWidget {
   const WifiQrPairing({super.key});

@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/bonsoir_devices.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 
-import '../shared/wifi_qr_pairing_dialog.dart';
-import '../shared/wifi_scan_result.dart';
+import 'widgets/wifi_qr_pairing_dialog.dart';
+import 'widgets/wifi_scan_result.dart';
 
 class WifiScanner extends ConsumerStatefulWidget {
   const WifiScanner({super.key});

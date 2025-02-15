@@ -12,7 +12,7 @@ import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:string_extensions/string_extensions.dart';
 
-import '../../providers/adb_provider.dart';
+import '../../../../providers/adb_provider.dart';
 
 // ignore: constant_identifier_names
 const DO_NOTHING = 'Do nothing';

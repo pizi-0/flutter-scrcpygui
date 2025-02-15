@@ -7,18 +7,18 @@ import 'package:flutter_context_menu/flutter_context_menu.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
-import 'package:scrcpygui/screens/config_screen/config_screen.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/config_screen.dart';
 import 'package:scrcpygui/utils/adb/adb_utils.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/decorations.dart';
 import 'package:scrcpygui/widgets/section_button.dart';
 
-import '../../../models/scrcpy_related/scrcpy_config.dart';
-import '../../../providers/adb_provider.dart';
-import '../../../utils/scrcpy_utils.dart';
-import '../../../widgets/config_visualizer.dart';
-import 'small/home_small.dart';
+import '../../../../models/scrcpy_related/scrcpy_config.dart';
+import '../../../../providers/adb_provider.dart';
+import '../../../../utils/scrcpy_utils.dart';
+import '../../../../widgets/config_visualizer.dart';
+import '../home.dart';
 
 final contextMenuOpen = StateProvider((ref) => false);
 

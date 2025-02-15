@@ -3,13 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 
-import '../shared/device_tile.dart';
-import 'bottom_bar.dart';
+import 'home/device_tile.dart';
+import 'bottom_bar/bottom_bar.dart';
 
 final homeDeviceAttention = StateProvider((ref) => false);
 
-class HomeSmall extends ConsumerWidget {
-  const HomeSmall({super.key});
+class Home extends ConsumerWidget {
+  const Home({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

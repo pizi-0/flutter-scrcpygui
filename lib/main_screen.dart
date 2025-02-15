@@ -10,10 +10,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
-import 'package:scrcpygui/screens/main_screen/widgets/small/home.dart';
-import 'package:scrcpygui/screens/main_screen/widgets/small/mdns_scanner.dart';
-import 'package:scrcpygui/screens/settings_screen/settings_screen.dart';
-import 'package:scrcpygui/screens/update_screen/update_screen.dart';
+import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
+import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
+import 'package:scrcpygui/screens/4.settings_tab/settings_tab.dart';
+import 'package:scrcpygui/screens/3.scrcpy_manager_tab/update_screen.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -21,12 +21,12 @@ import 'package:scrcpygui/widgets/title_bar_button.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
-import '../../providers/adb_provider.dart';
-import '../../providers/scrcpy_provider.dart';
-import '../../utils/automation_utils.dart';
-import '../../utils/bonsoir_utils.dart';
-import '../../utils/const.dart';
-import '../../utils/tray_utils.dart';
+import 'providers/adb_provider.dart';
+import 'providers/scrcpy_provider.dart';
+import 'utils/automation_utils.dart';
+import 'utils/bonsoir_utils.dart';
+import 'utils/const.dart';
+import 'utils/tray_utils.dart';
 
 final mainScreenPage = StateProvider((ref) => 0);
 final mainScreenNavViewKey = GlobalKey<NavigationViewState>();
@@ -179,7 +179,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
               PaneItem(
                 icon: const Icon(FluentIcons.home),
                 title: const Text('Home (Alt + 1)'),
-                body: const Home(),
+                body: const HomeTab(),
               ),
               PaneItem(
                 icon: const Icon(FluentIcons.link),
@@ -190,8 +190,8 @@ class _MainScreenState extends ConsumerState<MainScreen>
             footerItems: [
               PaneItem(
                 icon: const Icon(FluentIcons.movers),
-                title: const Text('Update'),
-                body: const UpdateScreen(),
+                title: const Text('Scrcpy manager'),
+                body: const ScrcpyManager(),
               ),
               PaneItem(
                 icon: const Icon(FluentIcons.settings),

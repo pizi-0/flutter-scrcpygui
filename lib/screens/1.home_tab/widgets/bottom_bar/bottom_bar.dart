@@ -14,7 +14,7 @@ import '../../../../providers/config_provider.dart';
 import '../../../../utils/app_utils.dart';
 import '../../../../utils/const.dart';
 import '../../../../utils/scrcpy_utils.dart';
-import '../../../config_screen/config_screen.dart';
+import '../../sub_page/config_screen/config_screen.dart';
 
 final configKey = GlobalKey<ComboBoxState>(debugLabel: 'config list combo box');
 

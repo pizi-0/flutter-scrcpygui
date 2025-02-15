@@ -6,21 +6,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:keymap/keymap.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
-import 'package:scrcpygui/screens/update_screen/components/download_update_widget.dart';
+import 'package:scrcpygui/screens/3.scrcpy_manager_tab/widgets/download_update_widget.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/setup.dart';
 import 'package:scrcpygui/utils/update_utils.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:scrcpygui/widgets/section_button.dart';
 
-class UpdateScreen extends ConsumerStatefulWidget {
-  const UpdateScreen({super.key});
+class ScrcpyManager extends ConsumerStatefulWidget {
+  const ScrcpyManager({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _UpdateScreenState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ScrcpyManagerState();
 }
 
-class _UpdateScreenState extends ConsumerState<UpdateScreen>
+class _ScrcpyManagerState extends ConsumerState<ScrcpyManager>
     with AutomaticKeepAliveClientMixin {
   String latest = BUNDLED_VERSION;
   bool checkingForUpdate = false;

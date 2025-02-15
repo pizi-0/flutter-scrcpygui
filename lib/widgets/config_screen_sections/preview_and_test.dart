@@ -10,7 +10,7 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
-import 'package:scrcpygui/screens/log_screen/log_screen.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/sub_page/log_screen/log_screen.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
 
 import '../../providers/config_provider.dart';

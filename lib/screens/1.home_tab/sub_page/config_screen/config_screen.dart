@@ -19,10 +19,10 @@ import 'package:scrcpygui/widgets/config_screen_sections/preview_and_test.dart';
 import 'package:scrcpygui/widgets/config_screen_sections/video_config.dart';
 import 'package:scrcpygui/widgets/config_screen_sections/window_config.dart';
 
-import '../../providers/adb_provider.dart';
-import '../../utils/const.dart';
-import '../../utils/scrcpy_utils.dart';
-import '../../widgets/close_dialog.dart';
+import '../../../../providers/adb_provider.dart';
+import '../../../../utils/const.dart';
+import '../../../../utils/scrcpy_utils.dart';
+import '../../../../widgets/close_dialog.dart';
 
 class ConfigScreen extends ConsumerStatefulWidget {
   const ConfigScreen({super.key});
