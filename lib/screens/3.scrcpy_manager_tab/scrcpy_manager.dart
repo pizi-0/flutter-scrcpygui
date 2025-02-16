@@ -170,13 +170,18 @@ class _ScrcpyManagerState extends ConsumerState<ScrcpyManager>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          IconButton(
-                            icon: const Icon(FluentIcons.folder_horizontal),
-                            onPressed: () async {
-                              await DirectoryUtils.openFolder(
-                                  scrcpyDir.split(scrcpyVersion).first);
-                              // await ScrcpyUtils.checkForScrcpyUpdate();
-                            },
+                          Tooltip(
+                            message: scrcpyDir.split(scrcpyVersion).first,
+                            child: Button(
+                              child: const Padding(
+                                padding: EdgeInsets.all(3.0),
+                                child: Icon(FluentIcons.folder_horizontal),
+                              ),
+                              onPressed: () async {
+                                await DirectoryUtils.openFolder(
+                                    scrcpyDir.split(scrcpyVersion).first);
+                              },
+                            ),
                           ),
                         ],
                       ),
