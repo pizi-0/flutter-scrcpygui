@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
@@ -37,15 +36,11 @@ class ScrcpyUtils {
     }
   }
 
-  //TODO: find a better way
   static Future<List<String>> getRunningScrcpy(String appPID) async {
     List<String> pids = [];
 
     if (Platform.isLinux) {
-      List<String> split = (await Isolate.run(() => Process.run('bash', [
-                '-c',
-                ' ${Platform.isMacOS ? 'export PATH=/usr/bin:\$PATH; ' : ''}pgrep scrcpy'
-              ])))
+      List<String> split = (await Process.run('bash', ['-c', 'pgrep scrcpy']))
           .stdout
           .toString()
           .split('\n');
@@ -63,35 +58,34 @@ class ScrcpyUtils {
           .stdout
           .toString();
 
-      // needed as closing scrcpy window does not remove the process from task manager, unless the main app is closed
-      final strayList = (await Process.run('tasklist', [
-        '/fi',
-        'ImageName eq scrcpy.exe',
-        '/fi',
-        'Status eq NOT RESPONDING',
-        '/v',
-        '/fo',
-        'csv'
-      ]))
-          .stdout
-          .toString();
+      // // needed as closing scrcpy window does not remove the process from task manager, unless the main app is closed
+      // final strayList = (await Process.run('tasklist', [
+      //   '/fi',
+      //   'ImageName eq scrcpy.exe',
+      //   '/fi',
+      //   'Status eq NOT RESPONDING',
+      //   '/v',
+      //   '/fo',
+      //   'csv'
+      // ]))
+      //     .stdout
+      //     .toString();
 
-      final strays = strayList.splitLines();
-      strays.removeAt(0);
-      strays
-          .removeWhere((e) => e.isEmpty || e.contains('OleMainThreadWndName'));
-      // OleMainThreadWndName is in exception because for some reason, instances with no window show not responding as status from tasklist and ends up buing killed as strays
+      // final strays = strayList.splitLines();
+      // strays.removeAt(0);
+      // strays
+      //     .removeWhere((e) => e.isEmpty || e.contains('OleMainThreadWndName'));
+      // // OleMainThreadWndName is in exception because for some reason, instances with no window show not responding as status from tasklist and ends up buing killed as strays
 
-      if (strays.isNotEmpty) {
-        final strayPIDS =
-            strays.map((e) => e.replaceAll('"', '').split(',')[1]).toList();
+      // if (strays.isNotEmpty) {
+      //   final strayPIDS =
+      //       strays.map((e) => e.replaceAll('"', '').split(',')[1]).toList();
 
-        killStrays(strayPIDS, ProcessSignal.sigterm);
-      }
+      //   killStrays(strayPIDS, ProcessSignal.sigterm);
+      // }
 
       final split = list.splitLines();
       split.removeAt(0);
-
       split.removeWhere((e) => e.isEmpty);
 
       pids = split.map((e) => e.replaceAll('"', '').split(',')[1]).toList();
