@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:string_extensions/string_extensions.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
@@ -104,11 +103,5 @@ class AppUtils {
     if (!(await windowManager.isMaximized())) {
       await windowManager.maximize();
     }
-  }
-
-  static openFolder(String p) async {
-    Uri folder = Uri.file(p, windows: Platform.isWindows);
-
-    await launchUrl(folder);
   }
 }

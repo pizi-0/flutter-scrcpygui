@@ -15,6 +15,13 @@ class CommandRunner {
     }
   }
 
+  static Future<ProcessResult> runAdbShellCommand(
+      String workDir, AdbDevices device,
+      {List<String> args = const []}) async {
+    return await CommandRunner.runAdbCommand(workDir,
+        args: ['-s', device.id, 'shell', ...args]);
+  }
+
   static Future<ProcessResult> runScrcpyCommand(
       String workDir, AdbDevices device,
       {List<String> args = const []}) async {

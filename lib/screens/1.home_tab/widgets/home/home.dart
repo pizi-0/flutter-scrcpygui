@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 
-import 'home/device_tile.dart';
-import 'bottom_bar/bottom_bar.dart';
+import 'widgets/device_tile.dart';
+import '../bottom_bar/bottom_bar.dart';
 
 final homeDeviceAttention = StateProvider((ref) => false);
 

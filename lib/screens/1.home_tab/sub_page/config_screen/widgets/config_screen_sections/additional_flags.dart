@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/available_flags.dart';
 
-import '../../providers/config_provider.dart';
-import '../config_tiles.dart';
+import '../../../../../../providers/config_provider.dart';
+import '../../../../../../widgets/config_tiles.dart';
 
 class AdditionalFlagsConfig extends ConsumerStatefulWidget {
   const AdditionalFlagsConfig({super.key});

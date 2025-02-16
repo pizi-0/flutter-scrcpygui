@@ -21,8 +21,8 @@ import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 
 import '../models/scrcpy_related/scrcpy_flag_check_result.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
-import '../widgets/config_override/config_override.dart';
-import 'adb/adb_utils.dart';
+import '../widgets/config_override.dart';
+import 'adb_utils.dart';
 import 'scrcpy_command.dart';
 
 class ScrcpyUtils {

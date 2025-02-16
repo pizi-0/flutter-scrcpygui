@@ -5,14 +5,14 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:string_extensions/string_extensions.dart';
 
-import '../../../../models/adb_devices.dart';
-import '../../../../models/scrcpy_related/scrcpy_running_instance.dart';
-import '../../../../providers/adb_provider.dart';
-import '../../../../providers/scrcpy_provider.dart';
-import '../../../../providers/version_provider.dart';
-import '../../../../utils/adb/adb_utils.dart';
-import '../../../../utils/const.dart';
-import '../../../../utils/scrcpy_utils.dart';
+import '../../../../../models/adb_devices.dart';
+import '../../../../../models/scrcpy_related/scrcpy_running_instance.dart';
+import '../../../../../providers/adb_provider.dart';
+import '../../../../../providers/scrcpy_provider.dart';
+import '../../../../../providers/version_provider.dart';
+import '../../../../../utils/adb_utils.dart';
+import '../../../../../utils/const.dart';
+import '../../../../../utils/scrcpy_utils.dart';
 import 'device_control_dialog.dart';
 
 class DeviceTile extends ConsumerStatefulWidget {

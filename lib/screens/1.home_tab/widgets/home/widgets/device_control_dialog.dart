@@ -8,7 +8,7 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
-import 'package:scrcpygui/utils/adb/adb_utils.dart';
+import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
 class ControlDialog extends ConsumerStatefulWidget {

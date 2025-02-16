@@ -8,8 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/adb_devices.dart';
 import '../../../providers/adb_provider.dart';
 import '../../../providers/bonsoir_devices.dart';
-import '../../../utils/adb/adb_utils.dart';
-import '../../1.home_tab/widgets/home/connection_error_dialog.dart';
+import '../../../utils/adb_utils.dart';
+import '../../1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
 
 class BonsoirResults extends ConsumerStatefulWidget {
   const BonsoirResults({super.key});

@@ -4,11 +4,11 @@ import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 
-import '../../models/scrcpy_related/scrcpy_config.dart';
-import '../../models/scrcpy_related/scrcpy_enum.dart';
-import '../../providers/adb_provider.dart';
-import '../../providers/config_provider.dart';
-import '../config_tiles.dart';
+import '../../../../../../models/scrcpy_related/scrcpy_config.dart';
+import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
+import '../../../../../../providers/adb_provider.dart';
+import '../../../../../../providers/config_provider.dart';
+import '../../../../../../widgets/config_tiles.dart';
 
 class AudioConfig extends ConsumerStatefulWidget {
   const AudioConfig({super.key});

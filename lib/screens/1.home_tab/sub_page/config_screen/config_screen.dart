@@ -11,19 +11,19 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
-import 'package:scrcpygui/utils/adb/adb_utils.dart';
-import 'package:scrcpygui/widgets/config_screen_sections/additional_flags.dart';
-import 'package:scrcpygui/widgets/config_screen_sections/audio_config.dart';
-import 'package:scrcpygui/widgets/config_screen_sections/device_config.dart';
-import 'package:scrcpygui/widgets/config_screen_sections/mode_config.dart';
-import 'package:scrcpygui/widgets/config_screen_sections/preview_and_test.dart';
-import 'package:scrcpygui/widgets/config_screen_sections/video_config.dart';
-import 'package:scrcpygui/widgets/config_screen_sections/window_config.dart';
+import 'package:scrcpygui/utils/adb_utils.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/additional_flags.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/audio_config.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/device_config.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/mode_config.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/preview_and_test.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/video_config.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/window_config.dart';
 
 import '../../../../providers/adb_provider.dart';
 import '../../../../utils/const.dart';
 import '../../../../utils/scrcpy_utils.dart';
-import '../../../../widgets/close_dialog.dart';
+import 'widgets/close_dialog.dart';
 
 class ConfigScreen extends ConsumerStatefulWidget {
   const ConfigScreen({super.key});

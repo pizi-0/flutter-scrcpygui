@@ -14,7 +14,7 @@ import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
 import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
 import 'package:scrcpygui/screens/4.settings_tab/settings_tab.dart';
-import 'package:scrcpygui/screens/3.scrcpy_manager_tab/update_screen.dart';
+import 'package:scrcpygui/screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:responsive_builder/responsive_builder.dart';

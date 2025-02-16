@@ -7,11 +7,10 @@ import 'package:keymap/keymap.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/screens/3.scrcpy_manager_tab/widgets/download_update_widget.dart';
-import 'package:scrcpygui/utils/app_utils.dart';
+import 'package:scrcpygui/utils/directory_utils.dart';
 import 'package:scrcpygui/utils/setup.dart';
 import 'package:scrcpygui/utils/update_utils.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
-import 'package:scrcpygui/widgets/section_button.dart';
 
 class ScrcpyManager extends ConsumerStatefulWidget {
   const ScrcpyManager({super.key});
@@ -171,11 +170,10 @@ class _ScrcpyManagerState extends ConsumerState<ScrcpyManager>
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          SectionButton(
-                            icondata: FluentIcons.folder_horizontal,
-                            tooltipmessage: scrcpyDir,
-                            ontap: () async {
-                              await AppUtils.openFolder(
+                          IconButton(
+                            icon: const Icon(FluentIcons.folder_horizontal),
+                            onPressed: () async {
+                              await DirectoryUtils.openFolder(
                                   scrcpyDir.split(scrcpyVersion).first);
                               // await ScrcpyUtils.checkForScrcpyUpdate();
                             },

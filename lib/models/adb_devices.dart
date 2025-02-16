@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
-import 'package:scrcpygui/utils/adb/adb_utils.dart';
+import 'package:scrcpygui/utils/command_runner.dart';
 import 'package:scrcpygui/utils/const.dart';
 
 class AdbDevices {
@@ -90,8 +90,8 @@ class AdbDevices {
   }
 
   Future<ProcessResult> sendKeyEvent(String workDir, String key) async {
-    final res = await AdbUtils.runAdbShellCommand(workDir, this,
-        args: ['shell', 'input', 'keyevent', key]);
+    final res = await CommandRunner.runAdbShellCommand(workDir, this,
+        args: ['input', 'keyevent', key]);
 
     return res;
   }

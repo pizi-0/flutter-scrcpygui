@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DirectoryUtils {
   static var sep = Platform.pathSeparator;
@@ -38,5 +39,11 @@ class DirectoryUtils {
     }
 
     return dir;
+  }
+
+  static openFolder(String p) async {
+    Uri folder = Uri.file(p, windows: Platform.isWindows);
+
+    await launchUrl(folder);
   }
 }

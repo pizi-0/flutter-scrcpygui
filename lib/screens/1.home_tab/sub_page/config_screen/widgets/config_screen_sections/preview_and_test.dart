@@ -13,9 +13,9 @@ import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/sub_page/log_screen/log_screen.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
 
-import '../../providers/config_provider.dart';
-import '../../utils/scrcpy_utils.dart';
-import '../config_tiles.dart';
+import '../../../../../../providers/config_provider.dart';
+import '../../../../../../utils/scrcpy_utils.dart';
+import '../../../../../../widgets/config_tiles.dart';
 
 final testInstanceProvider =
     StateProvider<ScrcpyRunningInstance?>((ref) => null);

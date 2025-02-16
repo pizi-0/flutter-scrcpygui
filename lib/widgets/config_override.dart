@@ -2,8 +2,8 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 
-import '../../providers/adb_provider.dart';
-import '../config_tiles.dart';
+import '../providers/adb_provider.dart';
+import 'config_tiles.dart';
 
 final configOverrideProvider = StateProvider<ScrcpyConfig?>((ref) => null);
 

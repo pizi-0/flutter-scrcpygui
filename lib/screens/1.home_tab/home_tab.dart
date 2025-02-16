@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/config_screen.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/device_settings_screen.dart';
-import 'package:scrcpygui/screens/1.home_tab/widgets/home.dart';
+import 'package:scrcpygui/screens/1.home_tab/widgets/home/home.dart';
 
 class HomeTab extends ConsumerStatefulWidget {
   const HomeTab({super.key});

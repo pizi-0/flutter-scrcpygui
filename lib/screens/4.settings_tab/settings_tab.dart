@@ -2,9 +2,9 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/screens/4.settings_tab/components/behaviour_section.dart';
+import 'package:scrcpygui/screens/4.settings_tab/widgets/behaviour_section.dart';
 
-import 'components/theme_section.dart';
+import 'widgets/theme_section.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});

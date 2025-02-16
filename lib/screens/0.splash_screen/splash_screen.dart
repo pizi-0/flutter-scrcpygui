@@ -9,7 +9,7 @@ import 'package:scrcpygui/main_screen.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
-import 'package:scrcpygui/utils/adb/adb_utils.dart';
+import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/setup.dart';
 
 import '../../utils/app_utils.dart';

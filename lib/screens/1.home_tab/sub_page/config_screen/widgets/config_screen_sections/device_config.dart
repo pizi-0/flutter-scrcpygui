@@ -3,7 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 
-import '../../providers/config_provider.dart';
+import '../../../../../../providers/config_provider.dart';
 
 class DeviceConfig extends ConsumerStatefulWidget {
   const DeviceConfig({super.key});

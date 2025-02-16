@@ -9,7 +9,7 @@ import 'package:string_extensions/string_extensions.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../providers/version_provider.dart';
-import '../utils/adb/adb_utils.dart';
+import '../utils/adb_utils.dart';
 import '../utils/const.dart';
 import '../utils/scrcpy_utils.dart';
 
