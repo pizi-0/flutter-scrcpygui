@@ -160,7 +160,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
       loading = true;
     });
     final connectedDevices = ref.read(adbProvider);
-    final runningInstances = ref.read(scrcpyInstanceProvider);
+    var runningInstances = ref.read(scrcpyInstanceProvider);
     final workDir = ref.read(execDirProvider);
 
     for (final i
@@ -169,6 +169,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
         ref.read(scrcpyInstanceProvider.notifier).removeInstance(i);
       });
     }
+
+    runningInstances = ref.read(scrcpyInstanceProvider);
 
     if (instance) {
       for (final i in runningInstances) {
