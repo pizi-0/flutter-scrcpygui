@@ -97,10 +97,12 @@ class AppUtils {
   }
 
   static Future<void> onAppMaximizeRequested() async {
-    if (await windowManager.isMaximized()) {
+    bool isMaximized = await windowManager.isMaximized();
+
+    if (isMaximized) {
       await windowManager.restore();
     }
-    if (!(await windowManager.isMaximized())) {
+    if (!isMaximized) {
       await windowManager.maximize();
     }
   }
