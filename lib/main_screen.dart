@@ -96,8 +96,10 @@ class _MainScreenState extends ConsumerState<MainScreen>
 
     if (visible) {
       await windowManager.hide();
+      await TrayUtils.initTray(ref, context);
     } else {
       await windowManager.show();
+      await TrayUtils.initTray(ref, context);
     }
 
     super.onTrayIconMouseDown();
