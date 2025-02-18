@@ -8,7 +8,7 @@ import '../../../../../providers/config_provider.dart';
 import '../../../../../utils/app_utils.dart';
 import '../../../../../utils/const.dart';
 import '../../../sub_page/config_screen/config_screen.dart';
-import '../bottom_bar.dart';
+import '../home_bottom_bar.dart';
 import 'config_delete_dialog.dart';
 import 'config_detail_dialog.dart';
 

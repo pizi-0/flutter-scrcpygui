@@ -33,14 +33,17 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ConfigCustom(
-            title: 'Start scrcpy',
-            child: HyperlinkButton(
-                onPressed: _onNewConfigPressed,
-                child: const Text('New config'))),
+        Padding(
+          padding: const EdgeInsets.only(left: 16),
+          child: ConfigCustom(
+              title: 'Start scrcpy',
+              child: HyperlinkButton(
+                  onPressed: _onNewConfigPressed,
+                  child: const Text('New config'))),
+        ),
         Card(
           padding: const EdgeInsets.all(8),
-          margin: const EdgeInsets.only(bottom: 16),
+          margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           child: Row(
             spacing: 10,
             children: [
