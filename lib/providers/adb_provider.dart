@@ -79,7 +79,6 @@ final savedAdbDevicesProvider =
     NotifierProvider<SavedAdbNotifier, List<AdbDevices>>(
         () => SavedAdbNotifier());
 
-final wirelessDevicesHistoryProvider =
-    StateProvider<List<AdbDevices>>((ref) => []);
+final ipHistoryProvider = StateProvider<List<String>>((ref) => []);
 
 // final autoConnectDevicesProvider = StateProvider<List<AdbDevices>>((ref) => []);

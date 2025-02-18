@@ -157,7 +157,8 @@ class AdbUtils {
 
     return WiFiResult(
       success: !res.stdout.toString().contains('failed') &&
-          !res.stdout.toString().contains('timed-out'),
+          !res.stdout.toString().contains('timed-out') &&
+          !res.stdout.toString().contains('cannot connect'),
       errorMessage: res.stdout,
     );
   }

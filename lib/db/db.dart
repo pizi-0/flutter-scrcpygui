@@ -56,18 +56,18 @@ class Db {
     return jsons.map((e) => AdbDevices.fromJson(e)).toList();
   }
 
-  static Future<void> saveWirelessHistory(List<AdbDevices> devs) async {
+  static Future<void> saveWirelessHistory(List<String> devs) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setStringList(
-        PKEY_WIRELESS_DEVICE_HX, devs.map((d) => d.toJson()).toList());
+        PKEY_WIRELESS_DEVICE_HX, devs.map((d) => d).toList());
   }
 
-  static Future<List<AdbDevices>> getWirelessHistory() async {
+  static Future<List<String>> getWirelessHistory() async {
     final prefs = await SharedPreferences.getInstance();
     List<String> historyStr =
         prefs.getStringList(PKEY_WIRELESS_DEVICE_HX) ?? [];
 
-    return historyStr.map((s) => AdbDevices.fromJson(s)).toList();
+    return historyStr;
   }
 
   /*

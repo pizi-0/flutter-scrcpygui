@@ -56,9 +56,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     ref.read(adbProvider.notifier).setConnected(adbDevices, savedDevices);
 
     final wirelessHistory = await Db.getWirelessHistory();
-    ref
-        .read(wirelessDevicesHistoryProvider.notifier)
-        .update((state) => wirelessHistory);
+    ref.read(ipHistoryProvider.notifier).update((state) => wirelessHistory);
 
     final pid = await AppUtils.getAppPid();
 
