@@ -64,23 +64,23 @@ class _MyAppState extends ConsumerState<MyApp> {
     final looks = ref.watch(settingsProvider.select((sett) => sett.looks));
 
     return FluentApp(
-      shortcuts: {
-        const SingleActivator(LogicalKeyboardKey.keyB, control: true):
-            VoidCallbackIntent(() =>
-                mainScreenNavViewKey.currentState?.toggleCompactOpenMode()),
-        const SingleActivator(LogicalKeyboardKey.digit1, alt: true):
-            VoidCallbackIntent(
-                () => ref.read(mainScreenPage.notifier).state = 0),
-        const SingleActivator(LogicalKeyboardKey.digit2, alt: true):
-            VoidCallbackIntent(
-                () => ref.read(mainScreenPage.notifier).state = 1),
-        const SingleActivator(LogicalKeyboardKey.digit3, alt: true):
-            VoidCallbackIntent(
-                () => ref.read(mainScreenPage.notifier).state = 2),
-        const SingleActivator(LogicalKeyboardKey.digit4, alt: true):
-            VoidCallbackIntent(
-                () => ref.read(mainScreenPage.notifier).state = 3),
-      },
+      // shortcuts: {
+      //   const SingleActivator(LogicalKeyboardKey.keyB, control: true):
+      //       VoidCallbackIntent(() =>
+      //           mainScreenNavViewKey.currentState?.toggleCompactOpenMode()),
+      //   const SingleActivator(LogicalKeyboardKey.digit1, alt: true):
+      //       VoidCallbackIntent(
+      //           () => ref.read(mainScreenPage.notifier).state = 0),
+      //   const SingleActivator(LogicalKeyboardKey.digit2, alt: true):
+      //       VoidCallbackIntent(
+      //           () => ref.read(mainScreenPage.notifier).state = 1),
+      //   const SingleActivator(LogicalKeyboardKey.digit3, alt: true):
+      //       VoidCallbackIntent(
+      //           () => ref.read(mainScreenPage.notifier).state = 2),
+      //   const SingleActivator(LogicalKeyboardKey.digit4, alt: true):
+      //       VoidCallbackIntent(
+      //           () => ref.read(mainScreenPage.notifier).state = 3),
+      // },
       debugShowCheckedModeBanner: false,
       theme: FluentThemeData(
         accentColor: looks.accentColor,
