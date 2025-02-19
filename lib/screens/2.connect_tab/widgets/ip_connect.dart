@@ -32,13 +32,13 @@ class _IPConnectState extends ConsumerState<IPConnect>
     super.build(context);
     final ipHistory = ref.watch(ipHistoryProvider);
 
-    return Focus(
-      autofocus: true,
+    return Card(
       child: Row(
         spacing: 8,
         children: [
           Expanded(
             child: AutoSuggestBox(
+              placeholder: 'Ip:port(default=5555)',
               autofocus: false,
               controller: ipInput,
               noResultsFoundBuilder: (context) => const SizedBox(),
