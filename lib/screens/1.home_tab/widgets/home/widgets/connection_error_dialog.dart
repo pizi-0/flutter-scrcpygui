@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ErrorDialog extends ConsumerWidget {
   final String title;
@@ -18,7 +19,7 @@ class ErrorDialog extends ConsumerWidget {
       actions: [
         Button(
           child: const Text('Close'),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
         )
       ],
     );

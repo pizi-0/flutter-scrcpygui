@@ -3,6 +3,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
@@ -105,7 +106,7 @@ class _ConfigScreenCloseDialogState
           children: [
             Button(
               onPressed: () {
-                Navigator.pop(context, true);
+                context.pop(true);
               },
               child: const Text('Discard'),
             ),
@@ -119,7 +120,7 @@ class _ConfigScreenCloseDialogState
             const SizedBox(width: 10),
             Button(
               onPressed: () {
-                Navigator.pop(context, false);
+                context.pop(false);
               },
               child: const Text('No'),
             ),
@@ -166,6 +167,6 @@ class _ConfigScreenCloseDialogState
 
     await Db.saveConfigs(ref, context, toSave);
 
-    Navigator.pop(context, true);
+    context.pop(true);
   }
 }

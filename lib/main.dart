@@ -1,10 +1,22 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:go_transitions/go_transitions.dart';
 import 'package:scrcpygui/db/db.dart';
+import 'package:scrcpygui/main_screen.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/0.splash_screen/splash_screen.dart';
+import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/config_screen.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/sub_page/log_screen/log_screen.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/device_settings_screen.dart';
+import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
+import 'package:scrcpygui/screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
+import 'package:scrcpygui/screens/4.settings_tab/settings_tab.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -61,7 +73,10 @@ class _MyAppState extends ConsumerState<MyApp> {
   Widget build(BuildContext context) {
     final looks = ref.watch(settingsProvider.select((sett) => sett.looks));
 
-    return FluentApp(
+    return FluentApp.router(
+      routeInformationParser: _router.routeInformationParser,
+      routerDelegate: _router.routerDelegate,
+      routeInformationProvider: _router.routeInformationProvider,
       // shortcuts: {
       //   const SingleActivator(LogicalKeyboardKey.keyB, control: true):
       //       VoidCallbackIntent(() =>
@@ -105,7 +120,6 @@ class _MyAppState extends ConsumerState<MyApp> {
           overlayBackgroundColor:
               looks.accentColor.darken(looks.accentTintLevel.toInt()),
         ),
-
         cardColor: const ResourceDictionary.dark()
             .layerOnMicaBaseAltFillColorSecondary,
         menuColor: looks.accentColor
@@ -115,7 +129,65 @@ class _MyAppState extends ConsumerState<MyApp> {
             .darken((looks.accentTintLevel.toInt() * 0.85).toInt()),
       ),
       themeMode: looks.themeMode,
-      home: const SplashScreen(),
+      // home: const SplashScreen(),
     );
   }
 }
+
+final _rootNavKey = GlobalKey<NavigatorState>();
+final _shellNavKey = GlobalKey<NavigatorState>();
+
+final _router = GoRouter(
+  navigatorKey: _rootNavKey,
+  initialLocation: '/splash',
+  routes: [
+    GoRoute(
+      path: '/splash',
+      builder: (context, state) => const SplashScreen(),
+    ),
+    ShellRoute(
+      navigatorKey: _shellNavKey,
+      builder: (context, state, child) => MainScreen(child: child),
+      routes: [
+        GoRoute(
+          path: '/home',
+          builder: (context, state) =>
+              FadeInUp(duration: 100.milliseconds, child: const HomeTab()),
+        ),
+        GoRoute(
+          path: '/device-settings/:id',
+          builder: (context, state) =>
+              DeviceSettingsScreen(id: state.pathParameters['id']!),
+          pageBuilder: GoTransitions.cupertino.call,
+        ),
+        GoRoute(
+          path: '/config-settings',
+          builder: (context, state) => const ConfigScreen(),
+          pageBuilder: GoTransitions.cupertino.call,
+        ),
+        GoRoute(
+          path: '/config-log/:instance',
+          builder: (context, state) => LogScreen(
+            instance: state.extra as ScrcpyRunningInstance,
+          ),
+          pageBuilder: GoTransitions.cupertino.call,
+        ),
+        GoRoute(
+          path: '/connect',
+          builder: (context, state) =>
+              FadeInUp(duration: 100.milliseconds, child: const ConnectTab()),
+        ),
+        GoRoute(
+          path: '/scrcpy-manager',
+          builder: (context, state) => FadeInUp(
+              duration: 100.milliseconds, child: const ScrcpyManagerTab()),
+        ),
+        GoRoute(
+          path: '/settings',
+          builder: (context, state) =>
+              FadeInUp(duration: 100.milliseconds, child: const SettingsTab()),
+        ),
+      ],
+    ),
+  ],
+);

@@ -2,19 +2,15 @@
 
 import 'dart:async';
 
-import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
-import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
-import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
-import 'package:scrcpygui/screens/4.settings_tab/settings_tab.dart';
-import 'package:scrcpygui/screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -33,7 +29,8 @@ final mainScreenPage = StateProvider((ref) => 0);
 final mainScreenNavViewKey = GlobalKey<NavigationViewState>();
 
 class MainScreen extends ConsumerStatefulWidget {
-  const MainScreen({super.key});
+  final Widget child;
+  const MainScreen({super.key, required this.child});
 
   @override
   ConsumerState<MainScreen> createState() => _MainScreenState();
@@ -167,11 +164,12 @@ class _MainScreenState extends ConsumerState<MainScreen>
               ],
             ),
           ),
-          transitionBuilder: (child, animation) => FadeInUp(
-            duration: 100.milliseconds,
-            child: child,
-          ),
+          // transitionBuilder: (child, animation) => FadeInUp(
+          //   duration: 100.milliseconds,
+          //   child: child,
+          // ),
           onDisplayModeChanged: (value) {},
+          paneBodyBuilder: (item, body) => widget.child,
           pane: NavigationPane(
             selected: currentPage,
             displayMode: PaneDisplayMode.compact,
@@ -183,24 +181,28 @@ class _MainScreenState extends ConsumerState<MainScreen>
               PaneItem(
                 icon: const Icon(FluentIcons.home),
                 title: const Text('Home (Alt + 1)'),
-                body: const HomeTab(),
+                body: const SizedBox.shrink(),
+                onTap: () => context.go('/home'),
               ),
               PaneItem(
                 icon: const Icon(FluentIcons.link),
                 title: const Text('Connect'),
-                body: const WifiScanner(),
+                body: const SizedBox.shrink(),
+                onTap: () => context.go('/connect'),
               ),
             ],
             footerItems: [
               PaneItem(
                 icon: const Icon(FluentIcons.movers),
                 title: const Text('Scrcpy manager'),
-                body: const ScrcpyManager(),
+                body: const SizedBox.shrink(),
+                onTap: () => context.go('/scrcpy-manager'),
               ),
               PaneItem(
                 icon: const Icon(FluentIcons.settings),
                 title: const Text('Settings'),
-                body: const SettingsScreen(),
+                body: const SizedBox.shrink(),
+                onTap: () => context.go('/settings'),
               ),
             ],
           ),

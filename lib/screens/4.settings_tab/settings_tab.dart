@@ -1,37 +1,30 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/screens/4.settings_tab/widgets/behaviour_section.dart';
 
 import 'widgets/theme_section.dart';
 
-class SettingsScreen extends ConsumerStatefulWidget {
-  const SettingsScreen({super.key});
+class SettingsTab extends ConsumerStatefulWidget {
+  const SettingsTab({super.key});
 
   @override
-  ConsumerState<SettingsScreen> createState() => _SettingsScreenState();
+  ConsumerState<SettingsTab> createState() => _SettingsTabState();
 }
 
-class _SettingsScreenState extends ConsumerState<SettingsScreen> {
+class _SettingsTabState extends ConsumerState<SettingsTab> {
   @override
   Widget build(BuildContext context) {
-    return CallbackShortcuts(
-      bindings: {
-        const SingleActivator(LogicalKeyboardKey.escape): () =>
-            Navigator.pop(context),
-      },
-      child: ScaffoldPage.scrollable(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        header: const Padding(
-          padding: EdgeInsets.only(top: 8.0),
-          child: PageHeader(title: Text('Settings')),
-        ),
-        children: const [
-          ThemeSection(),
-          BehaviourSection(),
-        ],
+    return ScaffoldPage.scrollable(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      header: const Padding(
+        padding: EdgeInsets.only(top: 8.0),
+        child: PageHeader(title: Text('Settings')),
       ),
+      children: const [
+        ThemeSection(),
+        BehaviourSection(),
+      ],
     );
   }
 }

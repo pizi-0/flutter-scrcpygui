@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
@@ -66,7 +67,7 @@ class _LogScreenState extends ConsumerState<LogScreen> {
                 actions: [
                   Button(
                     child: const Text('Close'),
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => context.pop(),
                   ),
                 ],
               ),

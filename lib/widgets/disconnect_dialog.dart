@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
@@ -104,7 +105,7 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
                   TextButton(
                     style: buttonStyle,
                     onPressed: () {
-                      Navigator.pop(context, true);
+                      context.pop(true);
                     },
                     child: const Text('Yes'),
                   ),
@@ -113,7 +114,7 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
                     autofocus: true,
                     style: buttonStyle,
                     onPressed: () {
-                      Navigator.pop(context, false);
+                      context.pop(false);
                     },
                     child: const Text('No'),
                   ),

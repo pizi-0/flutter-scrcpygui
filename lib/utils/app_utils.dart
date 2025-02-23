@@ -2,7 +2,6 @@
 
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -19,11 +18,6 @@ import '../widgets/quit_dialog.dart';
 import 'const.dart';
 
 class AppUtils {
-  static Future<void> push(BuildContext context, Widget page) async {
-    await Navigator.push(
-        context, CupertinoPageRoute(builder: (context) => page));
-  }
-
   static Future<Color> getPrimaryColor() async {
     File file = File('/home/pizi/.cache/wal/colors.css');
     Color color = Colors.blue;

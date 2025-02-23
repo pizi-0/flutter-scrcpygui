@@ -1,8 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:awesome_extensions/awesome_extensions.dart' show StyledText;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../../../../../models/adb_devices.dart';
@@ -112,11 +113,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                           child: Icon(FluentIcons.settings),
                         ),
                         onPressed: () {
-                          Navigator.pushNamed(
-                            context,
-                            '/dev_settings',
-                            arguments: widget.device,
-                          );
+                          context.push('/device-settings/${widget.device.id}');
                         },
                       ),
                     ],

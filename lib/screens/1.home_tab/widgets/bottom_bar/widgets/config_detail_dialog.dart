@@ -1,6 +1,8 @@
-import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:awesome_extensions/awesome_extensions.dart'
+    show StringExtension;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../models/scrcpy_related/scrcpy_enum.dart';
@@ -121,7 +123,7 @@ class _ConfigDetailDialogState extends ConsumerState<ConfigDetailDialog> {
       actions: [
         Button(
           child: const Text('Close'),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
         )
       ],
     );

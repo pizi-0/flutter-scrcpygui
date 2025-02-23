@@ -2,6 +2,7 @@
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:scrcpygui/db/db.dart';
@@ -87,7 +88,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
     if (selectedDevice != null) {
       final newconfig = newConfig.copyWith(id: const Uuid().v4());
       ref.read(configScreenConfig.notifier).state = newconfig;
-      Navigator.pushNamed(context, '/create_config');
+      context.push('/config-settings');
     } else {
       showDialog(
         barrierDismissible: true,
@@ -99,7 +100,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
           actions: [
             Button(
               child: const Text('Close'),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.pop(),
             )
           ],
         ),
@@ -121,7 +122,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
           actions: [
             Button(
               child: const Text('Close'),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.pop(),
             )
           ],
         ),
@@ -144,7 +145,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
               actions: [
                 Button(
                   child: const Text('Close'),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => context.pop(),
                 )
               ],
             ),

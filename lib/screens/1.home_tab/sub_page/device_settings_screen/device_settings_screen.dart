@@ -1,8 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:awesome_extensions/awesome_extensions.dart' show StyledText;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/automation.dart';
@@ -20,8 +21,8 @@ const DO_NOTHING = 'Do nothing';
 final deviceSettingsShowInfo = StateProvider((ref) => false);
 
 class DeviceSettingsScreen extends ConsumerStatefulWidget {
-  final AdbDevices device;
-  const DeviceSettingsScreen({super.key, required this.device});
+  final String id;
+  const DeviceSettingsScreen({super.key, required this.id});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -38,9 +39,8 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
 
   @override
   void initState() {
-    dev = ref.read(savedAdbDevicesProvider).firstWhere(
-        (d) => d.id == widget.device.id,
-        orElse: () => widget.device);
+    dev =
+        ref.read(savedAdbDevicesProvider).firstWhere((d) => d.id == widget.id);
 
     namecontroller =
         TextEditingController(text: dev.name?.toUpperCase() ?? dev.modelName);
@@ -90,7 +90,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
             child: Icon(FluentIcons.back),
           ),
           onPressed: () {
-            Navigator.pop(context);
+            context.pop();
           },
         ),
         actions: Align(

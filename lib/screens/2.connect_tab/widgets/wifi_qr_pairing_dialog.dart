@@ -1,8 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:multicast_dns/multicast_dns.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -82,7 +83,7 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
       actions: [
         Button(
           child: const Text('Close'),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => context.pop(),
         )
       ],
     );
@@ -117,11 +118,11 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
           id.removeSpecial,
           ref);
 
-      Navigator.pop(context, pairRes.contains('Successfully paired to'));
+      context.pop(pairRes.contains('Successfully paired to'));
     } else {
       debugPrint('scan is null');
       if (mounted) {
-        Navigator.pop(context, false);
+        context.pop();
       }
     }
   }

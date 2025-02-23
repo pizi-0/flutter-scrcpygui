@@ -2,6 +2,7 @@
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../../db/db.dart';
 import '../../../../../models/scrcpy_related/scrcpy_config.dart';
@@ -45,12 +46,10 @@ class _ConfigDeleteDialogState extends ConsumerState<ConfigDeleteDialog> {
                         .read(configsProvider)
                         .where((e) => !defaultConfigs.contains(e))
                         .toList());
-                Navigator.pop(context, true);
+                context.pop(true);
               },
             ),
-            Button(
-                child: const Text('Cancel'),
-                onPressed: () => Navigator.pop(context)),
+            Button(child: const Text('Cancel'), onPressed: () => context.pop()),
           ],
         ),
       ],

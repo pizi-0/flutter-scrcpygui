@@ -12,16 +12,18 @@ import 'package:scrcpygui/utils/setup.dart';
 import 'package:scrcpygui/utils/update_utils.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 
-class ScrcpyManager extends ConsumerStatefulWidget {
-  const ScrcpyManager({super.key});
+final latestVersion = StateProvider<String?>((ref) => null);
+
+class ScrcpyManagerTab extends ConsumerStatefulWidget {
+  const ScrcpyManagerTab({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _ScrcpyManagerState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _ScrcpyManagerTabState();
 }
 
-class _ScrcpyManagerState extends ConsumerState<ScrcpyManager>
+class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
     with AutomaticKeepAliveClientMixin {
-  String latest = BUNDLED_VERSION;
   bool checkingForUpdate = false;
 
   @override
@@ -33,7 +35,9 @@ class _ScrcpyManagerState extends ConsumerState<ScrcpyManager>
       ref.read(installedScrcpyProvider.notifier).setInstalled(installed);
 
       try {
-        await _checkForUpdate();
+        if (ref.read(latestVersion) == null) {
+          await _checkForUpdate();
+        }
       } on Exception catch (e) {
         debugPrint(e.toString());
         displayInfoBar(context,
@@ -51,13 +55,13 @@ class _ScrcpyManagerState extends ConsumerState<ScrcpyManager>
     final res = await UpdateUtils.checkForScrcpyUpdate(ref);
 
     if (res != null) {
-      latest = res;
       if (res == ref.read(scrcpyVersionProvider)) {
         displayInfoBar(context,
             builder: (context, close) => Card(
                 padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
                 child: InfoLabel(label: 'No update available')));
       }
+      ref.read(latestVersion.notifier).state = res;
     } else {
       displayInfoBar(context,
           builder: (context, close) => Card(
@@ -79,6 +83,7 @@ class _ScrcpyManagerState extends ConsumerState<ScrcpyManager>
     final scrcpyDir = ref.watch(execDirProvider);
     final theme = FluentTheme.of(context);
     final installed = ref.watch(installedScrcpyProvider);
+    final latest = ref.watch(latestVersion);
 
     return KeyboardWidget(
       bindings: [
@@ -188,15 +193,18 @@ class _ScrcpyManagerState extends ConsumerState<ScrcpyManager>
                     ),
                   ],
                 )),
-            if (!checkingForUpdate &&
+            if (latest != null &&
+                !checkingForUpdate &&
                 latest != scrcpyVersion &&
                 installed.where((i) => i.version == latest).isEmpty)
               const SizedBox(height: 10),
-            if (!checkingForUpdate &&
+            if (latest != null &&
+                !checkingForUpdate &&
                 latest != scrcpyVersion &&
                 installed.where((i) => i.version == latest).isEmpty)
               const Text('New'),
-            if (!checkingForUpdate &&
+            if (latest != null &&
+                !checkingForUpdate &&
                 latest != scrcpyVersion &&
                 installed.where((i) => i.version == latest).isEmpty)
               Card(

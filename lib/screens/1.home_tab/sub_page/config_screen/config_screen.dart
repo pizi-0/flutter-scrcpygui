@@ -3,6 +3,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
@@ -92,7 +93,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
     if (allConfigs.contains(selectedConfig) ||
         selectedConfig == newConfig ||
         selectedDevice == null) {
-      Navigator.pop(context);
+      context.pop();
     } else {
       showDialog(
         barrierColor: Colors.black.withValues(alpha: 0.9),
@@ -102,7 +103,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
         },
       ).then((v) {
         if ((v as bool?) ?? false) {
-          Navigator.pop(context);
+          context.pop();
         }
       });
     }

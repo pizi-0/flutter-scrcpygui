@@ -10,14 +10,14 @@ import 'widgets/ip_connect.dart';
 import 'widgets/wifi_qr_pairing_dialog.dart';
 import 'widgets/wifi_scan_result.dart';
 
-class WifiScanner extends ConsumerStatefulWidget {
-  const WifiScanner({super.key});
+class ConnectTab extends ConsumerStatefulWidget {
+  const ConnectTab({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _WifiScannerState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _ConnectTabState();
 }
 
-class _WifiScannerState extends ConsumerState<WifiScanner> {
+class _ConnectTabState extends ConsumerState<ConnectTab> {
   TextEditingController ipInput = TextEditingController();
 
   @override

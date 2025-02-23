@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -144,7 +145,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                   ),
                   Button(
                     onPressed: () {
-                      Navigator.pop(context, false);
+                      context.pop(false);
                     },
                     child: const Text('Cancel'),
                   )

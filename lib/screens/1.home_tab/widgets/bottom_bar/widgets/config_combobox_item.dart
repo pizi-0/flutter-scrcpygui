@@ -1,13 +1,12 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/utils/directory_utils.dart';
 
 import '../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../providers/adb_provider.dart';
 import '../../../../../providers/config_provider.dart';
-import '../../../../../utils/app_utils.dart';
 import '../../../../../utils/const.dart';
-import '../../../sub_page/config_screen/config_screen.dart';
 import '../home_bottom_bar.dart';
 import 'config_delete_dialog.dart';
 import 'config_detail_dialog.dart';
@@ -109,18 +108,20 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
         builder: (context) => ContentDialog(
           title: const Text('Device'),
           content: const Text(
-              'No device selected.\nSelect a device to edit scrcpy config.'),
+            'No device selected.\nSelect a device to edit scrcpy config.',
+            textAlign: TextAlign.start,
+          ),
           actions: [
             Button(
               child: const Text('Close'),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.pop(),
             )
           ],
         ),
       );
     } else {
       ref.read(configScreenConfig.notifier).state = config;
-      AppUtils.push(context, const ConfigScreen());
+      context.push('/config-settings');
     }
   }
 }

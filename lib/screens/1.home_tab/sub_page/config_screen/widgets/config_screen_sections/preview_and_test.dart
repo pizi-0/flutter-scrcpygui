@@ -1,16 +1,18 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 
-import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:awesome_extensions/awesome_extensions.dart'
+    show StyledText, NumExtension, ColorExtension;
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
-import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/sub_page/log_screen/log_screen.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
 
 import '../../../../../../providers/config_provider.dart';
@@ -120,12 +122,8 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
 
                           ref.read(testInstanceProvider.notifier).state = inst;
 
-                          Navigator.push(
-                              // ignore: use_build_context_synchronously
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => LogScreen(instance: inst),
-                              ));
+                          context.push('/config-log/${inst.scrcpyPID}',
+                              extra: inst);
                         } else {
                           await ScrcpyUtils.killServer(testInstance!);
                           ref
@@ -203,7 +201,6 @@ class _CopyButtonState extends State<CopyButton> {
         await Clipboard.setData(data);
         _startTimer();
         displayInfoBar(
-          // ignore: use_build_context_synchronously
           context,
           builder: (context, close) => const Card(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),

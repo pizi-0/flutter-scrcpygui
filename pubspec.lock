@@ -397,6 +397,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.8.0"
+  go_transitions:
+    dependency: "direct main"
+    description:
+      name: go_transitions
+      sha256: e40abc90671e7f1ca386f18fae639ec3d356d4c2cfd34c27b7f49bf9cf9666f6
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.1"
   google_fonts:
     dependency: "direct main"
     description:
