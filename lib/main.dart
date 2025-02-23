@@ -1,4 +1,3 @@
-import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -145,17 +144,17 @@ final _router = GoRouter(
       path: '/splash',
       builder: (context, state) => const SplashScreen(),
     ),
-    StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) =>
-          MainScreen(child: navigationShell),
+    StatefulShellRoute(
+      builder: (context, state, navigationShell) => navigationShell,
+      navigatorContainerBuilder: (context, navigationShell, children) =>
+          MainScreen(child: children),
       branches: [
         StatefulShellBranch(
           navigatorKey: _shellNavKey,
           routes: [
             GoRoute(
               path: '/home',
-              builder: (context, state) =>
-                  FadeInUp(duration: 100.milliseconds, child: const HomeTab()),
+              builder: (context, state) => const HomeTab(),
               routes: [
                 GoRoute(
                   path: 'device-settings/:id',
@@ -183,8 +182,7 @@ final _router = GoRouter(
           routes: [
             GoRoute(
               path: '/connect',
-              builder: (context, state) => FadeInUp(
-                  duration: 100.milliseconds, child: const ConnectTab()),
+              builder: (context, state) => const ConnectTab(),
             ),
           ],
         ),
@@ -192,8 +190,7 @@ final _router = GoRouter(
           routes: [
             GoRoute(
               path: '/scrcpy-manager',
-              builder: (context, state) => FadeInUp(
-                  duration: 100.milliseconds, child: const ScrcpyManagerTab()),
+              builder: (context, state) => const ScrcpyManagerTab(),
             ),
           ],
         ),
@@ -201,8 +198,7 @@ final _router = GoRouter(
           routes: [
             GoRoute(
               path: '/settings',
-              builder: (context, state) => FadeInUp(
-                  duration: 100.milliseconds, child: const SettingsTab()),
+              builder: (context, state) => const SettingsTab(),
             ),
           ],
         ),

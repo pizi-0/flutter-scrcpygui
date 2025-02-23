@@ -1,7 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'package:collection/collection.dart';
 
+import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -11,6 +13,8 @@ import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
+import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -29,7 +33,7 @@ final mainScreenPage = StateProvider((ref) => 0);
 final mainScreenNavViewKey = GlobalKey<NavigationViewState>();
 
 class MainScreen extends ConsumerStatefulWidget {
-  final Widget child;
+  final List<Widget> child;
   const MainScreen({super.key, required this.child});
 
   @override
@@ -169,7 +173,8 @@ class _MainScreenState extends ConsumerState<MainScreen>
           //   child: child,
           // ),
           onDisplayModeChanged: (value) {},
-          paneBodyBuilder: (item, body) => widget.child,
+          paneBodyBuilder: (item, body) => AnimatedBranchContainer(
+              currentIndex: currentPage, children: widget.child),
           pane: NavigationPane(
             selected: currentPage,
             displayMode: PaneDisplayMode.compact,
@@ -181,13 +186,13 @@ class _MainScreenState extends ConsumerState<MainScreen>
               PaneItem(
                 icon: const Icon(FluentIcons.home),
                 title: const Text('Home (Alt + 1)'),
-                body: const SizedBox.shrink(),
+                body: FadeInUp(child: const HomeTab()),
                 onTap: () => context.go('/home'),
               ),
               PaneItem(
                 icon: const Icon(FluentIcons.link),
                 title: const Text('Connect'),
-                body: const SizedBox.shrink(),
+                body: const ConnectTab(),
                 onTap: () => context.go('/connect'),
               ),
             ],
@@ -255,4 +260,41 @@ class _MainScreenState extends ConsumerState<MainScreen>
 
   @override
   bool get wantKeepAlive => true;
+}
+
+class AnimatedBranchContainer extends StatelessWidget {
+  /// Creates a AnimatedBranchContainer
+  const AnimatedBranchContainer(
+      {super.key, required this.currentIndex, required this.children});
+
+  /// The index (in [children]) of the branch Navigator to display.
+  final int currentIndex;
+
+  /// The children (branch Navigators) to display in this container.
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+        children: children.mapIndexed(
+      (int index, Widget navigator) {
+        return FadeInUp(
+          duration: 100.milliseconds,
+          animate: index == currentIndex,
+          child: Opacity(
+            opacity: index == currentIndex ? 1 : 0,
+            child: _branchNavigatorWrapper(index, navigator),
+          ),
+        );
+      },
+    ).toList());
+  }
+
+  Widget _branchNavigatorWrapper(int index, Widget navigator) => IgnorePointer(
+        ignoring: index != currentIndex,
+        child: TickerMode(
+          enabled: index == currentIndex,
+          child: navigator,
+        ),
+      );
 }
