@@ -35,12 +35,16 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 16),
+          padding: const EdgeInsets.only(left: 16, right: 16),
           child: ConfigCustom(
-              title: 'Start scrcpy',
-              child: HyperlinkButton(
+            title: 'Start scrcpy',
+            child: Tooltip(
+              message: 'Create new config',
+              child: IconButton(
                   onPressed: _onNewConfigPressed,
-                  child: const Text('New config'))),
+                  icon: const Icon(FluentIcons.add)),
+            ),
+          ),
         ),
         Card(
           padding: const EdgeInsets.all(8),
