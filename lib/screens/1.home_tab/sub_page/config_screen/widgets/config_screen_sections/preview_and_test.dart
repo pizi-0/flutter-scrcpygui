@@ -122,7 +122,8 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
 
                           ref.read(testInstanceProvider.notifier).state = inst;
 
-                          context.push('/config-log/${inst.scrcpyPID}',
+                          context.push(
+                              '/home/config-settings/config-log/${inst.scrcpyPID}',
                               extra: inst);
                         } else {
                           await ScrcpyUtils.killServer(testInstance!);

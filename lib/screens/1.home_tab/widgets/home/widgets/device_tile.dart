@@ -113,7 +113,8 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                           child: Icon(FluentIcons.settings),
                         ),
                         onPressed: () {
-                          context.push('/device-settings/${widget.device.id}');
+                          context.push(
+                              '/home/device-settings/${widget.device.id}');
                         },
                       ),
                     ],

@@ -92,7 +92,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
     if (selectedDevice != null) {
       final newconfig = newConfig.copyWith(id: const Uuid().v4());
       ref.read(configScreenConfig.notifier).state = newconfig;
-      context.push('/config-settings');
+      context.push('/home/config-settings');
     } else {
       showDialog(
         barrierDismissible: true,

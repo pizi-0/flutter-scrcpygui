@@ -145,47 +145,66 @@ final _router = GoRouter(
       path: '/splash',
       builder: (context, state) => const SplashScreen(),
     ),
-    ShellRoute(
-      navigatorKey: _shellNavKey,
-      builder: (context, state, child) => MainScreen(child: child),
-      routes: [
-        GoRoute(
-          path: '/home',
-          builder: (context, state) =>
-              FadeInUp(duration: 100.milliseconds, child: const HomeTab()),
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) =>
+          MainScreen(child: navigationShell),
+      branches: [
+        StatefulShellBranch(
+          navigatorKey: _shellNavKey,
+          routes: [
+            GoRoute(
+              path: '/home',
+              builder: (context, state) =>
+                  FadeInUp(duration: 100.milliseconds, child: const HomeTab()),
+              routes: [
+                GoRoute(
+                  path: 'device-settings/:id',
+                  builder: (context, state) =>
+                      DeviceSettingsScreen(id: state.pathParameters['id']!),
+                  pageBuilder: GoTransitions.cupertino.call,
+                ),
+                GoRoute(
+                  path: 'config-settings',
+                  builder: (context, state) => const ConfigScreen(),
+                  pageBuilder: GoTransitions.cupertino.call,
+                ),
+                GoRoute(
+                  path: 'config-settings/config-log/:instance',
+                  builder: (context, state) => LogScreen(
+                    instance: state.extra as ScrcpyRunningInstance,
+                  ),
+                  pageBuilder: GoTransitions.cupertino.call,
+                ),
+              ],
+            ),
+          ],
         ),
-        GoRoute(
-          path: '/device-settings/:id',
-          builder: (context, state) =>
-              DeviceSettingsScreen(id: state.pathParameters['id']!),
-          pageBuilder: GoTransitions.cupertino.call,
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/connect',
+              builder: (context, state) => FadeInUp(
+                  duration: 100.milliseconds, child: const ConnectTab()),
+            ),
+          ],
         ),
-        GoRoute(
-          path: '/config-settings',
-          builder: (context, state) => const ConfigScreen(),
-          pageBuilder: GoTransitions.cupertino.call,
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/scrcpy-manager',
+              builder: (context, state) => FadeInUp(
+                  duration: 100.milliseconds, child: const ScrcpyManagerTab()),
+            ),
+          ],
         ),
-        GoRoute(
-          path: '/config-log/:instance',
-          builder: (context, state) => LogScreen(
-            instance: state.extra as ScrcpyRunningInstance,
-          ),
-          pageBuilder: GoTransitions.cupertino.call,
-        ),
-        GoRoute(
-          path: '/connect',
-          builder: (context, state) =>
-              FadeInUp(duration: 100.milliseconds, child: const ConnectTab()),
-        ),
-        GoRoute(
-          path: '/scrcpy-manager',
-          builder: (context, state) => FadeInUp(
-              duration: 100.milliseconds, child: const ScrcpyManagerTab()),
-        ),
-        GoRoute(
-          path: '/settings',
-          builder: (context, state) =>
-              FadeInUp(duration: 100.milliseconds, child: const SettingsTab()),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/settings',
+              builder: (context, state) => FadeInUp(
+                  duration: 100.milliseconds, child: const SettingsTab()),
+            ),
+          ],
         ),
       ],
     ),
