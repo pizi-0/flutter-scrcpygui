@@ -21,30 +21,42 @@ class SetupUtils {
           .listSync();
 
   static initScrcpy(WidgetRef ref) async {
-    final scrcpyVersion = await getCurrentScrcpyVersion();
+    try {
+      final scrcpyVersion = await getCurrentScrcpyVersion();
 
-    final execDir = await DirectoryUtils.getExecDir();
+      final execDir = await DirectoryUtils.getExecDir();
 
-    final bundledVersionDir = await DirectoryUtils.getScrcpyVersionDir(
+      final bundledVersionDir = await DirectoryUtils.getScrcpyVersionDir(
         BUNDLED_VERSION,
-        createIfNot: true);
+        createIfNot: true,
+      );
 
-    if (scrcpyVersion == BUNDLED_VERSION) {
-      await _setupBundledScrcpy();
-      await saveCurrentScrcpyVersion(BUNDLED_VERSION);
+      if (scrcpyVersion == BUNDLED_VERSION) {
+        await _setupBundledScrcpy();
+        await saveCurrentScrcpyVersion(BUNDLED_VERSION);
 
-      logger.i('Using bundled scrcpy version $scrcpyVersion');
+        logger.i('Using bundled scrcpy version $scrcpyVersion');
 
-      ref.read(scrcpyVersionProvider.notifier).state = scrcpyVersion;
-      ref.read(execDirProvider.notifier).state = bundledVersionDir.path;
-    } else {
-      logger.i('Using scrcpy version $scrcpyVersion');
-      ref.read(scrcpyVersionProvider.notifier).state = scrcpyVersion;
+        ref.read(scrcpyVersionProvider.notifier).state = scrcpyVersion;
+        ref.read(execDirProvider.notifier).state = bundledVersionDir.path;
+      } else {
+        logger.i('Using scrcpy version $scrcpyVersion');
+        ref.read(scrcpyVersionProvider.notifier).state = scrcpyVersion;
 
-      final newexec =
-          execDir.listSync().firstWhere((f) => f.path.endsWith(scrcpyVersion));
+        final newexec = execDir
+            .listSync()
+            .firstWhere((f) => f.path.endsWith(scrcpyVersion), orElse: () {
+          logger.e(
+              'Unable to locate scrcpy version $scrcpyVersion, reverting to bundled version ($BUNDLED_VERSION)');
 
-      ref.read(execDirProvider.notifier).state = newexec.path;
+          ref.read(scrcpyVersionProvider.notifier).state = BUNDLED_VERSION;
+          return bundledVersionDir;
+        });
+
+        ref.read(execDirProvider.notifier).state = newexec.path;
+      }
+    } on Exception catch (e) {
+      logger.e('Init scrcpy error', error: e);
     }
   }
 

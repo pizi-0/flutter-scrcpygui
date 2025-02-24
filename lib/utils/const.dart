@@ -186,7 +186,7 @@ const escrcpy = './scrcpy';
 
 final logger = Logger(
   filter: ProductionFilter(),
-  printer: PrettyPrinter(methodCount: 0, errorMethodCount: 0),
+  printer: SimplePrinter(),
   output: null,
 );
 

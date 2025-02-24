@@ -20,20 +20,27 @@ import 'const.dart';
 class AdbUtils {
   static Future<List<AdbDevices>> connectedDevices(String workDir,
       {bool showLog = true}) async {
-    final adbDeviceRes =
-        await CommandRunner.runAdbCommand(workDir, args: ['devices']);
+    List<AdbDevices> res = [];
 
-    final connected = adbDeviceRes.stdout
-        .toString()
-        .split('\n')
-        .where((e) => e.trim().isNotEmpty)
-        .toList();
+    try {
+      final adbDeviceRes =
+          await CommandRunner.runAdbCommand(workDir, args: ['devices']);
 
-    connected.removeAt(0);
+      final connected = adbDeviceRes.stdout
+          .toString()
+          .split('\n')
+          .where((e) => e.trim().isNotEmpty)
+          .toList();
 
-    final devices = await getAdbInfos(workDir, connected: connected);
+      connected.removeAt(0);
 
-    return devices.where((e) => e.status).toList();
+      final devices = await getAdbInfos(workDir, connected: connected);
+      res = devices.where((e) => e.status).toList();
+    } on Exception catch (e) {
+      logger.e(e);
+    }
+
+    return res;
   }
 
   static Future<ScrcpyInfo> getScrcpyDetailsFor(
