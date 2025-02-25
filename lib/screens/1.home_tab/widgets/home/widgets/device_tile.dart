@@ -4,6 +4,7 @@ import 'package:awesome_extensions/awesome_extensions.dart' show StyledText;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:scrcpygui/main_screen.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../../../../../models/adb_devices.dart';
@@ -135,8 +136,13 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
 
   _showContextMenu(TapUpDetails details, bool hasRunningInstance,
       List<ScrcpyRunningInstance> deviceInstance, bool isWireless) {
+    final widthAdjustment =
+        mainScreenNavViewKey.currentState!.compactOverlayOpen
+            ? kOpenNavigationPaneWidth
+            : kCompactNavigationPaneWidth;
+
     contextMenuController.showFlyout(
-      position: Offset(details.globalPosition.dx - kCompactNavigationPaneWidth,
+      position: Offset(details.globalPosition.dx - widthAdjustment,
           details.globalPosition.dy - kCompactNavigationPaneWidth),
       builder: (context) {
         return MenuFlyout(
