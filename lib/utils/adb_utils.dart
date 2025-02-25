@@ -36,8 +36,8 @@ class AdbUtils {
 
       final devices = await getAdbInfos(workDir, connected: connected);
       res = devices.where((e) => e.status).toList();
-    } on Exception catch (e) {
-      logger.e(e);
+    } on ProcessException catch (_) {
+      rethrow;
     }
 
     return res;
@@ -85,59 +85,6 @@ class AdbUtils {
       String workDir, AdbDevices dev) async {
     await CommandRunner.runAdbCommand(workDir, args: ['disconnect', dev.id]);
   }
-
-  // static Future<void> saveWirelessDeviceHistory(
-  //     WidgetRef ref, String ip) async {
-  //   final workDir = ref.read(execDirProvider);
-  //   final connected = await AdbUtils.connectedDevices(workDir);
-
-  //   final currentHx = [...ref.read(wirelessDevicesHistoryProvider)];
-
-  //   final toSave = connected.firstWhere((c) {
-  //     return c.id.split(':').first == ip.split(':').first;
-  //   });
-
-  //   final named = ref.read(savedAdbDevicesProvider);
-
-  //   if (named.where((d) => d.serialNo == toSave.serialNo).isNotEmpty) {
-  //     final dev = named.firstWhere((d) => d.serialNo == toSave.serialNo);
-  //     ref.read(toastProvider.notifier).addToast(SimpleToastItem(
-  //           icon: Icons.link_rounded,
-  //           message: '${dev.name!.toUpperCase()} connected',
-  //           toastStyle: SimpleToastStyle.success,
-  //           key: UniqueKey(),
-  //         ));
-  //   } else {
-  //     ref.read(toastProvider.notifier).addToast(SimpleToastItem(
-  //           icon: Icons.link_rounded,
-  //           message: '${toSave.serialNo.toUpperCase()} connected',
-  //           toastStyle: SimpleToastStyle.success,
-  //           key: UniqueKey(),
-  //         ));
-  //   }
-
-  //   final savedDevices = ref.read(savedAdbDevicesProvider);
-
-  //   ref.read(adbProvider.notifier).setConnected(connected, savedDevices);
-
-  //   bool toSaveExists =
-  //       currentHx.where((h) => h.serialNo == toSave.serialNo).isNotEmpty;
-
-  //   if (!toSaveExists) {
-  //     currentHx.add(toSave);
-
-  //     ref.read(wirelessDevicesHistoryProvider.notifier).state = currentHx;
-  //     AdbUtils.saveWirelessHistory(currentHx);
-  //   } else {
-  //     int idx = currentHx.indexWhere((h) => h.serialNo == toSave.serialNo);
-
-  //     currentHx.removeAt(idx);
-  //     currentHx.insert(idx, toSave);
-
-  //     ref.read(wirelessDevicesHistoryProvider.notifier).state = currentHx;
-  //     AdbUtils.saveWirelessHistory(currentHx);
-  //   }
-  // }
 
   //using ip
   static Future<WiFiResult> connectWithIp(WidgetRef ref,

@@ -5,13 +5,18 @@ import '../models/adb_devices.dart';
 class CommandRunner {
   static Future<ProcessResult> runAdbCommand(String workDir,
       {List<String> args = const []}) async {
-    if (Platform.isWindows) {
-      return await Process.run('$workDir\\adb.exe', args,
-          workingDirectory: workDir);
-    } else if (Platform.isLinux) {
-      return await Process.run('$workDir/adb', args, workingDirectory: workDir);
-    } else {
-      throw Exception('Unsupported platform');
+    try {
+      if (Platform.isWindows) {
+        return await Process.run('$workDir\\adb.exe', args,
+            workingDirectory: workDir);
+      } else if (Platform.isLinux) {
+        return await Process.run('$workDir/adb', args,
+            workingDirectory: workDir);
+      } else {
+        throw Exception('Unsupported platform');
+      }
+    } on Exception catch (_) {
+      rethrow;
     }
   }
 
