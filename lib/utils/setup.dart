@@ -33,7 +33,6 @@ class SetupUtils {
 
       if (scrcpyVersion == BUNDLED_VERSION) {
         await _setupBundledScrcpy();
-        await saveCurrentScrcpyVersion(BUNDLED_VERSION);
 
         logger.i('Using bundled scrcpy version $scrcpyVersion');
 
@@ -50,11 +49,21 @@ class SetupUtils {
               'Unable to locate scrcpy version $scrcpyVersion, reverting to bundled version ($BUNDLED_VERSION)');
 
           ref.read(scrcpyVersionProvider.notifier).state = BUNDLED_VERSION;
+
+          SharedPreferences.getInstance().then(
+            (value) => value.remove(PKEY_SCRCPYVERSION),
+          );
+
           return bundledVersionDir;
         });
 
-        ref.read(execDirProvider.notifier).state = newexec.path;
+        if (newexec.path.endsWith(BUNDLED_VERSION)) {
+          initScrcpy(ref);
+        } else {
+          ref.read(execDirProvider.notifier).state = newexec.path;
+        }
       }
+      await saveCurrentScrcpyVersion(ref.read(scrcpyVersionProvider));
     } on Exception catch (e) {
       logger.e('Init scrcpy error', error: e);
     }
