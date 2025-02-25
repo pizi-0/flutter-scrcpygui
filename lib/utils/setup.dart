@@ -58,7 +58,7 @@ class SetupUtils {
         });
 
         if (newexec.path.endsWith(BUNDLED_VERSION)) {
-          initScrcpy(ref);
+          await initScrcpy(ref);
         } else {
           ref.read(execDirProvider.notifier).state = newexec.path;
         }
