@@ -47,6 +47,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
   Timer? autoDevicesPingTimer;
   Timer? autoLaunchConfigTimer;
   Timer? runningInstancePingTimer;
+  FocusNode node = FocusNode();
 
   @override
   void initState() {
@@ -114,105 +115,112 @@ class _MainScreenState extends ConsumerState<MainScreen>
     ref.watch(pollAdbProvider);
     final currentPage = ref.watch(mainScreenPage);
 
-    return ResponsiveBuilder(
-      builder: (context, sizingInformation) {
-        return NavigationView(
-          key: mainScreenNavViewKey,
-          appBar: NavigationAppBar(
-            automaticallyImplyLeading: false,
-            title: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: 8,
-              children: [
-                Image.asset(
-                  'assets/logo.png',
-                  height: 20,
-                  width: 20,
-                ),
-                Expanded(
-                    child: DragToMoveArea(
-                        child: Row(
-                  spacing: 4,
+    return Focus(
+      focusNode: node,
+      child: GestureDetector(
+        onTap: node.requestFocus,
+        child: ResponsiveBuilder(
+          builder: (context, sizingInformation) {
+            return NavigationView(
+              key: mainScreenNavViewKey,
+              appBar: NavigationAppBar(
+                automaticallyImplyLeading: false,
+                title: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  spacing: 8,
                   children: [
-                    const Text('Scrcpy GUI').alignAtCenterLeft(),
-                    const Text('by pizi-0', style: TextStyle(fontSize: 8))
-                  ],
-                ))),
-                Center(
-                  child: IconButton(
-                    icon: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(FluentIcons.sunny),
+                    Image.asset(
+                      'assets/logo.png',
+                      height: 20,
+                      width: 20,
                     ),
-                    onPressed: () async {
-                      final mode = ref
-                          .read(settingsProvider.select((sett) => sett.looks))
-                          .themeMode;
-                      if (mode == ThemeMode.dark) {
-                        ref
-                            .read(settingsProvider.notifier)
-                            .changeThememode(ThemeMode.light);
-                      } else {
-                        ref
-                            .read(settingsProvider.notifier)
-                            .changeThememode(ThemeMode.dark);
-                      }
-                      await Db.saveAppSettings(ref.read(settingsProvider));
-                    },
+                    Expanded(
+                        child: DragToMoveArea(
+                            child: Row(
+                      spacing: 4,
+                      children: [
+                        const Text('Scrcpy GUI').alignAtCenterLeft(),
+                        const Text('by pizi-0', style: TextStyle(fontSize: 8))
+                      ],
+                    ))),
+                    Center(
+                      child: IconButton(
+                        icon: const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(FluentIcons.sunny),
+                        ),
+                        onPressed: () async {
+                          final mode = ref
+                              .read(
+                                  settingsProvider.select((sett) => sett.looks))
+                              .themeMode;
+                          if (mode == ThemeMode.dark) {
+                            ref
+                                .read(settingsProvider.notifier)
+                                .changeThememode(ThemeMode.light);
+                          } else {
+                            ref
+                                .read(settingsProvider.notifier)
+                                .changeThememode(ThemeMode.dark);
+                          }
+                          await Db.saveAppSettings(ref.read(settingsProvider));
+                        },
+                      ),
+                    ),
+                    const Divider(
+                      direction: Axis.vertical,
+                    ),
+                    const TitleBarButton(),
+                  ],
+                ),
+              ),
+              // transitionBuilder: (child, animation) => FadeInUp(
+              //   duration: 100.milliseconds,
+              //   child: child,
+              // ),
+              onDisplayModeChanged: (value) {},
+              paneBodyBuilder: (item, body) => AnimatedBranchContainer(
+                  currentIndex: currentPage, children: widget.child),
+              pane: NavigationPane(
+                selected: currentPage,
+                displayMode: PaneDisplayMode.compact,
+                // header: const Text('SSL'),
+                onChanged: (value) {
+                  ref.read(mainScreenPage.notifier).state = value;
+                },
+                items: [
+                  PaneItem(
+                    icon: const Icon(FluentIcons.home),
+                    title: const Text('Home (Alt + 1)'),
+                    body: FadeInUp(child: const HomeTab()),
+                    onTap: () => context.go('/home'),
                   ),
-                ),
-                const Divider(
-                  direction: Axis.vertical,
-                ),
-                const TitleBarButton(),
-              ],
-            ),
-          ),
-          // transitionBuilder: (child, animation) => FadeInUp(
-          //   duration: 100.milliseconds,
-          //   child: child,
-          // ),
-          onDisplayModeChanged: (value) {},
-          paneBodyBuilder: (item, body) => AnimatedBranchContainer(
-              currentIndex: currentPage, children: widget.child),
-          pane: NavigationPane(
-            selected: currentPage,
-            displayMode: PaneDisplayMode.compact,
-            // header: const Text('SSL'),
-            onChanged: (value) {
-              ref.read(mainScreenPage.notifier).state = value;
-            },
-            items: [
-              PaneItem(
-                icon: const Icon(FluentIcons.home),
-                title: const Text('Home (Alt + 1)'),
-                body: FadeInUp(child: const HomeTab()),
-                onTap: () => context.go('/home'),
+                  PaneItem(
+                    icon: const Icon(FluentIcons.link),
+                    title: const Text('Connect'),
+                    body: const ConnectTab(),
+                    onTap: () => context.go('/connect'),
+                  ),
+                ],
+                footerItems: [
+                  PaneItem(
+                    icon: const Icon(FluentIcons.movers),
+                    title: const Text('Scrcpy manager'),
+                    body: const SizedBox.shrink(),
+                    onTap: () => context.go('/scrcpy-manager'),
+                  ),
+                  PaneItem(
+                    icon: const Icon(FluentIcons.settings),
+                    title: const Text('Settings'),
+                    body: const SizedBox.shrink(),
+                    onTap: () => context.go('/settings'),
+                  ),
+                ],
               ),
-              PaneItem(
-                icon: const Icon(FluentIcons.link),
-                title: const Text('Connect'),
-                body: const ConnectTab(),
-                onTap: () => context.go('/connect'),
-              ),
-            ],
-            footerItems: [
-              PaneItem(
-                icon: const Icon(FluentIcons.movers),
-                title: const Text('Scrcpy manager'),
-                body: const SizedBox.shrink(),
-                onTap: () => context.go('/scrcpy-manager'),
-              ),
-              PaneItem(
-                icon: const Icon(FluentIcons.settings),
-                title: const Text('Settings'),
-                body: const SizedBox.shrink(),
-                onTap: () => context.go('/settings'),
-              ),
-            ],
-          ),
-        );
-      },
+            );
+          },
+        ),
+      ),
     );
   }
 
