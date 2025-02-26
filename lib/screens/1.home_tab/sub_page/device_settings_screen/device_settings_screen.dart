@@ -39,8 +39,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
 
   @override
   void initState() {
-    dev =
-        ref.read(savedAdbDevicesProvider).firstWhere((d) => d.id == widget.id);
+    dev = ref.read(adbProvider).firstWhere((d) => d.id == widget.id);
 
     namecontroller =
         TextEditingController(text: dev.name?.toUpperCase() ?? dev.modelName);
