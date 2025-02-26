@@ -13,6 +13,7 @@ import 'package:scrcpygui/utils/update_utils.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 
 class ScrcpyManagerTab extends ConsumerStatefulWidget {
+  static const route = '/scrcpy-manager';
   const ScrcpyManagerTab({super.key});
 
   @override

@@ -11,6 +11,7 @@ import 'widgets/wifi_qr_pairing_dialog.dart';
 import 'widgets/wifi_scan_result.dart';
 
 class ConnectTab extends ConsumerStatefulWidget {
+  static const route = '/connect';
   const ConnectTab({super.key});
 
   @override

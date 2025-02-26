@@ -6,6 +6,7 @@ import 'package:scrcpygui/screens/4.settings_tab/widgets/behaviour_section.dart'
 import 'widgets/theme_section.dart';
 
 class SettingsTab extends ConsumerStatefulWidget {
+  static const route = '/settings';
   const SettingsTab({super.key});
 
   @override

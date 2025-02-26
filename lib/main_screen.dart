@@ -180,7 +180,9 @@ class _MainScreenState extends ConsumerState<MainScreen>
               // ),
               onDisplayModeChanged: (value) {},
               paneBodyBuilder: (item, body) => AnimatedBranchContainer(
-                  currentIndex: currentPage, children: widget.child),
+                currentIndex: currentPage,
+                children: widget.child,
+              ),
               pane: NavigationPane(
                 selected: currentPage,
                 displayMode: PaneDisplayMode.compact,

@@ -77,24 +77,6 @@ class _MyAppState extends ConsumerState<MyApp> {
       routeInformationParser: _router.routeInformationParser,
       routerDelegate: _router.routerDelegate,
       routeInformationProvider: _router.routeInformationProvider,
-      shortcuts: {
-        ...WidgetsApp.defaultShortcuts,
-        const SingleActivator(LogicalKeyboardKey.keyB, control: true):
-            VoidCallbackIntent(() =>
-                mainScreenNavViewKey.currentState?.toggleCompactOpenMode()),
-        const SingleActivator(LogicalKeyboardKey.digit1, alt: true):
-            VoidCallbackIntent(
-                () => ref.read(mainScreenPage.notifier).state = 0),
-        const SingleActivator(LogicalKeyboardKey.digit2, alt: true):
-            VoidCallbackIntent(
-                () => ref.read(mainScreenPage.notifier).state = 1),
-        const SingleActivator(LogicalKeyboardKey.digit3, alt: true):
-            VoidCallbackIntent(
-                () => ref.read(mainScreenPage.notifier).state = 2),
-        const SingleActivator(LogicalKeyboardKey.digit4, alt: true):
-            VoidCallbackIntent(
-                () => ref.read(mainScreenPage.notifier).state = 3),
-      },
       debugShowCheckedModeBanner: false,
       theme: FluentThemeData(
         accentColor: looks.accentColor,
@@ -155,7 +137,7 @@ final _router = GoRouter(
           navigatorKey: _shellNavKey,
           routes: [
             GoRoute(
-              path: '/home',
+              path: HomeTab.route,
               builder: (context, state) => const HomeTab(),
               routes: [
                 GoRoute(
@@ -183,7 +165,7 @@ final _router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/connect',
+              path: ConnectTab.route,
               builder: (context, state) => const ConnectTab(),
             ),
           ],
@@ -191,7 +173,7 @@ final _router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/scrcpy-manager',
+              path: ScrcpyManagerTab.route,
               builder: (context, state) => const ScrcpyManagerTab(),
             ),
           ],
@@ -199,7 +181,7 @@ final _router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/settings',
+              path: SettingsTab.route,
               builder: (context, state) => const SettingsTab(),
             ),
           ],

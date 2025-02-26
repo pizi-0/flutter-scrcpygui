@@ -5,6 +5,7 @@ import 'package:scrcpygui/screens/1.home_tab/widgets/home/home.dart';
 import 'widgets/bottom_bar/home_bottom_bar.dart';
 
 class HomeTab extends ConsumerStatefulWidget {
+  static const route = '/home';
   const HomeTab({super.key});
 
   @override
