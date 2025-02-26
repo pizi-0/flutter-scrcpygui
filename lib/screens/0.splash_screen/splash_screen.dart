@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +12,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
+import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/setup.dart';
 
 import '../../utils/app_utils.dart';
@@ -25,10 +28,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _init().then((value) {
-        context.pushReplacement('/home');
-      });
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      try {
+        await _init().then((value) {
+          context.pushReplacement('/home');
+        });
+      } on ProcessException catch (e) {
+        logger.e(e);
+      }
     });
   }
 
