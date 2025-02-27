@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 
@@ -20,7 +21,8 @@ class Home extends ConsumerWidget {
         spacing: 8,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ConfigCustom(title: 'Connected devices (${connected.length})'),
+          ConfigCustom(
+              title: el.homeTab.devices.label(count: '${connected.length}')),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(0),

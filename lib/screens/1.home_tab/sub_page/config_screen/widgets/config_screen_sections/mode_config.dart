@@ -5,6 +5,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
 
 import '../../../../../../models/scrcpy_related/scrcpy_config.dart';
@@ -30,7 +31,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const ConfigCustom(title: 'Mode'),
+        ConfigCustom(title: el.modeSection.title),
         Card(
           padding: const EdgeInsets.all(0),
           child: Column(
@@ -56,10 +57,10 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
       children: [
         ConfigDropdownEnum<MainMode>(
           items: MainMode.values,
-          title: 'Mode',
+          title: el.modeSection.mainMode.label,
           subtitle: !selectedConfig.isRecording
-              ? 'mirror or record, no flag for mirror'
-              : "uses '--record=' flag",
+              ? el.modeSection.mainMode.info.default$
+              : el.modeSection.mainMode.info.alt,
           showinfo: showInfo,
           initialValue:
               selectedConfig.isRecording ? MainMode.record : MainMode.mirror,
@@ -78,8 +79,8 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
           FadeIn(
             duration: 200.milliseconds,
             child: ConfigCustom(
-              title: 'Save folder',
-              subtitle: "appends save path to '--record=savepath/file'",
+              title: el.modeSection.saveFolder.label,
+              subtitle: el.modeSection.saveFolder.info,
               showinfo: showInfo,
               child: Button(
                 onPressed: () async {
@@ -117,8 +118,9 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
       items: ScrcpyMode.values,
       title: modeLabel,
       subtitle: selectedConfig.scrcpyMode == ScrcpyMode.both
-          ? 'defaults to both, no flag'
-          : "uses '${selectedConfig.scrcpyMode.command.trim()}' flag",
+          ? el.modeSection.scrcpyMode.info.default$
+          : el.modeSection.scrcpyMode.info
+              .alt(command: selectedConfig.scrcpyMode.command.trim()),
       showinfo: showInfo,
       initialValue: selectedConfig.scrcpyMode,
       onSelected: (value) {

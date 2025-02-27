@@ -1,0 +1,180 @@
+
+# home tab
+home_tab:
+  title: Home
+  devices: 
+    label: Connected devices (${count})
+  
+  device_tile: 
+    running_instances: Running (${count})
+    context: 
+      disconnect: Disconnect
+      to_wireless: To wireless
+      kill_running: Kill running instances
+    
+
+  config:
+    label: Start scrcpy
+    new: Create new config
+    select: Select a config
+    details: Show details
+    start: Start
+
+# error dialog
+no_device_dialog:
+  title: Device
+  contents: No device selected. \nSelect a device to edit scrcpy config.
+
+no_config_dialog:
+  title: Config
+  contents: No config selected.\nSelect a scrcpy config to start.
+
+## home_tab > device settings screen
+device_settings_screen: 
+  title: Settings
+  info: Info
+  refresh: Refresh info
+  rename: 
+    label: Rename
+    info: Press [Enter] to apply name
+  auto_connect: 
+    label: Auto connect
+    info: Auto connect wireless device
+  on_connected: 
+    label: On connected
+    info: Start (1) scrcpy instance with selected config on device connection
+  do_nothing: Do nothing
+  
+  scrcpy_info: 
+    fetching: Getting scrcpy info
+    label: Scrcpy info
+    name: Name
+    id: ID
+    model: Model
+    version: Android version
+    displays: Displays
+    cameras: Cameras
+    video_enc: Video encoders
+    audio_enc: Audio encoders
+  
+
+## home_tab > config screen
+config_screen:
+  connection_lost: Device connection lost
+
+### mode section
+mode_section: 
+  title: Mode
+  save_folder: 
+    label: Save folder
+    info: "appends save path to '--record=savepath/file' " 
+
+  main_mode: 
+    label: Mode
+    mirror: Mirror
+    record: Record
+    info: 
+      default: mirror or record, no flag for mirror
+      alt: "uses '--record=' flag"
+  
+  scrcpy_mode:
+    both: Both
+    audio_only: Audio only
+    video_only: Video only
+    info:
+      default: defaults to both, no flag
+      alt: "uses '${command}' flag"
+
+### video section
+video_section:
+  title: Video
+  displays: 
+    label: Displays
+    info: 
+      default: defaults to first available, no flag; virtual displays is not listed
+      alt: "uses '--display-id=' flag"
+
+  codec:
+    label: Codec
+    info: 
+      default: defaults to h264, no flag
+      alt: "uses '--video-codec=${codec}' flag"
+  encoder:
+    label: Encoder
+    info:
+      default: defaults to first available, no flag
+      alt: "uses '--video-encoder=${encoder}' flag"
+
+  format:
+    label: Format
+    info: 
+      default: appends format to '--record=savepath/file${format}' "
+
+  bitrate:
+    label: Bitrate
+    info: 
+      default: defaults to 8M, no flag
+      alt: "uses '--video-bit-rate=${bitrate}M' flag"
+
+  fps_limit:
+    label: FPS limit
+    info:
+      default: no flag unless set
+      alt: "uses '--max-fps=${fps}' flag"
+
+  resolution_scale: 
+    label: Resolution scale
+    info: 
+      default: calculated based on device's resolution, no flag unless set
+      alt: "uses '--max-size=${size}' flag"
+
+
+
+
+#connect tab
+connect:
+  title: Connect
+  with_ip: 
+    label: Connect with IP
+    connect: Connect
+
+  with_mdns: 
+    label: MDNS devices (${count})
+
+  qr_pair: 
+    label: QR pairing
+    pair: Pair device
+
+
+#scrcpy manager tab
+scrcpy_manager:
+  title: Scrcpy Manager
+  current:
+    label: Current
+    in_use: In-use
+    latest: latest
+    exec: 
+      open: Open executable location
+      warning: Modify with care
+
+
+
+#settings tab
+settings:
+  title: Settings
+  looks:
+    label: Looks
+    theme: 
+      mode: Theme mode
+      dark: Dark
+      light: Light
+      system: System
+
+button_label:
+  ok: ''
+  close: Close
+  cancel: cancel
+
+# status 
+status: 
+  failed: Failed

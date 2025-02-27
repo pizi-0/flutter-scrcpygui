@@ -1,0 +1,18 @@
+# *** Automatically added by easiest_localization ***
+# If you find it useful, please consider giving a ⭐ on GitHub: https://github.com/alphamikle/el
+# And leaving a 👍 on pub.dev: https://pub.dev/packages/easiest_localization
+# Your support is very important!
+name: localization
+description: Generated localization package
+publish_to: none
+version: 1.0.0
+
+environment:
+  sdk: ">=3.4.4 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  easiest_localization: any

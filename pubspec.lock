@@ -5,18 +5,23 @@ packages:
     dependency: transitive
     description:
       name: _fe_analyzer_shared
-      sha256: "0b2f2bd91ba804e53a61d757b986f89f1f9eaed5b11e4b2f5a2468d86d6c9fc7"
+      sha256: "16e298750b6d0af7ce8a3ba7c18c69c3785d11b15ec83f6dcd0ad2a0009b3cab"
       url: "https://pub.dev"
     source: hosted
-    version: "67.0.0"
+    version: "76.0.0"
+  _macros:
+    dependency: transitive
+    description: dart
+    source: sdk
+    version: "0.3.3"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
-      sha256: "37577842a27e4338429a1cbc32679d508836510b056f1eedf0c8d20e39c1383d"
+      sha256: "1f14db053a8c23e260789e9b0980fa27f2680dd640932cae5e1137cce0e46e1e"
       url: "https://pub.dev"
     source: hosted
-    version: "6.4.1"
+    version: "6.11.0"
   animate_do:
     dependency: "direct main"
     description:
@@ -209,6 +214,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.0.1"
+  dart_style:
+    dependency: transitive
+    description:
+      name: dart_style
+      sha256: "7306ab8a2359a48d22310ad823521d723acfed60ee1f7e37388e8986853b6820"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.8"
   dbus:
     dependency: transitive
     description:
@@ -233,6 +246,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  easiest_localization:
+    dependency: "direct main"
+    description:
+      name: easiest_localization
+      sha256: bed3af27fe9f5f479a208b78b60d27f1905b0e71318fe73d04e7dd8463ce238e
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -533,6 +554,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  localization:
+    dependency: "direct main"
+    description:
+      path: localization
+      relative: true
+    source: path
+    version: "1.0.0"
   logger:
     dependency: "direct main"
     description:
@@ -549,6 +577,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  macros:
+    dependency: transitive
+    description:
+      name: macros
+      sha256: "1d9e801cd66f7ea3663c45fc708450db1fa57f988142c64289142c9b7ee80656"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.3-main.0"
   markdown:
     dependency: transitive
     description:
@@ -589,6 +625,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.1"
+  merger:
+    dependency: transitive
+    description:
+      name: merger
+      sha256: "31436c54d06f76755c781b3b2ae4bf3e0b6b3800ff430abf638037c66e800b37"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   meta:
     dependency: transitive
     description:
@@ -1234,6 +1278,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  yaml_writer:
+    dependency: transitive
+    description:
+      name: yaml_writer
+      sha256: "69651cd7238411179ac32079937d4aa9a2970150d6b2ae2c6fe6de09402a5dc5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
 sdks:
   dart: ">=3.5.0 <4.0.0"
   flutter: ">=3.27.0"

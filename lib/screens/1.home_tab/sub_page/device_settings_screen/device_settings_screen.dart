@@ -4,6 +4,7 @@ import 'package:awesome_extensions/awesome_extensions.dart' show StyledText;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/automation.dart';
@@ -82,7 +83,8 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
 
     return NavigationView(
       appBar: NavigationAppBar(
-        title: Text('Settings / ${dev.name}').textStyle(theme.typography.body),
+        title: Text('${el.deviceSettingsScreen.title} / ${dev.name}')
+            .textStyle(theme.typography.body),
         leading: IconButton(
           icon: const Padding(
             padding: EdgeInsets.all(8.0),
@@ -100,7 +102,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
               spacing: 8,
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('Info'),
+                Text(el.deviceSettingsScreen.info),
                 Checkbox(
                   checked: showInfo,
                   onChanged: (v) {
@@ -134,17 +136,18 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                         .copyWith(scrollbars: false),
                     controller: scrollController,
                     slivers: [
-                      const SliverToBoxAdapter(
+                      SliverToBoxAdapter(
                           child: ConfigCustom(
-                              title: 'Settings', child: SizedBox())),
+                              title: el.deviceSettingsScreen.title,
+                              child: const SizedBox())),
                       SliverToBoxAdapter(
                         child: Card(
                           padding: EdgeInsets.zero,
                           child: Column(
                             children: [
                               ConfigCustom(
-                                title: 'Rename',
-                                subtitle: 'Press [Enter] to apply name',
+                                title: el.deviceSettingsScreen.rename.label,
+                                subtitle: el.deviceSettingsScreen.rename.info,
                                 showinfo: showInfo,
                                 child: SizedBox(
                                   width: 180,
@@ -160,8 +163,10 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                               if (isWireless) const Divider(),
                               if (isWireless)
                                 ConfigCustom(
-                                  title: 'Auto-connect',
-                                  subtitle: 'Auto connect wireless device',
+                                  title:
+                                      el.deviceSettingsScreen.autoConnect.label,
+                                  subtitle:
+                                      el.deviceSettingsScreen.autoConnect.info,
                                   showinfo: showInfo,
                                   child: ToggleSwitch(
                                     checked: autoConnect,
@@ -170,18 +175,21 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                                 ),
                               const Divider(),
                               ConfigCustom(
-                                title: 'On connected',
+                                title:
+                                    el.deviceSettingsScreen.onConnected.label,
                                 subtitle:
-                                    'Start (1) scrcpy instance with selected config on device connection',
+                                    el.deviceSettingsScreen.onConnected.info,
                                 showinfo: showInfo,
                                 child: ComboBox(
-                                    placeholder: const Text('Do nothing'),
+                                    placeholder:
+                                        Text(el.deviceSettingsScreen.doNothing),
                                     value: ddValue,
                                     onChanged: _onConnectConfig,
                                     items: [
-                                      const ComboBoxItem(
+                                      ComboBoxItem(
                                         value: DO_NOTHING,
-                                        child: Text('Do nothing'),
+                                        child: Text(
+                                            el.deviceSettingsScreen.doNothing),
                                       ),
                                       ...allconfigs.map((c) => ComboBoxItem(
                                           value: c.id,
@@ -193,7 +201,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                         ),
                       ),
                       if (loading)
-                        const SliverFillRemaining(
+                        SliverFillRemaining(
                           fillOverscroll: false,
                           hasScrollBody: false,
                           child: Center(
@@ -201,9 +209,10 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                               spacing: 8,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                SizedBox.square(
+                                const SizedBox.square(
                                     dimension: 18, child: ProgressRing()),
-                                Text('Getting scrcpy info')
+                                Text(
+                                    el.deviceSettingsScreen.scrcpyInfo.fetching)
                               ],
                             ),
                           ),
@@ -215,12 +224,13 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                             child: Column(
                               children: [
                                 ConfigCustom(
-                                  title: 'Scrcpy info',
+                                  title:
+                                      el.deviceSettingsScreen.scrcpyInfo.label,
                                   showinfo: showInfo,
                                   subtitle:
-                                      'from --list-displays --list-cameras --list-encoders --list-apps',
+                                      '--list-displays --list-cameras --list-encoders --list-apps',
                                   child: Tooltip(
-                                    message: 'Refresh Info',
+                                    message: el.deviceSettingsScreen.refresh,
                                     child: IconButton(
                                       icon: const Icon(FluentIcons.refresh),
                                       onPressed: _getScrcpyInfo,

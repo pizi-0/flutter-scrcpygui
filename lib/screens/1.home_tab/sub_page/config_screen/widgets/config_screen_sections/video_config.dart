@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
@@ -53,7 +54,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const ConfigCustom(title: 'Video', child: Icon(FluentIcons.video)),
+        ConfigCustom(
+            title: el.videoSection.title, child: const Icon(FluentIcons.video)),
         Card(
           padding: EdgeInsets.zero,
           child: ClipRRect(
@@ -84,11 +86,12 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     final showInfo = ref.watch(configScreenShowInfo);
 
     return ConfigUserInput(
-      label: 'FPS limit',
+      label: el.videoSection.fpsLimit.label,
       showinfo: showInfo,
       subtitle: maxFPSController.text == '-'
-          ? 'no flag unless set'
-          : "uses '--max-fps=${maxFPSController.text.trim()}'",
+          ? el.videoSection.fpsLimit.info.default$
+          : el.videoSection.fpsLimit.info
+              .alt(fps: maxFPSController.text.trim()),
       controller: maxFPSController,
       unit: 'fps',
       onTap: () => setState(() {
@@ -120,15 +123,15 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
         info.displays.where((d) => (int.tryParse(d.id) ?? 11) < 10).toList();
 
     return ConfigDropdownOthers(
-      label: 'Display *',
+      label: el.videoSection.displays.label,
       initialValue: displays.length == 1
           ? displays[0].id
           : selectedConfig.videoOptions.displayId.toString(),
       tooltipMessage: 'Only 1 display detected',
       showinfo: showInfo,
       subtitle: selectedConfig.videoOptions.displayId == 0
-          ? "defaults to first available, no flag; virtual displays is not listed"
-          : "uses '--display-id='",
+          ? el.videoSection.displays.info.default$
+          : el.videoSection.displays.info.alt,
       items: displays
           .map(
             (d) => ComboBoxItem(
@@ -158,11 +161,13 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     max.sort((a, b) => b.compareTo(a));
 
     return ConfigCustom(
-      title: 'Resolution scale',
+      title: el.videoSection.resolutionScale.label,
       showinfo: showInfo,
       subtitle: selectedConfig.videoOptions.resolutionScale == 1.0
-          ? 'calculated based on device\'s resolution, no flag unless set'
-          : "uses '--max-size=${(selectedConfig.videoOptions.resolutionScale * max.first).toStringAsFixed(0)}'",
+          ? el.videoSection.resolutionScale.info.default$
+          : el.videoSection.resolutionScale.info.alt(
+              size: (selectedConfig.videoOptions.resolutionScale * max.first)
+                  .toStringAsFixed(0)),
       child: Row(
         children: [
           ConstrainedBox(
@@ -214,10 +219,11 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
           items: info.videoEncoders
               .map((e) => ComboBoxItem(value: e.codec, child: Text(e.codec)))
               .toList(),
-          label: 'Codec *',
+          label: el.videoSection.codec.label,
           subtitle: selectedConfig.videoOptions.videoCodec == 'h264'
-              ? "defaults to h264, no flag"
-              : "uses '--video-codec=${selectedConfig.videoOptions.videoCodec}'",
+              ? el.videoSection.codec.info.default$
+              : el.videoSection.codec.info
+                  .alt(codec: selectedConfig.videoOptions.videoCodec),
         ),
         const Divider(),
         ConfigDropdownOthers(
@@ -246,10 +252,11 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                   ),
                 )
           ],
-          label: 'Encoder *',
+          label: el.videoSection.encoder.label,
           subtitle: selectedConfig.videoOptions.videoEncoder == 'default'
-              ? 'defaults to first available, no flag'
-              : "uses '--video-encoder=${selectedConfig.videoOptions.videoEncoder}'",
+              ? el.videoSection.encoder.info.default$
+              : el.videoSection.encoder.info
+                  .alt(encoder: selectedConfig.videoOptions.videoEncoder),
         ),
         const Divider(),
         if (selectedConfig.isRecording)
@@ -257,9 +264,9 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
             child: ConfigDropdownEnum<VideoFormat>(
               showinfo: showInfo,
               items: VideoFormat.values,
-              title: 'Format',
-              subtitle:
-                  "appends format to '--record=savepath/file${selectedConfig.videoOptions.videoFormat.command}'",
+              title: el.videoSection.format.label,
+              subtitle: el.videoSection.format.info.default$(
+                  format: selectedConfig.videoOptions.videoFormat.command),
               initialValue: selectedConfig.videoOptions.videoFormat,
               toTitleCase: false,
               onSelected: (value) {
@@ -278,10 +285,11 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     final showInfo = ref.watch(configScreenShowInfo);
 
     return ConfigUserInput(
-      label: 'Bitrate',
+      label: el.videoSection.bitrate.label,
       subtitle: videoBitrateController.text == '8'
-          ? 'defaults to 8M, no flag'
-          : "uses '--video-bit-rate=${videoBitrateController.text.trimAll}M'",
+          ? el.videoSection.bitrate.info.default$
+          : el.videoSection.bitrate.info
+              .alt(bitrate: videoBitrateController.text.trimAll),
       controller: videoBitrateController,
       showinfo: showInfo,
       unit: 'M',

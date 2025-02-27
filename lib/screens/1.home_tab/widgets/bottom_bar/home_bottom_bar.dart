@@ -3,6 +3,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:scrcpygui/db/db.dart';
@@ -37,9 +38,9 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 16),
           child: ConfigCustom(
-            title: 'Start scrcpy',
+            title: el.homeTab.config.label,
             child: Tooltip(
-              message: 'Create new config',
+              message: el.homeTab.config.new$,
               child: IconButton(
                   onPressed: _onNewConfigPressed,
                   icon: const Icon(FluentIcons.add)),
@@ -56,7 +57,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
                 child: ComboBox(
                   key: configKey,
                   isExpanded: true,
-                  placeholder: const Text('Select a config'),
+                  placeholder: Text(el.homeTab.config.select),
                   value: selectedConfig,
                   onChanged: (value) {
                     ref.read(selectedConfigProvider.notifier).state = value;
@@ -77,7 +78,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
                   child: loading
                       ? const SizedBox.square(
                           dimension: 18, child: ProgressRing())
-                      : const Text('Start'),
+                      : Text(el.homeTab.config.start),
                 ),
               )
             ],
@@ -98,12 +99,11 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
         barrierDismissible: true,
         context: context,
         builder: (context) => ContentDialog(
-          title: const Text('Device'),
-          content: const Text(
-              'No device selected.\nSelect a device to create scrcpy config.'),
+          title: Text(el.noDeviceDialog.title),
+          content: Text(el.noDeviceDialog.contents),
           actions: [
             Button(
-              child: const Text('Close'),
+              child: Text(el.buttonLabel.close),
               onPressed: () => context.pop(),
             )
           ],
@@ -120,12 +120,11 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
         context: context,
         barrierDismissible: true,
         builder: (context) => ContentDialog(
-          title: const Text('Config'),
-          content: const Text(
-              'No config selected.\nSelect a scrcpy config to start.'),
+          title: Text(el.noConfigDialog.title),
+          content: Text(el.noConfigDialog.contents),
           actions: [
             Button(
-              child: const Text('Close'),
+              child: Text(el.buttonLabel.close),
               onPressed: () => context.pop(),
             )
           ],
@@ -143,12 +142,11 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
             context: context,
             barrierDismissible: true,
             builder: (context) => ContentDialog(
-              title: const Text('Device'),
-              content: const Text(
-                  'No device selected.\nSelect a device to start scrcpy.'),
+              title: Text(el.noDeviceDialog.title),
+              content: Text(el.noDeviceDialog.contents),
               actions: [
                 Button(
-                  child: const Text('Close'),
+                  child: Text(el.buttonLabel.close),
                   onPressed: () => context.pop(),
                 )
               ],

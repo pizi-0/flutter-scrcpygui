@@ -4,6 +4,7 @@ import 'package:awesome_extensions/awesome_extensions.dart' show StyledText;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/main_screen.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -83,7 +84,8 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                           backgroundColor: theme.selectionColor,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 4, vertical: 2),
-                          child: Text('Running: ${deviceInstance.length}')
+                          child: Text(el.homeTab.deviceTile.runningInstances(
+                                  count: '${deviceInstance.length}'))
                               .fontSize(10)
                               .textColor(Colors.white),
                         ),
@@ -150,7 +152,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
             if (hasRunningInstance)
               MenuFlyoutSubItem(
                 leading: const Icon(FluentIcons.cancel),
-                text: const Text('Kill running'),
+                text: Text(el.homeTab.deviceTile.context.killRunning),
                 items: (context) => deviceInstance
                     .map(
                       (i) => MenuFlyoutItem(
@@ -168,7 +170,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
             if (isWireless)
               MenuFlyoutItem(
                   leading: const Icon(FluentIcons.remove_link),
-                  text: const Text('Disconnect'),
+                  text: Text(el.homeTab.deviceTile.context.disconnect),
                   onPressed: () async {
                     loading = true;
                     setState(() {});
@@ -182,7 +184,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                       debugPrint(e.toString());
                       displayInfoBar(context,
                           builder: (context, close) =>
-                              Card(child: InfoLabel(label: 'Failed')));
+                              Card(child: InfoLabel(label: el.status.failed)));
                     }
 
                     if (mounted) {
@@ -193,7 +195,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
             if (!isWireless)
               MenuFlyoutItem(
                 leading: const Icon(FluentIcons.wifi),
-                text: const Text('To wireless'),
+                text: Text(el.homeTab.deviceTile.context.toWireless),
                 onPressed: () async {
                   loading = true;
                   setState(() {});
@@ -211,7 +213,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                     debugPrint(e.toString());
                     displayInfoBar(context,
                         builder: (context, close) =>
-                            Card(child: InfoLabel(label: 'Failed')));
+                            Card(child: InfoLabel(label: el.status.failed)));
                   }
 
                   if (mounted) {

@@ -31,6 +31,14 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # *** Automatically added by easiest_localization ***
+  # If you find it useful, please consider giving a ⭐ on GitHub: https://github.com/alphamikle/el
+  # And leaving a 👍 on pub.dev: https://pub.dev/packages/easiest_localization
+  # Your support is very important!
+  localization:
+    path: ./localization
+
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -69,6 +77,7 @@ dependencies:
   go_router: ^14.8.0
   go_transitions: ^0.7.1
   collection: ^1.19.0
+  easiest_localization: ^2.0.1
   # flutter_single_instance: ^1.2.3
   # flutter_staggered_grid_view: ^0.7.0
   # circular_reveal_animation: ^2.0.1
@@ -101,6 +110,7 @@ flutter:
     - assets/
     - assets/exec/linux/
     - assets/exec/windows/
+    - assets/i18n/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

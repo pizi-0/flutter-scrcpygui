@@ -4,6 +4,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
@@ -184,7 +185,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
               body: dev.info == null
                   ? const Center(child: CupertinoActivityIndicator())
                   : selectedDevice == null
-                      ? const Text('Device connection lost')
+                      ? Text(el.configScreen.connectionLost)
                       : ScaffoldPage.scrollable(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 2),

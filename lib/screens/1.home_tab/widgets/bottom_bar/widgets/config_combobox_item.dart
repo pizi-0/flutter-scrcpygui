@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/utils/directory_utils.dart';
 
 import '../../../../../models/scrcpy_related/scrcpy_config.dart';
@@ -25,7 +26,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
     return Row(
       children: [
         Tooltip(
-          message: 'Show details',
+          message: el.homeTab.config.details,
           child: IconButton(
             icon: const Icon(FluentIcons.info),
             onPressed: _onDetailPressed,
@@ -39,13 +40,9 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
           ),
         ),
         if (widget.config.isRecording)
-          Tooltip(
-            message: 'Open save folder',
-            child: IconButton(
-              icon: const Icon(FluentIcons.open_folder_horizontal),
-              onPressed: () =>
-                  DirectoryUtils.openFolder(widget.config.savePath!),
-            ),
+          IconButton(
+            icon: const Icon(FluentIcons.open_folder_horizontal),
+            onPressed: () => DirectoryUtils.openFolder(widget.config.savePath!),
           ),
         if (widget.config.isRecording &&
             !defaultConfigs.contains(widget.config))
@@ -54,12 +51,9 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
             size: 18,
           ),
         if (!defaultConfigs.contains(widget.config))
-          Tooltip(
-            message: 'Edit config',
-            child: IconButton(
-              icon: const Icon(FluentIcons.edit),
-              onPressed: () => _onEditPressed(widget.config),
-            ),
+          IconButton(
+            icon: const Icon(FluentIcons.edit),
+            onPressed: () => _onEditPressed(widget.config),
           ),
         if (!defaultConfigs.contains(widget.config))
           const Divider(
@@ -67,12 +61,9 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
             size: 18,
           ),
         if (!defaultConfigs.contains(widget.config))
-          Tooltip(
-            message: 'Edit config',
-            child: IconButton(
-              icon: const Icon(FluentIcons.delete),
-              onPressed: _onRemoveConfigPressed,
-            ),
+          IconButton(
+            icon: const Icon(FluentIcons.delete),
+            onPressed: _onRemoveConfigPressed,
           ),
       ],
     );
@@ -106,14 +97,14 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
         barrierDismissible: true,
         context: context,
         builder: (context) => ContentDialog(
-          title: const Text('Device'),
-          content: const Text(
-            'No device selected.\nSelect a device to edit scrcpy config.',
+          title: Text(el.noDeviceDialog.title),
+          content: Text(
+            el.noDeviceDialog.contents,
             textAlign: TextAlign.start,
           ),
           actions: [
             Button(
-              child: const Text('Close'),
+              child: Text(el.buttonLabel.close),
               onPressed: () => context.pop(),
             )
           ],
