@@ -38,9 +38,9 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 16),
           child: ConfigCustom(
-            title: el.homeTab.config.label,
+            title: el.homeLoc.config.label,
             child: Tooltip(
-              message: el.homeTab.config.new$,
+              message: el.homeLoc.config.new$,
               child: IconButton(
                   onPressed: _onNewConfigPressed,
                   icon: const Icon(FluentIcons.add)),
@@ -57,7 +57,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
                 child: ComboBox(
                   key: configKey,
                   isExpanded: true,
-                  placeholder: Text(el.homeTab.config.select),
+                  placeholder: Text(el.homeLoc.config.select),
                   value: selectedConfig,
                   onChanged: (value) {
                     ref.read(selectedConfigProvider.notifier).state = value;
@@ -78,7 +78,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
                   child: loading
                       ? const SizedBox.square(
                           dimension: 18, child: ProgressRing())
-                      : Text(el.homeTab.config.start),
+                      : Text(el.homeLoc.config.start),
                 ),
               )
             ],
@@ -99,11 +99,11 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
         barrierDismissible: true,
         context: context,
         builder: (context) => ContentDialog(
-          title: Text(el.noDeviceDialog.title),
-          content: Text(el.noDeviceDialog.contents),
+          title: Text(el.noDeviceDialogLoc.title),
+          content: Text(el.noDeviceDialogLoc.contents),
           actions: [
             Button(
-              child: Text(el.buttonLabel.close),
+              child: Text(el.buttonLabelLoc.close),
               onPressed: () => context.pop(),
             )
           ],
@@ -120,11 +120,11 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
         context: context,
         barrierDismissible: true,
         builder: (context) => ContentDialog(
-          title: Text(el.noConfigDialog.title),
-          content: Text(el.noConfigDialog.contents),
+          title: Text(el.noConfigDialogLoc.title),
+          content: Text(el.noConfigDialogLoc.contents),
           actions: [
             Button(
-              child: Text(el.buttonLabel.close),
+              child: Text(el.buttonLabelLoc.close),
               onPressed: () => context.pop(),
             )
           ],
@@ -142,11 +142,11 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
             context: context,
             barrierDismissible: true,
             builder: (context) => ContentDialog(
-              title: Text(el.noDeviceDialog.title),
-              content: Text(el.noDeviceDialog.contents),
+              title: Text(el.noDeviceDialogLoc.title),
+              content: Text(el.noDeviceDialogLoc.contents),
               actions: [
                 Button(
-                  child: Text(el.buttonLabel.close),
+                  child: Text(el.buttonLabelLoc.close),
                   onPressed: () => context.pop(),
                 )
               ],

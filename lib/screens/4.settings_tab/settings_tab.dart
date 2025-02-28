@@ -21,7 +21,7 @@ class _SettingsTabState extends ConsumerState<SettingsTab> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       header: Padding(
         padding: const EdgeInsets.only(top: 8.0),
-        child: PageHeader(title: Text(el.settings.title)),
+        child: PageHeader(title: Text(el.settingsLoc.title)),
       ),
       children: const [
         ThemeSection(),

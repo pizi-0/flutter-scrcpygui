@@ -27,30 +27,30 @@ enum Gender {
   other,
 }
 
-class HomeTab {
-  const HomeTab({
+class HomeLoc {
+  const HomeLoc({
     required this.title,
     required this.devices,
     required this.deviceTile,
     required this.config,
   });
-  factory HomeTab.fromJson(Map<String, dynamic> json) {
-    return HomeTab(
+  factory HomeLoc.fromJson(Map<String, dynamic> json) {
+    return HomeLoc(
       title: (json['title'] ?? '').toString(),
-      devices: HomeTabDevices.fromJson(
+      devices: HomeLocDevices.fromJson(
           (json['devices'] as Map).cast<String, dynamic>()),
-      deviceTile: HomeTabDeviceTile.fromJson(
+      deviceTile: HomeLocDeviceTile.fromJson(
           (json['device_tile'] as Map).cast<String, dynamic>()),
-      config: HomeTabConfig.fromJson(
+      config: HomeLocConfig.fromJson(
           (json['config'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
-  final HomeTabDevices devices;
+  final HomeLocDevices devices;
 
-  final HomeTabDeviceTile deviceTile;
+  final HomeLocDeviceTile deviceTile;
 
-  final HomeTabConfig config;
+  final HomeLocConfig config;
 
   Map<String, Object> get _content => {
         r'''title''': title,
@@ -86,12 +86,12 @@ class HomeTab {
   }
 }
 
-class HomeTabDevices {
-  const HomeTabDevices({
+class HomeLocDevices {
+  const HomeLocDevices({
     required this.label,
   });
-  factory HomeTabDevices.fromJson(Map<String, dynamic> json) {
-    return HomeTabDevices(
+  factory HomeLocDevices.fromJson(Map<String, dynamic> json) {
+    return HomeLocDevices(
       label: ({required String count}) => (json['label'] ?? '')
           .toString()
           .replaceAll(r'${count}', count)
@@ -131,25 +131,25 @@ class HomeTabDevices {
   }
 }
 
-class HomeTabDeviceTile {
-  const HomeTabDeviceTile({
+class HomeLocDeviceTile {
+  const HomeLocDeviceTile({
     required this.runningInstances,
     required this.context,
   });
-  factory HomeTabDeviceTile.fromJson(Map<String, dynamic> json) {
-    return HomeTabDeviceTile(
+  factory HomeLocDeviceTile.fromJson(Map<String, dynamic> json) {
+    return HomeLocDeviceTile(
       runningInstances: ({required String count}) =>
           (json['running_instances'] ?? '')
               .toString()
               .replaceAll(r'${count}', count)
               .replaceAll(_variableRegExp, ''),
-      context: HomeTabDeviceTileContext.fromJson(
+      context: HomeLocDeviceTileContext.fromJson(
           (json['context'] as Map).cast<String, dynamic>()),
     );
   }
   final String Function({required String count}) runningInstances;
 
-  final HomeTabDeviceTileContext context;
+  final HomeLocDeviceTileContext context;
 
   Map<String, Object> get _content => {
         r'''running_instances''': runningInstances,
@@ -183,14 +183,14 @@ class HomeTabDeviceTile {
   }
 }
 
-class HomeTabDeviceTileContext {
-  const HomeTabDeviceTileContext({
+class HomeLocDeviceTileContext {
+  const HomeLocDeviceTileContext({
     required this.disconnect,
     required this.toWireless,
     required this.killRunning,
   });
-  factory HomeTabDeviceTileContext.fromJson(Map<String, dynamic> json) {
-    return HomeTabDeviceTileContext(
+  factory HomeLocDeviceTileContext.fromJson(Map<String, dynamic> json) {
+    return HomeLocDeviceTileContext(
       disconnect: (json['disconnect'] ?? '').toString(),
       toWireless: (json['to_wireless'] ?? '').toString(),
       killRunning: (json['kill_running'] ?? '').toString(),
@@ -232,16 +232,16 @@ class HomeTabDeviceTileContext {
   }
 }
 
-class HomeTabConfig {
-  const HomeTabConfig({
+class HomeLocConfig {
+  const HomeLocConfig({
     required this.label,
     required this.new$,
     required this.select,
     required this.details,
     required this.start,
   });
-  factory HomeTabConfig.fromJson(Map<String, dynamic> json) {
-    return HomeTabConfig(
+  factory HomeLocConfig.fromJson(Map<String, dynamic> json) {
+    return HomeLocConfig(
       label: (json['label'] ?? '').toString(),
       new$: (json['new'] ?? '').toString(),
       select: (json['select'] ?? '').toString(),
@@ -289,13 +289,13 @@ class HomeTabConfig {
   }
 }
 
-class NoDeviceDialog {
-  const NoDeviceDialog({
+class NoDeviceDialogLoc {
+  const NoDeviceDialogLoc({
     required this.title,
     required this.contents,
   });
-  factory NoDeviceDialog.fromJson(Map<String, dynamic> json) {
-    return NoDeviceDialog(
+  factory NoDeviceDialogLoc.fromJson(Map<String, dynamic> json) {
+    return NoDeviceDialogLoc(
       title: (json['title'] ?? '').toString(),
       contents: (json['contents'] ?? '').toString(),
     );
@@ -334,13 +334,13 @@ class NoDeviceDialog {
   }
 }
 
-class NoConfigDialog {
-  const NoConfigDialog({
+class NoConfigDialogLoc {
+  const NoConfigDialogLoc({
     required this.title,
     required this.contents,
   });
-  factory NoConfigDialog.fromJson(Map<String, dynamic> json) {
-    return NoConfigDialog(
+  factory NoConfigDialogLoc.fromJson(Map<String, dynamic> json) {
+    return NoConfigDialogLoc(
       title: (json['title'] ?? '').toString(),
       contents: (json['contents'] ?? '').toString(),
     );
@@ -379,8 +379,8 @@ class NoConfigDialog {
   }
 }
 
-class DeviceSettingsScreen {
-  const DeviceSettingsScreen({
+class DeviceSettingsLoc {
+  const DeviceSettingsLoc({
     required this.title,
     required this.info,
     required this.refresh,
@@ -390,33 +390,33 @@ class DeviceSettingsScreen {
     required this.doNothing,
     required this.scrcpyInfo,
   });
-  factory DeviceSettingsScreen.fromJson(Map<String, dynamic> json) {
-    return DeviceSettingsScreen(
+  factory DeviceSettingsLoc.fromJson(Map<String, dynamic> json) {
+    return DeviceSettingsLoc(
       title: (json['title'] ?? '').toString(),
       info: (json['info'] ?? '').toString(),
       refresh: (json['refresh'] ?? '').toString(),
-      rename: DeviceSettingsScreenRename.fromJson(
+      rename: DeviceSettingsLocRename.fromJson(
           (json['rename'] as Map).cast<String, dynamic>()),
-      autoConnect: DeviceSettingsScreenAutoConnect.fromJson(
+      autoConnect: DeviceSettingsLocAutoConnect.fromJson(
           (json['auto_connect'] as Map).cast<String, dynamic>()),
-      onConnected: DeviceSettingsScreenOnConnected.fromJson(
+      onConnected: DeviceSettingsLocOnConnected.fromJson(
           (json['on_connected'] as Map).cast<String, dynamic>()),
       doNothing: (json['do_nothing'] ?? '').toString(),
-      scrcpyInfo: DeviceSettingsScreenScrcpyInfo.fromJson(
+      scrcpyInfo: DeviceSettingsLocScrcpyInfo.fromJson(
           (json['scrcpy_info'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
   final String info;
   final String refresh;
-  final DeviceSettingsScreenRename rename;
+  final DeviceSettingsLocRename rename;
 
-  final DeviceSettingsScreenAutoConnect autoConnect;
+  final DeviceSettingsLocAutoConnect autoConnect;
 
-  final DeviceSettingsScreenOnConnected onConnected;
+  final DeviceSettingsLocOnConnected onConnected;
 
   final String doNothing;
-  final DeviceSettingsScreenScrcpyInfo scrcpyInfo;
+  final DeviceSettingsLocScrcpyInfo scrcpyInfo;
 
   Map<String, Object> get _content => {
         r'''title''': title,
@@ -456,13 +456,13 @@ class DeviceSettingsScreen {
   }
 }
 
-class DeviceSettingsScreenRename {
-  const DeviceSettingsScreenRename({
+class DeviceSettingsLocRename {
+  const DeviceSettingsLocRename({
     required this.label,
     required this.info,
   });
-  factory DeviceSettingsScreenRename.fromJson(Map<String, dynamic> json) {
-    return DeviceSettingsScreenRename(
+  factory DeviceSettingsLocRename.fromJson(Map<String, dynamic> json) {
+    return DeviceSettingsLocRename(
       label: (json['label'] ?? '').toString(),
       info: (json['info'] ?? '').toString(),
     );
@@ -501,13 +501,13 @@ class DeviceSettingsScreenRename {
   }
 }
 
-class DeviceSettingsScreenAutoConnect {
-  const DeviceSettingsScreenAutoConnect({
+class DeviceSettingsLocAutoConnect {
+  const DeviceSettingsLocAutoConnect({
     required this.label,
     required this.info,
   });
-  factory DeviceSettingsScreenAutoConnect.fromJson(Map<String, dynamic> json) {
-    return DeviceSettingsScreenAutoConnect(
+  factory DeviceSettingsLocAutoConnect.fromJson(Map<String, dynamic> json) {
+    return DeviceSettingsLocAutoConnect(
       label: (json['label'] ?? '').toString(),
       info: (json['info'] ?? '').toString(),
     );
@@ -546,13 +546,13 @@ class DeviceSettingsScreenAutoConnect {
   }
 }
 
-class DeviceSettingsScreenOnConnected {
-  const DeviceSettingsScreenOnConnected({
+class DeviceSettingsLocOnConnected {
+  const DeviceSettingsLocOnConnected({
     required this.label,
     required this.info,
   });
-  factory DeviceSettingsScreenOnConnected.fromJson(Map<String, dynamic> json) {
-    return DeviceSettingsScreenOnConnected(
+  factory DeviceSettingsLocOnConnected.fromJson(Map<String, dynamic> json) {
+    return DeviceSettingsLocOnConnected(
       label: (json['label'] ?? '').toString(),
       info: (json['info'] ?? '').toString(),
     );
@@ -591,8 +591,8 @@ class DeviceSettingsScreenOnConnected {
   }
 }
 
-class DeviceSettingsScreenScrcpyInfo {
-  const DeviceSettingsScreenScrcpyInfo({
+class DeviceSettingsLocScrcpyInfo {
+  const DeviceSettingsLocScrcpyInfo({
     required this.fetching,
     required this.label,
     required this.name,
@@ -604,8 +604,8 @@ class DeviceSettingsScreenScrcpyInfo {
     required this.videoEnc,
     required this.audioEnc,
   });
-  factory DeviceSettingsScreenScrcpyInfo.fromJson(Map<String, dynamic> json) {
-    return DeviceSettingsScreenScrcpyInfo(
+  factory DeviceSettingsLocScrcpyInfo.fromJson(Map<String, dynamic> json) {
+    return DeviceSettingsLocScrcpyInfo(
       fetching: (json['fetching'] ?? '').toString(),
       label: (json['label'] ?? '').toString(),
       name: (json['name'] ?? '').toString(),
@@ -668,12 +668,12 @@ class DeviceSettingsScreenScrcpyInfo {
   }
 }
 
-class ConfigScreen {
-  const ConfigScreen({
+class ConfigScreenLoc {
+  const ConfigScreenLoc({
     required this.connectionLost,
   });
-  factory ConfigScreen.fromJson(Map<String, dynamic> json) {
-    return ConfigScreen(
+  factory ConfigScreenLoc.fromJson(Map<String, dynamic> json) {
+    return ConfigScreenLoc(
       connectionLost: (json['connection_lost'] ?? '').toString(),
     );
   }
@@ -709,20 +709,20 @@ class ConfigScreen {
   }
 }
 
-class LogScreen {
-  const LogScreen({
+class LogScreenLoc {
+  const LogScreenLoc({
     required this.title,
     required this.dialog,
   });
-  factory LogScreen.fromJson(Map<String, dynamic> json) {
-    return LogScreen(
+  factory LogScreenLoc.fromJson(Map<String, dynamic> json) {
+    return LogScreenLoc(
       title: (json['title'] ?? '').toString(),
-      dialog: LogScreenDialog.fromJson(
+      dialog: LogScreenLocDialog.fromJson(
           (json['dialog'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
-  final LogScreenDialog dialog;
+  final LogScreenLocDialog dialog;
 
   Map<String, Object> get _content => {
         r'''title''': title,
@@ -756,12 +756,12 @@ class LogScreen {
   }
 }
 
-class LogScreenDialog {
-  const LogScreenDialog({
+class LogScreenLocDialog {
+  const LogScreenLocDialog({
     required this.title,
   });
-  factory LogScreenDialog.fromJson(Map<String, dynamic> json) {
-    return LogScreenDialog(
+  factory LogScreenLocDialog.fromJson(Map<String, dynamic> json) {
+    return LogScreenLocDialog(
       title: (json['title'] ?? '').toString(),
     );
   }
@@ -3723,13 +3723,13 @@ class ConnectQrPair {
   }
 }
 
-class TestConfig {
-  const TestConfig({
+class TestConfigLoc {
+  const TestConfigLoc({
     required this.title,
     required this.preview,
   });
-  factory TestConfig.fromJson(Map<String, dynamic> json) {
-    return TestConfig(
+  factory TestConfigLoc.fromJson(Map<String, dynamic> json) {
+    return TestConfigLoc(
       title: (json['title'] ?? '').toString(),
       preview: (json['preview'] ?? '').toString(),
     );
@@ -3768,20 +3768,20 @@ class TestConfig {
   }
 }
 
-class ScrcpyManager {
-  const ScrcpyManager({
+class ScrcpyManagerLoc {
+  const ScrcpyManagerLoc({
     required this.title,
     required this.current,
   });
-  factory ScrcpyManager.fromJson(Map<String, dynamic> json) {
-    return ScrcpyManager(
+  factory ScrcpyManagerLoc.fromJson(Map<String, dynamic> json) {
+    return ScrcpyManagerLoc(
       title: (json['title'] ?? '').toString(),
-      current: ScrcpyManagerCurrent.fromJson(
+      current: ScrcpyManagerLocCurrent.fromJson(
           (json['current'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
-  final ScrcpyManagerCurrent current;
+  final ScrcpyManagerLocCurrent current;
 
   Map<String, Object> get _content => {
         r'''title''': title,
@@ -3815,26 +3815,26 @@ class ScrcpyManager {
   }
 }
 
-class ScrcpyManagerCurrent {
-  const ScrcpyManagerCurrent({
+class ScrcpyManagerLocCurrent {
+  const ScrcpyManagerLocCurrent({
     required this.label,
     required this.inUse,
     required this.latest,
     required this.exec,
   });
-  factory ScrcpyManagerCurrent.fromJson(Map<String, dynamic> json) {
-    return ScrcpyManagerCurrent(
+  factory ScrcpyManagerLocCurrent.fromJson(Map<String, dynamic> json) {
+    return ScrcpyManagerLocCurrent(
       label: (json['label'] ?? '').toString(),
       inUse: (json['in_use'] ?? '').toString(),
       latest: (json['latest'] ?? '').toString(),
-      exec: ScrcpyManagerCurrentExec.fromJson(
+      exec: ScrcpyManagerLocCurrentExec.fromJson(
           (json['exec'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
   final String inUse;
   final String latest;
-  final ScrcpyManagerCurrentExec exec;
+  final ScrcpyManagerLocCurrentExec exec;
 
   Map<String, Object> get _content => {
         r'''label''': label,
@@ -3870,13 +3870,13 @@ class ScrcpyManagerCurrent {
   }
 }
 
-class ScrcpyManagerCurrentExec {
-  const ScrcpyManagerCurrentExec({
+class ScrcpyManagerLocCurrentExec {
+  const ScrcpyManagerLocCurrentExec({
     required this.open,
     required this.warning,
   });
-  factory ScrcpyManagerCurrentExec.fromJson(Map<String, dynamic> json) {
-    return ScrcpyManagerCurrentExec(
+  factory ScrcpyManagerLocCurrentExec.fromJson(Map<String, dynamic> json) {
+    return ScrcpyManagerLocCurrentExec(
       open: (json['open'] ?? '').toString(),
       warning: (json['warning'] ?? '').toString(),
     );
@@ -3915,25 +3915,25 @@ class ScrcpyManagerCurrentExec {
   }
 }
 
-class Settings {
-  const Settings({
+class SettingsLoc {
+  const SettingsLoc({
     required this.title,
     required this.looks,
     required this.behaviour,
   });
-  factory Settings.fromJson(Map<String, dynamic> json) {
-    return Settings(
+  factory SettingsLoc.fromJson(Map<String, dynamic> json) {
+    return SettingsLoc(
       title: (json['title'] ?? '').toString(),
-      looks: SettingsLooks.fromJson(
+      looks: SettingsLocLooks.fromJson(
           (json['looks'] as Map).cast<String, dynamic>()),
-      behaviour: SettingsBehaviour.fromJson(
+      behaviour: SettingsLocBehaviour.fromJson(
           (json['behaviour'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
-  final SettingsLooks looks;
+  final SettingsLocLooks looks;
 
-  final SettingsBehaviour behaviour;
+  final SettingsLocBehaviour behaviour;
 
   Map<String, Object> get _content => {
         r'''title''': title,
@@ -3968,30 +3968,30 @@ class Settings {
   }
 }
 
-class SettingsLooks {
-  const SettingsLooks({
+class SettingsLocLooks {
+  const SettingsLocLooks({
     required this.label,
     required this.mode,
     required this.accentColor,
     required this.tintLevel,
   });
-  factory SettingsLooks.fromJson(Map<String, dynamic> json) {
-    return SettingsLooks(
+  factory SettingsLocLooks.fromJson(Map<String, dynamic> json) {
+    return SettingsLocLooks(
       label: (json['label'] ?? '').toString(),
-      mode: SettingsLooksMode.fromJson(
+      mode: SettingsLocLooksMode.fromJson(
           (json['mode'] as Map).cast<String, dynamic>()),
-      accentColor: SettingsLooksAccentColor.fromJson(
+      accentColor: SettingsLocLooksAccentColor.fromJson(
           (json['accent_color'] as Map).cast<String, dynamic>()),
-      tintLevel: SettingsLooksTintLevel.fromJson(
+      tintLevel: SettingsLocLooksTintLevel.fromJson(
           (json['tint_level'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
-  final SettingsLooksMode mode;
+  final SettingsLocLooksMode mode;
 
-  final SettingsLooksAccentColor accentColor;
+  final SettingsLocLooksAccentColor accentColor;
 
-  final SettingsLooksTintLevel tintLevel;
+  final SettingsLocLooksTintLevel tintLevel;
 
   Map<String, Object> get _content => {
         r'''label''': label,
@@ -4027,20 +4027,20 @@ class SettingsLooks {
   }
 }
 
-class SettingsLooksMode {
-  const SettingsLooksMode({
+class SettingsLocLooksMode {
+  const SettingsLocLooksMode({
     required this.label,
     required this.value,
   });
-  factory SettingsLooksMode.fromJson(Map<String, dynamic> json) {
-    return SettingsLooksMode(
+  factory SettingsLocLooksMode.fromJson(Map<String, dynamic> json) {
+    return SettingsLocLooksMode(
       label: (json['label'] ?? '').toString(),
-      value: SettingsLooksModeValue.fromJson(
+      value: SettingsLocLooksModeValue.fromJson(
           (json['value'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
-  final SettingsLooksModeValue value;
+  final SettingsLocLooksModeValue value;
 
   Map<String, Object> get _content => {
         r'''label''': label,
@@ -4074,14 +4074,14 @@ class SettingsLooksMode {
   }
 }
 
-class SettingsLooksModeValue {
-  const SettingsLooksModeValue({
+class SettingsLocLooksModeValue {
+  const SettingsLocLooksModeValue({
     required this.dark,
     required this.light,
     required this.system,
   });
-  factory SettingsLooksModeValue.fromJson(Map<String, dynamic> json) {
-    return SettingsLooksModeValue(
+  factory SettingsLocLooksModeValue.fromJson(Map<String, dynamic> json) {
+    return SettingsLocLooksModeValue(
       dark: (json['dark'] ?? '').toString(),
       light: (json['light'] ?? '').toString(),
       system: (json['system'] ?? '').toString(),
@@ -4123,12 +4123,12 @@ class SettingsLooksModeValue {
   }
 }
 
-class SettingsLooksAccentColor {
-  const SettingsLooksAccentColor({
+class SettingsLocLooksAccentColor {
+  const SettingsLocLooksAccentColor({
     required this.label,
   });
-  factory SettingsLooksAccentColor.fromJson(Map<String, dynamic> json) {
-    return SettingsLooksAccentColor(
+  factory SettingsLocLooksAccentColor.fromJson(Map<String, dynamic> json) {
+    return SettingsLocLooksAccentColor(
       label: (json['label'] ?? '').toString(),
     );
   }
@@ -4164,12 +4164,12 @@ class SettingsLooksAccentColor {
   }
 }
 
-class SettingsLooksTintLevel {
-  const SettingsLooksTintLevel({
+class SettingsLocLooksTintLevel {
+  const SettingsLocLooksTintLevel({
     required this.label,
   });
-  factory SettingsLooksTintLevel.fromJson(Map<String, dynamic> json) {
-    return SettingsLooksTintLevel(
+  factory SettingsLocLooksTintLevel.fromJson(Map<String, dynamic> json) {
+    return SettingsLocLooksTintLevel(
       label: (json['label'] ?? '').toString(),
     );
   }
@@ -4205,20 +4205,20 @@ class SettingsLooksTintLevel {
   }
 }
 
-class SettingsBehaviour {
-  const SettingsBehaviour({
+class SettingsLocBehaviour {
+  const SettingsLocBehaviour({
     required this.label,
     required this.minimize,
   });
-  factory SettingsBehaviour.fromJson(Map<String, dynamic> json) {
-    return SettingsBehaviour(
+  factory SettingsLocBehaviour.fromJson(Map<String, dynamic> json) {
+    return SettingsLocBehaviour(
       label: (json['label'] ?? '').toString(),
-      minimize: SettingsBehaviourMinimize.fromJson(
+      minimize: SettingsLocBehaviourMinimize.fromJson(
           (json['minimize'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
-  final SettingsBehaviourMinimize minimize;
+  final SettingsLocBehaviourMinimize minimize;
 
   Map<String, Object> get _content => {
         r'''label''': label,
@@ -4252,20 +4252,20 @@ class SettingsBehaviour {
   }
 }
 
-class SettingsBehaviourMinimize {
-  const SettingsBehaviourMinimize({
+class SettingsLocBehaviourMinimize {
+  const SettingsLocBehaviourMinimize({
     required this.label,
     required this.value,
   });
-  factory SettingsBehaviourMinimize.fromJson(Map<String, dynamic> json) {
-    return SettingsBehaviourMinimize(
+  factory SettingsLocBehaviourMinimize.fromJson(Map<String, dynamic> json) {
+    return SettingsLocBehaviourMinimize(
       label: (json['label'] ?? '').toString(),
-      value: SettingsBehaviourMinimizeValue.fromJson(
+      value: SettingsLocBehaviourMinimizeValue.fromJson(
           (json['value'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
-  final SettingsBehaviourMinimizeValue value;
+  final SettingsLocBehaviourMinimizeValue value;
 
   Map<String, Object> get _content => {
         r'''label''': label,
@@ -4299,13 +4299,14 @@ class SettingsBehaviourMinimize {
   }
 }
 
-class SettingsBehaviourMinimizeValue {
-  const SettingsBehaviourMinimizeValue({
+class SettingsLocBehaviourMinimizeValue {
+  const SettingsLocBehaviourMinimizeValue({
     required this.tray,
     required this.taskbar,
   });
-  factory SettingsBehaviourMinimizeValue.fromJson(Map<String, dynamic> json) {
-    return SettingsBehaviourMinimizeValue(
+  factory SettingsLocBehaviourMinimizeValue.fromJson(
+      Map<String, dynamic> json) {
+    return SettingsLocBehaviourMinimizeValue(
       tray: (json['tray'] ?? '').toString(),
       taskbar: (json['taskbar'] ?? '').toString(),
     );
@@ -4344,16 +4345,16 @@ class SettingsBehaviourMinimizeValue {
   }
 }
 
-class ButtonLabel {
-  const ButtonLabel({
+class ButtonLabelLoc {
+  const ButtonLabelLoc({
     required this.ok,
     required this.close,
     required this.cancel,
     required this.stop,
     required this.testConfig,
   });
-  factory ButtonLabel.fromJson(Map<String, dynamic> json) {
-    return ButtonLabel(
+  factory ButtonLabelLoc.fromJson(Map<String, dynamic> json) {
+    return ButtonLabelLoc(
       ok: (json['ok'] ?? '').toString(),
       close: (json['close'] ?? '').toString(),
       cancel: (json['cancel'] ?? '').toString(),
@@ -4401,12 +4402,12 @@ class ButtonLabel {
   }
 }
 
-class Status {
-  const Status({
+class StatusLoc {
+  const StatusLoc({
     required this.failed,
   });
-  factory Status.fromJson(Map<String, dynamic> json) {
-    return Status(
+  factory StatusLoc.fromJson(Map<String, dynamic> json) {
+    return StatusLoc(
       failed: (json['failed'] ?? '').toString(),
     );
   }
@@ -4442,14 +4443,14 @@ class Status {
   }
 }
 
-class Common {
-  const Common({
+class CommonLoc {
+  const CommonLoc({
     required this.default$,
     required this.yes,
     required this.no,
   });
-  factory Common.fromJson(Map<String, dynamic> json) {
-    return Common(
+  factory CommonLoc.fromJson(Map<String, dynamic> json) {
+    return CommonLoc(
       default$: (json['default'] ?? '').toString(),
       yes: (json['yes'] ?? '').toString(),
       no: (json['no'] ?? '').toString(),
@@ -4493,12 +4494,12 @@ class Common {
 
 class LocalizationMessages {
   LocalizationMessages({
-    required this.homeTab,
-    required this.noDeviceDialog,
-    required this.noConfigDialog,
-    required this.deviceSettingsScreen,
-    required this.configScreen,
-    required this.logScreen,
+    required this.homeLoc,
+    required this.noDeviceDialogLoc,
+    required this.noConfigDialogLoc,
+    required this.deviceSettingsLoc,
+    required this.configScreenLoc,
+    required this.logScreenLoc,
     required this.modeSection,
     required this.videoSection,
     required this.audioSection,
@@ -4506,27 +4507,27 @@ class LocalizationMessages {
     required this.windowSection,
     required this.addFlags,
     required this.connect,
-    required this.testConfig,
-    required this.scrcpyManager,
-    required this.settings,
-    required this.buttonLabel,
-    required this.status,
-    required this.common,
+    required this.testConfigLoc,
+    required this.scrcpyManagerLoc,
+    required this.settingsLoc,
+    required this.buttonLabelLoc,
+    required this.statusLoc,
+    required this.commonLoc,
   });
   factory LocalizationMessages.fromJson(Map<String, dynamic> json) {
     return LocalizationMessages(
-      homeTab:
-          HomeTab.fromJson((json['home_tab'] as Map).cast<String, dynamic>()),
-      noDeviceDialog: NoDeviceDialog.fromJson(
-          (json['no_device_dialog'] as Map).cast<String, dynamic>()),
-      noConfigDialog: NoConfigDialog.fromJson(
-          (json['no_config_dialog'] as Map).cast<String, dynamic>()),
-      deviceSettingsScreen: DeviceSettingsScreen.fromJson(
-          (json['device_settings_screen'] as Map).cast<String, dynamic>()),
-      configScreen: ConfigScreen.fromJson(
-          (json['config_screen'] as Map).cast<String, dynamic>()),
-      logScreen: LogScreen.fromJson(
-          (json['log_screen'] as Map).cast<String, dynamic>()),
+      homeLoc:
+          HomeLoc.fromJson((json['home_loc'] as Map).cast<String, dynamic>()),
+      noDeviceDialogLoc: NoDeviceDialogLoc.fromJson(
+          (json['no_device_dialog_loc'] as Map).cast<String, dynamic>()),
+      noConfigDialogLoc: NoConfigDialogLoc.fromJson(
+          (json['no_config_dialog_loc'] as Map).cast<String, dynamic>()),
+      deviceSettingsLoc: DeviceSettingsLoc.fromJson(
+          (json['device_settings_loc'] as Map).cast<String, dynamic>()),
+      configScreenLoc: ConfigScreenLoc.fromJson(
+          (json['config_screen_loc'] as Map).cast<String, dynamic>()),
+      logScreenLoc: LogScreenLoc.fromJson(
+          (json['log_screen_loc'] as Map).cast<String, dynamic>()),
       modeSection: ModeSection.fromJson(
           (json['mode_section'] as Map).cast<String, dynamic>()),
       videoSection: VideoSection.fromJson(
@@ -4541,29 +4542,31 @@ class LocalizationMessages {
           AddFlags.fromJson((json['add_flags'] as Map).cast<String, dynamic>()),
       connect:
           Connect.fromJson((json['connect'] as Map).cast<String, dynamic>()),
-      testConfig: TestConfig.fromJson(
-          (json['test_config'] as Map).cast<String, dynamic>()),
-      scrcpyManager: ScrcpyManager.fromJson(
-          (json['scrcpy_manager'] as Map).cast<String, dynamic>()),
-      settings:
-          Settings.fromJson((json['settings'] as Map).cast<String, dynamic>()),
-      buttonLabel: ButtonLabel.fromJson(
-          (json['button_label'] as Map).cast<String, dynamic>()),
-      status: Status.fromJson((json['status'] as Map).cast<String, dynamic>()),
-      common: Common.fromJson((json['common'] as Map).cast<String, dynamic>()),
+      testConfigLoc: TestConfigLoc.fromJson(
+          (json['test_config_loc'] as Map).cast<String, dynamic>()),
+      scrcpyManagerLoc: ScrcpyManagerLoc.fromJson(
+          (json['scrcpy_manager_loc'] as Map).cast<String, dynamic>()),
+      settingsLoc: SettingsLoc.fromJson(
+          (json['settings_loc'] as Map).cast<String, dynamic>()),
+      buttonLabelLoc: ButtonLabelLoc.fromJson(
+          (json['button_label_loc'] as Map).cast<String, dynamic>()),
+      statusLoc: StatusLoc.fromJson(
+          (json['status_loc'] as Map).cast<String, dynamic>()),
+      commonLoc: CommonLoc.fromJson(
+          (json['common_loc'] as Map).cast<String, dynamic>()),
     );
   }
-  final HomeTab homeTab;
+  final HomeLoc homeLoc;
 
-  final NoDeviceDialog noDeviceDialog;
+  final NoDeviceDialogLoc noDeviceDialogLoc;
 
-  final NoConfigDialog noConfigDialog;
+  final NoConfigDialogLoc noConfigDialogLoc;
 
-  final DeviceSettingsScreen deviceSettingsScreen;
+  final DeviceSettingsLoc deviceSettingsLoc;
 
-  final ConfigScreen configScreen;
+  final ConfigScreenLoc configScreenLoc;
 
-  final LogScreen logScreen;
+  final LogScreenLoc logScreenLoc;
 
   final ModeSection modeSection;
 
@@ -4579,25 +4582,25 @@ class LocalizationMessages {
 
   final Connect connect;
 
-  final TestConfig testConfig;
+  final TestConfigLoc testConfigLoc;
 
-  final ScrcpyManager scrcpyManager;
+  final ScrcpyManagerLoc scrcpyManagerLoc;
 
-  final Settings settings;
+  final SettingsLoc settingsLoc;
 
-  final ButtonLabel buttonLabel;
+  final ButtonLabelLoc buttonLabelLoc;
 
-  final Status status;
+  final StatusLoc statusLoc;
 
-  final Common common;
+  final CommonLoc commonLoc;
 
   Map<String, Object> get _content => {
-        r'''home_tab''': homeTab,
-        r'''no_device_dialog''': noDeviceDialog,
-        r'''no_config_dialog''': noConfigDialog,
-        r'''device_settings_screen''': deviceSettingsScreen,
-        r'''config_screen''': configScreen,
-        r'''log_screen''': logScreen,
+        r'''home_loc''': homeLoc,
+        r'''no_device_dialog_loc''': noDeviceDialogLoc,
+        r'''no_config_dialog_loc''': noConfigDialogLoc,
+        r'''device_settings_loc''': deviceSettingsLoc,
+        r'''config_screen_loc''': configScreenLoc,
+        r'''log_screen_loc''': logScreenLoc,
         r'''mode_section''': modeSection,
         r'''video_section''': videoSection,
         r'''audio_section''': audioSection,
@@ -4605,12 +4608,12 @@ class LocalizationMessages {
         r'''window_section''': windowSection,
         r'''add_flags''': addFlags,
         r'''connect''': connect,
-        r'''test_config''': testConfig,
-        r'''scrcpy_manager''': scrcpyManager,
-        r'''settings''': settings,
-        r'''button_label''': buttonLabel,
-        r'''status''': status,
-        r'''common''': common,
+        r'''test_config_loc''': testConfigLoc,
+        r'''scrcpy_manager_loc''': scrcpyManagerLoc,
+        r'''settings_loc''': settingsLoc,
+        r'''button_label_loc''': buttonLabelLoc,
+        r'''status_loc''': statusLoc,
+        r'''common_loc''': commonLoc,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -4641,20 +4644,20 @@ class LocalizationMessages {
 }
 
 final LocalizationMessages en = LocalizationMessages(
-  homeTab: HomeTab(
+  homeLoc: HomeLoc(
     title: 'Home',
-    devices: HomeTabDevices(
+    devices: HomeLocDevices(
       label: ({required String count}) => '''Connected devices (${count})''',
     ),
-    deviceTile: HomeTabDeviceTile(
+    deviceTile: HomeLocDeviceTile(
       runningInstances: ({required String count}) => '''Running (${count})''',
-      context: HomeTabDeviceTileContext(
+      context: HomeLocDeviceTileContext(
         disconnect: 'Disconnect',
         toWireless: 'To wireless',
         killRunning: 'Kill running instances',
       ),
     ),
-    config: HomeTabConfig(
+    config: HomeLocConfig(
       label: 'Start scrcpy',
       new$: 'Create new config',
       select: 'Select a config',
@@ -4662,34 +4665,34 @@ final LocalizationMessages en = LocalizationMessages(
       start: 'Start',
     ),
   ),
-  noDeviceDialog: NoDeviceDialog(
+  noDeviceDialogLoc: NoDeviceDialogLoc(
     title: 'Device',
     contents:
         '''No device selected. \nSelect a device to edit scrcpy config.''',
   ),
-  noConfigDialog: NoConfigDialog(
+  noConfigDialogLoc: NoConfigDialogLoc(
     title: 'Config',
     contents: '''No config selected.\nSelect a scrcpy config to start.''',
   ),
-  deviceSettingsScreen: DeviceSettingsScreen(
+  deviceSettingsLoc: DeviceSettingsLoc(
     title: 'Settings',
     info: 'Info',
     refresh: 'Refresh info',
-    rename: DeviceSettingsScreenRename(
+    rename: DeviceSettingsLocRename(
       label: 'Rename',
       info: 'Press [Enter] to apply name',
     ),
-    autoConnect: DeviceSettingsScreenAutoConnect(
+    autoConnect: DeviceSettingsLocAutoConnect(
       label: 'Auto connect',
       info: 'Auto connect wireless device',
     ),
-    onConnected: DeviceSettingsScreenOnConnected(
+    onConnected: DeviceSettingsLocOnConnected(
       label: 'On connected',
       info:
           'Start (1) scrcpy instance with selected config on device connection',
     ),
     doNothing: 'Do nothing',
-    scrcpyInfo: DeviceSettingsScreenScrcpyInfo(
+    scrcpyInfo: DeviceSettingsLocScrcpyInfo(
       fetching: 'Getting scrcpy info',
       label: 'Scrcpy info',
       name: 'Name',
@@ -4702,12 +4705,12 @@ final LocalizationMessages en = LocalizationMessages(
       audioEnc: 'Audio encoders',
     ),
   ),
-  configScreen: ConfigScreen(
+  configScreenLoc: ConfigScreenLoc(
     connectionLost: 'Device connection lost',
   ),
-  logScreen: LogScreen(
+  logScreenLoc: LogScreenLoc(
     title: 'Test log',
-    dialog: LogScreenDialog(
+    dialog: LogScreenLocDialog(
       title: 'Command',
     ),
   ),
@@ -4934,63 +4937,63 @@ final LocalizationMessages en = LocalizationMessages(
       pair: 'Pair device',
     ),
   ),
-  testConfig: TestConfig(
+  testConfigLoc: TestConfigLoc(
     title: 'Test config',
     preview: 'Command preview',
   ),
-  scrcpyManager: ScrcpyManager(
+  scrcpyManagerLoc: ScrcpyManagerLoc(
     title: 'Scrcpy Manager',
-    current: ScrcpyManagerCurrent(
+    current: ScrcpyManagerLocCurrent(
       label: 'Current',
       inUse: 'In-use',
       latest: 'latest',
-      exec: ScrcpyManagerCurrentExec(
+      exec: ScrcpyManagerLocCurrentExec(
         open: 'Open executable location',
         warning: 'Modify with care',
       ),
     ),
   ),
-  settings: Settings(
+  settingsLoc: SettingsLoc(
     title: 'Settings',
-    looks: SettingsLooks(
+    looks: SettingsLocLooks(
       label: 'Looks',
-      mode: SettingsLooksMode(
+      mode: SettingsLocLooksMode(
         label: 'Theme mode',
-        value: SettingsLooksModeValue(
+        value: SettingsLocLooksModeValue(
           dark: 'Dark',
           light: 'Light',
           system: 'System',
         ),
       ),
-      accentColor: SettingsLooksAccentColor(
+      accentColor: SettingsLocLooksAccentColor(
         label: 'Accent color',
       ),
-      tintLevel: SettingsLooksTintLevel(
+      tintLevel: SettingsLocLooksTintLevel(
         label: 'Tint level',
       ),
     ),
-    behaviour: SettingsBehaviour(
+    behaviour: SettingsLocBehaviour(
       label: 'App behaviour',
-      minimize: SettingsBehaviourMinimize(
+      minimize: SettingsLocBehaviourMinimize(
         label: 'Minimize',
-        value: SettingsBehaviourMinimizeValue(
+        value: SettingsLocBehaviourMinimizeValue(
           tray: 'to tray',
           taskbar: 'to taskbar',
         ),
       ),
     ),
   ),
-  buttonLabel: ButtonLabel(
+  buttonLabelLoc: ButtonLabelLoc(
     ok: '',
     close: 'Close',
     cancel: 'Cancel',
     stop: 'Stop',
     testConfig: 'Test config',
   ),
-  status: Status(
+  statusLoc: StatusLoc(
     failed: 'Failed',
   ),
-  common: Common(
+  commonLoc: CommonLoc(
     default$: 'Default',
     yes: 'Yes',
     no: 'No',

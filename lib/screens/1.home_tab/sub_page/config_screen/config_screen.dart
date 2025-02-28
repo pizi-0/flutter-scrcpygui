@@ -186,7 +186,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
               body: dev.info == null
                   ? const Center(child: CupertinoActivityIndicator())
                   : selectedDevice == null
-                      ? Text(el.configScreen.connectionLost)
+                      ? Text(el.configScreenLoc.connectionLost)
                       : ScaffoldPage.scrollable(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 2),

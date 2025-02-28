@@ -84,7 +84,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                           backgroundColor: theme.selectionColor,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 4, vertical: 2),
-                          child: Text(el.homeTab.deviceTile.runningInstances(
+                          child: Text(el.homeLoc.deviceTile.runningInstances(
                                   count: '${deviceInstance.length}'))
                               .fontSize(10)
                               .textColor(Colors.white),
@@ -152,7 +152,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
             if (hasRunningInstance)
               MenuFlyoutSubItem(
                 leading: const Icon(FluentIcons.cancel),
-                text: Text(el.homeTab.deviceTile.context.killRunning),
+                text: Text(el.homeLoc.deviceTile.context.killRunning),
                 items: (context) => deviceInstance
                     .map(
                       (i) => MenuFlyoutItem(
@@ -170,7 +170,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
             if (isWireless)
               MenuFlyoutItem(
                   leading: const Icon(FluentIcons.remove_link),
-                  text: Text(el.homeTab.deviceTile.context.disconnect),
+                  text: Text(el.homeLoc.deviceTile.context.disconnect),
                   onPressed: () async {
                     loading = true;
                     setState(() {});
@@ -183,8 +183,8 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                     } on Exception catch (e) {
                       debugPrint(e.toString());
                       displayInfoBar(context,
-                          builder: (context, close) =>
-                              Card(child: InfoLabel(label: el.status.failed)));
+                          builder: (context, close) => Card(
+                              child: InfoLabel(label: el.statusLoc.failed)));
                     }
 
                     if (mounted) {
@@ -195,7 +195,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
             if (!isWireless)
               MenuFlyoutItem(
                 leading: const Icon(FluentIcons.wifi),
-                text: Text(el.homeTab.deviceTile.context.toWireless),
+                text: Text(el.homeLoc.deviceTile.context.toWireless),
                 onPressed: () async {
                   loading = true;
                   setState(() {});
@@ -213,7 +213,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                     debugPrint(e.toString());
                     displayInfoBar(context,
                         builder: (context, close) =>
-                            Card(child: InfoLabel(label: el.status.failed)));
+                            Card(child: InfoLabel(label: el.statusLoc.failed)));
                   }
 
                   if (mounted) {

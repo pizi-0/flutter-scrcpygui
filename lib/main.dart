@@ -3,6 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/main_screen.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
@@ -73,6 +74,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     final looks = ref.watch(settingsProvider.select((sett) => sett.looks));
 
     return FluentApp.router(
+      supportedLocales: supportedLocales,
       routeInformationParser: _router.routeInformationParser,
       routerDelegate: _router.routerDelegate,
       routeInformationProvider: _router.routeInformationProvider,

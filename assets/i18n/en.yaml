@@ -1,6 +1,6 @@
 
 # home tab
-home_tab:
+home_loc:
   title: Home
   devices: 
     label: Connected devices (${count})
@@ -21,16 +21,16 @@ home_tab:
     start: Start
 
 # error dialog
-no_device_dialog:
+no_device_dialog_loc:
   title: Device
   contents: No device selected. \nSelect a device to edit scrcpy config.
 
-no_config_dialog:
+no_config_dialog_loc:
   title: Config
   contents: No config selected.\nSelect a scrcpy config to start.
 
 ## home_tab > device settings screen
-device_settings_screen: 
+device_settings_loc: 
   title: Settings
   info: Info
   refresh: Refresh info
@@ -59,11 +59,11 @@ device_settings_screen:
   
 
 ## home_tab > config screen
-config_screen:
+config_screen_loc:
   connection_lost: Device connection lost
 
 ## home_tab > config screen > test config
-log_screen: 
+log_screen_loc: 
   title: Test log
   dialog:
     title: Command
@@ -259,13 +259,13 @@ connect:
 
 
 ### preview and test section
-test_config:
+test_config_loc:
   title: Test config
   preview: Command preview
 
 
 #scrcpy manager tab
-scrcpy_manager:
+scrcpy_manager_loc:
   title: Scrcpy Manager
   current:
     label: Current
@@ -278,7 +278,7 @@ scrcpy_manager:
 
 
 #settings tab
-settings:
+settings_loc:
   title: Settings
   looks:
     label: Looks
@@ -301,7 +301,7 @@ settings:
         tray: to tray
         taskbar: to taskbar
 
-button_label:
+button_label_loc:
   ok: ''
   close: Close
   cancel: Cancel
@@ -309,11 +309,11 @@ button_label:
   test_config: Test config
 
 # status 
-status: 
+status_loc: 
   failed: Failed
 
 # common
-common:
+common_loc:
   default: Default
   yes: Yes
   no: No

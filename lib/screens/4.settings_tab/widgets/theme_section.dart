@@ -22,14 +22,15 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
       spacing: 8,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ConfigCustom(title: el.settings.looks.label, child: const SizedBox()),
+        ConfigCustom(
+            title: el.settingsLoc.looks.label, child: const SizedBox()),
         Card(
           padding: EdgeInsets.zero,
           child: Column(
             children: [
               ConfigCustom(
                 childBackgroundColor: Colors.transparent,
-                title: el.settings.looks.mode.label,
+                title: el.settingsLoc.looks.mode.label,
                 child: ComboBox(
                   value: looks.themeMode,
                   onChanged: (ThemeMode? mode) async {
@@ -39,15 +40,15 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                   items: [
                     ComboBoxItem(
                       value: ThemeMode.system,
-                      child: Text(el.settings.looks.mode.value.system),
+                      child: Text(el.settingsLoc.looks.mode.value.system),
                     ),
                     ComboBoxItem(
                       value: ThemeMode.light,
-                      child: Text(el.settings.looks.mode.value.light),
+                      child: Text(el.settingsLoc.looks.mode.value.light),
                     ),
                     ComboBoxItem(
                       value: ThemeMode.dark,
-                      child: Text(el.settings.looks.mode.value.dark),
+                      child: Text(el.settingsLoc.looks.mode.value.dark),
                     ),
                   ],
                 ),
@@ -55,7 +56,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               const Divider(),
               ConfigCustom(
                 childBackgroundColor: Colors.transparent,
-                title: el.settings.looks.accentColor.label,
+                title: el.settingsLoc.looks.accentColor.label,
                 child: Row(
                   children: [
                     IconButton(
@@ -113,11 +114,11 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               const Divider(),
               ConfigCustom(
                 childBackgroundColor: Colors.transparent,
-                title: el.settings.looks.tintLevel.label,
+                title: el.settingsLoc.looks.tintLevel.label,
                 child: Row(
                   children: [
                     Tooltip(
-                      message: '${el.common.default$}: 90',
+                      message: '${el.commonLoc.default$}: 90',
                       child: IconButton(
                         icon: const Icon(FluentIcons.reset),
                         onPressed: () async {

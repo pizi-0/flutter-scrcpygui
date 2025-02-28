@@ -84,7 +84,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
 
     return NavigationView(
       appBar: NavigationAppBar(
-        title: Text('${el.deviceSettingsScreen.title} / ${dev.name}')
+        title: Text('${el.deviceSettingsLoc.title} / ${dev.name}')
             .textStyle(theme.typography.body),
         leading: IconButton(
           icon: const Padding(
@@ -103,7 +103,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
               spacing: 8,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(el.deviceSettingsScreen.info),
+                Text(el.deviceSettingsLoc.info),
                 Checkbox(
                   checked: showInfo,
                   onChanged: (v) {
@@ -139,7 +139,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                     slivers: [
                       SliverToBoxAdapter(
                           child: ConfigCustom(
-                              title: el.deviceSettingsScreen.title,
+                              title: el.deviceSettingsLoc.title,
                               child: const SizedBox())),
                       SliverToBoxAdapter(
                         child: Card(
@@ -147,8 +147,8 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                           child: Column(
                             children: [
                               ConfigCustom(
-                                title: el.deviceSettingsScreen.rename.label,
-                                subtitle: el.deviceSettingsScreen.rename.info,
+                                title: el.deviceSettingsLoc.rename.label,
+                                subtitle: el.deviceSettingsLoc.rename.info,
                                 showinfo: showInfo,
                                 child: SizedBox(
                                   width: 180,
@@ -164,10 +164,9 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                               if (isWireless) const Divider(),
                               if (isWireless)
                                 ConfigCustom(
-                                  title:
-                                      el.deviceSettingsScreen.autoConnect.label,
+                                  title: el.deviceSettingsLoc.autoConnect.label,
                                   subtitle:
-                                      el.deviceSettingsScreen.autoConnect.info,
+                                      el.deviceSettingsLoc.autoConnect.info,
                                   showinfo: showInfo,
                                   child: ToggleSwitch(
                                     checked: autoConnect,
@@ -176,21 +175,19 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                                 ),
                               const Divider(),
                               ConfigCustom(
-                                title:
-                                    el.deviceSettingsScreen.onConnected.label,
-                                subtitle:
-                                    el.deviceSettingsScreen.onConnected.info,
+                                title: el.deviceSettingsLoc.onConnected.label,
+                                subtitle: el.deviceSettingsLoc.onConnected.info,
                                 showinfo: showInfo,
                                 child: ComboBox(
                                     placeholder:
-                                        Text(el.deviceSettingsScreen.doNothing),
+                                        Text(el.deviceSettingsLoc.doNothing),
                                     value: ddValue,
                                     onChanged: _onConnectConfig,
                                     items: [
                                       ComboBoxItem(
                                         value: DO_NOTHING,
                                         child: Text(
-                                            el.deviceSettingsScreen.doNothing),
+                                            el.deviceSettingsLoc.doNothing),
                                       ),
                                       ...allconfigs.map((c) => ComboBoxItem(
                                           value: c.id,
@@ -212,8 +209,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                               children: [
                                 const SizedBox.square(
                                     dimension: 18, child: ProgressRing()),
-                                Text(
-                                    el.deviceSettingsScreen.scrcpyInfo.fetching)
+                                Text(el.deviceSettingsLoc.scrcpyInfo.fetching)
                               ],
                             ),
                           ),
@@ -225,13 +221,12 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                             child: Column(
                               children: [
                                 ConfigCustom(
-                                  title:
-                                      el.deviceSettingsScreen.scrcpyInfo.label,
+                                  title: el.deviceSettingsLoc.scrcpyInfo.label,
                                   showinfo: showInfo,
                                   subtitle:
                                       '--list-displays --list-cameras --list-encoders --list-apps',
                                   child: Tooltip(
-                                    message: el.deviceSettingsScreen.refresh,
+                                    message: el.deviceSettingsLoc.refresh,
                                     child: IconButton(
                                       icon: const Icon(FluentIcons.refresh),
                                       onPressed: _getScrcpyInfo,

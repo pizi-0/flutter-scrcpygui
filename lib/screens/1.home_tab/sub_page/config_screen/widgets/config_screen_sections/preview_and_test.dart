@@ -71,7 +71,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
       mainAxisSize: MainAxisSize.min,
       children: [
         ConfigCustom(
-            title: el.testConfig.title,
+            title: el.testConfigLoc.title,
             child: const Icon(FluentIcons.test_beaker)),
         Card(
           child: Column(
@@ -82,7 +82,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(el.testConfig.preview),
+                  Text(el.testConfigLoc.preview),
                   CopyButton(
                     ref: ref,
                     selectedConfig: selectedConfig,
@@ -139,9 +139,9 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                         setState(() {});
                       },
                       child: !isTestRunning
-                          ? Text(el.buttonLabel.testConfig)
+                          ? Text(el.buttonLabelLoc.testConfig)
                               .textColor(Colors.white)
-                          : Text(el.buttonLabel.stop)
+                          : Text(el.buttonLabelLoc.stop)
                               .textColor(Colors.white)
                               .bold(),
                     ),

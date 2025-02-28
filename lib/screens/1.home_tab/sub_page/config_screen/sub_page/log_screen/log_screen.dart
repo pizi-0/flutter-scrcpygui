@@ -52,7 +52,7 @@ class _LogScreenState extends ConsumerState<LogScreen> {
 
     return NavigationView(
       appBar: NavigationAppBar(
-        title: Text(el.logScreen.title),
+        title: Text(el.logScreenLoc.title),
         actions: IconButton(
           icon: const Padding(
             padding: EdgeInsets.all(8.0),
@@ -63,12 +63,12 @@ class _LogScreenState extends ConsumerState<LogScreen> {
               context: context,
               barrierDismissible: true,
               builder: (context) => ContentDialog(
-                title: Text(el.logScreen.dialog.title),
+                title: Text(el.logScreenLoc.dialog.title),
                 content: Text(
                     'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig!, selectedDevice!, customName: '[TEST] ${selectedConfig.configName}').join(' ')}'),
                 actions: [
                   Button(
-                    child: Text(el.buttonLabel.close),
+                    child: Text(el.buttonLabelLoc.close),
                     onPressed: () => context.pop(),
                   ),
                 ],

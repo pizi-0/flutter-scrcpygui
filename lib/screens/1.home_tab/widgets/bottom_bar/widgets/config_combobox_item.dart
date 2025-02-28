@@ -26,7 +26,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
     return Row(
       children: [
         Tooltip(
-          message: el.homeTab.config.details,
+          message: el.homeLoc.config.details,
           child: IconButton(
             icon: const Icon(FluentIcons.info),
             onPressed: _onDetailPressed,
@@ -97,14 +97,14 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
         barrierDismissible: true,
         context: context,
         builder: (context) => ContentDialog(
-          title: Text(el.noDeviceDialog.title),
+          title: Text(el.noDeviceDialogLoc.title),
           content: Text(
-            el.noDeviceDialog.contents,
+            el.noDeviceDialogLoc.contents,
             textAlign: TextAlign.start,
           ),
           actions: [
             Button(
-              child: Text(el.buttonLabel.close),
+              child: Text(el.buttonLabelLoc.close),
               onPressed: () => context.pop(),
             )
           ],

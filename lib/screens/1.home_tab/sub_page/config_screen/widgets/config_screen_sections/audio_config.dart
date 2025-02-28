@@ -101,11 +101,11 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
       items: [
         ComboBoxItem(
           value: true,
-          child: Text(el.common.yes),
+          child: Text(el.commonLoc.yes),
         ),
         ComboBoxItem(
           value: false,
-          child: Text(el.common.no),
+          child: Text(el.commonLoc.no),
         ),
       ],
       label: el.audioSection.duplicate.label,
@@ -208,7 +208,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
           items: [
             ComboBoxItem(
               value: 'default',
-              child: Text(el.common.default$),
+              child: Text(el.commonLoc.default$),
             ),
             if (selectedConfig.audioOptions.audioCodec != 'raw')
               ...info.audioEncoder

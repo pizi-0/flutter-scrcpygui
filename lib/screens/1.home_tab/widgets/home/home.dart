@@ -22,7 +22,7 @@ class Home extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ConfigCustom(
-              title: el.homeTab.devices.label(count: '${connected.length}')),
+              title: el.homeLoc.devices.label(count: '${connected.length}')),
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(0),

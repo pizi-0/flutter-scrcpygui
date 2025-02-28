@@ -22,7 +22,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
       header: Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: PageHeader(
-          title: Text(el.homeTab.title),
+          title: Text(el.homeLoc.title),
         ),
       ),
       content: const Home(),
