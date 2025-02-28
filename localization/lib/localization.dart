@@ -3529,30 +3529,30 @@ class AddFlags {
   }
 }
 
-class Connect {
-  const Connect({
+class ConnectLoc {
+  const ConnectLoc({
     required this.title,
     required this.withIp,
     required this.withMdns,
     required this.qrPair,
   });
-  factory Connect.fromJson(Map<String, dynamic> json) {
-    return Connect(
+  factory ConnectLoc.fromJson(Map<String, dynamic> json) {
+    return ConnectLoc(
       title: (json['title'] ?? '').toString(),
-      withIp: ConnectWithIp.fromJson(
+      withIp: ConnectLocWithIp.fromJson(
           (json['with_ip'] as Map).cast<String, dynamic>()),
-      withMdns: ConnectWithMdns.fromJson(
+      withMdns: ConnectLocWithMdns.fromJson(
           (json['with_mdns'] as Map).cast<String, dynamic>()),
-      qrPair: ConnectQrPair.fromJson(
+      qrPair: ConnectLocQrPair.fromJson(
           (json['qr_pair'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
-  final ConnectWithIp withIp;
+  final ConnectLocWithIp withIp;
 
-  final ConnectWithMdns withMdns;
+  final ConnectLocWithMdns withMdns;
 
-  final ConnectQrPair qrPair;
+  final ConnectLocQrPair qrPair;
 
   Map<String, Object> get _content => {
         r'''title''': title,
@@ -3588,22 +3588,30 @@ class Connect {
   }
 }
 
-class ConnectWithIp {
-  const ConnectWithIp({
+class ConnectLocWithIp {
+  const ConnectLocWithIp({
     required this.label,
     required this.connect,
+    required this.connected,
   });
-  factory ConnectWithIp.fromJson(Map<String, dynamic> json) {
-    return ConnectWithIp(
+  factory ConnectLocWithIp.fromJson(Map<String, dynamic> json) {
+    return ConnectLocWithIp(
       label: (json['label'] ?? '').toString(),
       connect: (json['connect'] ?? '').toString(),
+      connected: ({required String to}) => (json['connected'] ?? '')
+          .toString()
+          .replaceAll(r'${to}', to)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String label;
   final String connect;
+  final String Function({required String to}) connected;
+
   Map<String, Object> get _content => {
         r'''label''': label,
         r'''connect''': connect,
+        r'''connected''': connected,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -3633,12 +3641,12 @@ class ConnectWithIp {
   }
 }
 
-class ConnectWithMdns {
-  const ConnectWithMdns({
+class ConnectLocWithMdns {
+  const ConnectLocWithMdns({
     required this.label,
   });
-  factory ConnectWithMdns.fromJson(Map<String, dynamic> json) {
-    return ConnectWithMdns(
+  factory ConnectLocWithMdns.fromJson(Map<String, dynamic> json) {
+    return ConnectLocWithMdns(
       label: ({required String count}) => (json['label'] ?? '')
           .toString()
           .replaceAll(r'${count}', count)
@@ -3678,22 +3686,77 @@ class ConnectWithMdns {
   }
 }
 
-class ConnectQrPair {
-  const ConnectQrPair({
+class ConnectLocQrPair {
+  const ConnectLocQrPair({
     required this.label,
     required this.pair,
+    required this.status,
   });
-  factory ConnectQrPair.fromJson(Map<String, dynamic> json) {
-    return ConnectQrPair(
+  factory ConnectLocQrPair.fromJson(Map<String, dynamic> json) {
+    return ConnectLocQrPair(
       label: (json['label'] ?? '').toString(),
       pair: (json['pair'] ?? '').toString(),
+      status: ConnectLocQrPairStatus.fromJson(
+          (json['status'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
   final String pair;
+  final ConnectLocQrPairStatus status;
+
   Map<String, Object> get _content => {
         r'''label''': label,
         r'''pair''': pair,
+        r'''status''': status,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ConnectLocQrPairStatus {
+  const ConnectLocQrPairStatus({
+    required this.cancelled,
+    required this.success,
+    required this.failed,
+  });
+  factory ConnectLocQrPairStatus.fromJson(Map<String, dynamic> json) {
+    return ConnectLocQrPairStatus(
+      cancelled: (json['cancelled'] ?? '').toString(),
+      success: (json['success'] ?? '').toString(),
+      failed: (json['failed'] ?? '').toString(),
+    );
+  }
+  final String cancelled;
+  final String success;
+  final String failed;
+  Map<String, Object> get _content => {
+        r'''cancelled''': cancelled,
+        r'''success''': success,
+        r'''failed''': failed,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -3771,21 +3834,43 @@ class TestConfigLoc {
 class ScrcpyManagerLoc {
   const ScrcpyManagerLoc({
     required this.title,
+    required this.check,
     required this.current,
+    required this.exec,
+    required this.infoPopup,
+    required this.updater,
   });
   factory ScrcpyManagerLoc.fromJson(Map<String, dynamic> json) {
     return ScrcpyManagerLoc(
       title: (json['title'] ?? '').toString(),
+      check: (json['check'] ?? '').toString(),
       current: ScrcpyManagerLocCurrent.fromJson(
           (json['current'] as Map).cast<String, dynamic>()),
+      exec: ScrcpyManagerLocExec.fromJson(
+          (json['exec'] as Map).cast<String, dynamic>()),
+      infoPopup: ScrcpyManagerLocInfoPopup.fromJson(
+          (json['info_popup'] as Map).cast<String, dynamic>()),
+      updater: ScrcpyManagerLocUpdater.fromJson(
+          (json['updater'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
+  final String check;
   final ScrcpyManagerLocCurrent current;
+
+  final ScrcpyManagerLocExec exec;
+
+  final ScrcpyManagerLocInfoPopup infoPopup;
+
+  final ScrcpyManagerLocUpdater updater;
 
   Map<String, Object> get _content => {
         r'''title''': title,
+        r'''check''': check,
         r'''current''': current,
+        r'''exec''': exec,
+        r'''info_popup''': infoPopup,
+        r'''updater''': updater,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -3819,28 +3904,18 @@ class ScrcpyManagerLocCurrent {
   const ScrcpyManagerLocCurrent({
     required this.label,
     required this.inUse,
-    required this.latest,
-    required this.exec,
   });
   factory ScrcpyManagerLocCurrent.fromJson(Map<String, dynamic> json) {
     return ScrcpyManagerLocCurrent(
       label: (json['label'] ?? '').toString(),
       inUse: (json['in_use'] ?? '').toString(),
-      latest: (json['latest'] ?? '').toString(),
-      exec: ScrcpyManagerLocCurrentExec.fromJson(
-          (json['exec'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
   final String inUse;
-  final String latest;
-  final ScrcpyManagerLocCurrentExec exec;
-
   Map<String, Object> get _content => {
         r'''label''': label,
         r'''in_use''': inUse,
-        r'''latest''': latest,
-        r'''exec''': exec,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -3870,22 +3945,112 @@ class ScrcpyManagerLocCurrent {
   }
 }
 
-class ScrcpyManagerLocCurrentExec {
-  const ScrcpyManagerLocCurrentExec({
-    required this.open,
-    required this.warning,
+class ScrcpyManagerLocExec {
+  const ScrcpyManagerLocExec({
+    required this.label,
+    required this.info,
   });
-  factory ScrcpyManagerLocCurrentExec.fromJson(Map<String, dynamic> json) {
-    return ScrcpyManagerLocCurrentExec(
-      open: (json['open'] ?? '').toString(),
-      warning: (json['warning'] ?? '').toString(),
+  factory ScrcpyManagerLocExec.fromJson(Map<String, dynamic> json) {
+    return ScrcpyManagerLocExec(
+      label: (json['label'] ?? '').toString(),
+      info: (json['info'] ?? '').toString(),
     );
   }
-  final String open;
-  final String warning;
+  final String label;
+  final String info;
   Map<String, Object> get _content => {
-        r'''open''': open,
-        r'''warning''': warning,
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ScrcpyManagerLocInfoPopup {
+  const ScrcpyManagerLocInfoPopup({
+    required this.noUpdate,
+    required this.error,
+  });
+  factory ScrcpyManagerLocInfoPopup.fromJson(Map<String, dynamic> json) {
+    return ScrcpyManagerLocInfoPopup(
+      noUpdate: (json['no_update'] ?? '').toString(),
+      error: (json['error'] ?? '').toString(),
+    );
+  }
+  final String noUpdate;
+  final String error;
+  Map<String, Object> get _content => {
+        r'''no_update''': noUpdate,
+        r'''error''': error,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ScrcpyManagerLocUpdater {
+  const ScrcpyManagerLocUpdater({
+    required this.label,
+    required this.newVersion,
+  });
+  factory ScrcpyManagerLocUpdater.fromJson(Map<String, dynamic> json) {
+    return ScrcpyManagerLocUpdater(
+      label: (json['label'] ?? '').toString(),
+      newVersion: (json['new_version'] ?? '').toString(),
+    );
+  }
+  final String label;
+  final String newVersion;
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''new_version''': newVersion,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -3919,26 +4084,26 @@ class SettingsLoc {
   const SettingsLoc({
     required this.title,
     required this.looks,
-    required this.behaviour,
+    required this.behavior,
   });
   factory SettingsLoc.fromJson(Map<String, dynamic> json) {
     return SettingsLoc(
       title: (json['title'] ?? '').toString(),
       looks: SettingsLocLooks.fromJson(
           (json['looks'] as Map).cast<String, dynamic>()),
-      behaviour: SettingsLocBehaviour.fromJson(
-          (json['behaviour'] as Map).cast<String, dynamic>()),
+      behavior: SettingsLocBehavior.fromJson(
+          (json['behavior'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
   final SettingsLocLooks looks;
 
-  final SettingsLocBehaviour behaviour;
+  final SettingsLocBehavior behavior;
 
   Map<String, Object> get _content => {
         r'''title''': title,
         r'''looks''': looks,
-        r'''behaviour''': behaviour,
+        r'''behavior''': behavior,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -4205,23 +4370,29 @@ class SettingsLocLooksTintLevel {
   }
 }
 
-class SettingsLocBehaviour {
-  const SettingsLocBehaviour({
+class SettingsLocBehavior {
+  const SettingsLocBehavior({
     required this.label,
+    required this.language,
     required this.minimize,
   });
-  factory SettingsLocBehaviour.fromJson(Map<String, dynamic> json) {
-    return SettingsLocBehaviour(
+  factory SettingsLocBehavior.fromJson(Map<String, dynamic> json) {
+    return SettingsLocBehavior(
       label: (json['label'] ?? '').toString(),
-      minimize: SettingsLocBehaviourMinimize.fromJson(
+      language: SettingsLocBehaviorLanguage.fromJson(
+          (json['language'] as Map).cast<String, dynamic>()),
+      minimize: SettingsLocBehaviorMinimize.fromJson(
           (json['minimize'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
-  final SettingsLocBehaviourMinimize minimize;
+  final SettingsLocBehaviorLanguage language;
+
+  final SettingsLocBehaviorMinimize minimize;
 
   Map<String, Object> get _content => {
         r'''label''': label,
+        r'''language''': language,
         r'''minimize''': minimize,
       };
   T getContent<T>(String key) {
@@ -4252,20 +4423,65 @@ class SettingsLocBehaviour {
   }
 }
 
-class SettingsLocBehaviourMinimize {
-  const SettingsLocBehaviourMinimize({
+class SettingsLocBehaviorLanguage {
+  const SettingsLocBehaviorLanguage({
+    required this.label,
+    required this.info,
+  });
+  factory SettingsLocBehaviorLanguage.fromJson(Map<String, dynamic> json) {
+    return SettingsLocBehaviorLanguage(
+      label: (json['label'] ?? '').toString(),
+      info: (json['info'] ?? '').toString(),
+    );
+  }
+  final String label;
+  final String info;
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class SettingsLocBehaviorMinimize {
+  const SettingsLocBehaviorMinimize({
     required this.label,
     required this.value,
   });
-  factory SettingsLocBehaviourMinimize.fromJson(Map<String, dynamic> json) {
-    return SettingsLocBehaviourMinimize(
+  factory SettingsLocBehaviorMinimize.fromJson(Map<String, dynamic> json) {
+    return SettingsLocBehaviorMinimize(
       label: (json['label'] ?? '').toString(),
-      value: SettingsLocBehaviourMinimizeValue.fromJson(
+      value: SettingsLocBehaviorMinimizeValue.fromJson(
           (json['value'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
-  final SettingsLocBehaviourMinimizeValue value;
+  final SettingsLocBehaviorMinimizeValue value;
 
   Map<String, Object> get _content => {
         r'''label''': label,
@@ -4299,14 +4515,13 @@ class SettingsLocBehaviourMinimize {
   }
 }
 
-class SettingsLocBehaviourMinimizeValue {
-  const SettingsLocBehaviourMinimizeValue({
+class SettingsLocBehaviorMinimizeValue {
+  const SettingsLocBehaviorMinimizeValue({
     required this.tray,
     required this.taskbar,
   });
-  factory SettingsLocBehaviourMinimizeValue.fromJson(
-      Map<String, dynamic> json) {
-    return SettingsLocBehaviourMinimizeValue(
+  factory SettingsLocBehaviorMinimizeValue.fromJson(Map<String, dynamic> json) {
+    return SettingsLocBehaviorMinimizeValue(
       tray: (json['tray'] ?? '').toString(),
       taskbar: (json['taskbar'] ?? '').toString(),
     );
@@ -4352,6 +4567,7 @@ class ButtonLabelLoc {
     required this.cancel,
     required this.stop,
     required this.testConfig,
+    required this.update,
   });
   factory ButtonLabelLoc.fromJson(Map<String, dynamic> json) {
     return ButtonLabelLoc(
@@ -4360,6 +4576,7 @@ class ButtonLabelLoc {
       cancel: (json['cancel'] ?? '').toString(),
       stop: (json['stop'] ?? '').toString(),
       testConfig: (json['test_config'] ?? '').toString(),
+      update: (json['update'] ?? '').toString(),
     );
   }
   final String ok;
@@ -4367,12 +4584,14 @@ class ButtonLabelLoc {
   final String cancel;
   final String stop;
   final String testConfig;
+  final String update;
   Map<String, Object> get _content => {
         r'''ok''': ok,
         r'''close''': close,
         r'''cancel''': cancel,
         r'''stop''': stop,
         r'''test_config''': testConfig,
+        r'''update''': update,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -4405,15 +4624,23 @@ class ButtonLabelLoc {
 class StatusLoc {
   const StatusLoc({
     required this.failed,
+    required this.error,
+    required this.latest,
   });
   factory StatusLoc.fromJson(Map<String, dynamic> json) {
     return StatusLoc(
       failed: (json['failed'] ?? '').toString(),
+      error: (json['error'] ?? '').toString(),
+      latest: (json['latest'] ?? '').toString(),
     );
   }
   final String failed;
+  final String error;
+  final String latest;
   Map<String, Object> get _content => {
         r'''failed''': failed,
+        r'''error''': error,
+        r'''latest''': latest,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -4448,21 +4675,25 @@ class CommonLoc {
     required this.default$,
     required this.yes,
     required this.no,
+    required this.bundled,
   });
   factory CommonLoc.fromJson(Map<String, dynamic> json) {
     return CommonLoc(
       default$: (json['default'] ?? '').toString(),
       yes: (json['yes'] ?? '').toString(),
       no: (json['no'] ?? '').toString(),
+      bundled: (json['bundled'] ?? '').toString(),
     );
   }
   final String default$;
   final String yes;
   final String no;
+  final String bundled;
   Map<String, Object> get _content => {
         r'''default''': default$,
         r'''yes''': yes,
         r'''no''': no,
+        r'''bundled''': bundled,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -4506,7 +4737,7 @@ class LocalizationMessages {
     required this.deviceSection,
     required this.windowSection,
     required this.addFlags,
-    required this.connect,
+    required this.connectLoc,
     required this.testConfigLoc,
     required this.scrcpyManagerLoc,
     required this.settingsLoc,
@@ -4540,8 +4771,8 @@ class LocalizationMessages {
           (json['window_section'] as Map).cast<String, dynamic>()),
       addFlags:
           AddFlags.fromJson((json['add_flags'] as Map).cast<String, dynamic>()),
-      connect:
-          Connect.fromJson((json['connect'] as Map).cast<String, dynamic>()),
+      connectLoc: ConnectLoc.fromJson(
+          (json['connect_loc'] as Map).cast<String, dynamic>()),
       testConfigLoc: TestConfigLoc.fromJson(
           (json['test_config_loc'] as Map).cast<String, dynamic>()),
       scrcpyManagerLoc: ScrcpyManagerLoc.fromJson(
@@ -4580,7 +4811,7 @@ class LocalizationMessages {
 
   final AddFlags addFlags;
 
-  final Connect connect;
+  final ConnectLoc connectLoc;
 
   final TestConfigLoc testConfigLoc;
 
@@ -4607,7 +4838,7 @@ class LocalizationMessages {
         r'''device_section''': deviceSection,
         r'''window_section''': windowSection,
         r'''add_flags''': addFlags,
-        r'''connect''': connect,
+        r'''connect_loc''': connectLoc,
         r'''test_config_loc''': testConfigLoc,
         r'''scrcpy_manager_loc''': scrcpyManagerLoc,
         r'''settings_loc''': settingsLoc,
@@ -4726,7 +4957,7 @@ final LocalizationMessages en = LocalizationMessages(
       record: 'Record',
       info: ModeSectionMainModeInfo(
         default$: 'mirror or record, no flag for mirror',
-        alt: '''uses '--record=' flag''',
+        alt: '''uses '--record=' flag ''',
       ),
     ),
     scrcpyMode: ModeSectionScrcpyMode(
@@ -4735,7 +4966,7 @@ final LocalizationMessages en = LocalizationMessages(
       videoOnly: 'Video only',
       info: ModeSectionScrcpyModeInfo(
         default$: 'defaults to both, no flag',
-        alt: ({required String command}) => '''uses '${command}' flag''',
+        alt: ({required String command}) => '''uses '${command}' flag ''',
       ),
     ),
   ),
@@ -4746,7 +4977,7 @@ final LocalizationMessages en = LocalizationMessages(
       info: VideoSectionDisplaysInfo(
         default$:
             'defaults to first available, no flag; virtual displays is not listed',
-        alt: '''uses '--display-id=' flag''',
+        alt: '''uses '--display-id=' flag ''',
       ),
     ),
     codec: VideoSectionCodec(
@@ -4754,7 +4985,7 @@ final LocalizationMessages en = LocalizationMessages(
       info: VideoSectionCodecInfo(
         default$: 'defaults to h264, no flag',
         alt: ({required String codec}) =>
-            '''uses '--video-codec=${codec}' flag''',
+            '''uses '--video-codec=${codec}' flag ''',
       ),
     ),
     encoder: VideoSectionEncoder(
@@ -4762,7 +4993,7 @@ final LocalizationMessages en = LocalizationMessages(
       info: VideoSectionEncoderInfo(
         default$: 'defaults to first available, no flag',
         alt: ({required String encoder}) =>
-            '''uses '--video-encoder=${encoder}' flag''',
+            '''uses '--video-encoder=${encoder}' flag ''',
       ),
     ),
     format: VideoSectionFormat(
@@ -4777,14 +5008,14 @@ final LocalizationMessages en = LocalizationMessages(
       info: VideoSectionBitrateInfo(
         default$: 'defaults to 8M, no flag',
         alt: ({required String bitrate}) =>
-            '''uses '--video-bit-rate=${bitrate}M' flag''',
+            '''uses '--video-bit-rate=${bitrate}M' flag ''',
       ),
     ),
     fpsLimit: VideoSectionFpsLimit(
       label: 'FPS limit',
       info: VideoSectionFpsLimitInfo(
         default$: 'no flag unless set',
-        alt: ({required String fps}) => '''uses '--max-fps=${fps}' flag''',
+        alt: ({required String fps}) => '''uses '--max-fps=${fps}' flag ''',
       ),
     ),
     resolutionScale: VideoSectionResolutionScale(
@@ -4792,7 +5023,7 @@ final LocalizationMessages en = LocalizationMessages(
       info: VideoSectionResolutionScaleInfo(
         default$:
             '''calculated based on device's resolution, no flag unless set''',
-        alt: ({required String size}) => '''uses '--max-size=${size}' flag''',
+        alt: ({required String size}) => '''uses '--max-size=${size}' flag ''',
       ),
     ),
   ),
@@ -4802,14 +5033,14 @@ final LocalizationMessages en = LocalizationMessages(
       label: 'Duplicate audio',
       info: AudioSectionDuplicateInfo(
         default$: 'only for Android 13 and above',
-        alt: '''uses '--audio-dup' flag''',
+        alt: '''uses '--audio-dup' flag ''',
       ),
     ),
     source: AudioSectionSource(
       label: 'Source',
       info: AudioSectionSourceInfo(
         default$: 'defaults to output, no flag',
-        alt: ({required String source}) => '''uses '${source}' flag''',
+        alt: ({required String source}) => '''uses '${source}' flag ''',
         inCaseOfDup: '''implied to 'Playback' with '--audio-dup', no flag''',
       ),
     ),
@@ -4818,7 +5049,7 @@ final LocalizationMessages en = LocalizationMessages(
       info: AudioSectionCodecInfo(
         default$: 'defaults to opus, no flag',
         alt: ({required String codec}) =>
-            '''uses '--audio-codec=${codec}' flag''',
+            '''uses '--audio-codec=${codec}' flag ''',
         isAudioOnly: ({required String format, required String codec}) =>
             '''Format: ${format}, requires Codec: ${codec}''',
       ),
@@ -4828,7 +5059,7 @@ final LocalizationMessages en = LocalizationMessages(
       info: AudioSectionEncoderInfo(
         default$: 'defaults to first available, no flag',
         alt: ({required String encoder}) =>
-            '''uses '--audio-encoder=${encoder}' flag''',
+            '''uses '--audio-encoder=${encoder}' flag ''',
       ),
     ),
     format: AudioSectionFormat(
@@ -4843,7 +5074,7 @@ final LocalizationMessages en = LocalizationMessages(
       info: AudioSectionBitrateInfo(
         default$: 'defaults to 128k, no flag',
         alt: ({required String bitrate}) =>
-            '''uses '--audio-bit-rate=${bitrate}K' flag''',
+            '''uses '--audio-bit-rate=${bitrate}K' flag ''',
       ),
     ),
   ),
@@ -4854,7 +5085,7 @@ final LocalizationMessages en = LocalizationMessages(
       info: DeviceSectionStayAwakeInfo(
         default$:
             'prevent the device from sleeping, only works with usb connection',
-        alt: '''uses '--stay-awake' flag''',
+        alt: '''uses '--stay-awake' flag ''',
       ),
     ),
     showTouches: DeviceSectionShowTouches(
@@ -4862,28 +5093,28 @@ final LocalizationMessages en = LocalizationMessages(
       info: DeviceSectionShowTouchesInfo(
         default$:
             'show finger touches, only works with physical touches on the device',
-        alt: '''uses '--show-touches' flag''',
+        alt: '''uses '--show-touches' flag ''',
       ),
     ),
     offDisplayStart: DeviceSectionOffDisplayStart(
       label: 'Turn off display on start',
       info: DeviceSectionOffDisplayStartInfo(
         default$: 'turn device display off, on scrcpy start',
-        alt: '''uses '--turn-screen-off' flag''',
+        alt: '''uses '--turn-screen-off' flag ''',
       ),
     ),
     offDisplayExit: DeviceSectionOffDisplayExit(
       label: 'Turn off display on exit',
       info: DeviceSectionOffDisplayExitInfo(
         default$: 'turn device display off, on scrcpy exit',
-        alt: '''uses '--power-off-on-close' flag''',
+        alt: '''uses '--power-off-on-close' flag ''',
       ),
     ),
     screensaver: DeviceSectionScreensaver(
       label: 'Disable screensaver (HOST)',
       info: DeviceSectionScreensaverInfo(
         default$: 'disable screensaver',
-        alt: '''uses '--disable-screensaver' flag''',
+        alt: '''uses '--disable-screensaver' flag ''',
       ),
     ),
   ),
@@ -4893,28 +5124,29 @@ final LocalizationMessages en = LocalizationMessages(
       label: 'Hide window',
       info: WindowSectionHideWindowInfo(
         default$: 'start scrcpy with no window',
-        alt: '''uses '--no-window' flag''',
+        alt: '''uses '--no-window' flag ''',
       ),
     ),
     borderless: WindowSectionBorderless(
       label: 'Borderless',
       info: WindowSectionBorderlessInfo(
         default$: 'disable window decorations',
-        alt: '''uses '--window-borderless' flag''',
+        alt: '''uses '--window-borderless' flag ''',
       ),
     ),
     alwaysOnTop: WindowSectionAlwaysOnTop(
       label: 'Always on top',
       info: WindowSectionAlwaysOnTopInfo(
         default$: 'scrcpy window always on top',
-        alt: '''uses '--always-on-top' flag''',
+        alt: '''uses '--always-on-top' flag ''',
       ),
     ),
     timeLimit: WindowSectionTimeLimit(
       label: 'Time limit',
       info: WindowSectionTimeLimitInfo(
         default$: 'limits scrcpy session, in seconds',
-        alt: ({required String time}) => '''uses '--time-limit=${time}' flag''',
+        alt: ({required String time}) =>
+            '''uses '--time-limit=${time}' flag ''',
       ),
     ),
   ),
@@ -4923,18 +5155,24 @@ final LocalizationMessages en = LocalizationMessages(
     add: 'Add',
     info: 'avoid using flags that are already an option',
   ),
-  connect: Connect(
+  connectLoc: ConnectLoc(
     title: 'Connect',
-    withIp: ConnectWithIp(
+    withIp: ConnectLocWithIp(
       label: 'Connect with IP',
       connect: 'Connect',
+      connected: ({required String to}) => '''Connected to ${to}''',
     ),
-    withMdns: ConnectWithMdns(
+    withMdns: ConnectLocWithMdns(
       label: ({required String count}) => '''MDNS devices (${count})''',
     ),
-    qrPair: ConnectQrPair(
+    qrPair: ConnectLocQrPair(
       label: 'QR pairing',
       pair: 'Pair device',
+      status: ConnectLocQrPairStatus(
+        cancelled: 'Pairing cancelled',
+        success: 'Pairing successful',
+        failed: 'Pairing failed',
+      ),
     ),
   ),
   testConfigLoc: TestConfigLoc(
@@ -4943,14 +5181,22 @@ final LocalizationMessages en = LocalizationMessages(
   ),
   scrcpyManagerLoc: ScrcpyManagerLoc(
     title: 'Scrcpy Manager',
+    check: 'Check for update',
     current: ScrcpyManagerLocCurrent(
       label: 'Current',
       inUse: 'In-use',
-      latest: 'latest',
-      exec: ScrcpyManagerLocCurrentExec(
-        open: 'Open executable location',
-        warning: 'Modify with care',
-      ),
+    ),
+    exec: ScrcpyManagerLocExec(
+      label: 'Open executable location',
+      info: 'Modify with care',
+    ),
+    infoPopup: ScrcpyManagerLocInfoPopup(
+      noUpdate: 'No update available',
+      error: 'Error checking for update',
+    ),
+    updater: ScrcpyManagerLocUpdater(
+      label: 'New version available',
+      newVersion: 'New version',
     ),
   ),
   settingsLoc: SettingsLoc(
@@ -4972,11 +5218,15 @@ final LocalizationMessages en = LocalizationMessages(
         label: 'Tint level',
       ),
     ),
-    behaviour: SettingsLocBehaviour(
-      label: 'App behaviour',
-      minimize: SettingsLocBehaviourMinimize(
+    behavior: SettingsLocBehavior(
+      label: 'App behavior',
+      language: SettingsLocBehaviorLanguage(
+        label: 'Language',
+        info: 'Some languages are AI generated',
+      ),
+      minimize: SettingsLocBehaviorMinimize(
         label: 'Minimize',
-        value: SettingsLocBehaviourMinimizeValue(
+        value: SettingsLocBehaviorMinimizeValue(
           tray: 'to tray',
           taskbar: 'to taskbar',
         ),
@@ -4989,18 +5239,797 @@ final LocalizationMessages en = LocalizationMessages(
     cancel: 'Cancel',
     stop: 'Stop',
     testConfig: 'Test config',
+    update: 'Update',
   ),
   statusLoc: StatusLoc(
     failed: 'Failed',
+    error: 'Error',
+    latest: 'Latest',
   ),
   commonLoc: CommonLoc(
     default$: 'Default',
     yes: 'Yes',
     no: 'No',
+    bundled: 'Bundled',
+  ),
+);
+final LocalizationMessages ms = LocalizationMessages(
+  homeLoc: HomeLoc(
+    title: 'Laman Utama',
+    devices: HomeLocDevices(
+      label: ({required String count}) =>
+          '''Peranti yang Disambungkan (${count})''',
+    ),
+    deviceTile: HomeLocDeviceTile(
+      runningInstances: ({required String count}) => '''Berjalan (${count})''',
+      context: HomeLocDeviceTileContext(
+        disconnect: 'Putuskan Sambungan',
+        toWireless: 'Ke Tanpa Wayar',
+        killRunning: 'Hentikan Contoh yang Berjalan',
+      ),
+    ),
+    config: HomeLocConfig(
+      label: 'Mulakan scrcpy',
+      new$: 'Cipta Konfigurasi Baharu',
+      select: 'Pilih Konfigurasi',
+      details: 'Tunjukkan Butiran',
+      start: 'Mula',
+    ),
+  ),
+  noDeviceDialogLoc: NoDeviceDialogLoc(
+    title: 'Peranti',
+    contents:
+        '''Tiada peranti dipilih. \nPilih peranti untuk edit konfigurasi scrcpy.''',
+  ),
+  noConfigDialogLoc: NoConfigDialogLoc(
+    title: 'Konfigurasi',
+    contents:
+        '''Tiada konfigurasi dipilih.\nPilih konfigurasi scrcpy untuk dimulakan.''',
+  ),
+  deviceSettingsLoc: DeviceSettingsLoc(
+    title: 'Tetapan',
+    info: 'Maklumat',
+    refresh: 'Segarkan Maklumat',
+    rename: DeviceSettingsLocRename(
+      label: 'Namakan Semula',
+      info: 'Tekan [Enter] untuk menggunakan nama',
+    ),
+    autoConnect: DeviceSettingsLocAutoConnect(
+      label: 'Sambung Automatik',
+      info: 'Sambung peranti tanpa wayar secara automatik',
+    ),
+    onConnected: DeviceSettingsLocOnConnected(
+      label: 'Semasa Disambungkan',
+      info:
+          'Mulakan (1) contoh scrcpy dengan konfigurasi yang dipilih pada sambungan peranti',
+    ),
+    doNothing: 'Jangan Lakukan Apa-apa',
+    scrcpyInfo: DeviceSettingsLocScrcpyInfo(
+      fetching: 'Mendapatkan maklumat scrcpy',
+      label: 'Maklumat Scrcpy',
+      name: 'Nama',
+      id: 'ID',
+      model: 'Model',
+      version: 'Versi Android',
+      displays: 'Paparan',
+      cameras: 'Kamera',
+      videoEnc: 'Pengekod Video',
+      audioEnc: 'Pengekod Audio',
+    ),
+  ),
+  configScreenLoc: ConfigScreenLoc(
+    connectionLost: 'Sambungan peranti terputus',
+  ),
+  logScreenLoc: LogScreenLoc(
+    title: 'Log Ujian',
+    dialog: LogScreenLocDialog(
+      title: 'Perintah',
+    ),
+  ),
+  modeSection: ModeSection(
+    title: 'Mod',
+    saveFolder: ModeSectionSaveFolder(
+      label: 'Folder Simpan',
+      info: '''menambah laluan simpan ke '--record=laluan_simpan/fail' ''',
+    ),
+    mainMode: ModeSectionMainMode(
+      label: 'Mod',
+      mirror: 'Cerminan',
+      record: 'Rakam',
+      info: ModeSectionMainModeInfo(
+        default$: 'cerminan atau rakam, tiada bendera untuk cerminan',
+        alt: '''menggunakan bendera '--record=' ''',
+      ),
+    ),
+    scrcpyMode: ModeSectionScrcpyMode(
+      both: 'Kedua-duanya',
+      audioOnly: 'Audio Sahaja',
+      videoOnly: 'Video Sahaja',
+      info: ModeSectionScrcpyModeInfo(
+        default$: 'lalai kepada kedua-duanya, tiada bendera',
+        alt: ({required String command}) =>
+            '''menggunakan bendera '${command}' ''',
+      ),
+    ),
+  ),
+  videoSection: VideoSection(
+    title: 'Video',
+    displays: VideoSectionDisplays(
+      label: 'Paparan',
+      info: VideoSectionDisplaysInfo(
+        default$:
+            'lalai kepada yang pertama tersedia, tiada bendera; paparan maya tidak disenaraikan',
+        alt: '''menggunakan bendera '--display-id=' ''',
+      ),
+    ),
+    codec: VideoSectionCodec(
+      label: 'Codec',
+      info: VideoSectionCodecInfo(
+        default$: 'lalai kepada h264, tiada bendera',
+        alt: ({required String codec}) =>
+            '''menggunakan bendera '--video-codec=${codec}' ''',
+      ),
+    ),
+    encoder: VideoSectionEncoder(
+      label: 'Pengekod',
+      info: VideoSectionEncoderInfo(
+        default$: 'lalai kepada yang pertama tersedia, tiada bendera',
+        alt: ({required String encoder}) =>
+            '''menggunakan bendera '--video-encoder=${encoder}' ''',
+      ),
+    ),
+    format: VideoSectionFormat(
+      label: 'Format',
+      info: VideoSectionFormatInfo(
+        default$: ({required String format}) =>
+            '''menambah format ke '--record=laluan_simpan/fail${format}' "''',
+      ),
+    ),
+    bitrate: VideoSectionBitrate(
+      label: 'Kadar Bit',
+      info: VideoSectionBitrateInfo(
+        default$: 'lalai kepada 8M, tiada bendera',
+        alt: ({required String bitrate}) =>
+            '''menggunakan bendera '--video-bit-rate=${bitrate}M' ''',
+      ),
+    ),
+    fpsLimit: VideoSectionFpsLimit(
+      label: 'Had FPS',
+      info: VideoSectionFpsLimitInfo(
+        default$: 'tiada bendera kecuali ditetapkan',
+        alt: ({required String fps}) =>
+            '''menggunakan bendera '--max-fps=${fps}' ''',
+      ),
+    ),
+    resolutionScale: VideoSectionResolutionScale(
+      label: 'Skala Resolusi',
+      info: VideoSectionResolutionScaleInfo(
+        default$:
+            'dikira berdasarkan resolusi peranti, tiada bendera kecuali ditetapkan',
+        alt: ({required String size}) =>
+            '''menggunakan bendera '--max-size=${size}' ''',
+      ),
+    ),
+  ),
+  audioSection: AudioSection(
+    title: 'Audio',
+    duplicate: AudioSectionDuplicate(
+      label: 'Gandakan Audio',
+      info: AudioSectionDuplicateInfo(
+        default$: 'hanya untuk Android 13 ke atas',
+        alt: '''menggunakan bendera '--audio-dup' ''',
+      ),
+    ),
+    source: AudioSectionSource(
+      label: 'Sumber',
+      info: AudioSectionSourceInfo(
+        default$: 'lalai kepada output, tiada bendera',
+        alt: ({required String source}) =>
+            '''menggunakan bendera '${source}' ''',
+        inCaseOfDup:
+            '''tersirat kepada 'Main Balik' dengan '--audio-dup', tiada bendera''',
+      ),
+    ),
+    codec: AudioSectionCodec(
+      label: 'Codec',
+      info: AudioSectionCodecInfo(
+        default$: 'lalai kepada opus, tiada bendera',
+        alt: ({required String codec}) =>
+            '''menggunakan bendera '--audio-codec=${codec}' ''',
+        isAudioOnly: ({required String format, required String codec}) =>
+            '''Format: ${format}, memerlukan Codec: ${codec}''',
+      ),
+    ),
+    encoder: AudioSectionEncoder(
+      label: 'Pengekod',
+      info: AudioSectionEncoderInfo(
+        default$: 'lalai kepada yang pertama tersedia, tiada bendera',
+        alt: ({required String encoder}) =>
+            '''menggunakan bendera '--audio-encoder=${encoder}' ''',
+      ),
+    ),
+    format: AudioSectionFormat(
+      label: 'Format',
+      info: AudioSectionFormatInfo(
+        default$: ({required String format}) =>
+            '''menambah format ke '--record=laluan_simpan/fail.${format}' "''',
+      ),
+    ),
+    bitrate: AudioSectionBitrate(
+      label: 'Kadar Bit',
+      info: AudioSectionBitrateInfo(
+        default$: 'lalai kepada 128k, tiada bendera',
+        alt: ({required String bitrate}) =>
+            '''menggunakan bendera '--audio-bit-rate=${bitrate}K' ''',
+      ),
+    ),
+  ),
+  deviceSection: DeviceSection(
+    title: 'Peranti',
+    stayAwake: DeviceSectionStayAwake(
+      label: 'Kekal Berjaga',
+      info: DeviceSectionStayAwakeInfo(
+        default$:
+            'menghalang peranti daripada tidur, hanya berfungsi dengan sambungan usb',
+        alt: '''menggunakan bendera '--stay-awake' ''',
+      ),
+    ),
+    showTouches: DeviceSectionShowTouches(
+      label: 'Tunjukkan Sentuhan',
+      info: DeviceSectionShowTouchesInfo(
+        default$:
+            'tunjukkan sentuhan jari, hanya berfungsi dengan sentuhan fizikal pada peranti',
+        alt: '''menggunakan bendera '--show-touches' ''',
+      ),
+    ),
+    offDisplayStart: DeviceSectionOffDisplayStart(
+      label: 'Matikan Paparan Semasa Mula',
+      info: DeviceSectionOffDisplayStartInfo(
+        default$: 'matikan paparan peranti, semasa permulaan scrcpy',
+        alt: '''menggunakan bendera '--turn-screen-off' ''',
+      ),
+    ),
+    offDisplayExit: DeviceSectionOffDisplayExit(
+      label: 'Matikan Paparan Semasa Keluar',
+      info: DeviceSectionOffDisplayExitInfo(
+        default$: 'matikan paparan peranti, semasa scrcpy keluar',
+        alt: '''menggunakan bendera '--power-off-on-close' ''',
+      ),
+    ),
+    screensaver: DeviceSectionScreensaver(
+      label: 'Lumpuhkan Penjimat Skrin (HOST)',
+      info: DeviceSectionScreensaverInfo(
+        default$: 'lumpuhkan penjimat skrin',
+        alt: '''menggunakan bendera '--disable-screensaver' ''',
+      ),
+    ),
+  ),
+  windowSection: WindowSection(
+    title: 'Tetingkap',
+    hideWindow: WindowSectionHideWindow(
+      label: 'Sembunyikan Tetingkap',
+      info: WindowSectionHideWindowInfo(
+        default$: 'mulakan scrcpy tanpa tetingkap',
+        alt: '''menggunakan bendera '--no-window' ''',
+      ),
+    ),
+    borderless: WindowSectionBorderless(
+      label: 'Tanpa Sempadan',
+      info: WindowSectionBorderlessInfo(
+        default$: 'lumpuhkan hiasan tetingkap',
+        alt: '''menggunakan bendera '--window-borderless' ''',
+      ),
+    ),
+    alwaysOnTop: WindowSectionAlwaysOnTop(
+      label: 'Sentiasa di Atas',
+      info: WindowSectionAlwaysOnTopInfo(
+        default$: 'tetingkap scrcpy sentiasa di atas',
+        alt: '''menggunakan bendera '--always-on-top' ''',
+      ),
+    ),
+    timeLimit: WindowSectionTimeLimit(
+      label: 'Had Masa',
+      info: WindowSectionTimeLimitInfo(
+        default$: 'mengehadkan sesi scrcpy, dalam saat',
+        alt: ({required String time}) =>
+            '''menggunakan bendera '--time-limit=${time}' ''',
+      ),
+    ),
+  ),
+  addFlags: AddFlags(
+    title: 'Bendera Tambahan',
+    add: 'Tambah',
+    info: 'elakkan menggunakan bendera yang sudah ada pilihan',
+  ),
+  connectLoc: ConnectLoc(
+    title: 'Sambung',
+    withIp: ConnectLocWithIp(
+      label: 'Sambung dengan IP',
+      connect: 'Sambung',
+      connected: ({required String to}) => '''Disambungkan ke ${to}''',
+    ),
+    withMdns: ConnectLocWithMdns(
+      label: ({required String count}) => '''Peranti MDNS (${count})''',
+    ),
+    qrPair: ConnectLocQrPair(
+      label: 'Pemasangan QR',
+      pair: 'Pasangkan Peranti',
+      status: ConnectLocQrPairStatus(
+        cancelled: 'Pemasangan dibatalkan',
+        success: 'Pemasangan berjaya',
+        failed: 'Pemasangan gagal',
+      ),
+    ),
+  ),
+  testConfigLoc: TestConfigLoc(
+    title: 'Uji Konfigurasi',
+    preview: 'Pratonton Arahan',
+  ),
+  scrcpyManagerLoc: ScrcpyManagerLoc(
+    title: 'Pengurus Scrcpy',
+    check: 'Semak Kemas Kini',
+    current: ScrcpyManagerLocCurrent(
+      label: 'Semasa',
+      inUse: 'Sedang Digunakan',
+    ),
+    exec: ScrcpyManagerLocExec(
+      label: 'Buka Lokasi Boleh Laksana',
+      info: 'Ubah dengan berhati-hati',
+    ),
+    infoPopup: ScrcpyManagerLocInfoPopup(
+      noUpdate: 'Tiada kemas kini tersedia',
+      error: 'Ralat semasa menyemak kemas kini',
+    ),
+    updater: ScrcpyManagerLocUpdater(
+      label: 'Versi Baharu Tersedia',
+      newVersion: 'Versi Baharu',
+    ),
+  ),
+  settingsLoc: SettingsLoc(
+    title: 'Tetapan',
+    looks: SettingsLocLooks(
+      label: 'Rupa',
+      mode: SettingsLocLooksMode(
+        label: 'Mod Tema',
+        value: SettingsLocLooksModeValue(
+          dark: 'Gelap',
+          light: 'Cerah',
+          system: 'Sistem',
+        ),
+      ),
+      accentColor: SettingsLocLooksAccentColor(
+        label: 'Warna Aksen',
+      ),
+      tintLevel: SettingsLocLooksTintLevel(
+        label: 'Tahap Warna',
+      ),
+    ),
+    behavior: SettingsLocBehavior(
+      label: 'Tingkah Laku Aplikasi',
+      language: SettingsLocBehaviorLanguage(
+        label: 'Bahasa',
+        info: 'Sesetengah bahasa dijana oleh AI',
+      ),
+      minimize: SettingsLocBehaviorMinimize(
+        label: 'Kecilkan',
+        value: SettingsLocBehaviorMinimizeValue(
+          tray: 'ke dulang',
+          taskbar: 'ke bar tugas',
+        ),
+      ),
+    ),
+  ),
+  buttonLabelLoc: ButtonLabelLoc(
+    ok: 'Okey',
+    close: 'Tutup',
+    cancel: 'Batal',
+    stop: 'Hentikan',
+    testConfig: 'Uji Konfigurasi',
+    update: 'Kemas Kini',
+  ),
+  statusLoc: StatusLoc(
+    failed: 'Gagal',
+    error: 'Ralat',
+    latest: 'Terkini',
+  ),
+  commonLoc: CommonLoc(
+    default$: 'Lalai',
+    yes: 'Ya',
+    no: 'Tidak',
+    bundled: 'Terangkum',
+  ),
+);
+final LocalizationMessages es = LocalizationMessages(
+  homeLoc: HomeLoc(
+    title: 'Inicio',
+    devices: HomeLocDevices(
+      label: ({required String count}) =>
+          '''Dispositivos conectados (${count})''',
+    ),
+    deviceTile: HomeLocDeviceTile(
+      runningInstances: ({required String count}) =>
+          '''En ejecución (${count})''',
+      context: HomeLocDeviceTileContext(
+        disconnect: 'Desconectar',
+        toWireless: 'A inalámbrico',
+        killRunning: 'Detener instancias en ejecución',
+      ),
+    ),
+    config: HomeLocConfig(
+      label: 'Iniciar scrcpy',
+      new$: 'Crear nueva configuración',
+      select: 'Seleccionar una configuración',
+      details: 'Mostrar detalles',
+      start: 'Iniciar',
+    ),
+  ),
+  noDeviceDialogLoc: NoDeviceDialogLoc(
+    title: 'Dispositivo',
+    contents:
+        '''No se ha seleccionado ningún dispositivo.\nSeleccione un dispositivo para editar la configuración de scrcpy.''',
+  ),
+  noConfigDialogLoc: NoConfigDialogLoc(
+    title: 'Configuración',
+    contents:
+        '''No se ha seleccionado ninguna configuración.\nSeleccione una configuración de scrcpy para iniciar.''',
+  ),
+  deviceSettingsLoc: DeviceSettingsLoc(
+    title: 'Ajustes',
+    info: 'Información',
+    refresh: 'Actualizar información',
+    rename: DeviceSettingsLocRename(
+      label: 'Renombrar',
+      info: 'Presione [Enter] para aplicar el nombre',
+    ),
+    autoConnect: DeviceSettingsLocAutoConnect(
+      label: 'Conexión automática',
+      info: 'Conectar dispositivo inalámbrico automáticamente',
+    ),
+    onConnected: DeviceSettingsLocOnConnected(
+      label: 'Al conectar',
+      info:
+          'Iniciar (1) instancia de scrcpy con la configuración seleccionada al conectar el dispositivo',
+    ),
+    doNothing: 'No hacer nada',
+    scrcpyInfo: DeviceSettingsLocScrcpyInfo(
+      fetching: 'Obteniendo información de scrcpy',
+      label: 'Información de Scrcpy',
+      name: 'Nombre',
+      id: 'ID',
+      model: 'Modelo',
+      version: 'Versión de Android',
+      displays: 'Pantallas',
+      cameras: 'Cámaras',
+      videoEnc: 'Codificadores de video',
+      audioEnc: 'Codificadores de audio',
+    ),
+  ),
+  configScreenLoc: ConfigScreenLoc(
+    connectionLost: 'Conexión al dispositivo perdida',
+  ),
+  logScreenLoc: LogScreenLoc(
+    title: 'Registro de prueba',
+    dialog: LogScreenLocDialog(
+      title: 'Comando',
+    ),
+  ),
+  modeSection: ModeSection(
+    title: 'Modo',
+    saveFolder: ModeSectionSaveFolder(
+      label: 'Carpeta de guardado',
+      info:
+          '''agrega la ruta de guardado a '--record=rutadeguardado/archivo' ''',
+    ),
+    mainMode: ModeSectionMainMode(
+      label: 'Modo',
+      mirror: 'Reflejar',
+      record: 'Grabar',
+      info: ModeSectionMainModeInfo(
+        default$: 'reflejar o grabar, sin indicador para reflejar',
+        alt: '''usa el indicador '--record=' ''',
+      ),
+    ),
+    scrcpyMode: ModeSectionScrcpyMode(
+      both: 'Ambos',
+      audioOnly: 'Solo audio',
+      videoOnly: 'Solo video',
+      info: ModeSectionScrcpyModeInfo(
+        default$: 'por defecto ambos, sin indicador',
+        alt: ({required String command}) =>
+            '''usa el indicador '${command}' ''',
+      ),
+    ),
+  ),
+  videoSection: VideoSection(
+    title: 'Video',
+    displays: VideoSectionDisplays(
+      label: 'Pantallas',
+      info: VideoSectionDisplaysInfo(
+        default$:
+            'por defecto la primera disponible, sin indicador; las pantallas virtuales no están listadas',
+        alt: '''usa el indicador '--display-id=' ''',
+      ),
+    ),
+    codec: VideoSectionCodec(
+      label: 'Códec',
+      info: VideoSectionCodecInfo(
+        default$: 'por defecto h264, sin indicador',
+        alt: ({required String codec}) =>
+            '''usa el indicador '--video-codec=${codec}' ''',
+      ),
+    ),
+    encoder: VideoSectionEncoder(
+      label: 'Codificador',
+      info: VideoSectionEncoderInfo(
+        default$: 'por defecto el primero disponible, sin indicador',
+        alt: ({required String encoder}) =>
+            '''usa el indicador '--video-encoder=${encoder}' ''',
+      ),
+    ),
+    format: VideoSectionFormat(
+      label: 'Formato',
+      info: VideoSectionFormatInfo(
+        default$: ({required String format}) =>
+            '''agrega el formato a '--record=rutadeguardado/archivo${format}' "''',
+      ),
+    ),
+    bitrate: VideoSectionBitrate(
+      label: 'Tasa de bits',
+      info: VideoSectionBitrateInfo(
+        default$: 'por defecto 8M, sin indicador',
+        alt: ({required String bitrate}) =>
+            '''usa el indicador '--video-bit-rate=${bitrate}M' ''',
+      ),
+    ),
+    fpsLimit: VideoSectionFpsLimit(
+      label: 'Límite de FPS',
+      info: VideoSectionFpsLimitInfo(
+        default$: 'sin indicador a menos que se establezca',
+        alt: ({required String fps}) =>
+            '''usa el indicador '--max-fps=${fps}' ''',
+      ),
+    ),
+    resolutionScale: VideoSectionResolutionScale(
+      label: 'Escala de resolución',
+      info: VideoSectionResolutionScaleInfo(
+        default$:
+            'calculado en base a la resolución del dispositivo, sin indicador a menos que se establezca',
+        alt: ({required String size}) =>
+            '''usa el indicador '--max-size=${size}' ''',
+      ),
+    ),
+  ),
+  audioSection: AudioSection(
+    title: 'Audio',
+    duplicate: AudioSectionDuplicate(
+      label: 'Duplicar audio',
+      info: AudioSectionDuplicateInfo(
+        default$: 'solo para Android 13 y superior',
+        alt: '''usa el indicador '--audio-dup' ''',
+      ),
+    ),
+    source: AudioSectionSource(
+      label: 'Fuente',
+      info: AudioSectionSourceInfo(
+        default$: 'por defecto salida, sin indicador',
+        alt: ({required String source}) => '''usa el indicador '${source}' ''',
+        inCaseOfDup:
+            '''implicado a 'Reproducción' con '--audio-dup', sin indicador''',
+      ),
+    ),
+    codec: AudioSectionCodec(
+      label: 'Códec',
+      info: AudioSectionCodecInfo(
+        default$: 'por defecto opus, sin indicador',
+        alt: ({required String codec}) =>
+            '''usa el indicador '--audio-codec=${codec}' ''',
+        isAudioOnly: ({required String format, required String codec}) =>
+            '''Formato: ${format}, requiere Códec: ${codec}''',
+      ),
+    ),
+    encoder: AudioSectionEncoder(
+      label: 'Codificador',
+      info: AudioSectionEncoderInfo(
+        default$: 'por defecto el primero disponible, sin indicador',
+        alt: ({required String encoder}) =>
+            '''usa el indicador '--audio-encoder=${encoder}' ''',
+      ),
+    ),
+    format: AudioSectionFormat(
+      label: 'Formato',
+      info: AudioSectionFormatInfo(
+        default$: ({required String format}) =>
+            '''agrega el formato a '--record=rutadeguardado/archivo.${format}' "''',
+      ),
+    ),
+    bitrate: AudioSectionBitrate(
+      label: 'Tasa de bits',
+      info: AudioSectionBitrateInfo(
+        default$: 'por defecto 128k, sin indicador',
+        alt: ({required String bitrate}) =>
+            '''usa el indicador '--audio-bit-rate=${bitrate}K' ''',
+      ),
+    ),
+  ),
+  deviceSection: DeviceSection(
+    title: 'Dispositivo',
+    stayAwake: DeviceSectionStayAwake(
+      label: 'Mantener despierto',
+      info: DeviceSectionStayAwakeInfo(
+        default$:
+            'evita que el dispositivo se suspenda, solo funciona con conexión usb',
+        alt: '''usa el indicador '--stay-awake' ''',
+      ),
+    ),
+    showTouches: DeviceSectionShowTouches(
+      label: 'Mostrar toques',
+      info: DeviceSectionShowTouchesInfo(
+        default$:
+            'mostrar toques con el dedo, solo funciona con toques físicos en el dispositivo',
+        alt: '''usa el indicador '--show-touches' ''',
+      ),
+    ),
+    offDisplayStart: DeviceSectionOffDisplayStart(
+      label: 'Apagar pantalla al iniciar',
+      info: DeviceSectionOffDisplayStartInfo(
+        default$: 'apagar la pantalla del dispositivo, al iniciar scrcpy',
+        alt: '''usa el indicador '--turn-screen-off' ''',
+      ),
+    ),
+    offDisplayExit: DeviceSectionOffDisplayExit(
+      label: 'Apagar pantalla al salir',
+      info: DeviceSectionOffDisplayExitInfo(
+        default$: 'apagar la pantalla del dispositivo, al salir de scrcpy',
+        alt: '''usa el indicador '--power-off-on-close' ''',
+      ),
+    ),
+    screensaver: DeviceSectionScreensaver(
+      label: 'Deshabilitar protector de pantalla (HOST)',
+      info: DeviceSectionScreensaverInfo(
+        default$: 'deshabilitar el protector de pantalla',
+        alt: '''usa el indicador '--disable-screensaver' ''',
+      ),
+    ),
+  ),
+  windowSection: WindowSection(
+    title: 'Ventana',
+    hideWindow: WindowSectionHideWindow(
+      label: 'Ocultar ventana',
+      info: WindowSectionHideWindowInfo(
+        default$: 'iniciar scrcpy sin ventana',
+        alt: '''usa el indicador '--no-window' ''',
+      ),
+    ),
+    borderless: WindowSectionBorderless(
+      label: 'Sin bordes',
+      info: WindowSectionBorderlessInfo(
+        default$: 'deshabilitar las decoraciones de la ventana',
+        alt: '''usa el indicador '--window-borderless' ''',
+      ),
+    ),
+    alwaysOnTop: WindowSectionAlwaysOnTop(
+      label: 'Siempre encima',
+      info: WindowSectionAlwaysOnTopInfo(
+        default$: 'la ventana de scrcpy siempre encima',
+        alt: '''usa el indicador '--always-on-top' ''',
+      ),
+    ),
+    timeLimit: WindowSectionTimeLimit(
+      label: 'Límite de tiempo',
+      info: WindowSectionTimeLimitInfo(
+        default$: 'limita la sesión de scrcpy, en segundos',
+        alt: ({required String time}) =>
+            '''usa el indicador '--time-limit=${time}' ''',
+      ),
+    ),
+  ),
+  addFlags: AddFlags(
+    title: 'Indicadores adicionales',
+    add: 'Añadir',
+    info: 'evitar usar indicadores que ya son una opción',
+  ),
+  connectLoc: ConnectLoc(
+    title: 'Conectar',
+    withIp: ConnectLocWithIp(
+      label: 'Conectar con IP',
+      connect: 'Conectar',
+      connected: ({required String to}) => '''Conectado a ${to}''',
+    ),
+    withMdns: ConnectLocWithMdns(
+      label: ({required String count}) => '''Dispositivos MDNS (${count})''',
+    ),
+    qrPair: ConnectLocQrPair(
+      label: 'Emparejamiento QR',
+      pair: 'Emparejar dispositivo',
+      status: ConnectLocQrPairStatus(
+        cancelled: 'Emparejamiento cancelado',
+        success: 'Emparejamiento exitoso',
+        failed: 'Emparejamiento fallido',
+      ),
+    ),
+  ),
+  testConfigLoc: TestConfigLoc(
+    title: 'Probar configuración',
+    preview: 'Vista previa del comando',
+  ),
+  scrcpyManagerLoc: ScrcpyManagerLoc(
+    title: 'Administrador de Scrcpy',
+    check: 'Buscar actualizaciones',
+    current: ScrcpyManagerLocCurrent(
+      label: 'Actual',
+      inUse: 'En uso',
+    ),
+    exec: ScrcpyManagerLocExec(
+      label: 'Abrir ubicación del ejecutable',
+      info: 'Modificar con cuidado',
+    ),
+    infoPopup: ScrcpyManagerLocInfoPopup(
+      noUpdate: 'No hay actualizaciones disponibles',
+      error: 'Error al buscar actualizaciones',
+    ),
+    updater: ScrcpyManagerLocUpdater(
+      label: 'Nueva versión disponible',
+      newVersion: 'Nueva versión',
+    ),
+  ),
+  settingsLoc: SettingsLoc(
+    title: 'Ajustes',
+    looks: SettingsLocLooks(
+      label: 'Apariencia',
+      mode: SettingsLocLooksMode(
+        label: 'Modo de tema',
+        value: SettingsLocLooksModeValue(
+          dark: 'Oscuro',
+          light: 'Claro',
+          system: 'Sistema',
+        ),
+      ),
+      accentColor: SettingsLocLooksAccentColor(
+        label: 'Color de acento',
+      ),
+      tintLevel: SettingsLocLooksTintLevel(
+        label: 'Nivel de tinte',
+      ),
+    ),
+    behavior: SettingsLocBehavior(
+      label: 'Comportamiento de la aplicación',
+      language: SettingsLocBehaviorLanguage(
+        label: 'Idioma',
+        info: 'Algunos idiomas son generados por IA',
+      ),
+      minimize: SettingsLocBehaviorMinimize(
+        label: 'Minimizar',
+        value: SettingsLocBehaviorMinimizeValue(
+          tray: 'a la bandeja',
+          taskbar: 'a la barra de tareas',
+        ),
+      ),
+    ),
+  ),
+  buttonLabelLoc: ButtonLabelLoc(
+    ok: 'Aceptar',
+    close: 'Cerrar',
+    cancel: 'Cancelar',
+    stop: 'Detener',
+    testConfig: 'Probar configuración',
+    update: 'Actualizar',
+  ),
+  statusLoc: StatusLoc(
+    failed: 'Fallido',
+    error: 'Error',
+    latest: 'Último',
+  ),
+  commonLoc: CommonLoc(
+    default$: 'Predeterminado',
+    yes: 'Sí',
+    no: 'No',
+    bundled: 'Incluido',
   ),
 );
 final Map<Locale, LocalizationMessages> _languageMap = {
   Locale('en'): en,
+  Locale('ms'): ms,
+  Locale('es'): es,
 };
 
 final Map<Locale, LocalizationMessages> _providersLanguagesMap = {};
@@ -5122,9 +6151,11 @@ List<LocalizationsDelegate> localizationsDelegatesWithProviders(
   ];
 }
 
-// Supported locales: en
+// Supported locales: en, ms, es
 const List<Locale> supportedLocales = [
   Locale('en'),
+  Locale('ms'),
+  Locale('es'),
 ];
 
 List<Locale> supportedLocalesWithProviders(

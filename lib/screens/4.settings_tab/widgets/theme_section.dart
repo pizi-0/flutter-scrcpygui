@@ -17,6 +17,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
   @override
   Widget build(BuildContext context) {
     final looks = ref.watch(settingsProvider.select((sett) => sett.looks));
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return Column(
       spacing: 8,

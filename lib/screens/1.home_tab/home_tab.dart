@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/home.dart';
 
 import 'widgets/bottom_bar/home_bottom_bar.dart';
@@ -16,6 +17,7 @@ class HomeTab extends ConsumerStatefulWidget {
 class _HomeTabState extends ConsumerState<HomeTab> {
   @override
   Widget build(BuildContext context) {
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
     return ScaffoldPage.withPadding(
       bottomBar: const HomeBottomBar(),
       padding: const EdgeInsets.symmetric(horizontal: 16),

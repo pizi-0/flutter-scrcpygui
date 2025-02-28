@@ -1,0 +1,327 @@
+# home tab
+home_loc:
+  title: Inicio
+  devices:
+    label: Dispositivos conectados (${count})
+
+  device_tile:
+    running_instances: En ejecución (${count})
+    context:
+      disconnect: Desconectar
+      to_wireless: A inalámbrico
+      kill_running: Detener instancias en ejecución
+
+  config:
+    label: Iniciar scrcpy
+    new: Crear nueva configuración
+    select: Seleccionar una configuración
+    details: Mostrar detalles
+    start: Iniciar
+
+# error dialog
+no_device_dialog_loc:
+  title: Dispositivo
+  contents: No se ha seleccionado ningún dispositivo.\nSeleccione un dispositivo para editar la configuración de scrcpy.
+
+no_config_dialog_loc:
+  title: Configuración
+  contents: No se ha seleccionado ninguna configuración.\nSeleccione una configuración de scrcpy para iniciar.
+
+## home_tab > device settings screen
+device_settings_loc:
+  title: Ajustes
+  info: Información
+  refresh: Actualizar información
+  rename:
+    label: Renombrar
+    info: Presione [Enter] para aplicar el nombre
+  auto_connect:
+    label: Conexión automática
+    info: Conectar dispositivo inalámbrico automáticamente
+  on_connected:
+    label: Al conectar
+    info: Iniciar (1) instancia de scrcpy con la configuración seleccionada al conectar el dispositivo
+  do_nothing: No hacer nada
+
+  scrcpy_info:
+    fetching: Obteniendo información de scrcpy
+    label: Información de Scrcpy
+    name: Nombre
+    id: ID
+    model: Modelo
+    version: Versión de Android
+    displays: Pantallas
+    cameras: Cámaras
+    video_enc: Codificadores de video
+    audio_enc: Codificadores de audio
+
+## home_tab > config screen
+config_screen_loc:
+  connection_lost: Conexión al dispositivo perdida
+
+## home_tab > config screen > test config
+log_screen_loc:
+  title: Registro de prueba
+  dialog:
+    title: Comando
+
+### config screen > mode section
+mode_section:
+  title: Modo
+  save_folder:
+    label: Carpeta de guardado
+    info: "agrega la ruta de guardado a '--record=rutadeguardado/archivo' "
+
+  main_mode:
+    label: Modo
+    mirror: Reflejar
+    record: Grabar
+    info:
+      default: reflejar o grabar, sin indicador para reflejar
+      alt: "usa el indicador '--record=' "
+
+  scrcpy_mode:
+    both: Ambos
+    audio_only: Solo audio
+    video_only: Solo video
+    info:
+      default: por defecto ambos, sin indicador
+      alt: "usa el indicador '${command}' "
+
+### config screen > video section
+video_section:
+  title: Video
+  displays:
+    label: Pantallas
+    info:
+      default: por defecto la primera disponible, sin indicador; las pantallas virtuales no están listadas
+      alt: "usa el indicador '--display-id=' "
+
+  codec:
+    label: Códec
+    info:
+      default: por defecto h264, sin indicador
+      alt: "usa el indicador '--video-codec=${codec}' "
+
+  encoder:
+    label: Codificador
+    info:
+      default: por defecto el primero disponible, sin indicador
+      alt: "usa el indicador '--video-encoder=${encoder}' "
+
+  format:
+    label: Formato
+    info:
+      default: agrega el formato a '--record=rutadeguardado/archivo${format}' "
+
+  bitrate:
+    label: Tasa de bits
+    info:
+      default: por defecto 8M, sin indicador
+      alt: "usa el indicador '--video-bit-rate=${bitrate}M' "
+
+  fps_limit:
+    label: Límite de FPS
+    info:
+      default: sin indicador a menos que se establezca
+      alt: "usa el indicador '--max-fps=${fps}' "
+
+  resolution_scale:
+    label: Escala de resolución
+    info:
+      default: calculado en base a la resolución del dispositivo, sin indicador a menos que se establezca
+      alt: "usa el indicador '--max-size=${size}' "
+
+### config screen > audio section
+audio_section:
+  title: Audio
+  duplicate:
+    label: Duplicar audio
+    info:
+      default: solo para Android 13 y superior
+      alt: "usa el indicador '--audio-dup' "
+
+  source:
+    label: Fuente
+    info:
+      default: por defecto salida, sin indicador
+      alt: "usa el indicador '${source}' "
+      inCaseOfDup: implicado a 'Reproducción' con '--audio-dup', sin indicador
+
+  codec:
+    label: Códec
+    info:
+      default: por defecto opus, sin indicador
+      alt: "usa el indicador '--audio-codec=${codec}' "
+      isAudioOnly: "Formato: ${format}, requiere Códec: ${codec}"
+
+  encoder:
+    label: Codificador
+    info:
+      default: por defecto el primero disponible, sin indicador
+      alt: "usa el indicador '--audio-encoder=${encoder}' "
+
+  format:
+    label: Formato
+    info:
+      default: agrega el formato a '--record=rutadeguardado/archivo.${format}' "
+
+  bitrate:
+    label: Tasa de bits
+    info:
+      default: por defecto 128k, sin indicador
+      alt: "usa el indicador '--audio-bit-rate=${bitrate}K' "
+
+### config screen > device section
+device_section:
+  title: Dispositivo
+  stay_awake:
+    label: Mantener despierto
+    info:
+      default: evita que el dispositivo se suspenda, solo funciona con conexión usb
+      alt: "usa el indicador '--stay-awake' "
+
+  show_touches:
+    label: Mostrar toques
+    info:
+      default: mostrar toques con el dedo, solo funciona con toques físicos en el dispositivo
+      alt: "usa el indicador '--show-touches' "
+
+  off_display_start:
+    label: Apagar pantalla al iniciar
+    info:
+      default: apagar la pantalla del dispositivo, al iniciar scrcpy
+      alt: "usa el indicador '--turn-screen-off' "
+
+  off_display_exit:
+    label: Apagar pantalla al salir
+    info:
+      default: apagar la pantalla del dispositivo, al salir de scrcpy
+      alt: "usa el indicador '--power-off-on-close' "
+
+  screensaver:
+    label: Deshabilitar protector de pantalla (HOST)
+    info:
+      default: deshabilitar el protector de pantalla
+      alt: "usa el indicador '--disable-screensaver' "
+
+window_section:
+  title: Ventana
+  hide_window:
+    label: Ocultar ventana
+    info:
+      default: iniciar scrcpy sin ventana
+      alt: "usa el indicador '--no-window' "
+
+  borderless:
+    label: Sin bordes
+    info:
+      default: deshabilitar las decoraciones de la ventana
+      alt: "usa el indicador '--window-borderless' "
+
+  always_on_top:
+    label: Siempre encima
+    info:
+      default: la ventana de scrcpy siempre encima
+      alt: "usa el indicador '--always-on-top' "
+
+  time_limit:
+    label: Límite de tiempo
+    info:
+      default: limita la sesión de scrcpy, en segundos
+      alt: "usa el indicador '--time-limit=${time}' "
+
+### config screen > additional flags section
+add_flags:
+  title: Indicadores adicionales
+  add: Añadir
+  info: evitar usar indicadores que ya son una opción
+
+#connect tab
+connect_loc:
+  title: Conectar
+  with_ip:
+    label: Conectar con IP
+    connect: Conectar
+    connected: Conectado a ${to}
+
+  with_mdns:
+    label: Dispositivos MDNS (${count})
+
+  qr_pair:
+    label: Emparejamiento QR
+    pair: Emparejar dispositivo
+    status:
+      cancelled: Emparejamiento cancelado
+      success: Emparejamiento exitoso
+      failed: Emparejamiento fallido
+
+### preview and test section
+test_config_loc:
+  title: Probar configuración
+  preview: Vista previa del comando
+
+#scrcpy manager tab
+scrcpy_manager_loc:
+  title: Administrador de Scrcpy
+  check: Buscar actualizaciones
+  current:
+    label: Actual
+    in_use: En uso
+  exec:
+    label: Abrir ubicación del ejecutable
+    info: Modificar con cuidado
+  info_popup:
+    no_update: No hay actualizaciones disponibles
+    error: Error al buscar actualizaciones
+  updater:
+    label: Nueva versión disponible
+    new_version: Nueva versión
+
+#settings tab
+settings_loc:
+  title: Ajustes
+  looks:
+    label: Apariencia
+    mode:
+      label: Modo de tema
+      value:
+        dark: Oscuro
+        light: Claro
+        system: Sistema
+    accent_color:
+      label: Color de acento
+    tint_level:
+      label: Nivel de tinte
+
+  behavior:
+    label: Comportamiento de la aplicación
+    language:
+      label: Idioma
+      info: Algunos idiomas son generados por IA
+    minimize:
+      label: Minimizar
+      value:
+        tray: a la bandeja
+        taskbar: a la barra de tareas
+
+button_label_loc:
+  ok: Aceptar
+  close: Cerrar
+  cancel: Cancelar
+  stop: Detener
+  test_config: Probar configuración
+  update: Actualizar
+
+# status
+status_loc:
+  failed: Fallido
+  error: Error
+  latest: Último
+
+# common
+common_loc:
+  default: Predeterminado
+  yes: Sí
+  no: No
+  bundled: Incluido

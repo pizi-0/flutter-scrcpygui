@@ -71,10 +71,20 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final looks = ref.watch(settingsProvider.select((sett) => sett.looks));
+    final settings = ref.watch(settingsProvider);
+    final looks = settings.looks;
+    final behaviour = settings.behaviour;
 
     return FluentApp.router(
-      supportedLocales: supportedLocales,
+      supportedLocales: const [
+        ...supportedLocales,
+        ...FluentLocalizations.supportedLocales
+      ],
+      locale: Locale(behaviour.languageCode, ''),
+      localizationsDelegates: [
+        ...localizationsDelegates,
+        FluentLocalizations.delegate
+      ],
       routeInformationParser: _router.routeInformationParser,
       routerDelegate: _router.routerDelegate,
       routeInformationProvider: _router.routeInformationProvider,

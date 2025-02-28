@@ -165,6 +165,7 @@ final defaultTheme = AppTheme(
 );
 
 final defaultAppBehaviour = AppBehaviour(
+  languageCode: 'en',
   killNoWindowInstance: true,
   traySupport: true,
   toastEnabled: true,

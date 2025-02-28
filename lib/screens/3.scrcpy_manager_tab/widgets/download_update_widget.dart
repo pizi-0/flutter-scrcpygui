@@ -2,6 +2,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:dio/dio.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/utils/update_utils.dart';
 
 class DownloadUpdate extends ConsumerStatefulWidget {
@@ -75,7 +76,7 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
                     children: [
                       Icon(FluentIcons.download,
                           color: theme.accentColor.basedOnLuminance()),
-                      const Text('Update')
+                      Text(el.buttonLabelLoc.update)
                           .textStyle(theme.typography.caption!)
                           .textColor(theme.accentColor.basedOnLuminance()),
                     ],

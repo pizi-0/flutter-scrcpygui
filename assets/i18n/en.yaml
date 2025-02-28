@@ -81,7 +81,7 @@ mode_section:
     record: Record
     info: 
       default: mirror or record, no flag for mirror
-      alt: "uses '--record=' flag"
+      alt: "uses '--record=' flag "
   
   scrcpy_mode:
     both: Both
@@ -89,7 +89,7 @@ mode_section:
     video_only: Video only
     info:
       default: defaults to both, no flag
-      alt: "uses '${command}' flag"
+      alt: "uses '${command}' flag "
 
 ### config screen > video section
 video_section:
@@ -98,19 +98,19 @@ video_section:
     label: Displays
     info: 
       default: defaults to first available, no flag; virtual displays is not listed
-      alt: "uses '--display-id=' flag"
+      alt: "uses '--display-id=' flag "
 
   codec:
     label: Codec
     info: 
       default: defaults to h264, no flag
-      alt: "uses '--video-codec=${codec}' flag"
+      alt: "uses '--video-codec=${codec}' flag "
 
   encoder:
     label: Encoder
     info:
       default: defaults to first available, no flag
-      alt: "uses '--video-encoder=${encoder}' flag"
+      alt: "uses '--video-encoder=${encoder}' flag "
 
   format:
     label: Format
@@ -121,19 +121,19 @@ video_section:
     label: Bitrate
     info: 
       default: defaults to 8M, no flag
-      alt: "uses '--video-bit-rate=${bitrate}M' flag"
+      alt: "uses '--video-bit-rate=${bitrate}M' flag "
 
   fps_limit:
     label: FPS limit
     info:
       default: no flag unless set
-      alt: "uses '--max-fps=${fps}' flag"
+      alt: "uses '--max-fps=${fps}' flag "
 
   resolution_scale: 
     label: Resolution scale
     info: 
       default: calculated based on device's resolution, no flag unless set
-      alt: "uses '--max-size=${size}' flag"
+      alt: "uses '--max-size=${size}' flag "
 
 ### config screen > audio section
 audio_section:
@@ -142,27 +142,27 @@ audio_section:
     label: Duplicate audio
     info: 
       default: only for Android 13 and above
-      alt: "uses '--audio-dup' flag"
+      alt: "uses '--audio-dup' flag "
 
   source:
     label: Source
     info:
       default: defaults to output, no flag
-      alt: "uses '${source}' flag"
+      alt: "uses '${source}' flag "
       inCaseOfDup: implied to 'Playback' with '--audio-dup', no flag
 
   codec:
     label: Codec
     info: 
       default: defaults to opus, no flag
-      alt: "uses '--audio-codec=${codec}' flag"
+      alt: "uses '--audio-codec=${codec}' flag "
       isAudioOnly: "Format: ${format}, requires Codec: ${codec}"
 
   encoder:
     label: Encoder
     info:
       default: defaults to first available, no flag
-      alt: "uses '--audio-encoder=${encoder}' flag"
+      alt: "uses '--audio-encoder=${encoder}' flag "
 
   format:
     label: Format
@@ -173,7 +173,7 @@ audio_section:
     label: Bitrate
     info: 
       default: defaults to 128k, no flag
-      alt: "uses '--audio-bit-rate=${bitrate}K' flag"
+      alt: "uses '--audio-bit-rate=${bitrate}K' flag "
 
 ### config screen > device section
 device_section:
@@ -182,31 +182,31 @@ device_section:
     label: Stay awake
     info:
       default: prevent the device from sleeping, only works with usb connection
-      alt: uses '--stay-awake' flag
+      alt: "uses '--stay-awake' flag "
 
   show_touches:
     label: Show touches
     info:
       default: show finger touches, only works with physical touches on the device
-      alt: uses '--show-touches' flag
+      alt: "uses '--show-touches' flag "
   
   off_display_start:
     label: Turn off display on start
     info:
       default: turn device display off, on scrcpy start
-      alt: uses '--turn-screen-off' flag
+      alt: "uses '--turn-screen-off' flag "
 
   off_display_exit:
     label: Turn off display on exit
     info:
       default: turn device display off, on scrcpy exit
-      alt: uses '--power-off-on-close' flag
+      alt: "uses '--power-off-on-close' flag "
 
   screensaver:
     label: Disable screensaver (HOST)
     info:
       default: disable screensaver
-      alt: uses '--disable-screensaver' flag
+      alt: "uses '--disable-screensaver' flag "
 
 
 window_section:
@@ -215,25 +215,25 @@ window_section:
     label: Hide window
     info:
       default: start scrcpy with no window
-      alt: uses '--no-window' flag
+      alt: "uses '--no-window' flag "
 
   borderless:
     label: Borderless
     info:
       default: disable window decorations
-      alt: uses '--window-borderless' flag
+      alt: "uses '--window-borderless' flag "
   
   always_on_top:
     label: Always on top
     info:
       default: scrcpy window always on top
-      alt: uses '--always-on-top' flag
+      alt: "uses '--always-on-top' flag "
 
   time_limit:
     label: Time limit
     info:
       default: limits scrcpy session, in seconds
-      alt: uses '--time-limit=${time}' flag
+      alt: "uses '--time-limit=${time}' flag "
 
 ### config screen > additional flags section
 add_flags:
@@ -244,11 +244,12 @@ add_flags:
 
 
 #connect tab
-connect:
+connect_loc:
   title: Connect
   with_ip: 
     label: Connect with IP
     connect: Connect
+    connected: Connected to ${to}
 
   with_mdns: 
     label: MDNS devices (${count})
@@ -256,6 +257,10 @@ connect:
   qr_pair: 
     label: QR pairing
     pair: Pair device
+    status:
+      cancelled: Pairing cancelled
+      success: Pairing successful
+      failed: Pairing failed
 
 
 ### preview and test section
@@ -267,13 +272,20 @@ test_config_loc:
 #scrcpy manager tab
 scrcpy_manager_loc:
   title: Scrcpy Manager
+  check: Check for update
   current:
     label: Current
     in_use: In-use
-    latest: latest
-    exec: 
-      open: Open executable location
-      warning: Modify with care
+  exec: 
+    label: Open executable location
+    info: Modify with care
+  info_popup:
+    no_update: No update available
+    error: Error checking for update
+  updater:
+    label: New version available
+    new_version: New version
+   
 
 
 
@@ -293,8 +305,11 @@ settings_loc:
     tint_level: 
       label: Tint level
   
-  behaviour: 
-    label: App behaviour
+  behavior: 
+    label: App behavior
+    language:
+      label: Language
+      info: Some languages are AI generated
     minimize: 
       label: Minimize
       value: 
@@ -307,13 +322,17 @@ button_label_loc:
   cancel: Cancel
   stop: Stop
   test_config: Test config
+  update: Update
 
 # status 
 status_loc: 
   failed: Failed
+  error: Error
+  latest: Latest
 
 # common
 common_loc:
   default: Default
   yes: Yes
   no: No
+  bundled: Bundled

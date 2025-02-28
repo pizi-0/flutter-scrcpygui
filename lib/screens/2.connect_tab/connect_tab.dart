@@ -2,8 +2,10 @@
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 
 import 'package:scrcpygui/providers/bonsoir_devices.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 
 import 'widgets/ip_connect.dart';
@@ -24,6 +26,7 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
   @override
   Widget build(BuildContext context) {
     final bonsoirDevices = ref.watch(bonsoirDeviceProvider);
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return ScaffoldPage.withPadding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -33,9 +36,9 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Connect'),
+              Text(el.connectLoc.title),
               Tooltip(
-                message: 'QR pairing',
+                message: el.connectLoc.qrPair.label,
                 child: IconButton(
                   icon: const Padding(
                     padding: EdgeInsets.all(3.0),
@@ -54,10 +57,13 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
                         child: ((res as bool?) == null)
-                            ? InfoLabel(label: 'Pairing cancelled')
+                            ? InfoLabel(
+                                label: el.connectLoc.qrPair.status.cancelled)
                             : (res as bool)
-                                ? InfoLabel(label: 'Pairing successful')
-                                : InfoLabel(label: 'Pairing failed'),
+                                ? InfoLabel(
+                                    label: el.connectLoc.qrPair.status.success)
+                                : InfoLabel(
+                                    label: el.connectLoc.qrPair.status.failed),
                       ),
                     );
                   },
@@ -70,10 +76,11 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const ConfigCustom(title: 'Connect with IP'),
+          ConfigCustom(title: el.connectLoc.withIp.label),
           const IPConnect(),
           ConfigCustom(
-              title: 'MDNS devices (${bonsoirDevices.length})',
+              title: el.connectLoc.withMdns
+                  .label(count: '${bonsoirDevices.length}'),
               child:
                   const SizedBox.square(dimension: 10, child: ProgressRing())),
           const Expanded(

@@ -4,6 +4,7 @@ import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:multicast_dns/multicast_dns.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -43,7 +44,7 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
   @override
   Widget build(BuildContext context) {
     return ContentDialog(
-      title: const Text('Pair device'),
+      title: Text(el.connectLoc.qrPair.pair),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
@@ -82,7 +83,7 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
       ),
       actions: [
         Button(
-          child: const Text('Close'),
+          child: Text(el.buttonLabelLoc.close),
           onPressed: () => context.pop(),
         )
       ],

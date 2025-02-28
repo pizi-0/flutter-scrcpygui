@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/screens/4.settings_tab/widgets/behaviour_section.dart';
 
+import '../../providers/settings_provider.dart';
 import 'widgets/theme_section.dart';
 
 class SettingsTab extends ConsumerStatefulWidget {
@@ -17,6 +18,8 @@ class SettingsTab extends ConsumerStatefulWidget {
 class _SettingsTabState extends ConsumerState<SettingsTab> {
   @override
   Widget build(BuildContext context) {
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
+
     return ScaffoldPage.scrollable(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       header: Padding(

@@ -11,6 +11,7 @@ import 'package:scrcpygui/widgets/config_tiles.dart';
 
 import '../../../../providers/adb_provider.dart';
 import '../../../../providers/config_provider.dart';
+import '../../../../providers/settings_provider.dart';
 import '../../../../utils/const.dart';
 import '../../../../utils/scrcpy_utils.dart';
 import 'widgets/config_combobox_item.dart';
@@ -31,6 +32,7 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
   Widget build(BuildContext context) {
     final allconfigs = ref.watch(configsProvider);
     final selectedConfig = ref.watch(selectedConfigProvider);
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

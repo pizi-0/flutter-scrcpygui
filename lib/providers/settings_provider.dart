@@ -36,6 +36,13 @@ class SettingsNotifier extends Notifier<AppSettings> {
     state = state.copyWith(
         behaviour: currentBehaviour.copyWith(minimizeAction: behaviour));
   }
+
+  changeLanguage(String languageCode) {
+    var currentBehaviour = state.behaviour;
+
+    state = state.copyWith(
+        behaviour: currentBehaviour.copyWith(languageCode: languageCode));
+  }
 }
 
 final settingsProvider =

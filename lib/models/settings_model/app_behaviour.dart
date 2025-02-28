@@ -17,12 +17,14 @@ enum MinimizeAction implements NamedEnum {
 }
 
 class AppBehaviour {
+  final String languageCode;
   final bool killNoWindowInstance;
   final bool traySupport;
   final bool toastEnabled;
   final MinimizeAction minimizeAction;
 
   AppBehaviour({
+    required this.languageCode,
     required this.killNoWindowInstance,
     required this.traySupport,
     required this.toastEnabled,
@@ -31,6 +33,7 @@ class AppBehaviour {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'languageCode': languageCode,
       'killNoWindowInstance': killNoWindowInstance,
       'traySupport': traySupport,
       'toastEnabled': toastEnabled,
@@ -40,6 +43,7 @@ class AppBehaviour {
 
   factory AppBehaviour.fromMap(Map<String, dynamic> map) {
     return AppBehaviour(
+      languageCode: map['languageCode'] ?? 'en',
       killNoWindowInstance: map['killNoWindowInstance'] ?? true,
       traySupport: map['traySupport'] ?? true,
       toastEnabled: map['toastEnabled'] ?? true,
@@ -59,8 +63,10 @@ class AppBehaviour {
     bool? traySupport,
     bool? toastEnabled,
     MinimizeAction? minimizeAction,
+    String? languageCode,
   }) {
     return AppBehaviour(
+      languageCode: languageCode ?? this.languageCode,
       killNoWindowInstance: killNoWindowInstance ?? this.killNoWindowInstance,
       traySupport: traySupport ?? this.traySupport,
       toastEnabled: toastEnabled ?? this.toastEnabled,

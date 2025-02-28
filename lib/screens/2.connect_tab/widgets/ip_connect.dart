@@ -2,10 +2,12 @@
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../../../db/db.dart';
 import '../../../providers/adb_provider.dart';
+import '../../../providers/settings_provider.dart';
 import '../../../utils/adb_utils.dart';
 import '../../1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
 
@@ -31,6 +33,7 @@ class _IPConnectState extends ConsumerState<IPConnect>
   Widget build(BuildContext context) {
     super.build(context);
     final ipHistory = ref.watch(ipHistoryProvider);
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return Card(
       child: Row(
@@ -38,7 +41,8 @@ class _IPConnectState extends ConsumerState<IPConnect>
         children: [
           Expanded(
             child: AutoSuggestBox(
-              placeholder: 'Ip:port(default=5555)',
+              placeholder:
+                  'Ip:port(${el.commonLoc.default$.toLowerCase()}=5555)',
               autofocus: false,
               controller: ipInput,
               noResultsFoundBuilder: (context) => const SizedBox(),
@@ -51,9 +55,9 @@ class _IPConnectState extends ConsumerState<IPConnect>
             onPressed: loading ? null : _connect,
             child: loading
                 ? const SizedBox.square(dimension: 22, child: ProgressRing())
-                : const Padding(
-                    padding: EdgeInsets.all(2.0),
-                    child: Text('Connect'),
+                : Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Text(el.connectLoc.withIp.connect),
                   ),
           ),
         ],
@@ -78,8 +82,8 @@ class _IPConnectState extends ConsumerState<IPConnect>
 
         await Db.saveWirelessHistory(ref.read(ipHistoryProvider));
         displayInfoBar(context,
-            builder: (context, close) =>
-                InfoLabel(label: 'Connected to ${ipInput.text}'));
+            builder: (context, close) => InfoLabel(
+                label: el.connectLoc.withIp.connected(to: ipInput.text)));
       }
 
       if (!res.success) {
@@ -87,7 +91,7 @@ class _IPConnectState extends ConsumerState<IPConnect>
           barrierDismissible: true,
           context: context,
           builder: (context) => ErrorDialog(
-            title: 'Error',
+            title: el.statusLoc.error,
             content: [
               Text(
                 res.errorMessage.replaceAtIndex(
@@ -106,8 +110,8 @@ class _IPConnectState extends ConsumerState<IPConnect>
 
       showDialog(
         context: context,
-        builder: (context) =>
-            ErrorDialog(title: 'Error', content: [Text(e.toString())]),
+        builder: (context) => ErrorDialog(
+            title: el.statusLoc.error, content: [Text(e.toString())]),
       );
     }
 

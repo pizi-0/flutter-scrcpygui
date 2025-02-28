@@ -1,0 +1,327 @@
+# home tab
+home_loc:
+  title: Laman Utama
+  devices:
+    label: Peranti yang Disambungkan (${count})
+
+  device_tile:
+    running_instances: Berjalan (${count})
+    context:
+      disconnect: Putuskan Sambungan
+      to_wireless: Ke Tanpa Wayar
+      kill_running: Hentikan Contoh yang Berjalan
+
+  config:
+    label: Mulakan scrcpy
+    new: Cipta Konfigurasi Baharu
+    select: Pilih Konfigurasi
+    details: Tunjukkan Butiran
+    start: Mula
+
+# error dialog
+no_device_dialog_loc:
+  title: Peranti
+  contents: Tiada peranti dipilih. \nPilih peranti untuk edit konfigurasi scrcpy.
+
+no_config_dialog_loc:
+  title: Konfigurasi
+  contents: Tiada konfigurasi dipilih.\nPilih konfigurasi scrcpy untuk dimulakan.
+
+## home_tab > device settings screen
+device_settings_loc:
+  title: Tetapan
+  info: Maklumat
+  refresh: Segarkan Maklumat
+  rename:
+    label: Namakan Semula
+    info: Tekan [Enter] untuk menggunakan nama
+  auto_connect:
+    label: Sambung Automatik
+    info: Sambung peranti tanpa wayar secara automatik
+  on_connected:
+    label: Semasa Disambungkan
+    info: Mulakan (1) contoh scrcpy dengan konfigurasi yang dipilih pada sambungan peranti
+  do_nothing: Jangan Lakukan Apa-apa
+
+  scrcpy_info:
+    fetching: Mendapatkan maklumat scrcpy
+    label: Maklumat Scrcpy
+    name: Nama
+    id: ID
+    model: Model
+    version: Versi Android
+    displays: Paparan
+    cameras: Kamera
+    video_enc: Pengekod Video
+    audio_enc: Pengekod Audio
+
+## home_tab > config screen
+config_screen_loc:
+  connection_lost: Sambungan peranti terputus
+
+## home_tab > config screen > test config
+log_screen_loc:
+  title: Log Ujian
+  dialog:
+    title: Perintah
+
+### config screen > mode section
+mode_section:
+  title: Mod
+  save_folder:
+    label: Folder Simpan
+    info: "menambah laluan simpan ke '--record=laluan_simpan/fail' "
+
+  main_mode:
+    label: Mod
+    mirror: Cerminan
+    record: Rakam
+    info:
+      default: cerminan atau rakam, tiada bendera untuk cerminan
+      alt: "menggunakan bendera '--record=' "
+
+  scrcpy_mode:
+    both: Kedua-duanya
+    audio_only: Audio Sahaja
+    video_only: Video Sahaja
+    info:
+      default: lalai kepada kedua-duanya, tiada bendera
+      alt: "menggunakan bendera '${command}' "
+
+### config screen > video section
+video_section:
+  title: Video
+  displays:
+    label: Paparan
+    info:
+      default: lalai kepada yang pertama tersedia, tiada bendera; paparan maya tidak disenaraikan
+      alt: "menggunakan bendera '--display-id=' "
+
+  codec:
+    label: Codec
+    info:
+      default: lalai kepada h264, tiada bendera
+      alt: "menggunakan bendera '--video-codec=${codec}' "
+
+  encoder:
+    label: Pengekod
+    info:
+      default: lalai kepada yang pertama tersedia, tiada bendera
+      alt: "menggunakan bendera '--video-encoder=${encoder}' "
+
+  format:
+    label: Format
+    info:
+      default: menambah format ke '--record=laluan_simpan/fail${format}' "
+
+  bitrate:
+    label: Kadar Bit
+    info:
+      default: lalai kepada 8M, tiada bendera
+      alt: "menggunakan bendera '--video-bit-rate=${bitrate}M' "
+
+  fps_limit:
+    label: Had FPS
+    info:
+      default: tiada bendera kecuali ditetapkan
+      alt: "menggunakan bendera '--max-fps=${fps}' "
+
+  resolution_scale:
+    label: Skala Resolusi
+    info:
+      default: dikira berdasarkan resolusi peranti, tiada bendera kecuali ditetapkan
+      alt: "menggunakan bendera '--max-size=${size}' "
+
+### config screen > audio section
+audio_section:
+  title: Audio
+  duplicate:
+    label: Gandakan Audio
+    info:
+      default: hanya untuk Android 13 ke atas
+      alt: "menggunakan bendera '--audio-dup' "
+
+  source:
+    label: Sumber
+    info:
+      default: lalai kepada output, tiada bendera
+      alt: "menggunakan bendera '${source}' "
+      inCaseOfDup: tersirat kepada 'Main Balik' dengan '--audio-dup', tiada bendera
+
+  codec:
+    label: Codec
+    info:
+      default: lalai kepada opus, tiada bendera
+      alt: "menggunakan bendera '--audio-codec=${codec}' "
+      isAudioOnly: "Format: ${format}, memerlukan Codec: ${codec}"
+
+  encoder:
+    label: Pengekod
+    info:
+      default: lalai kepada yang pertama tersedia, tiada bendera
+      alt: "menggunakan bendera '--audio-encoder=${encoder}' "
+
+  format:
+    label: Format
+    info:
+      default: menambah format ke '--record=laluan_simpan/fail.${format}' "
+
+  bitrate:
+    label: Kadar Bit
+    info:
+      default: lalai kepada 128k, tiada bendera
+      alt: "menggunakan bendera '--audio-bit-rate=${bitrate}K' "
+
+### config screen > device section
+device_section:
+  title: Peranti
+  stay_awake:
+    label: Kekal Berjaga
+    info:
+      default: menghalang peranti daripada tidur, hanya berfungsi dengan sambungan usb
+      alt: "menggunakan bendera '--stay-awake' "
+
+  show_touches:
+    label: Tunjukkan Sentuhan
+    info:
+      default: tunjukkan sentuhan jari, hanya berfungsi dengan sentuhan fizikal pada peranti
+      alt: "menggunakan bendera '--show-touches' "
+
+  off_display_start:
+    label: Matikan Paparan Semasa Mula
+    info:
+      default: matikan paparan peranti, semasa permulaan scrcpy
+      alt: "menggunakan bendera '--turn-screen-off' "
+
+  off_display_exit:
+    label: Matikan Paparan Semasa Keluar
+    info:
+      default: matikan paparan peranti, semasa scrcpy keluar
+      alt: "menggunakan bendera '--power-off-on-close' "
+
+  screensaver:
+    label: Lumpuhkan Penjimat Skrin (HOST)
+    info:
+      default: lumpuhkan penjimat skrin
+      alt: "menggunakan bendera '--disable-screensaver' "
+
+window_section:
+  title: Tetingkap
+  hide_window:
+    label: Sembunyikan Tetingkap
+    info:
+      default: mulakan scrcpy tanpa tetingkap
+      alt: "menggunakan bendera '--no-window' "
+
+  borderless:
+    label: Tanpa Sempadan
+    info:
+      default: lumpuhkan hiasan tetingkap
+      alt: "menggunakan bendera '--window-borderless' "
+
+  always_on_top:
+    label: Sentiasa di Atas
+    info:
+      default: tetingkap scrcpy sentiasa di atas
+      alt: "menggunakan bendera '--always-on-top' "
+
+  time_limit:
+    label: Had Masa
+    info:
+      default: mengehadkan sesi scrcpy, dalam saat
+      alt: "menggunakan bendera '--time-limit=${time}' "
+
+### config screen > additional flags section
+add_flags:
+  title: Bendera Tambahan
+  add: Tambah
+  info: elakkan menggunakan bendera yang sudah ada pilihan
+
+#connect tab
+connect_loc:
+  title: Sambung
+  with_ip:
+    label: Sambung dengan IP
+    connect: Sambung
+    connected: Disambungkan ke ${to}
+
+  with_mdns:
+    label: Peranti MDNS (${count})
+
+  qr_pair:
+    label: Pemasangan QR
+    pair: Pasangkan Peranti
+    status:
+      cancelled: Pemasangan dibatalkan
+      success: Pemasangan berjaya
+      failed: Pemasangan gagal
+
+### preview and test section
+test_config_loc:
+  title: Uji Konfigurasi
+  preview: Pratonton Arahan
+
+#scrcpy manager tab
+scrcpy_manager_loc:
+  title: Pengurus Scrcpy
+  check: Semak Kemas Kini
+  current:
+    label: Semasa
+    in_use: Sedang Digunakan
+  exec:
+    label: Buka Lokasi Boleh Laksana
+    info: Ubah dengan berhati-hati
+  info_popup:
+    no_update: Tiada kemas kini tersedia
+    error: Ralat semasa menyemak kemas kini
+  updater:
+    label: Versi Baharu Tersedia
+    new_version: Versi Baharu
+
+#settings tab
+settings_loc:
+  title: Tetapan
+  looks:
+    label: Rupa
+    mode:
+      label: Mod Tema
+      value:
+        dark: Gelap
+        light: Cerah
+        system: Sistem
+    accent_color:
+      label: Warna Aksen
+    tint_level:
+      label: Tahap Warna
+
+  behavior:
+    label: Tingkah Laku Aplikasi
+    language:
+      label: Bahasa
+      info: Sesetengah bahasa dijana oleh AI
+    minimize:
+      label: Kecilkan
+      value:
+        tray: ke dulang
+        taskbar: ke bar tugas
+
+button_label_loc:
+  ok: Okey
+  close: Tutup
+  cancel: Batal
+  stop: Hentikan
+  test_config: Uji Konfigurasi
+  update: Kemas Kini
+
+# status
+status_loc:
+  failed: Gagal
+  error: Ralat
+  latest: Terkini
+
+# common
+common_loc:
+  default: Lalai
+  yes: Ya
+  no: Tidak
+  bundled: Terangkum
