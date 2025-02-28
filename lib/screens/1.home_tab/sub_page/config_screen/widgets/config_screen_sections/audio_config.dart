@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
@@ -44,7 +45,9 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const ConfigCustom(title: 'Audio', child: Icon(FluentIcons.speakers)),
+        ConfigCustom(
+            title: el.audioSection.title,
+            child: const Icon(FluentIcons.speakers)),
         Card(
           padding: EdgeInsets.zero,
           child: Column(
@@ -95,20 +98,20 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
                             .copyWith(audioSource: AudioSource.output)));
               }
             },
-      items: const [
+      items: [
         ComboBoxItem(
           value: true,
-          child: Text('Yes'),
+          child: Text(el.common.yes),
         ),
         ComboBoxItem(
           value: false,
-          child: Text('No'),
+          child: Text(el.common.no),
         ),
       ],
-      label: 'Duplicate audio *',
+      label: el.audioSection.duplicate.label,
       subtitle: selectedConfig.audioOptions.duplicateAudio
-          ? "uses '--audio-dup' flag"
-          : 'only for Android 13 and above',
+          ? el.audioSection.duplicate.info.alt
+          : el.audioSection.duplicate.info.default$,
     );
   }
 
@@ -122,13 +125,15 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
               ? s.value != 'playback'
               : true)
           .toList(),
-      title: 'Source',
+      title: el.audioSection.source.label,
       showinfo: showInfo,
       subtitle: selectedConfig.audioOptions.audioSource == AudioSource.output
-          ? "defaults to output, no flag"
+          ? el.audioSection.source.info.default$
           : selectedConfig.audioOptions.duplicateAudio
-              ? "implied to 'Playback' with '--audio-dup', no flag"
-              : "uses '${selectedConfig.audioOptions.audioSource.command.trimAll}'",
+              ? el.audioSection.source.info.inCaseOfDup
+              : el.audioSection.source.info.alt(
+                  source:
+                      selectedConfig.audioOptions.audioSource.command.trimAll),
       initialValue: selectedConfig.audioOptions.audioSource,
       onSelected: selectedConfig.audioOptions.duplicateAudio
           ? null
@@ -152,7 +157,9 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
             selectedConfig.scrcpyMode == ScrcpyMode.audioOnly)
           ConfigDropdownEnum<AudioFormat>(
             items: AudioFormat.values,
-            title: 'Format',
+            title: el.audioSection.format.label,
+            subtitle: el.audioSection.format.info.default$(
+                format: selectedConfig.audioOptions.audioFormat.value),
             showinfo: showInfo,
             initialValue: selectedConfig.audioOptions.audioFormat,
             toTitleCase: false,
@@ -178,12 +185,15 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
             if (selectedConfig.audioOptions.audioFormat != AudioFormat.m4a)
               const ComboBoxItem(value: 'raw', child: Text('raw'))
           ],
-          label: 'Codec *',
+          label: el.audioSection.codec.label,
           subtitle: _isRecordingAudioOnly(selectedConfig)
-              ? 'Format: ${selectedConfig.audioOptions.audioFormat.value}, requires Codec: ${selectedConfig.audioOptions.audioCodec}'
+              ? el.audioSection.codec.info.isAudioOnly(
+                  codec: selectedConfig.audioOptions.audioCodec,
+                  format: selectedConfig.audioOptions.audioFormat.value)
               : selectedConfig.audioOptions.audioCodec == 'opus'
-                  ? 'defaults to opus, no flag'
-                  : "uses '--audio-codec=${selectedConfig.audioOptions.audioCodec}'",
+                  ? el.audioSection.codec.info.default$
+                  : el.audioSection.codec.info
+                      .alt(codec: selectedConfig.audioOptions.audioCodec),
         ),
         const Divider(),
         ConfigDropdownOthers(
@@ -196,9 +206,9 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
                         state.audioOptions.copyWith(audioEncoder: value)));
           },
           items: [
-            const ComboBoxItem(
+            ComboBoxItem(
               value: 'default',
-              child: Text('Default'),
+              child: Text(el.common.default$),
             ),
             if (selectedConfig.audioOptions.audioCodec != 'raw')
               ...info.audioEncoder
@@ -213,10 +223,11 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
                     ),
                   )
           ],
-          label: 'Encoder *',
+          label: el.audioSection.encoder.label,
           subtitle: selectedConfig.audioOptions.audioEncoder == 'default'
-              ? 'defaults to first available, no flag'
-              : "uses '--audio-encoder=${selectedConfig.audioOptions.audioEncoder}' flag",
+              ? el.audioSection.encoder.info.default$
+              : el.audioSection.encoder.info
+                  .alt(encoder: selectedConfig.audioOptions.audioEncoder),
         ),
       ],
     );
@@ -275,32 +286,33 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
     final showInfo = ref.watch(configScreenShowInfo);
 
     return ConfigUserInput(
-      label: 'Bitrate',
-      showinfo: showInfo,
-      controller: audioBitrateController,
-      unit: 'K',
-      onChanged: (value) {
-        if (value.isEmpty) {
-          ref.read(configScreenConfig.notifier).update((state) => state = state!
-              .copyWith(
-                  audioOptions:
-                      state.audioOptions.copyWith(audioBitrate: 128)));
-          audioBitrateController.text = '128';
-          setState(() {});
-        } else {
-          ref.read(configScreenConfig.notifier).update((state) => state = state!
-              .copyWith(
-                  audioOptions: state.audioOptions
-                      .copyWith(audioBitrate: int.parse(value))));
-        }
-      },
-      onTap: () => setState(() {
-        audioBitrateController.selection = TextSelection(
-            baseOffset: 0, extentOffset: audioBitrateController.text.length);
-      }),
-      subtitle: audioBitrateController.text == '128'
-          ? 'defaults to 128k, no flag'
-          : "uses '--audio-bit-rate=${audioBitrateController.text.trim()}K'",
-    );
+        label: el.audioSection.bitrate.label,
+        showinfo: showInfo,
+        controller: audioBitrateController,
+        unit: 'K',
+        onChanged: (value) {
+          if (value.isEmpty) {
+            ref.read(configScreenConfig.notifier).update((state) => state =
+                state!.copyWith(
+                    audioOptions:
+                        state.audioOptions.copyWith(audioBitrate: 128)));
+            audioBitrateController.text = '128';
+            setState(() {});
+          } else {
+            ref.read(configScreenConfig.notifier).update((state) => state =
+                state!.copyWith(
+                    audioOptions: state.audioOptions
+                        .copyWith(audioBitrate: int.parse(value))));
+          }
+        },
+        onTap: () => setState(() {
+              audioBitrateController.selection = TextSelection(
+                  baseOffset: 0,
+                  extentOffset: audioBitrateController.text.length);
+            }),
+        subtitle: audioBitrateController.text == '128'
+            ? el.audioSection.bitrate.info.default$
+            : el.audioSection.bitrate.info
+                .alt(bitrate: audioBitrateController.text.trim()));
   }
 }

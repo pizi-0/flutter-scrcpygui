@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 
 import '../../../../../../providers/config_provider.dart';
 import '../../../../../../widgets/config_tiles.dart';
@@ -36,7 +37,9 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const ConfigCustom(title: 'Window', child: Icon(FluentIcons.favicon)),
+        ConfigCustom(
+            title: el.windowSection.title,
+            child: const Icon(FluentIcons.favicon)),
         Card(
           padding: EdgeInsets.zero,
           child: Column(
@@ -45,11 +48,11 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
             children: [
               ConfigCustom(
                 childBackgroundColor: Colors.transparent,
-                title: 'Hide window',
+                title: el.windowSection.hideWindow.label,
                 showinfo: showInfo,
                 subtitle: selectedConfig.windowOptions.noWindow
-                    ? "uses '--no-window' flag"
-                    : "start scrcpy with no window",
+                    ? el.windowSection.hideWindow.info.alt
+                    : el.windowSection.hideWindow.info.default$,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Checkbox(
@@ -79,10 +82,10 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
               ConfigCustom(
                 showinfo: showInfo,
                 childBackgroundColor: Colors.transparent,
-                title: 'Borderless',
+                title: el.windowSection.borderless.label,
                 subtitle: selectedConfig.windowOptions.noBorder
-                    ? "uses '--window-borderless' flag"
-                    : 'disable window decorations',
+                    ? el.windowSection.borderless.info.alt
+                    : el.windowSection.borderless.info.default$,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Checkbox(
@@ -100,10 +103,10 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
               ConfigCustom(
                 showinfo: showInfo,
                 childBackgroundColor: Colors.transparent,
-                title: 'Always on top',
+                title: el.windowSection.alwaysOnTop.label,
                 subtitle: selectedConfig.windowOptions.alwaysOntop
-                    ? "uses '--always-on-top' flag"
-                    : 'scrcpy window always on top',
+                    ? el.windowSection.alwaysOnTop.info.alt
+                    : el.windowSection.alwaysOnTop.info.default$,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Checkbox(
@@ -120,11 +123,12 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
               const Divider(),
               ConfigUserInput(
                   showinfo: showInfo,
-                  label: 'Time limit',
+                  label: el.windowSection.timeLimit.label,
                   controller: timeLimitController,
                   subtitle: timeLimitController.text == '-'
-                      ? 'limits scrcpy session, in seconds'
-                      : "uses '--time-limit=${timeLimitController.text.trim()}' flag",
+                      ? el.windowSection.timeLimit.info.default$
+                      : el.windowSection.timeLimit.info
+                          .alt(time: timeLimitController.text.trim()),
                   unit: 's',
                   onTap: () => setState(() {
                         timeLimitController.selection = TextSelection(

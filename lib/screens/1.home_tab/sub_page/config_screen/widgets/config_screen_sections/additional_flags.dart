@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/available_flags.dart';
 
 import '../../../../../../providers/config_provider.dart';
@@ -36,9 +37,9 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const ConfigCustom(
-          title: 'Additional flags',
-          child: Icon(FluentIcons.flag),
+        ConfigCustom(
+          title: el.addFlags.title,
+          child: const Icon(FluentIcons.flag),
         ),
         Card(
           child: Column(
@@ -46,7 +47,7 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
             spacing: 8,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text('Add additional flags'),
+              Text(el.addFlags.add),
               TextBox(
                 controller: add,
                 placeholder: '--flag1 --flag-2 --flag-3=\'3 oh 3\'',
@@ -76,7 +77,7 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
                       ),
                       Expanded(
                         child: Text(
-                          'avoid using flags that are already an option',
+                          el.addFlags.info,
                           style: theme.typography.caption!.copyWith(
                               color: theme.typography.caption!.color!
                                   .withAlpha(150)),

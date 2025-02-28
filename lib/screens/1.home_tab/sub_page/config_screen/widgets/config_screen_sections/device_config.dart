@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 
 import '../../../../../../providers/config_provider.dart';
@@ -21,8 +22,9 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const ConfigCustom(
-            title: 'Device', child: Icon(FluentIcons.cell_phone)),
+        ConfigCustom(
+            title: el.deviceSection.title,
+            child: const Icon(FluentIcons.cell_phone)),
         Card(
           padding: EdgeInsets.zero,
           child: Column(
@@ -31,11 +33,11 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
             children: [
               ConfigCustom(
                 childBackgroundColor: Colors.transparent,
-                title: 'Stay awake',
+                title: el.deviceSection.stayAwake.label,
                 showinfo: showInfo,
                 subtitle: selectedConfig.deviceOptions.stayAwake
-                    ? "uses '--stay-awake' flag"
-                    : "prevent the device from sleeping, only works with usb connection",
+                    ? el.deviceSection.stayAwake.info.alt
+                    : el.deviceSection.stayAwake.info.default$,
                 child: Tooltip(
                   message: selectedConfig.windowOptions.noWindow
                       ? 'Hide window is active'
@@ -59,10 +61,10 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
               ConfigCustom(
                 showinfo: showInfo,
                 childBackgroundColor: Colors.transparent,
-                title: 'Show touches',
+                title: el.deviceSection.showTouches.label,
                 subtitle: selectedConfig.deviceOptions.showTouches
-                    ? "uses '--show-touches' flag"
-                    : 'show finger touches, only works with physical touches on the device',
+                    ? el.deviceSection.showTouches.info.alt
+                    : el.deviceSection.showTouches.info.default$,
                 child: Tooltip(
                   message: selectedConfig.windowOptions.noWindow
                       ? 'Hide window is active'
@@ -86,10 +88,10 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
               ConfigCustom(
                 showinfo: showInfo,
                 childBackgroundColor: Colors.transparent,
-                title: 'Turn off display on start',
+                title: el.deviceSection.offDisplayStart.label,
                 subtitle: selectedConfig.deviceOptions.turnOffDisplay
-                    ? "uses '--turn-screen-off' flag"
-                    : 'turn device display off, on scrcpy start',
+                    ? el.deviceSection.offDisplayStart.info.alt
+                    : el.deviceSection.offDisplayStart.info.default$,
                 child: Tooltip(
                   message: selectedConfig.windowOptions.noWindow
                       ? 'Hide window is active'
@@ -113,10 +115,10 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
               ConfigCustom(
                 showinfo: showInfo,
                 childBackgroundColor: Colors.transparent,
-                title: 'Turn off display on exit',
+                title: el.deviceSection.offDisplayExit.label,
                 subtitle: selectedConfig.deviceOptions.offScreenOnClose
-                    ? "uses '--power-off-on-close' flag"
-                    : 'turn device display off, on scrcpy end',
+                    ? el.deviceSection.offDisplayExit.info.alt
+                    : el.deviceSection.offDisplayExit.info.default$,
                 child: Tooltip(
                   message: selectedConfig.windowOptions.noWindow
                       ? 'Hide window is active'
@@ -140,10 +142,10 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
               ConfigCustom(
                 showinfo: showInfo,
                 childBackgroundColor: Colors.transparent,
-                title: 'Disable screensaver (HOST)',
+                title: el.deviceSection.screensaver.label,
                 subtitle: selectedConfig.deviceOptions.noScreensaver
-                    ? "uses '--disable-screensaver' flag"
-                    : 'disable screensaver',
+                    ? el.deviceSection.screensaver.info.alt
+                    : el.deviceSection.screensaver.info.default$,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Checkbox(

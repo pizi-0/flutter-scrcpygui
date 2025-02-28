@@ -140,18 +140,18 @@ final _router = GoRouter(
               builder: (context, state) => const HomeTab(),
               routes: [
                 GoRoute(
-                  path: 'device-settings/:id',
+                  path: DeviceSettingsScreen.route,
                   builder: (context, state) =>
                       DeviceSettingsScreen(id: state.pathParameters['id']!),
                   pageBuilder: GoTransitions.cupertino.call,
                 ),
                 GoRoute(
-                  path: 'config-settings',
+                  path: ConfigScreen.route,
                   builder: (context, state) => const ConfigScreen(),
                   pageBuilder: GoTransitions.cupertino.call,
                 ),
                 GoRoute(
-                  path: 'config-settings/config-log/:instance',
+                  path: LogScreen.route,
                   builder: (context, state) => LogScreen(
                     instance: state.extra as ScrcpyRunningInstance,
                   ),

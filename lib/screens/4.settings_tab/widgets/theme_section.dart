@@ -1,6 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
@@ -21,32 +22,32 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
       spacing: 8,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const ConfigCustom(title: 'Looks', child: SizedBox()),
+        ConfigCustom(title: el.settings.looks.label, child: const SizedBox()),
         Card(
           padding: EdgeInsets.zero,
           child: Column(
             children: [
               ConfigCustom(
                 childBackgroundColor: Colors.transparent,
-                title: 'Theme mode',
+                title: el.settings.looks.mode.label,
                 child: ComboBox(
                   value: looks.themeMode,
                   onChanged: (ThemeMode? mode) async {
                     ref.read(settingsProvider.notifier).changeThememode(mode!);
                     await Db.saveAppSettings(ref.read(settingsProvider));
                   },
-                  items: const [
+                  items: [
                     ComboBoxItem(
                       value: ThemeMode.system,
-                      child: Text('System'),
+                      child: Text(el.settings.looks.mode.value.system),
                     ),
                     ComboBoxItem(
                       value: ThemeMode.light,
-                      child: Text('Light'),
+                      child: Text(el.settings.looks.mode.value.light),
                     ),
                     ComboBoxItem(
                       value: ThemeMode.dark,
-                      child: Text('Dark'),
+                      child: Text(el.settings.looks.mode.value.dark),
                     ),
                   ],
                 ),
@@ -54,7 +55,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               const Divider(),
               ConfigCustom(
                 childBackgroundColor: Colors.transparent,
-                title: 'Accent color',
+                title: el.settings.looks.accentColor.label,
                 child: Row(
                   children: [
                     IconButton(
@@ -112,11 +113,11 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               const Divider(),
               ConfigCustom(
                 childBackgroundColor: Colors.transparent,
-                title: 'Tint level',
+                title: el.settings.looks.tintLevel.label,
                 child: Row(
                   children: [
                     Tooltip(
-                      message: 'Default: 90',
+                      message: '${el.common.default$}: 90',
                       child: IconButton(
                         icon: const Icon(FluentIcons.reset),
                         onPressed: () async {

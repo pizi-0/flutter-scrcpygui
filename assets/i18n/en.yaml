@@ -62,7 +62,13 @@ device_settings_screen:
 config_screen:
   connection_lost: Device connection lost
 
-### mode section
+## home_tab > config screen > test config
+log_screen: 
+  title: Test log
+  dialog:
+    title: Command
+
+### config screen > mode section
 mode_section: 
   title: Mode
   save_folder: 
@@ -85,7 +91,7 @@ mode_section:
       default: defaults to both, no flag
       alt: "uses '${command}' flag"
 
-### video section
+### config screen > video section
 video_section:
   title: Video
   displays: 
@@ -99,6 +105,7 @@ video_section:
     info: 
       default: defaults to h264, no flag
       alt: "uses '--video-codec=${codec}' flag"
+
   encoder:
     label: Encoder
     info:
@@ -128,6 +135,111 @@ video_section:
       default: calculated based on device's resolution, no flag unless set
       alt: "uses '--max-size=${size}' flag"
 
+### config screen > audio section
+audio_section:
+  title: Audio
+  duplicate: 
+    label: Duplicate audio
+    info: 
+      default: only for Android 13 and above
+      alt: "uses '--audio-dup' flag"
+
+  source:
+    label: Source
+    info:
+      default: defaults to output, no flag
+      alt: "uses '${source}' flag"
+      inCaseOfDup: implied to 'Playback' with '--audio-dup', no flag
+
+  codec:
+    label: Codec
+    info: 
+      default: defaults to opus, no flag
+      alt: "uses '--audio-codec=${codec}' flag"
+      isAudioOnly: "Format: ${format}, requires Codec: ${codec}"
+
+  encoder:
+    label: Encoder
+    info:
+      default: defaults to first available, no flag
+      alt: "uses '--audio-encoder=${encoder}' flag"
+
+  format:
+    label: Format
+    info: 
+      default: appends format to '--record=savepath/file.${format}' "
+
+  bitrate:
+    label: Bitrate
+    info: 
+      default: defaults to 128k, no flag
+      alt: "uses '--audio-bit-rate=${bitrate}K' flag"
+
+### config screen > device section
+device_section:
+  title: Device
+  stay_awake:
+    label: Stay awake
+    info:
+      default: prevent the device from sleeping, only works with usb connection
+      alt: uses '--stay-awake' flag
+
+  show_touches:
+    label: Show touches
+    info:
+      default: show finger touches, only works with physical touches on the device
+      alt: uses '--show-touches' flag
+  
+  off_display_start:
+    label: Turn off display on start
+    info:
+      default: turn device display off, on scrcpy start
+      alt: uses '--turn-screen-off' flag
+
+  off_display_exit:
+    label: Turn off display on exit
+    info:
+      default: turn device display off, on scrcpy exit
+      alt: uses '--power-off-on-close' flag
+
+  screensaver:
+    label: Disable screensaver (HOST)
+    info:
+      default: disable screensaver
+      alt: uses '--disable-screensaver' flag
+
+
+window_section:
+  title: Window
+  hide_window:
+    label: Hide window
+    info:
+      default: start scrcpy with no window
+      alt: uses '--no-window' flag
+
+  borderless:
+    label: Borderless
+    info:
+      default: disable window decorations
+      alt: uses '--window-borderless' flag
+  
+  always_on_top:
+    label: Always on top
+    info:
+      default: scrcpy window always on top
+      alt: uses '--always-on-top' flag
+
+  time_limit:
+    label: Time limit
+    info:
+      default: limits scrcpy session, in seconds
+      alt: uses '--time-limit=${time}' flag
+
+### config screen > additional flags section
+add_flags:
+  title: Additional flags
+  add: Add
+  info: avoid using flags that are already an option
 
 
 
@@ -144,6 +256,12 @@ connect:
   qr_pair: 
     label: QR pairing
     pair: Pair device
+
+
+### preview and test section
+test_config:
+  title: Test config
+  preview: Command preview
 
 
 #scrcpy manager tab
@@ -164,17 +282,38 @@ settings:
   title: Settings
   looks:
     label: Looks
-    theme: 
-      mode: Theme mode
-      dark: Dark
-      light: Light
-      system: System
+    mode: 
+      label: Theme mode
+      value:
+        dark: Dark
+        light: Light
+        system: System
+    accent_color:
+      label: Accent color
+    tint_level: 
+      label: Tint level
+  
+  behaviour: 
+    label: App behaviour
+    minimize: 
+      label: Minimize
+      value: 
+        tray: to tray
+        taskbar: to taskbar
 
 button_label:
   ok: ''
   close: Close
-  cancel: cancel
+  cancel: Cancel
+  stop: Stop
+  test_config: Test config
 
 # status 
 status: 
   failed: Failed
+
+# common
+common:
+  default: Default
+  yes: Yes
+  no: No

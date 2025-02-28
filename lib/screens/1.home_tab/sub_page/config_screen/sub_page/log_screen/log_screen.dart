@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
@@ -11,6 +12,7 @@ import 'package:scrcpygui/utils/scrcpy_command.dart';
 import '../../../../../../providers/config_provider.dart';
 
 class LogScreen extends ConsumerStatefulWidget {
+  static const route = 'config-settings/config-log/:instance';
   final ScrcpyRunningInstance instance;
   const LogScreen({super.key, required this.instance});
 
@@ -50,7 +52,7 @@ class _LogScreenState extends ConsumerState<LogScreen> {
 
     return NavigationView(
       appBar: NavigationAppBar(
-        title: const Text('Config test log'),
+        title: Text(el.logScreen.title),
         actions: IconButton(
           icon: const Padding(
             padding: EdgeInsets.all(8.0),
@@ -61,12 +63,12 @@ class _LogScreenState extends ConsumerState<LogScreen> {
               context: context,
               barrierDismissible: true,
               builder: (context) => ContentDialog(
-                title: const Text('Command'),
+                title: Text(el.logScreen.dialog.title),
                 content: Text(
                     'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig!, selectedDevice!, customName: '[TEST] ${selectedConfig.configName}').join(' ')}'),
                 actions: [
                   Button(
-                    child: const Text('Close'),
+                    child: Text(el.buttonLabel.close),
                     onPressed: () => context.pop(),
                   ),
                 ],

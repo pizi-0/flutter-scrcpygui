@@ -8,6 +8,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
@@ -69,8 +70,9 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const ConfigCustom(
-            title: 'Test config', child: Icon(FluentIcons.test_beaker)),
+        ConfigCustom(
+            title: el.testConfig.title,
+            child: const Icon(FluentIcons.test_beaker)),
         Card(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -80,7 +82,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Command preview:'),
+                  Text(el.testConfig.preview),
                   CopyButton(
                     ref: ref,
                     selectedConfig: selectedConfig,
@@ -137,8 +139,11 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                         setState(() {});
                       },
                       child: !isTestRunning
-                          ? const Text('Test config').textColor(Colors.white)
-                          : const Text('Stop').textColor(Colors.white).bold(),
+                          ? Text(el.buttonLabel.testConfig)
+                              .textColor(Colors.white)
+                          : Text(el.buttonLabel.stop)
+                              .textColor(Colors.white)
+                              .bold(),
                     ),
                   ),
                 ],

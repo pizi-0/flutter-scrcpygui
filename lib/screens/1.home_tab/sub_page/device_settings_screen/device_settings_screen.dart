@@ -23,6 +23,7 @@ final deviceSettingsShowInfo = StateProvider((ref) => false);
 
 class DeviceSettingsScreen extends ConsumerStatefulWidget {
   final String id;
+  static const route = 'device-settings/:id';
   const DeviceSettingsScreen({super.key, required this.id});
 
   @override

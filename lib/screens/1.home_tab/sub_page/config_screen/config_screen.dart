@@ -28,6 +28,7 @@ import '../../../../utils/scrcpy_utils.dart';
 import 'widgets/close_dialog.dart';
 
 class ConfigScreen extends ConsumerStatefulWidget {
+  static const route = 'config-settings';
   const ConfigScreen({super.key});
 
   @override

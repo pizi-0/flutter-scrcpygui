@@ -709,6 +709,94 @@ class ConfigScreen {
   }
 }
 
+class LogScreen {
+  const LogScreen({
+    required this.title,
+    required this.dialog,
+  });
+  factory LogScreen.fromJson(Map<String, dynamic> json) {
+    return LogScreen(
+      title: (json['title'] ?? '').toString(),
+      dialog: LogScreenDialog.fromJson(
+          (json['dialog'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String title;
+  final LogScreenDialog dialog;
+
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''dialog''': dialog,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class LogScreenDialog {
+  const LogScreenDialog({
+    required this.title,
+  });
+  factory LogScreenDialog.fromJson(Map<String, dynamic> json) {
+    return LogScreenDialog(
+      title: (json['title'] ?? '').toString(),
+    );
+  }
+  final String title;
+  Map<String, Object> get _content => {
+        r'''title''': title,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class ModeSection {
   const ModeSection({
     required this.title,
@@ -1764,6 +1852,1683 @@ class VideoSectionResolutionScaleInfo {
   }
 }
 
+class AudioSection {
+  const AudioSection({
+    required this.title,
+    required this.duplicate,
+    required this.source,
+    required this.codec,
+    required this.encoder,
+    required this.format,
+    required this.bitrate,
+  });
+  factory AudioSection.fromJson(Map<String, dynamic> json) {
+    return AudioSection(
+      title: (json['title'] ?? '').toString(),
+      duplicate: AudioSectionDuplicate.fromJson(
+          (json['duplicate'] as Map).cast<String, dynamic>()),
+      source: AudioSectionSource.fromJson(
+          (json['source'] as Map).cast<String, dynamic>()),
+      codec: AudioSectionCodec.fromJson(
+          (json['codec'] as Map).cast<String, dynamic>()),
+      encoder: AudioSectionEncoder.fromJson(
+          (json['encoder'] as Map).cast<String, dynamic>()),
+      format: AudioSectionFormat.fromJson(
+          (json['format'] as Map).cast<String, dynamic>()),
+      bitrate: AudioSectionBitrate.fromJson(
+          (json['bitrate'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String title;
+  final AudioSectionDuplicate duplicate;
+
+  final AudioSectionSource source;
+
+  final AudioSectionCodec codec;
+
+  final AudioSectionEncoder encoder;
+
+  final AudioSectionFormat format;
+
+  final AudioSectionBitrate bitrate;
+
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''duplicate''': duplicate,
+        r'''source''': source,
+        r'''codec''': codec,
+        r'''encoder''': encoder,
+        r'''format''': format,
+        r'''bitrate''': bitrate,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AudioSectionDuplicate {
+  const AudioSectionDuplicate({
+    required this.label,
+    required this.info,
+  });
+  factory AudioSectionDuplicate.fromJson(Map<String, dynamic> json) {
+    return AudioSectionDuplicate(
+      label: (json['label'] ?? '').toString(),
+      info: AudioSectionDuplicateInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final AudioSectionDuplicateInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AudioSectionDuplicateInfo {
+  const AudioSectionDuplicateInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory AudioSectionDuplicateInfo.fromJson(Map<String, dynamic> json) {
+    return AudioSectionDuplicateInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: (json['alt'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String alt;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AudioSectionSource {
+  const AudioSectionSource({
+    required this.label,
+    required this.info,
+  });
+  factory AudioSectionSource.fromJson(Map<String, dynamic> json) {
+    return AudioSectionSource(
+      label: (json['label'] ?? '').toString(),
+      info: AudioSectionSourceInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final AudioSectionSourceInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AudioSectionSourceInfo {
+  const AudioSectionSourceInfo({
+    required this.default$,
+    required this.alt,
+    required this.inCaseOfDup,
+  });
+  factory AudioSectionSourceInfo.fromJson(Map<String, dynamic> json) {
+    return AudioSectionSourceInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: ({required String source}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${source}', source)
+          .replaceAll(_variableRegExp, ''),
+      inCaseOfDup: (json['inCaseOfDup'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String Function({required String source}) alt;
+
+  final String inCaseOfDup;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+        r'''inCaseOfDup''': inCaseOfDup,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AudioSectionCodec {
+  const AudioSectionCodec({
+    required this.label,
+    required this.info,
+  });
+  factory AudioSectionCodec.fromJson(Map<String, dynamic> json) {
+    return AudioSectionCodec(
+      label: (json['label'] ?? '').toString(),
+      info: AudioSectionCodecInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final AudioSectionCodecInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AudioSectionCodecInfo {
+  const AudioSectionCodecInfo({
+    required this.default$,
+    required this.alt,
+    required this.isAudioOnly,
+  });
+  factory AudioSectionCodecInfo.fromJson(Map<String, dynamic> json) {
+    return AudioSectionCodecInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: ({required String codec}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${codec}', codec)
+          .replaceAll(_variableRegExp, ''),
+      isAudioOnly: ({required String format, required String codec}) =>
+          (json['isAudioOnly'] ?? '')
+              .toString()
+              .replaceAll(r'${format}', format)
+              .replaceAll(r'${codec}', codec)
+              .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String default$;
+  final String Function({required String codec}) alt;
+
+  final String Function({required String format, required String codec})
+      isAudioOnly;
+
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+        r'''isAudioOnly''': isAudioOnly,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AudioSectionEncoder {
+  const AudioSectionEncoder({
+    required this.label,
+    required this.info,
+  });
+  factory AudioSectionEncoder.fromJson(Map<String, dynamic> json) {
+    return AudioSectionEncoder(
+      label: (json['label'] ?? '').toString(),
+      info: AudioSectionEncoderInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final AudioSectionEncoderInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AudioSectionEncoderInfo {
+  const AudioSectionEncoderInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory AudioSectionEncoderInfo.fromJson(Map<String, dynamic> json) {
+    return AudioSectionEncoderInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: ({required String encoder}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${encoder}', encoder)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String default$;
+  final String Function({required String encoder}) alt;
+
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AudioSectionFormat {
+  const AudioSectionFormat({
+    required this.label,
+    required this.info,
+  });
+  factory AudioSectionFormat.fromJson(Map<String, dynamic> json) {
+    return AudioSectionFormat(
+      label: (json['label'] ?? '').toString(),
+      info: AudioSectionFormatInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final AudioSectionFormatInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AudioSectionFormatInfo {
+  const AudioSectionFormatInfo({
+    required this.default$,
+  });
+  factory AudioSectionFormatInfo.fromJson(Map<String, dynamic> json) {
+    return AudioSectionFormatInfo(
+      default$: ({required String format}) => (json['default'] ?? '')
+          .toString()
+          .replaceAll(r'${format}', format)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String Function({required String format}) default$;
+
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AudioSectionBitrate {
+  const AudioSectionBitrate({
+    required this.label,
+    required this.info,
+  });
+  factory AudioSectionBitrate.fromJson(Map<String, dynamic> json) {
+    return AudioSectionBitrate(
+      label: (json['label'] ?? '').toString(),
+      info: AudioSectionBitrateInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final AudioSectionBitrateInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AudioSectionBitrateInfo {
+  const AudioSectionBitrateInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory AudioSectionBitrateInfo.fromJson(Map<String, dynamic> json) {
+    return AudioSectionBitrateInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: ({required String bitrate}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${bitrate}', bitrate)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String default$;
+  final String Function({required String bitrate}) alt;
+
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class DeviceSection {
+  const DeviceSection({
+    required this.title,
+    required this.stayAwake,
+    required this.showTouches,
+    required this.offDisplayStart,
+    required this.offDisplayExit,
+    required this.screensaver,
+  });
+  factory DeviceSection.fromJson(Map<String, dynamic> json) {
+    return DeviceSection(
+      title: (json['title'] ?? '').toString(),
+      stayAwake: DeviceSectionStayAwake.fromJson(
+          (json['stay_awake'] as Map).cast<String, dynamic>()),
+      showTouches: DeviceSectionShowTouches.fromJson(
+          (json['show_touches'] as Map).cast<String, dynamic>()),
+      offDisplayStart: DeviceSectionOffDisplayStart.fromJson(
+          (json['off_display_start'] as Map).cast<String, dynamic>()),
+      offDisplayExit: DeviceSectionOffDisplayExit.fromJson(
+          (json['off_display_exit'] as Map).cast<String, dynamic>()),
+      screensaver: DeviceSectionScreensaver.fromJson(
+          (json['screensaver'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String title;
+  final DeviceSectionStayAwake stayAwake;
+
+  final DeviceSectionShowTouches showTouches;
+
+  final DeviceSectionOffDisplayStart offDisplayStart;
+
+  final DeviceSectionOffDisplayExit offDisplayExit;
+
+  final DeviceSectionScreensaver screensaver;
+
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''stay_awake''': stayAwake,
+        r'''show_touches''': showTouches,
+        r'''off_display_start''': offDisplayStart,
+        r'''off_display_exit''': offDisplayExit,
+        r'''screensaver''': screensaver,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class DeviceSectionStayAwake {
+  const DeviceSectionStayAwake({
+    required this.label,
+    required this.info,
+  });
+  factory DeviceSectionStayAwake.fromJson(Map<String, dynamic> json) {
+    return DeviceSectionStayAwake(
+      label: (json['label'] ?? '').toString(),
+      info: DeviceSectionStayAwakeInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final DeviceSectionStayAwakeInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class DeviceSectionStayAwakeInfo {
+  const DeviceSectionStayAwakeInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory DeviceSectionStayAwakeInfo.fromJson(Map<String, dynamic> json) {
+    return DeviceSectionStayAwakeInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: (json['alt'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String alt;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class DeviceSectionShowTouches {
+  const DeviceSectionShowTouches({
+    required this.label,
+    required this.info,
+  });
+  factory DeviceSectionShowTouches.fromJson(Map<String, dynamic> json) {
+    return DeviceSectionShowTouches(
+      label: (json['label'] ?? '').toString(),
+      info: DeviceSectionShowTouchesInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final DeviceSectionShowTouchesInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class DeviceSectionShowTouchesInfo {
+  const DeviceSectionShowTouchesInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory DeviceSectionShowTouchesInfo.fromJson(Map<String, dynamic> json) {
+    return DeviceSectionShowTouchesInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: (json['alt'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String alt;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class DeviceSectionOffDisplayStart {
+  const DeviceSectionOffDisplayStart({
+    required this.label,
+    required this.info,
+  });
+  factory DeviceSectionOffDisplayStart.fromJson(Map<String, dynamic> json) {
+    return DeviceSectionOffDisplayStart(
+      label: (json['label'] ?? '').toString(),
+      info: DeviceSectionOffDisplayStartInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final DeviceSectionOffDisplayStartInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class DeviceSectionOffDisplayStartInfo {
+  const DeviceSectionOffDisplayStartInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory DeviceSectionOffDisplayStartInfo.fromJson(Map<String, dynamic> json) {
+    return DeviceSectionOffDisplayStartInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: (json['alt'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String alt;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class DeviceSectionOffDisplayExit {
+  const DeviceSectionOffDisplayExit({
+    required this.label,
+    required this.info,
+  });
+  factory DeviceSectionOffDisplayExit.fromJson(Map<String, dynamic> json) {
+    return DeviceSectionOffDisplayExit(
+      label: (json['label'] ?? '').toString(),
+      info: DeviceSectionOffDisplayExitInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final DeviceSectionOffDisplayExitInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class DeviceSectionOffDisplayExitInfo {
+  const DeviceSectionOffDisplayExitInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory DeviceSectionOffDisplayExitInfo.fromJson(Map<String, dynamic> json) {
+    return DeviceSectionOffDisplayExitInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: (json['alt'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String alt;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class DeviceSectionScreensaver {
+  const DeviceSectionScreensaver({
+    required this.label,
+    required this.info,
+  });
+  factory DeviceSectionScreensaver.fromJson(Map<String, dynamic> json) {
+    return DeviceSectionScreensaver(
+      label: (json['label'] ?? '').toString(),
+      info: DeviceSectionScreensaverInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final DeviceSectionScreensaverInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class DeviceSectionScreensaverInfo {
+  const DeviceSectionScreensaverInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory DeviceSectionScreensaverInfo.fromJson(Map<String, dynamic> json) {
+    return DeviceSectionScreensaverInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: (json['alt'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String alt;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class WindowSection {
+  const WindowSection({
+    required this.title,
+    required this.hideWindow,
+    required this.borderless,
+    required this.alwaysOnTop,
+    required this.timeLimit,
+  });
+  factory WindowSection.fromJson(Map<String, dynamic> json) {
+    return WindowSection(
+      title: (json['title'] ?? '').toString(),
+      hideWindow: WindowSectionHideWindow.fromJson(
+          (json['hide_window'] as Map).cast<String, dynamic>()),
+      borderless: WindowSectionBorderless.fromJson(
+          (json['borderless'] as Map).cast<String, dynamic>()),
+      alwaysOnTop: WindowSectionAlwaysOnTop.fromJson(
+          (json['always_on_top'] as Map).cast<String, dynamic>()),
+      timeLimit: WindowSectionTimeLimit.fromJson(
+          (json['time_limit'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String title;
+  final WindowSectionHideWindow hideWindow;
+
+  final WindowSectionBorderless borderless;
+
+  final WindowSectionAlwaysOnTop alwaysOnTop;
+
+  final WindowSectionTimeLimit timeLimit;
+
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''hide_window''': hideWindow,
+        r'''borderless''': borderless,
+        r'''always_on_top''': alwaysOnTop,
+        r'''time_limit''': timeLimit,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class WindowSectionHideWindow {
+  const WindowSectionHideWindow({
+    required this.label,
+    required this.info,
+  });
+  factory WindowSectionHideWindow.fromJson(Map<String, dynamic> json) {
+    return WindowSectionHideWindow(
+      label: (json['label'] ?? '').toString(),
+      info: WindowSectionHideWindowInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final WindowSectionHideWindowInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class WindowSectionHideWindowInfo {
+  const WindowSectionHideWindowInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory WindowSectionHideWindowInfo.fromJson(Map<String, dynamic> json) {
+    return WindowSectionHideWindowInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: (json['alt'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String alt;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class WindowSectionBorderless {
+  const WindowSectionBorderless({
+    required this.label,
+    required this.info,
+  });
+  factory WindowSectionBorderless.fromJson(Map<String, dynamic> json) {
+    return WindowSectionBorderless(
+      label: (json['label'] ?? '').toString(),
+      info: WindowSectionBorderlessInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final WindowSectionBorderlessInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class WindowSectionBorderlessInfo {
+  const WindowSectionBorderlessInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory WindowSectionBorderlessInfo.fromJson(Map<String, dynamic> json) {
+    return WindowSectionBorderlessInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: (json['alt'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String alt;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class WindowSectionAlwaysOnTop {
+  const WindowSectionAlwaysOnTop({
+    required this.label,
+    required this.info,
+  });
+  factory WindowSectionAlwaysOnTop.fromJson(Map<String, dynamic> json) {
+    return WindowSectionAlwaysOnTop(
+      label: (json['label'] ?? '').toString(),
+      info: WindowSectionAlwaysOnTopInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final WindowSectionAlwaysOnTopInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class WindowSectionAlwaysOnTopInfo {
+  const WindowSectionAlwaysOnTopInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory WindowSectionAlwaysOnTopInfo.fromJson(Map<String, dynamic> json) {
+    return WindowSectionAlwaysOnTopInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: (json['alt'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String alt;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class WindowSectionTimeLimit {
+  const WindowSectionTimeLimit({
+    required this.label,
+    required this.info,
+  });
+  factory WindowSectionTimeLimit.fromJson(Map<String, dynamic> json) {
+    return WindowSectionTimeLimit(
+      label: (json['label'] ?? '').toString(),
+      info: WindowSectionTimeLimitInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final WindowSectionTimeLimitInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class WindowSectionTimeLimitInfo {
+  const WindowSectionTimeLimitInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory WindowSectionTimeLimitInfo.fromJson(Map<String, dynamic> json) {
+    return WindowSectionTimeLimitInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: ({required String time}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${time}', time)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String default$;
+  final String Function({required String time}) alt;
+
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AddFlags {
+  const AddFlags({
+    required this.title,
+    required this.add,
+    required this.info,
+  });
+  factory AddFlags.fromJson(Map<String, dynamic> json) {
+    return AddFlags(
+      title: (json['title'] ?? '').toString(),
+      add: (json['add'] ?? '').toString(),
+      info: (json['info'] ?? '').toString(),
+    );
+  }
+  final String title;
+  final String add;
+  final String info;
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''add''': add,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class Connect {
   const Connect({
     required this.title,
@@ -1958,6 +3723,51 @@ class ConnectQrPair {
   }
 }
 
+class TestConfig {
+  const TestConfig({
+    required this.title,
+    required this.preview,
+  });
+  factory TestConfig.fromJson(Map<String, dynamic> json) {
+    return TestConfig(
+      title: (json['title'] ?? '').toString(),
+      preview: (json['preview'] ?? '').toString(),
+    );
+  }
+  final String title;
+  final String preview;
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''preview''': preview,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class ScrcpyManager {
   const ScrcpyManager({
     required this.title,
@@ -2109,20 +3919,26 @@ class Settings {
   const Settings({
     required this.title,
     required this.looks,
+    required this.behaviour,
   });
   factory Settings.fromJson(Map<String, dynamic> json) {
     return Settings(
       title: (json['title'] ?? '').toString(),
       looks: SettingsLooks.fromJson(
           (json['looks'] as Map).cast<String, dynamic>()),
+      behaviour: SettingsBehaviour.fromJson(
+          (json['behaviour'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
   final SettingsLooks looks;
 
+  final SettingsBehaviour behaviour;
+
   Map<String, Object> get _content => {
         r'''title''': title,
         r'''looks''': looks,
+        r'''behaviour''': behaviour,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -2155,21 +3971,33 @@ class Settings {
 class SettingsLooks {
   const SettingsLooks({
     required this.label,
-    required this.theme,
+    required this.mode,
+    required this.accentColor,
+    required this.tintLevel,
   });
   factory SettingsLooks.fromJson(Map<String, dynamic> json) {
     return SettingsLooks(
       label: (json['label'] ?? '').toString(),
-      theme: SettingsLooksTheme.fromJson(
-          (json['theme'] as Map).cast<String, dynamic>()),
+      mode: SettingsLooksMode.fromJson(
+          (json['mode'] as Map).cast<String, dynamic>()),
+      accentColor: SettingsLooksAccentColor.fromJson(
+          (json['accent_color'] as Map).cast<String, dynamic>()),
+      tintLevel: SettingsLooksTintLevel.fromJson(
+          (json['tint_level'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
-  final SettingsLooksTheme theme;
+  final SettingsLooksMode mode;
+
+  final SettingsLooksAccentColor accentColor;
+
+  final SettingsLooksTintLevel tintLevel;
 
   Map<String, Object> get _content => {
         r'''label''': label,
-        r'''theme''': theme,
+        r'''mode''': mode,
+        r'''accent_color''': accentColor,
+        r'''tint_level''': tintLevel,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -2199,30 +4027,294 @@ class SettingsLooks {
   }
 }
 
-class SettingsLooksTheme {
-  const SettingsLooksTheme({
-    required this.mode,
+class SettingsLooksMode {
+  const SettingsLooksMode({
+    required this.label,
+    required this.value,
+  });
+  factory SettingsLooksMode.fromJson(Map<String, dynamic> json) {
+    return SettingsLooksMode(
+      label: (json['label'] ?? '').toString(),
+      value: SettingsLooksModeValue.fromJson(
+          (json['value'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final SettingsLooksModeValue value;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''value''': value,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class SettingsLooksModeValue {
+  const SettingsLooksModeValue({
     required this.dark,
     required this.light,
     required this.system,
   });
-  factory SettingsLooksTheme.fromJson(Map<String, dynamic> json) {
-    return SettingsLooksTheme(
-      mode: (json['mode'] ?? '').toString(),
+  factory SettingsLooksModeValue.fromJson(Map<String, dynamic> json) {
+    return SettingsLooksModeValue(
       dark: (json['dark'] ?? '').toString(),
       light: (json['light'] ?? '').toString(),
       system: (json['system'] ?? '').toString(),
     );
   }
-  final String mode;
   final String dark;
   final String light;
   final String system;
   Map<String, Object> get _content => {
-        r'''mode''': mode,
         r'''dark''': dark,
         r'''light''': light,
         r'''system''': system,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class SettingsLooksAccentColor {
+  const SettingsLooksAccentColor({
+    required this.label,
+  });
+  factory SettingsLooksAccentColor.fromJson(Map<String, dynamic> json) {
+    return SettingsLooksAccentColor(
+      label: (json['label'] ?? '').toString(),
+    );
+  }
+  final String label;
+  Map<String, Object> get _content => {
+        r'''label''': label,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class SettingsLooksTintLevel {
+  const SettingsLooksTintLevel({
+    required this.label,
+  });
+  factory SettingsLooksTintLevel.fromJson(Map<String, dynamic> json) {
+    return SettingsLooksTintLevel(
+      label: (json['label'] ?? '').toString(),
+    );
+  }
+  final String label;
+  Map<String, Object> get _content => {
+        r'''label''': label,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class SettingsBehaviour {
+  const SettingsBehaviour({
+    required this.label,
+    required this.minimize,
+  });
+  factory SettingsBehaviour.fromJson(Map<String, dynamic> json) {
+    return SettingsBehaviour(
+      label: (json['label'] ?? '').toString(),
+      minimize: SettingsBehaviourMinimize.fromJson(
+          (json['minimize'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final SettingsBehaviourMinimize minimize;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''minimize''': minimize,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class SettingsBehaviourMinimize {
+  const SettingsBehaviourMinimize({
+    required this.label,
+    required this.value,
+  });
+  factory SettingsBehaviourMinimize.fromJson(Map<String, dynamic> json) {
+    return SettingsBehaviourMinimize(
+      label: (json['label'] ?? '').toString(),
+      value: SettingsBehaviourMinimizeValue.fromJson(
+          (json['value'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final SettingsBehaviourMinimizeValue value;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''value''': value,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class SettingsBehaviourMinimizeValue {
+  const SettingsBehaviourMinimizeValue({
+    required this.tray,
+    required this.taskbar,
+  });
+  factory SettingsBehaviourMinimizeValue.fromJson(Map<String, dynamic> json) {
+    return SettingsBehaviourMinimizeValue(
+      tray: (json['tray'] ?? '').toString(),
+      taskbar: (json['taskbar'] ?? '').toString(),
+    );
+  }
+  final String tray;
+  final String taskbar;
+  Map<String, Object> get _content => {
+        r'''tray''': tray,
+        r'''taskbar''': taskbar,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -2257,21 +4349,29 @@ class ButtonLabel {
     required this.ok,
     required this.close,
     required this.cancel,
+    required this.stop,
+    required this.testConfig,
   });
   factory ButtonLabel.fromJson(Map<String, dynamic> json) {
     return ButtonLabel(
       ok: (json['ok'] ?? '').toString(),
       close: (json['close'] ?? '').toString(),
       cancel: (json['cancel'] ?? '').toString(),
+      stop: (json['stop'] ?? '').toString(),
+      testConfig: (json['test_config'] ?? '').toString(),
     );
   }
   final String ok;
   final String close;
   final String cancel;
+  final String stop;
+  final String testConfig;
   Map<String, Object> get _content => {
         r'''ok''': ok,
         r'''close''': close,
         r'''cancel''': cancel,
+        r'''stop''': stop,
+        r'''test_config''': testConfig,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -2342,6 +4442,55 @@ class Status {
   }
 }
 
+class Common {
+  const Common({
+    required this.default$,
+    required this.yes,
+    required this.no,
+  });
+  factory Common.fromJson(Map<String, dynamic> json) {
+    return Common(
+      default$: (json['default'] ?? '').toString(),
+      yes: (json['yes'] ?? '').toString(),
+      no: (json['no'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String yes;
+  final String no;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''yes''': yes,
+        r'''no''': no,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class LocalizationMessages {
   LocalizationMessages({
     required this.homeTab,
@@ -2349,13 +4498,20 @@ class LocalizationMessages {
     required this.noConfigDialog,
     required this.deviceSettingsScreen,
     required this.configScreen,
+    required this.logScreen,
     required this.modeSection,
     required this.videoSection,
+    required this.audioSection,
+    required this.deviceSection,
+    required this.windowSection,
+    required this.addFlags,
     required this.connect,
+    required this.testConfig,
     required this.scrcpyManager,
     required this.settings,
     required this.buttonLabel,
     required this.status,
+    required this.common,
   });
   factory LocalizationMessages.fromJson(Map<String, dynamic> json) {
     return LocalizationMessages(
@@ -2369,12 +4525,24 @@ class LocalizationMessages {
           (json['device_settings_screen'] as Map).cast<String, dynamic>()),
       configScreen: ConfigScreen.fromJson(
           (json['config_screen'] as Map).cast<String, dynamic>()),
+      logScreen: LogScreen.fromJson(
+          (json['log_screen'] as Map).cast<String, dynamic>()),
       modeSection: ModeSection.fromJson(
           (json['mode_section'] as Map).cast<String, dynamic>()),
       videoSection: VideoSection.fromJson(
           (json['video_section'] as Map).cast<String, dynamic>()),
+      audioSection: AudioSection.fromJson(
+          (json['audio_section'] as Map).cast<String, dynamic>()),
+      deviceSection: DeviceSection.fromJson(
+          (json['device_section'] as Map).cast<String, dynamic>()),
+      windowSection: WindowSection.fromJson(
+          (json['window_section'] as Map).cast<String, dynamic>()),
+      addFlags:
+          AddFlags.fromJson((json['add_flags'] as Map).cast<String, dynamic>()),
       connect:
           Connect.fromJson((json['connect'] as Map).cast<String, dynamic>()),
+      testConfig: TestConfig.fromJson(
+          (json['test_config'] as Map).cast<String, dynamic>()),
       scrcpyManager: ScrcpyManager.fromJson(
           (json['scrcpy_manager'] as Map).cast<String, dynamic>()),
       settings:
@@ -2382,6 +4550,7 @@ class LocalizationMessages {
       buttonLabel: ButtonLabel.fromJson(
           (json['button_label'] as Map).cast<String, dynamic>()),
       status: Status.fromJson((json['status'] as Map).cast<String, dynamic>()),
+      common: Common.fromJson((json['common'] as Map).cast<String, dynamic>()),
     );
   }
   final HomeTab homeTab;
@@ -2394,11 +4563,23 @@ class LocalizationMessages {
 
   final ConfigScreen configScreen;
 
+  final LogScreen logScreen;
+
   final ModeSection modeSection;
 
   final VideoSection videoSection;
 
+  final AudioSection audioSection;
+
+  final DeviceSection deviceSection;
+
+  final WindowSection windowSection;
+
+  final AddFlags addFlags;
+
   final Connect connect;
+
+  final TestConfig testConfig;
 
   final ScrcpyManager scrcpyManager;
 
@@ -2408,19 +4589,28 @@ class LocalizationMessages {
 
   final Status status;
 
+  final Common common;
+
   Map<String, Object> get _content => {
         r'''home_tab''': homeTab,
         r'''no_device_dialog''': noDeviceDialog,
         r'''no_config_dialog''': noConfigDialog,
         r'''device_settings_screen''': deviceSettingsScreen,
         r'''config_screen''': configScreen,
+        r'''log_screen''': logScreen,
         r'''mode_section''': modeSection,
         r'''video_section''': videoSection,
+        r'''audio_section''': audioSection,
+        r'''device_section''': deviceSection,
+        r'''window_section''': windowSection,
+        r'''add_flags''': addFlags,
         r'''connect''': connect,
+        r'''test_config''': testConfig,
         r'''scrcpy_manager''': scrcpyManager,
         r'''settings''': settings,
         r'''button_label''': buttonLabel,
         r'''status''': status,
+        r'''common''': common,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -2515,6 +4705,12 @@ final LocalizationMessages en = LocalizationMessages(
   configScreen: ConfigScreen(
     connectionLost: 'Device connection lost',
   ),
+  logScreen: LogScreen(
+    title: 'Test log',
+    dialog: LogScreenDialog(
+      title: 'Command',
+    ),
+  ),
   modeSection: ModeSection(
     title: 'Mode',
     saveFolder: ModeSectionSaveFolder(
@@ -2597,6 +4793,133 @@ final LocalizationMessages en = LocalizationMessages(
       ),
     ),
   ),
+  audioSection: AudioSection(
+    title: 'Audio',
+    duplicate: AudioSectionDuplicate(
+      label: 'Duplicate audio',
+      info: AudioSectionDuplicateInfo(
+        default$: 'only for Android 13 and above',
+        alt: '''uses '--audio-dup' flag''',
+      ),
+    ),
+    source: AudioSectionSource(
+      label: 'Source',
+      info: AudioSectionSourceInfo(
+        default$: 'defaults to output, no flag',
+        alt: ({required String source}) => '''uses '${source}' flag''',
+        inCaseOfDup: '''implied to 'Playback' with '--audio-dup', no flag''',
+      ),
+    ),
+    codec: AudioSectionCodec(
+      label: 'Codec',
+      info: AudioSectionCodecInfo(
+        default$: 'defaults to opus, no flag',
+        alt: ({required String codec}) =>
+            '''uses '--audio-codec=${codec}' flag''',
+        isAudioOnly: ({required String format, required String codec}) =>
+            '''Format: ${format}, requires Codec: ${codec}''',
+      ),
+    ),
+    encoder: AudioSectionEncoder(
+      label: 'Encoder',
+      info: AudioSectionEncoderInfo(
+        default$: 'defaults to first available, no flag',
+        alt: ({required String encoder}) =>
+            '''uses '--audio-encoder=${encoder}' flag''',
+      ),
+    ),
+    format: AudioSectionFormat(
+      label: 'Format',
+      info: AudioSectionFormatInfo(
+        default$: ({required String format}) =>
+            '''appends format to '--record=savepath/file.${format}' "''',
+      ),
+    ),
+    bitrate: AudioSectionBitrate(
+      label: 'Bitrate',
+      info: AudioSectionBitrateInfo(
+        default$: 'defaults to 128k, no flag',
+        alt: ({required String bitrate}) =>
+            '''uses '--audio-bit-rate=${bitrate}K' flag''',
+      ),
+    ),
+  ),
+  deviceSection: DeviceSection(
+    title: 'Device',
+    stayAwake: DeviceSectionStayAwake(
+      label: 'Stay awake',
+      info: DeviceSectionStayAwakeInfo(
+        default$:
+            'prevent the device from sleeping, only works with usb connection',
+        alt: '''uses '--stay-awake' flag''',
+      ),
+    ),
+    showTouches: DeviceSectionShowTouches(
+      label: 'Show touches',
+      info: DeviceSectionShowTouchesInfo(
+        default$:
+            'show finger touches, only works with physical touches on the device',
+        alt: '''uses '--show-touches' flag''',
+      ),
+    ),
+    offDisplayStart: DeviceSectionOffDisplayStart(
+      label: 'Turn off display on start',
+      info: DeviceSectionOffDisplayStartInfo(
+        default$: 'turn device display off, on scrcpy start',
+        alt: '''uses '--turn-screen-off' flag''',
+      ),
+    ),
+    offDisplayExit: DeviceSectionOffDisplayExit(
+      label: 'Turn off display on exit',
+      info: DeviceSectionOffDisplayExitInfo(
+        default$: 'turn device display off, on scrcpy exit',
+        alt: '''uses '--power-off-on-close' flag''',
+      ),
+    ),
+    screensaver: DeviceSectionScreensaver(
+      label: 'Disable screensaver (HOST)',
+      info: DeviceSectionScreensaverInfo(
+        default$: 'disable screensaver',
+        alt: '''uses '--disable-screensaver' flag''',
+      ),
+    ),
+  ),
+  windowSection: WindowSection(
+    title: 'Window',
+    hideWindow: WindowSectionHideWindow(
+      label: 'Hide window',
+      info: WindowSectionHideWindowInfo(
+        default$: 'start scrcpy with no window',
+        alt: '''uses '--no-window' flag''',
+      ),
+    ),
+    borderless: WindowSectionBorderless(
+      label: 'Borderless',
+      info: WindowSectionBorderlessInfo(
+        default$: 'disable window decorations',
+        alt: '''uses '--window-borderless' flag''',
+      ),
+    ),
+    alwaysOnTop: WindowSectionAlwaysOnTop(
+      label: 'Always on top',
+      info: WindowSectionAlwaysOnTopInfo(
+        default$: 'scrcpy window always on top',
+        alt: '''uses '--always-on-top' flag''',
+      ),
+    ),
+    timeLimit: WindowSectionTimeLimit(
+      label: 'Time limit',
+      info: WindowSectionTimeLimitInfo(
+        default$: 'limits scrcpy session, in seconds',
+        alt: ({required String time}) => '''uses '--time-limit=${time}' flag''',
+      ),
+    ),
+  ),
+  addFlags: AddFlags(
+    title: 'Additional flags',
+    add: 'Add',
+    info: 'avoid using flags that are already an option',
+  ),
   connect: Connect(
     title: 'Connect',
     withIp: ConnectWithIp(
@@ -2610,6 +4933,10 @@ final LocalizationMessages en = LocalizationMessages(
       label: 'QR pairing',
       pair: 'Pair device',
     ),
+  ),
+  testConfig: TestConfig(
+    title: 'Test config',
+    preview: 'Command preview',
   ),
   scrcpyManager: ScrcpyManager(
     title: 'Scrcpy Manager',
@@ -2627,21 +4954,46 @@ final LocalizationMessages en = LocalizationMessages(
     title: 'Settings',
     looks: SettingsLooks(
       label: 'Looks',
-      theme: SettingsLooksTheme(
-        mode: 'Theme mode',
-        dark: 'Dark',
-        light: 'Light',
-        system: 'System',
+      mode: SettingsLooksMode(
+        label: 'Theme mode',
+        value: SettingsLooksModeValue(
+          dark: 'Dark',
+          light: 'Light',
+          system: 'System',
+        ),
+      ),
+      accentColor: SettingsLooksAccentColor(
+        label: 'Accent color',
+      ),
+      tintLevel: SettingsLooksTintLevel(
+        label: 'Tint level',
+      ),
+    ),
+    behaviour: SettingsBehaviour(
+      label: 'App behaviour',
+      minimize: SettingsBehaviourMinimize(
+        label: 'Minimize',
+        value: SettingsBehaviourMinimizeValue(
+          tray: 'to tray',
+          taskbar: 'to taskbar',
+        ),
       ),
     ),
   ),
   buttonLabel: ButtonLabel(
     ok: '',
     close: 'Close',
-    cancel: 'cancel',
+    cancel: 'Cancel',
+    stop: 'Stop',
+    testConfig: 'Test config',
   ),
   status: Status(
     failed: 'Failed',
+  ),
+  common: Common(
+    default$: 'Default',
+    yes: 'Yes',
+    no: 'No',
   ),
 );
 final Map<Locale, LocalizationMessages> _languageMap = {
