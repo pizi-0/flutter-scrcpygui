@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
@@ -21,6 +19,8 @@ import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/conf
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/preview_and_test.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/video_config.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/window_config.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../providers/adb_provider.dart';
 import '../../../../utils/const.dart';
@@ -119,91 +119,29 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
 
     return PopScope(
       canPop: false,
-      child: NavigationView(
-        appBar: NavigationAppBar(
-          leading: IconButton(
-            onPressed: () => _handleOnClose(),
-            icon: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Icon(FluentIcons.back),
-            ),
-          ),
-          actions: Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Row(
-                spacing: 8,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('Info'),
-                  Checkbox(
-                    checked: showInfo,
-                    onChanged: (v) {
-                      ref
-                          .read(configScreenShowInfo.notifier)
-                          .update((state) => !state);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-          title: SizedBox(
-            width: 200,
-            height: 30,
-            child: TextBox(
-              focusNode: nameBox,
-              controller: namecontroller,
-              onSubmitted: (value) async {
-                ref.read(configScreenConfig.notifier).update(
-                    (state) => state!.copyWith(configName: value.trim()));
-
-                ref.read(configsProvider.notifier).overwriteConfig(
-                    ref.read(configScreenConfig)!,
-                    ref.read(configScreenConfig)!);
-
-                await Db.saveConfigs(
-                    ref,
-                    context,
-                    ref
-                        .read(configsProvider)
-                        .where((c) => !defaultConfigs.contains(c))
-                        .toList());
-              },
-            ),
-          ),
-        ),
-        pane: NavigationPane(
-          menuButton: const SizedBox(),
-          size: const NavigationPaneSize(compactWidth: 0),
-          toggleable: false,
-          displayMode: PaneDisplayMode.compact,
-          selected: 0,
-          items: [
-            PaneItem(
-              icon: const SizedBox(),
-              body: dev.info == null
-                  ? const Center(child: CupertinoActivityIndicator())
-                  : selectedDevice == null
-                      ? Text(el.configScreenLoc.connectionLost)
-                      : ScaffoldPage.scrollable(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 2),
-                          children: [
-                            Center(
-                              child: Wrap(
-                                direction: Axis.horizontal,
-                                spacing: 8,
-                                runSpacing: 8,
-                                children: mobileList(selectedConfig),
-                              ),
-                            )
-                          ],
-                        ),
-            ),
-          ],
-        ),
+      child: PgScaffold(
+        title: 'Config settings',
+        children: [
+          const SizedBox(width: appWidth, child: ModeConfig()),
+          if (selectedConfig.scrcpyMode != ScrcpyMode.audioOnly)
+            const SizedBox(width: appWidth, child: VideoConfig()),
+          // if (selectedConfig.scrcpyMode != ScrcpyMode.videoOnly)
+          //   const SizedBox(width: appWidth, child: AudioConfig()),
+          // const SizedBox(width: appWidth, child: DeviceConfig()),
+          // const SizedBox(width: appWidth, child: WindowConfig()),
+          // const SizedBox(width: appWidth, child: AdditionalFlagsConfig()),
+          // const SizedBox(
+          //   width: appWidth,
+          //   child: Column(
+          //     children: [
+          //       SizedBox(height: 30),
+          //       Divider(),
+          //       PreviewAndTest(),
+          //       SizedBox(height: 30),
+          //     ],
+          //   ),
+          // ),
+        ],
       ),
     );
   }
@@ -213,7 +151,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
     setState(() {});
   }
 
-  List<Widget> mobileList(ScrcpyConfig selectedConfig) {
+  List<Widget> sectionList(ScrcpyConfig selectedConfig) {
     return [
       const SizedBox(width: appWidth, child: ModeConfig()),
       if (selectedConfig.scrcpyMode != ScrcpyMode.audioOnly)

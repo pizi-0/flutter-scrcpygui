@@ -1,36 +1,35 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:fluent_ui/fluent_ui.dart';
-import 'package:hexcolor/hexcolor.dart';
+import 'package:scrcpygui/utils/themes.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class AppTheme {
   final double widgetRadius;
   final bool fromWall;
-  final AccentColor accentColor;
+  final ColorSchemesWithName scheme;
   final ThemeMode themeMode;
   final double accentTintLevel;
 
   AppTheme({
-    required this.accentColor,
+    required this.scheme,
     required this.themeMode,
     this.fromWall = false,
-    this.widgetRadius = 10,
+    this.widgetRadius = 0.5,
     required this.accentTintLevel,
   });
 
   AppTheme copyWith({
     double? widgetRadius,
     bool? fromWall,
-    AccentColor? accentColor,
+    ColorSchemesWithName? scheme,
     ThemeMode? themeMode,
     double? accentTintLevel,
   }) {
     return AppTheme(
       widgetRadius: widgetRadius ?? this.widgetRadius,
       fromWall: fromWall ?? this.fromWall,
-      accentColor: accentColor ?? this.accentColor,
+      scheme: scheme ?? this.scheme,
       themeMode: themeMode ?? this.themeMode,
       accentTintLevel: accentTintLevel ?? this.accentTintLevel,
     );
@@ -40,17 +39,21 @@ class AppTheme {
     return {
       'widgetRadius': widgetRadius,
       'fromWall': fromWall,
-      'accentColor': accentColor.hex,
+      'scheme': scheme.toMap(),
       'themeMode': ThemeMode.values.indexOf(themeMode),
       'accentTintLevel': accentTintLevel,
     };
   }
 
   factory AppTheme.fromMap(Map<String, dynamic> map) {
+    ColorSchemes();
+
     return AppTheme(
-      widgetRadius: map['widgetRadius'] ?? 10,
+      widgetRadius: map['widgetRadius'] ?? 0.5,
       fromWall: map['fromWall'] ?? false,
-      accentColor: HexColor(map['accentColor']).toAccentColor(),
+      scheme: map['scheme'] != null
+          ? ColorSchemesWithName.fromMap(map['scheme'])
+          : mySchemes.first,
       themeMode: ThemeMode.values[map['themeMode']],
       accentTintLevel: map['accentTintLevel'],
     );

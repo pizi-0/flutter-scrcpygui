@@ -1,5 +1,3 @@
-import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
@@ -17,6 +15,7 @@ import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/dev
 import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
 import 'package:scrcpygui/screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
 import 'package:scrcpygui/screens/4.settings_tab/settings_tab.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -74,53 +73,26 @@ class _MyAppState extends ConsumerState<MyApp> {
     final settings = ref.watch(settingsProvider);
     final looks = settings.looks;
     final behaviour = settings.behaviour;
+    ColorSchemes.blue(ThemeMode.dark).toMap();
 
-    return FluentApp.router(
-      supportedLocales: const [
-        ...supportedLocales,
-        ...FluentLocalizations.supportedLocales
-      ],
+    return ShadcnApp.router(
+      supportedLocales: supportedLocales,
       locale: Locale(behaviour.languageCode, ''),
       localizationsDelegates: [
         ...localizationsDelegates,
-        FluentLocalizations.delegate
+        const ShadcnLocalizationsDelegate()
       ],
       routeInformationParser: _router.routeInformationParser,
       routerDelegate: _router.routerDelegate,
       routeInformationProvider: _router.routeInformationProvider,
       debugShowCheckedModeBanner: false,
-      theme: FluentThemeData(
-        accentColor: looks.accentColor,
-        navigationPaneTheme: NavigationPaneThemeData(
-          backgroundColor:
-              looks.accentColor.lighten(looks.accentTintLevel.toInt()),
-          overlayBackgroundColor:
-              looks.accentColor.lighten(looks.accentTintLevel.toInt()),
-        ),
-        cardColor: looks.accentColor.lighten(looks.accentTintLevel.toInt()),
-        scaffoldBackgroundColor: looks.accentColor
-            .lighten((looks.accentTintLevel.toInt() + 10).clamp(0, 100)),
-        // menuColor: looks.accentColor.lighten((looks.accentTintLevel.toInt() * 0.95).toInt()),
-        // cardColor: looks.accentColor.darken(90),
-        micaBackgroundColor: looks.accentColor
-            .lighten((looks.accentTintLevel.toInt() * 0.85).toInt()),
+      theme: ThemeData(
+        colorScheme: looks.scheme.light,
+        radius: looks.widgetRadius,
       ),
-      darkTheme: FluentThemeData(
-        brightness: Brightness.dark,
-        accentColor: looks.accentColor,
-        navigationPaneTheme: NavigationPaneThemeData(
-          backgroundColor:
-              looks.accentColor.darken(looks.accentTintLevel.toInt()),
-          overlayBackgroundColor:
-              looks.accentColor.darken(looks.accentTintLevel.toInt()),
-        ),
-        cardColor: const ResourceDictionary.dark()
-            .layerOnMicaBaseAltFillColorSecondary,
-        menuColor: looks.accentColor
-            .darken((looks.accentTintLevel.toInt() * 0.8).toInt()),
-        // cardColor: looks.accentColor.darken(90),
-        micaBackgroundColor: looks.accentColor
-            .darken((looks.accentTintLevel.toInt() * 0.85).toInt()),
+      darkTheme: ThemeData(
+        colorScheme: looks.scheme.dark,
+        radius: looks.widgetRadius,
       ),
       themeMode: looks.themeMode,
       // home: const SplashScreen(),
@@ -142,7 +114,7 @@ final _router = GoRouter(
     StatefulShellRoute(
       builder: (context, state, navigationShell) => navigationShell,
       navigatorContainerBuilder: (context, navigationShell, children) =>
-          MainScreen(child: children),
+          MainScreen(children: children),
       branches: [
         StatefulShellBranch(
           navigatorKey: _shellNavKey,

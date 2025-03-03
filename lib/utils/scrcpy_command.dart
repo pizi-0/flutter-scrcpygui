@@ -128,7 +128,7 @@ class ScrcpyCommand {
     max.sort((a, b) => b.compareTo(a));
 
     if (config.videoOptions.resolutionScale != 1) {
-      return ' --max-size=${(config.videoOptions.resolutionScale * max.first).toInt()}';
+      return ' --max-size=${((config.videoOptions.resolutionScale / 100) * max.first).toInt()}';
     }
 
     return '';

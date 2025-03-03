@@ -1,18 +1,20 @@
 import 'dart:io';
 
 import 'package:animate_do/animate_do.dart';
-import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../../../../../providers/config_provider.dart';
 import '../../../../../../utils/const.dart';
 import '../../../../../../widgets/config_tiles.dart';
+
+final sep = Platform.pathSeparator;
 
 class ModeConfig extends ConsumerStatefulWidget {
   const ModeConfig({super.key});
@@ -27,33 +29,10 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig)!;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ConfigCustom(title: el.modeSection.title),
-        Card(
-          padding: const EdgeInsets.all(0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildMainModeSelector(ref, context, selectedConfig),
-              _buildModeSelector(context, selectedConfig),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMainModeSelector(
-      WidgetRef ref, BuildContext context, ScrcpyConfig selectedConfig) {
-    final sep = Platform.pathSeparator;
     final showInfo = ref.watch(configScreenShowInfo);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return PgSectionCard(
+      label: el.modeSection.title,
       children: [
         ConfigDropdownEnum<MainMode>(
           items: MainMode.values,
@@ -63,7 +42,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
               : el.modeSection.mainMode.info.alt,
           showinfo: showInfo,
           initialValue:
-              selectedConfig.isRecording ? MainMode.record : MainMode.mirror,
+              (selectedConfig.isRecording ? MainMode.record : MainMode.mirror),
           onSelected: (value) {
             bool isRecording = value == MainMode.record;
 
@@ -74,15 +53,15 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
             setState(() {});
           },
         ),
-        const Divider(),
+        if (selectedConfig.isRecording) const Divider(),
         if (selectedConfig.isRecording)
           FadeIn(
-            duration: 200.milliseconds,
             child: ConfigCustom(
               title: el.modeSection.saveFolder.label,
               subtitle: el.modeSection.saveFolder.info,
               showinfo: showInfo,
-              child: Button(
+              child: SecondaryButton(
+                trailing: const Icon(Icons.folder),
                 onPressed: () async {
                   final res = await FilePicker.platform.getDirectoryPath();
 
@@ -91,79 +70,67 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
                         (state) => state = state!.copyWith(savePath: res));
                   }
                 },
-                child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: Row(
-                    spacing: 8,
-                    children: [
-                      const Icon(FluentIcons.folder_horizontal),
-                      Text(
-                        (selectedConfig.savePath ?? '').split(sep).last,
-                      ),
-                    ],
-                  ),
+                child: Text(
+                  (selectedConfig.savePath ?? '').split(sep).last,
                 ),
               ),
             ),
           ),
         const Divider(),
+        ConfigDropdownEnum<ScrcpyMode>(
+          items: ScrcpyMode.values,
+          title: modeLabel,
+          subtitle: selectedConfig.scrcpyMode == ScrcpyMode.both
+              ? el.modeSection.scrcpyMode.info.default$
+              : el.modeSection.scrcpyMode.info
+                  .alt(command: selectedConfig.scrcpyMode.command.trim()),
+          showinfo: showInfo,
+          initialValue: selectedConfig.scrcpyMode,
+          onSelected: (value) {
+            ref
+                .read(configScreenConfig.notifier)
+                .update((state) => state = state!.copyWith(scrcpyMode: value));
+
+            final def =
+                selectedConfig.isRecording ? defaultRecord : defaultMirror;
+
+            if (value == ScrcpyMode.audioOnly) {
+              final audioFormat = _audioFormat(selectedConfig);
+
+              ref
+                  .read(configScreenConfig.notifier)
+                  .update((state) => state = state!.copyWith(
+                      videoOptions: def.videoOptions,
+                      audioOptions: SAudioOptions(
+                        audioFormat: audioFormat,
+                        audioBitrate: selectedConfig.audioOptions.audioBitrate,
+                        audioCodec: selectedConfig.audioOptions.audioCodec,
+                        audioEncoder: selectedConfig.audioOptions.audioEncoder,
+                        audioSource: selectedConfig.audioOptions.audioSource,
+                        duplicateAudio:
+                            selectedConfig.audioOptions.duplicateAudio,
+                      )));
+            }
+
+            if (value == ScrcpyMode.videoOnly) {
+              ref
+                  .read(configScreenConfig.notifier)
+                  .update((state) => state = state!.copyWith(
+                        videoOptions: selectedConfig.videoOptions,
+                        audioOptions: SAudioOptions(
+                          audioBitrate: def.audioOptions.audioBitrate,
+                          audioCodec: def.audioOptions.audioCodec,
+                          audioEncoder: def.audioOptions.audioEncoder,
+                          audioFormat: def.audioOptions.audioFormat,
+                          audioSource: def.audioOptions.audioSource,
+                          duplicateAudio:
+                              selectedConfig.audioOptions.duplicateAudio,
+                        ),
+                      ));
+            }
+          },
+        )
       ],
-    );
-  }
-
-  Widget _buildModeSelector(BuildContext context, ScrcpyConfig selectedConfig) {
-    final showInfo = ref.watch(configScreenShowInfo);
-
-    return ConfigDropdownEnum<ScrcpyMode>(
-      items: ScrcpyMode.values,
-      title: modeLabel,
-      subtitle: selectedConfig.scrcpyMode == ScrcpyMode.both
-          ? el.modeSection.scrcpyMode.info.default$
-          : el.modeSection.scrcpyMode.info
-              .alt(command: selectedConfig.scrcpyMode.command.trim()),
-      showinfo: showInfo,
-      initialValue: selectedConfig.scrcpyMode,
-      onSelected: (value) {
-        ref
-            .read(configScreenConfig.notifier)
-            .update((state) => state = state!.copyWith(scrcpyMode: value));
-
-        final def = selectedConfig.isRecording ? defaultRecord : defaultMirror;
-
-        if (value == ScrcpyMode.audioOnly) {
-          final audioFormat = _audioFormat(selectedConfig);
-
-          ref
-              .read(configScreenConfig.notifier)
-              .update((state) => state = state!.copyWith(
-                  videoOptions: def.videoOptions,
-                  audioOptions: SAudioOptions(
-                    audioFormat: audioFormat,
-                    audioBitrate: selectedConfig.audioOptions.audioBitrate,
-                    audioCodec: selectedConfig.audioOptions.audioCodec,
-                    audioEncoder: selectedConfig.audioOptions.audioEncoder,
-                    audioSource: selectedConfig.audioOptions.audioSource,
-                    duplicateAudio: selectedConfig.audioOptions.duplicateAudio,
-                  )));
-        }
-
-        if (value == ScrcpyMode.videoOnly) {
-          ref
-              .read(configScreenConfig.notifier)
-              .update((state) => state = state!.copyWith(
-                    videoOptions: selectedConfig.videoOptions,
-                    audioOptions: SAudioOptions(
-                      audioBitrate: def.audioOptions.audioBitrate,
-                      audioCodec: def.audioOptions.audioCodec,
-                      audioEncoder: def.audioOptions.audioEncoder,
-                      audioFormat: def.audioOptions.audioFormat,
-                      audioSource: def.audioOptions.audioSource,
-                      duplicateAudio:
-                          selectedConfig.audioOptions.duplicateAudio,
-                    ),
-                  ));
-        }
-      },
     );
   }
 

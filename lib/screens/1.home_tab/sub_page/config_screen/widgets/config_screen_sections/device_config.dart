@@ -1,8 +1,7 @@
-import 'package:fluent_ui/fluent_ui.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../providers/config_provider.dart';
 
@@ -23,8 +22,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
       mainAxisSize: MainAxisSize.min,
       children: [
         ConfigCustom(
-            title: el.deviceSection.title,
-            child: const Icon(FluentIcons.cell_phone)),
+            title: el.deviceSection.title, child: const Icon(Icons.phone)),
         Card(
           padding: EdgeInsets.zero,
           child: Column(
@@ -38,22 +36,20 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                 subtitle: selectedConfig.deviceOptions.stayAwake
                     ? el.deviceSection.stayAwake.info.alt
                     : el.deviceSection.stayAwake.info.default$,
-                child: Tooltip(
-                  message: selectedConfig.windowOptions.noWindow
-                      ? 'Hide window is active'
-                      : '',
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Checkbox(
-                      checked: selectedConfig.deviceOptions.stayAwake,
-                      onChanged: selectedConfig.windowOptions.noWindow
-                          ? null
-                          : (value) => ref
-                              .read(configScreenConfig.notifier)
-                              .update((state) => state = state!.copyWith(
-                                  deviceOptions: state.deviceOptions
-                                      .copyWith(stayAwake: value))),
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Checkbox(
+                    state: selectedConfig.deviceOptions.stayAwake
+                        ? CheckboxState.checked
+                        : CheckboxState.unchecked,
+                    onChanged: selectedConfig.windowOptions.noWindow
+                        ? null
+                        : (value) => ref
+                            .read(configScreenConfig.notifier)
+                            .update((state) => state = state!.copyWith(
+                                deviceOptions: state.deviceOptions.copyWith(
+                                    stayAwake:
+                                        value == CheckboxState.checked))),
                   ),
                 ),
               ),
@@ -65,22 +61,20 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                 subtitle: selectedConfig.deviceOptions.showTouches
                     ? el.deviceSection.showTouches.info.alt
                     : el.deviceSection.showTouches.info.default$,
-                child: Tooltip(
-                  message: selectedConfig.windowOptions.noWindow
-                      ? 'Hide window is active'
-                      : '',
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Checkbox(
-                      checked: selectedConfig.deviceOptions.showTouches,
-                      onChanged: selectedConfig.windowOptions.noWindow
-                          ? null
-                          : (value) => ref
-                              .read(configScreenConfig.notifier)
-                              .update((state) => state = state!.copyWith(
-                                  deviceOptions: state.deviceOptions
-                                      .copyWith(showTouches: value))),
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Checkbox(
+                    state: selectedConfig.deviceOptions.showTouches
+                        ? CheckboxState.checked
+                        : CheckboxState.unchecked,
+                    onChanged: selectedConfig.windowOptions.noWindow
+                        ? null
+                        : (value) => ref
+                            .read(configScreenConfig.notifier)
+                            .update((state) => state = state!.copyWith(
+                                deviceOptions: state.deviceOptions.copyWith(
+                                    showTouches:
+                                        value == CheckboxState.checked))),
                   ),
                 ),
               ),
@@ -92,22 +86,20 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                 subtitle: selectedConfig.deviceOptions.turnOffDisplay
                     ? el.deviceSection.offDisplayStart.info.alt
                     : el.deviceSection.offDisplayStart.info.default$,
-                child: Tooltip(
-                  message: selectedConfig.windowOptions.noWindow
-                      ? 'Hide window is active'
-                      : '',
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Checkbox(
-                      checked: selectedConfig.deviceOptions.turnOffDisplay,
-                      onChanged: selectedConfig.windowOptions.noWindow
-                          ? null
-                          : (value) => ref
-                              .read(configScreenConfig.notifier)
-                              .update((state) => state = state!.copyWith(
-                                  deviceOptions: state.deviceOptions
-                                      .copyWith(turnOffDisplay: value))),
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Checkbox(
+                    state: selectedConfig.deviceOptions.turnOffDisplay
+                        ? CheckboxState.checked
+                        : CheckboxState.unchecked,
+                    onChanged: selectedConfig.windowOptions.noWindow
+                        ? null
+                        : (value) => ref
+                            .read(configScreenConfig.notifier)
+                            .update((state) => state = state!.copyWith(
+                                deviceOptions: state.deviceOptions.copyWith(
+                                    turnOffDisplay:
+                                        value == CheckboxState.checked))),
                   ),
                 ),
               ),
@@ -119,22 +111,20 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                 subtitle: selectedConfig.deviceOptions.offScreenOnClose
                     ? el.deviceSection.offDisplayExit.info.alt
                     : el.deviceSection.offDisplayExit.info.default$,
-                child: Tooltip(
-                  message: selectedConfig.windowOptions.noWindow
-                      ? 'Hide window is active'
-                      : '',
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Checkbox(
-                      checked: selectedConfig.deviceOptions.offScreenOnClose,
-                      onChanged: selectedConfig.windowOptions.noWindow
-                          ? null
-                          : (value) => ref
-                              .read(configScreenConfig.notifier)
-                              .update((state) => state = state!.copyWith(
-                                  deviceOptions: state.deviceOptions
-                                      .copyWith(offScreenOnClose: value))),
-                    ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Checkbox(
+                    state: selectedConfig.deviceOptions.offScreenOnClose
+                        ? CheckboxState.checked
+                        : CheckboxState.unchecked,
+                    onChanged: selectedConfig.windowOptions.noWindow
+                        ? null
+                        : (value) => ref
+                            .read(configScreenConfig.notifier)
+                            .update((state) => state = state!.copyWith(
+                                deviceOptions: state.deviceOptions.copyWith(
+                                    offScreenOnClose:
+                                        value == CheckboxState.checked))),
                   ),
                 ),
               ),
@@ -149,12 +139,15 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Checkbox(
-                    checked: selectedConfig.deviceOptions.noScreensaver,
+                    state: selectedConfig.deviceOptions.noScreensaver
+                        ? CheckboxState.checked
+                        : CheckboxState.unchecked,
                     onChanged: (value) => ref
                         .read(configScreenConfig.notifier)
                         .update((state) => state = state!.copyWith(
-                            deviceOptions: state.deviceOptions
-                                .copyWith(noScreensaver: value))),
+                            deviceOptions: state.deviceOptions.copyWith(
+                                noScreensaver:
+                                    value == CheckboxState.checked))),
                   ),
                 ),
               ),

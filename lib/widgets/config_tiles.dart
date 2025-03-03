@@ -1,10 +1,11 @@
-import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
+
+import 'custom_ui/pg_list_tile.dart';
 
 class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
   final List<T> items;
@@ -28,66 +29,33 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = FluentTheme.of(context);
-
-    final subColor = theme.brightness == Brightness.dark
-        ? theme.cardColor.lighten(5)
-        : theme.cardColor.lighten(50);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          contentPadding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-          title: Text(title).textStyle(theme.typography.body),
-          trailing: ComboBox(
-            value: initialValue,
-            onChanged: onSelected,
-            items: items
-                .map((e) => ComboBoxItem(
-                    value: e,
-                    child: Text(toTitleCase
-                        ? e.value.toString().toTitleCase
-                        : e.value.toString())))
-                .toList(),
-          ),
-        ),
-        if (subtitle != null && showinfo)
-          Card(
-            margin: const EdgeInsets.fromLTRB(16, 0, 14, 10),
-            padding: EdgeInsets.zero,
-            backgroundColor: subColor,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 4, 2),
-              child: Row(
-                spacing: 8,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Icon(
-                      FluentIcons.info,
-                      size: theme.typography.caption!.fontSize! - 2,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      '$subtitle',
-                      style: theme.typography.caption!.copyWith(
-                          color:
-                              theme.typography.caption!.color!.withAlpha(150)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
-      ],
+    return PgListTile(
+      title: title,
+      subtitle: subtitle,
+      showSubtitle: subtitle != null && showinfo,
+      trailing: Select(
+        filled: true,
+        itemBuilder: (context, value) =>
+            Text(toTitleCase ? value.value.toTitleCase : value.value),
+        value: initialValue,
+        onChanged: onSelected,
+        popup: SelectPopup(
+            items: SelectItemList(
+          children: items
+              .map((e) => SelectItemButton(
+                  value: e,
+                  child: Text(toTitleCase
+                      ? e.value.toString().toTitleCase
+                      : e.value.toString())))
+              .toList(),
+        )).call,
+      ),
     );
   }
 }
 
-class ConfigDropdownOthers extends ConsumerWidget {
-  final List<ComboBoxItem> items;
+class ConfigDropdownOthers extends StatefulWidget {
+  final List<SelectItemButton> items;
   final String label;
   final String? subtitle;
   final Widget? placeholder;
@@ -109,55 +77,34 @@ class ConfigDropdownOthers extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = FluentTheme.of(context);
+  State<ConfigDropdownOthers> createState() => _ConfigDropdownOthersState();
+}
 
-    final subColor = theme.brightness == Brightness.dark
-        ? theme.cardColor.lighten(5)
-        : theme.cardColor.lighten(50);
-
+class _ConfigDropdownOthersState extends State<ConfigDropdownOthers> {
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ListTile(
-          contentPadding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-          title: Text(label).textStyle(theme.typography.body),
-          trailing: ComboBox(
-            placeholder: placeholder,
-            value: initialValue,
-            onChanged: onSelected,
-            items: items,
+        PgListTile(
+          title: widget.label,
+          subtitle: widget.subtitle,
+          showSubtitle: widget.subtitle != null && widget.showinfo,
+          trailing: Select(
+            autoClosePopover: false,
+            filled: true,
+            itemBuilder: (context, value) => Text(value.toString()),
+            placeholder: widget.placeholder,
+            value: widget.initialValue,
+            onChanged: widget.onSelected,
+            popup: SelectPopup(
+              autoClose: false,
+              items: SelectItemList(
+                children: widget.items,
+              ),
+            ).call,
           ),
         ),
-        if (subtitle != null && showinfo)
-          Card(
-            margin: const EdgeInsets.fromLTRB(16, 0, 14, 10),
-            backgroundColor: subColor,
-            padding: EdgeInsets.zero,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 4, 2),
-              child: Row(
-                spacing: 8,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Icon(
-                      FluentIcons.info,
-                      size: theme.typography.caption!.fontSize! - 2,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      '$subtitle',
-                      style: theme.typography.caption!.copyWith(
-                          color:
-                              theme.typography.caption!.color!.withAlpha(150)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
       ],
     );
   }
@@ -185,63 +132,25 @@ class ConfigUserInput extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = FluentTheme.of(context);
-
-    final subColor = theme.brightness == Brightness.dark
-        ? theme.cardColor.lighten(5)
-        : theme.cardColor.lighten(50);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          contentPadding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-          title: Text(label).textStyle(theme.typography.body),
-          trailing: SizedBox(
-            width: 100,
-            child: TextBox(
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-              ],
-              suffix: Text(unit != null ? '$unit ' : ''),
-              textAlign: TextAlign.center,
-              controller: controller,
-              onChanged: onChanged,
-              onTap: onTap,
-              style: const TextStyle(fontSize: 14),
-            ),
-          ),
+    return PgListTile(
+      title: label,
+      subtitle: subtitle,
+      showSubtitle: subtitle != null && showinfo,
+      trailing: SizedBox(
+        width: 100,
+        child: TextField(
+          filled: true,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+          ],
+          trailing: Text(unit != null ? '$unit ' : '').xSmall(),
+          textAlign: TextAlign.center,
+          controller: controller,
+          onChanged: onChanged,
+          onTap: onTap,
+          style: const TextStyle(fontSize: 14),
         ),
-        if (subtitle != null && showinfo)
-          Card(
-            margin: const EdgeInsets.fromLTRB(16, 0, 14, 10),
-            backgroundColor: subColor,
-            padding: EdgeInsets.zero,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 4, 2),
-              child: Row(
-                spacing: 8,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Icon(
-                      FluentIcons.info,
-                      size: theme.typography.caption!.fontSize! - 2,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      '$subtitle',
-                      style: theme.typography.caption!.copyWith(
-                          color:
-                              theme.typography.caption!.color!.withAlpha(150)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
-      ],
+      ),
     );
   }
 }
@@ -268,50 +177,11 @@ class ConfigCustom extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = FluentTheme.of(context);
-
-    final subColor = theme.brightness == Brightness.dark
-        ? theme.cardColor.lighten(5)
-        : theme.cardColor.lighten(50);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          contentPadding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
-          title: Text(title).textStyle(theme.typography.body),
-          trailing: child,
-        ),
-        if (subtitle != null && showinfo)
-          Card(
-            margin: const EdgeInsets.fromLTRB(16, 0, 14, 10),
-            padding: EdgeInsets.zero,
-            backgroundColor: subColor,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 4, 2),
-              child: Row(
-                spacing: 8,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Icon(
-                      FluentIcons.info,
-                      size: theme.typography.caption!.fontSize! - 2,
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      '$subtitle',
-                      style: theme.typography.caption!.copyWith(
-                          color:
-                              theme.typography.caption!.color!.withAlpha(150)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          )
-      ],
+    return PgListTile(
+      title: title,
+      trailing: child,
+      subtitle: subtitle,
+      showSubtitle: subtitle != null && showinfo,
     );
   }
 }

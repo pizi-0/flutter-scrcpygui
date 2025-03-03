@@ -1,10 +1,13 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
-import 'package:scrcpygui/widgets/config_tiles.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+
+import '../../../utils/themes.dart';
 
 class ThemeSection extends ConsumerStatefulWidget {
   const ThemeSection({super.key});
@@ -19,135 +22,86 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
     final looks = ref.watch(settingsProvider.select((sett) => sett.looks));
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
-    return Column(
-      spacing: 8,
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return PgSectionCard(
+      label: el.settingsLoc.looks.label,
       children: [
-        ConfigCustom(
-            title: el.settingsLoc.looks.label, child: const SizedBox()),
-        Card(
-          padding: EdgeInsets.zero,
-          child: Column(
-            children: [
-              ConfigCustom(
-                childBackgroundColor: Colors.transparent,
-                title: el.settingsLoc.looks.mode.label,
-                child: ComboBox(
-                  value: looks.themeMode,
-                  onChanged: (ThemeMode? mode) async {
-                    ref.read(settingsProvider.notifier).changeThememode(mode!);
-                    await Db.saveAppSettings(ref.read(settingsProvider));
-                  },
-                  items: [
-                    ComboBoxItem(
-                      value: ThemeMode.system,
-                      child: Text(el.settingsLoc.looks.mode.value.system),
-                    ),
-                    ComboBoxItem(
-                      value: ThemeMode.light,
-                      child: Text(el.settingsLoc.looks.mode.value.light),
-                    ),
-                    ComboBoxItem(
-                      value: ThemeMode.dark,
-                      child: Text(el.settingsLoc.looks.mode.value.dark),
-                    ),
-                  ],
-                ),
+        PgListTile(
+          title: el.settingsLoc.looks.mode.label,
+          trailing: Select(
+            placeholder: const Text('Theme mode'),
+            canUnselect: false,
+            filled: true,
+            autoClosePopover: true,
+            itemBuilder: (context, value) => Text(value.name.capitalize),
+            value: looks.themeMode,
+            onChanged: (ThemeMode? mode) async {
+              ref.read(settingsProvider.notifier).changeThememode(mode!);
+              await Db.saveAppSettings(ref.read(settingsProvider));
+            },
+            popup: SelectPopup(
+              autoClose: true,
+              canUnselect: false,
+              items: SelectItemList(
+                children: [
+                  SelectItemButton(
+                    value: ThemeMode.system,
+                    child: Text(el.settingsLoc.looks.mode.value.system),
+                  ),
+                  SelectItemButton(
+                    value: ThemeMode.light,
+                    child: Text(el.settingsLoc.looks.mode.value.light),
+                  ),
+                  SelectItemButton(
+                    value: ThemeMode.dark,
+                    child: Text(el.settingsLoc.looks.mode.value.dark),
+                  ),
+                ],
               ),
-              const Divider(),
-              ConfigCustom(
-                childBackgroundColor: Colors.transparent,
-                title: el.settingsLoc.looks.accentColor.label,
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(FluentIcons.reset),
-                      onPressed: () async {
-                        ref
-                            .read(settingsProvider.notifier)
-                            .changeAccentColor(Colors.blue);
-
-                        await Db.saveAppSettings(ref.read(settingsProvider));
-                      },
-                    ),
-                    Button(
-                      style: ButtonStyle(
-                        backgroundColor:
-                            WidgetStatePropertyAll(looks.accentColor),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: Text(looks.accentColor.hex.toUpperCase())
-                            .textColor(looks.accentColor.basedOnLuminance()),
-                      ),
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (context) => ContentDialog(
-                            content: SingleChildScrollView(
-                              child: ColorPicker(
-                                colorSpectrumShape: ColorSpectrumShape.box,
-                                isMoreButtonVisible: false,
-                                isAlphaEnabled: false,
-                                isAlphaSliderVisible: false,
-                                isAlphaTextInputVisible: false,
-                                isColorChannelTextInputVisible: false,
-                                isColorPreviewVisible: false,
-                                color: looks.accentColor,
-                                onChanged: (color) async {
-                                  ref
-                                      .read(settingsProvider.notifier)
-                                      .changeAccentColor(color.toAccentColor());
-
-                                  await Db.saveAppSettings(
-                                      ref.read(settingsProvider));
-                                },
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+            ).call,
+          ),
+        ),
+        const Divider(),
+        PgListTile(
+          title: el.settingsLoc.looks.accentColor.label,
+          trailing: Select(
+            filled: true,
+            itemBuilder: (context, value) => Text(value.name),
+            value: looks.scheme,
+            onChanged: (scheme) async {
+              ref.read(settingsProvider.notifier).changeColorScheme(scheme!);
+              await Db.saveAppSettings(ref.read(settingsProvider));
+            },
+            popup: SelectPopup(
+              items: SelectItemList(
+                  children: mySchemes
+                      .map((scheme) => SelectItemButton(
+                          value: scheme, child: Text(scheme.name)))
+                      .toList()),
+            ).call,
+          ),
+        ),
+        const Divider(),
+        PgListTile(
+          title: 'Corner radius',
+          trailing: ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 150, maxWidth: 150),
+            child: Row(
+              spacing: 8,
+              children: [
+                Text(looks.widgetRadius.toStringAsFixed(1)).small().medium(),
+                Expanded(
+                  child: Slider(
+                    min: 0,
+                    max: 3,
+                    hintValue: SliderValue.single(looks.widgetRadius),
+                    value: SliderValue.single(looks.widgetRadius),
+                    onChanged: (value) => ref
+                        .read(settingsProvider.notifier)
+                        .changeCornerRadius(value.value),
+                  ),
                 ),
-              ),
-              const Divider(),
-              ConfigCustom(
-                childBackgroundColor: Colors.transparent,
-                title: el.settingsLoc.looks.tintLevel.label,
-                child: Row(
-                  children: [
-                    Tooltip(
-                      message: '${el.commonLoc.default$}: 90',
-                      child: IconButton(
-                        icon: const Icon(FluentIcons.reset),
-                        onPressed: () async {
-                          ref
-                              .read(settingsProvider.notifier)
-                              .changeTintLevel(90);
-
-                          await Db.saveAppSettings(ref.read(settingsProvider));
-                        },
-                      ),
-                    ),
-                    Slider(
-                      min: 50,
-                      value: looks.accentTintLevel,
-                      label: looks.accentTintLevel.toStringAsFixed(0),
-                      onChanged: (val) async {
-                        ref
-                            .read(settingsProvider.notifier)
-                            .changeTintLevel(val);
-                      },
-                      onChangeEnd: (value) async {
-                        await Db.saveAppSettings(ref.read(settingsProvider));
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],

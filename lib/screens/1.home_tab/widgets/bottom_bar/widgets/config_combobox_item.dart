@@ -1,14 +1,13 @@
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/utils/directory_utils.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../providers/adb_provider.dart';
 import '../../../../../providers/config_provider.dart';
 import '../../../../../utils/const.dart';
-import '../home_bottom_bar.dart';
 import 'config_delete_dialog.dart';
 import 'config_detail_dialog.dart';
 
@@ -25,12 +24,10 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Tooltip(
-          message: el.homeLoc.config.details,
-          child: IconButton(
-            icon: const Icon(FluentIcons.info),
-            onPressed: _onDetailPressed,
-          ),
+        IconButton(
+          variance: ButtonVariance.ghost,
+          icon: const Icon(Icons.info),
+          onPressed: _onDetailPressed,
         ),
         Expanded(
           child: Text(
@@ -41,28 +38,24 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
         ),
         if (widget.config.isRecording)
           IconButton(
-            icon: const Icon(FluentIcons.open_folder_horizontal),
+            variance: ButtonVariance.ghost,
+            icon: const Icon(Icons.folder),
             onPressed: () => DirectoryUtils.openFolder(widget.config.savePath!),
           ),
         if (widget.config.isRecording &&
             !defaultConfigs.contains(widget.config))
-          const Divider(
-            direction: Axis.vertical,
-            size: 18,
-          ),
+          const VerticalDivider(),
         if (!defaultConfigs.contains(widget.config))
           IconButton(
-            icon: const Icon(FluentIcons.edit),
+            variance: ButtonVariance.ghost,
+            icon: const Icon(Icons.edit),
             onPressed: () => _onEditPressed(widget.config),
           ),
-        if (!defaultConfigs.contains(widget.config))
-          const Divider(
-            direction: Axis.vertical,
-            size: 18,
-          ),
+        if (!defaultConfigs.contains(widget.config)) const VerticalDivider(),
         if (!defaultConfigs.contains(widget.config))
           IconButton(
-            icon: const Icon(FluentIcons.delete),
+            variance: ButtonVariance.ghost,
+            icon: const Icon(Icons.delete),
             onPressed: _onRemoveConfigPressed,
           ),
       ],
@@ -70,7 +63,6 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
   }
 
   _onDetailPressed() {
-    configKey.currentState?.closePopup();
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -79,7 +71,6 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
   }
 
   _onRemoveConfigPressed() async {
-    configKey.currentState?.closePopup();
     await showDialog(
       context: context,
       barrierDismissible: true,
@@ -88,22 +79,20 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
   }
 
   _onEditPressed(ScrcpyConfig config) {
-    configKey.currentState?.closePopup();
-
     ref.read(selectedConfigProvider.notifier).state = config;
 
     if (ref.read(selectedDeviceProvider) == null) {
       showDialog(
         barrierDismissible: true,
         context: context,
-        builder: (context) => ContentDialog(
+        builder: (context) => AlertDialog(
           title: Text(el.noDeviceDialogLoc.title),
           content: Text(
             el.noDeviceDialogLoc.contents,
             textAlign: TextAlign.start,
           ),
           actions: [
-            Button(
+            SecondaryButton(
               child: Text(el.buttonLabelLoc.close),
               onPressed: () => context.pop(),
             )

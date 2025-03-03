@@ -1,6 +1,6 @@
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
@@ -46,8 +46,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
       mainAxisSize: MainAxisSize.min,
       children: [
         ConfigCustom(
-            title: el.audioSection.title,
-            child: const Icon(FluentIcons.speakers)),
+            title: el.audioSection.title, child: const Icon(Icons.audiotrack)),
         Card(
           padding: EdgeInsets.zero,
           child: Column(
@@ -99,11 +98,11 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
               }
             },
       items: [
-        ComboBoxItem(
+        SelectItemButton(
           value: true,
           child: Text(el.commonLoc.yes),
         ),
-        ComboBoxItem(
+        SelectItemButton(
           value: false,
           child: Text(el.commonLoc.no),
         ),
@@ -180,10 +179,10 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
                               audioCodec: value, audioEncoder: 'default')));
                 },
           items: [
-            ...info.audioEncoder
-                .map((e) => ComboBoxItem(value: e.codec, child: Text(e.codec))),
+            ...info.audioEncoder.map(
+                (e) => SelectItemButton(value: e.codec, child: Text(e.codec))),
             if (selectedConfig.audioOptions.audioFormat != AudioFormat.m4a)
-              const ComboBoxItem(value: 'raw', child: Text('raw'))
+              const SelectItemButton(value: 'raw', child: Text('raw'))
           ],
           label: el.audioSection.codec.label,
           subtitle: _isRecordingAudioOnly(selectedConfig)
@@ -206,7 +205,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
                         state.audioOptions.copyWith(audioEncoder: value)));
           },
           items: [
-            ComboBoxItem(
+            SelectItemButton(
               value: 'default',
               child: Text(el.commonLoc.default$),
             ),
@@ -217,7 +216,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
                       ref.read(configScreenConfig)!.audioOptions.audioCodec)
                   .encoder
                   .map(
-                    (enc) => ComboBoxItem(
+                    (enc) => SelectItemButton(
                       value: enc,
                       child: Text(enc),
                     ),

@@ -1,11 +1,11 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:awesome_extensions/awesome_extensions.dart' show StyledText;
-import 'package:fluent_ui/fluent_ui.dart';
+import 'package:animate_do/animate_do.dart';
+import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
-import 'package:scrcpygui/main_screen.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../../../../../models/adb_devices.dart';
@@ -16,7 +16,7 @@ import '../../../../../providers/version_provider.dart';
 import '../../../../../utils/adb_utils.dart';
 import '../../../../../utils/const.dart';
 import '../../../../../utils/scrcpy_utils.dart';
-import 'device_control_dialog.dart';
+import '../../../../../widgets/custom_ui/pg_list_tile.dart';
 
 class DeviceTile extends ConsumerStatefulWidget {
   const DeviceTile({
@@ -31,13 +31,11 @@ class DeviceTile extends ConsumerStatefulWidget {
 }
 
 class _DeviceTileState extends ConsumerState<DeviceTile> {
-  final contextMenuController = FlyoutController();
   bool loading = false;
 
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
-
+    final theme = Theme.of(context);
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final runningInstances = ref.watch(scrcpyInstanceProvider);
     final deviceInstance =
@@ -49,182 +47,248 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
         widget.device.id.isIpv6 ||
         widget.device.id.contains(adbMdns);
 
-    return FlyoutTarget(
-      controller: contextMenuController,
-      child: Card(
-        padding: const EdgeInsets.all(0),
-        margin: const EdgeInsets.only(bottom: 4),
-        child: SizedBox(
-          height: 60,
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              GestureDetector(
-                onSecondaryTapUp: (details) => _showContextMenu(
-                    details, hasRunningInstance, deviceInstance, isWireless),
-                child: ListTile.selectable(
-                  onPressed: () {
-                    ref.read(selectedDeviceProvider.notifier).state =
-                        widget.device;
-                  },
-                  tileColor: const WidgetStatePropertyAll(Colors.transparent),
-                  leading: Icon(
-                    widget.device.id.isIpv4 ||
-                            widget.device.id.contains(adbMdns)
-                        ? FluentIcons.wifi
-                        : FluentIcons.usb,
-                  ),
-                  selected: isSelected,
-                  title: Row(
-                    spacing: 10,
-                    children: [
-                      Text(widget.device.name!),
-                      if (hasRunningInstance)
-                        Card(
-                          backgroundColor: theme.selectionColor,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 4, vertical: 2),
-                          child: Text(el.homeLoc.deviceTile.runningInstances(
-                                  count: '${deviceInstance.length}'))
-                              .fontSize(10)
-                              .textColor(Colors.white),
-                        ),
-                    ],
-                  ),
-                  subtitle: Text(
-                    widget.device.id,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  trailing: Row(
-                    children: [
-                      IconButton(
-                        icon: const Padding(
-                          padding: EdgeInsets.all(4.0),
-                          child: Icon(FluentIcons.app_icon_default),
-                        ),
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              barrierDismissible: true,
-                              builder: (context) =>
-                                  ControlDialog(widget.device));
-                        },
-                      ),
-                      IconButton(
-                        icon: const Padding(
-                          padding: EdgeInsets.all(4.0),
-                          child: Icon(FluentIcons.settings),
-                        ),
-                        onPressed: () {
-                          context.push(
-                              '/home/device-settings/${widget.device.id}');
-                        },
-                      ),
-                    ],
+    final contextMenu = [
+      MenuLabel(
+        child: Text(el.deviceTileLoc
+                .runningInstances(count: '${deviceInstance.length}'))
+            .xSmall()
+            .muted(),
+      ),
+      MenuButton(
+        enabled: hasRunningInstance,
+        leading: const Icon(Icons.close_rounded),
+        trailing: const Icon(Icons.chevron_right_rounded),
+        subMenu: [
+          ...deviceInstance.map(
+            (inst) => MenuButton(
+              child: Text(inst.instanceName),
+              onPressed: (context) => _killRunning([inst]),
+            ),
+          ),
+          MenuButton(
+            onPressed: (context) => _killRunning(deviceInstance),
+            child: Text(el.deviceTileLoc.context.allInstances),
+          )
+        ],
+        child: Text(el.deviceTileLoc.context.killRunning),
+      ),
+      const MenuDivider(),
+      MenuLabel(child: Text(el.deviceTileLoc.context.manage).xSmall().muted()),
+      if (isWireless)
+        MenuButton(
+          leading: const Icon(Icons.link_off_rounded),
+          onPressed: (context) => _disconnectWireless(),
+          child: Text(el.deviceTileLoc.context.disconnect),
+        ),
+      if (!isWireless)
+        MenuButton(
+          leading: const Icon(Icons.wifi_rounded),
+          onPressed: (context) => _toWireless(),
+          child: Text(el.deviceTileLoc.context.toWireless),
+        ),
+    ];
+
+    return IntrinsicHeight(
+      child: Stack(
+        children: [
+          ContextMenu(
+            items: contextMenu,
+            child: OutlineButton(
+              onPressed: () => ref.read(selectedDeviceProvider.notifier).state =
+                  widget.device,
+              child: PgListTile(
+                key: ValueKey(widget.device.id),
+                leading:
+                    isWireless ? const Icon(Icons.wifi) : const Icon(Icons.usb),
+                title: widget.device.name ?? widget.device.modelName,
+                titleBadge: hasRunningInstance
+                    ? 'Running (${deviceInstance.length})'
+                    : null,
+                subtitle: widget.device.id,
+                showSubtitle: true,
+                showSubtitleLeading: false,
+                trailing: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton.ghost(
+                      icon: const Icon(Icons.settings),
+                      onPressed: () => context
+                          .push('/home/device-settings/${widget.device.id}'),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          IgnorePointer(
+            child: SlideInLeft(
+              duration: 150.milliseconds,
+              from: 15,
+              animate: isSelected,
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20),
+                child: Container(
+                  width: 5,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primary,
+                    borderRadius: theme.borderRadiusSm,
                   ),
                 ),
               ),
-              if (loading)
-                Card(
-                  backgroundColor: Colors.black.withAlpha(100),
-                  child: const SizedBox(),
-                )
-            ],
+            ),
           ),
-        ),
+          if (loading)
+            Positioned.fill(
+              child: const OutlinedContainer(
+                child: SizedBox(),
+              ).withOpacity(0.5),
+            )
+        ],
       ),
-    );
+    ).clipRRect();
+  }
+
+  _toWireless() async {
+    loading = true;
+    setState(() {});
+
+    final workDir = ref.read(execDirProvider);
+
+    try {
+      final ip = await AdbUtils.getIpForUSB(workDir, widget.device);
+
+      await AdbUtils.tcpip5555(workDir, widget.device.id);
+
+      await AdbUtils.connectWithIp(ref, ipport: '$ip:5555');
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      showToast(
+          context: context,
+          builder: (context, overlay) => Text(el.statusLoc.failed));
+    }
+
+    if (mounted) {
+      loading = false;
+      setState(() {});
+    }
+  }
+
+  _disconnectWireless() async {
+    loading = true;
+    setState(() {});
+
+    try {
+      final workDir = ref.read(execDirProvider);
+
+      await AdbUtils.disconnectWirelessDevice(workDir, widget.device);
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      showToast(
+          context: context,
+          builder: (context, overlay) => Text(el.statusLoc.failed));
+    }
+
+    if (mounted) {
+      loading = false;
+      setState(() {});
+    }
+  }
+
+  _killRunning(List<ScrcpyRunningInstance> instances) async {
+    try {
+      for (final instance in instances) {
+        await ScrcpyUtils.killServer(instance);
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   _showContextMenu(TapUpDetails details, bool hasRunningInstance,
       List<ScrcpyRunningInstance> deviceInstance, bool isWireless) {
-    final widthAdjustment =
-        mainScreenNavViewKey.currentState!.compactOverlayOpen
-            ? kOpenNavigationPaneWidth
-            : kCompactNavigationPaneWidth;
+    // contextMenuController.showFlyout(
+    //   position: Offset(details.globalPosition.dx - widthAdjustment,
+    //       details.globalPosition.dy - kCompactNavigationPaneWidth),
+    //   builder: (context) {
+    //     return MenuFlyout(
+    //       items: [
+    //         if (hasRunningInstance)
+    //           MenuFlyoutSubItem(
+    //             leading: const Icon(FluentIcons.cancel),
+    //             text: Text(el.homeLoc.deviceTile.context.killRunning),
+    //             items: (context) => deviceInstance
+    //                 .map(
+    //                   (i) => MenuFlyoutItem(
+    //                       text: Text('${i.instanceName}/${i.scrcpyPID}'),
+    //                       onPressed: () {
+    //                         try {
+    //                           ScrcpyUtils.killServer(i);
+    //                         } on Exception catch (e) {
+    //                           debugPrint(e.toString());
+    //                         }
+    //                       }),
+    //                 )
+    //                 .toList(),
+    //           ),
+    //         if (isWireless)
+    //           MenuFlyoutItem(
+    //               leading: const Icon(FluentIcons.remove_link),
+    //               text: Text(el.homeLoc.deviceTile.context.disconnect),
+    //               onPressed: () async {
+    //                 loading = true;
+    //                 setState(() {});
 
-    contextMenuController.showFlyout(
-      position: Offset(details.globalPosition.dx - widthAdjustment,
-          details.globalPosition.dy - kCompactNavigationPaneWidth),
-      builder: (context) {
-        return MenuFlyout(
-          items: [
-            if (hasRunningInstance)
-              MenuFlyoutSubItem(
-                leading: const Icon(FluentIcons.cancel),
-                text: Text(el.homeLoc.deviceTile.context.killRunning),
-                items: (context) => deviceInstance
-                    .map(
-                      (i) => MenuFlyoutItem(
-                          text: Text('${i.instanceName}/${i.scrcpyPID}'),
-                          onPressed: () {
-                            try {
-                              ScrcpyUtils.killServer(i);
-                            } on Exception catch (e) {
-                              debugPrint(e.toString());
-                            }
-                          }),
-                    )
-                    .toList(),
-              ),
-            if (isWireless)
-              MenuFlyoutItem(
-                  leading: const Icon(FluentIcons.remove_link),
-                  text: Text(el.homeLoc.deviceTile.context.disconnect),
-                  onPressed: () async {
-                    loading = true;
-                    setState(() {});
+    //                 try {
+    //                   final workDir = ref.read(execDirProvider);
 
-                    try {
-                      final workDir = ref.read(execDirProvider);
+    //                   await AdbUtils.disconnectWirelessDevice(
+    //                       workDir, widget.device);
+    //                 } on Exception catch (e) {
+    //                   debugPrint(e.toString());
+    //                   displayInfoBar(context,
+    //                       builder: (context, close) => Card(
+    //                           child: InfoLabel(label: el.statusLoc.failed)));
+    //                 }
 
-                      await AdbUtils.disconnectWirelessDevice(
-                          workDir, widget.device);
-                    } on Exception catch (e) {
-                      debugPrint(e.toString());
-                      displayInfoBar(context,
-                          builder: (context, close) => Card(
-                              child: InfoLabel(label: el.statusLoc.failed)));
-                    }
+    //                 if (mounted) {
+    //                   loading = false;
+    //                   setState(() {});
+    //                 }
+    //               }),
+    //         if (!isWireless)
+    //           MenuFlyoutItem(
+    //             leading: const Icon(FluentIcons.wifi),
+    //             text: Text(el.homeLoc.deviceTile.context.toWireless),
+    //             onPressed: () async {
+    //               loading = true;
+    //               setState(() {});
 
-                    if (mounted) {
-                      loading = false;
-                      setState(() {});
-                    }
-                  }),
-            if (!isWireless)
-              MenuFlyoutItem(
-                leading: const Icon(FluentIcons.wifi),
-                text: Text(el.homeLoc.deviceTile.context.toWireless),
-                onPressed: () async {
-                  loading = true;
-                  setState(() {});
+    //               final workDir = ref.read(execDirProvider);
 
-                  final workDir = ref.read(execDirProvider);
+    //               try {
+    //                 final ip =
+    //                     await AdbUtils.getIpForUSB(workDir, widget.device);
 
-                  try {
-                    final ip =
-                        await AdbUtils.getIpForUSB(workDir, widget.device);
+    //                 await AdbUtils.tcpip5555(workDir, widget.device.id);
 
-                    await AdbUtils.tcpip5555(workDir, widget.device.id);
+    //                 await AdbUtils.connectWithIp(ref, ipport: '$ip:5555');
+    //               } on Exception catch (e) {
+    //                 debugPrint(e.toString());
+    //                 displayInfoBar(context,
+    //                     builder: (context, close) =>
+    //                         Card(child: InfoLabel(label: el.statusLoc.failed)));
+    //               }
 
-                    await AdbUtils.connectWithIp(ref, ipport: '$ip:5555');
-                  } on Exception catch (e) {
-                    debugPrint(e.toString());
-                    displayInfoBar(context,
-                        builder: (context, close) =>
-                            Card(child: InfoLabel(label: el.statusLoc.failed)));
-                  }
-
-                  if (mounted) {
-                    loading = false;
-                    setState(() {});
-                  }
-                },
-              ),
-          ],
-        );
-      },
-    );
+    //               if (mounted) {
+    //                 loading = false;
+    //                 setState(() {});
+    //               }
+    //             },
+    //           ),
+    //       ],
+    //     );
+    //   },
+    // );
   }
 }

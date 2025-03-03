@@ -1,8 +1,8 @@
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/available_flags.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../providers/config_provider.dart';
 import '../../../../../../widgets/config_tiles.dart';
@@ -33,13 +33,13 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
+    final theme = Theme.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         ConfigCustom(
           title: el.addFlags.title,
-          child: const Icon(FluentIcons.flag),
+          child: const Icon(Icons.flag),
         ),
         Card(
           child: Column(
@@ -48,9 +48,9 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(el.addFlags.add),
-              TextBox(
+              TextField(
                 controller: add,
-                placeholder: '--flag1 --flag-2 --flag-3=\'3 oh 3\'',
+                placeholder: const Text('--flag1 --flag-2 --flag-3=\'3 oh 3\''),
                 maxLines: 5,
                 inputFormatters: [
                   ...availableFlags
@@ -71,15 +71,15 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: Icon(
-                          FluentIcons.info,
-                          size: theme.typography.caption!.fontSize! - 2,
+                          Icons.info,
+                          size: theme.typography.textMuted.fontSize! - 2,
                         ),
                       ),
                       Expanded(
                         child: Text(
                           el.addFlags.info,
-                          style: theme.typography.caption!.copyWith(
-                              color: theme.typography.caption!.color!
+                          style: theme.typography.textMuted.copyWith(
+                              color: theme.typography.textMuted.color!
                                   .withAlpha(150)),
                         ),
                       ),

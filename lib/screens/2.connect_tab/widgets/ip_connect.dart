@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../../../db/db.dart';
@@ -40,21 +40,20 @@ class _IPConnectState extends ConsumerState<IPConnect>
         spacing: 8,
         children: [
           Expanded(
-            child: AutoSuggestBox(
-              placeholder:
-                  'Ip:port(${el.commonLoc.default$.toLowerCase()}=5555)',
-              autofocus: false,
-              controller: ipInput,
-              noResultsFoundBuilder: (context) => const SizedBox(),
-              items: ipHistory
-                  .map((e) => AutoSuggestBoxItem(value: e, label: e))
-                  .toList(),
+            child: AutoComplete(
+              suggestions: ipHistory,
+              child: TextField(
+                placeholder: Text(
+                    'Ip:port(${el.commonLoc.default$.toLowerCase()}=5555)'),
+                controller: ipInput,
+              ),
             ),
           ),
-          Button(
+          PrimaryButton(
             onPressed: loading ? null : _connect,
             child: loading
-                ? const SizedBox.square(dimension: 22, child: ProgressRing())
+                ? const SizedBox.square(
+                    dimension: 22, child: CircularProgressIndicator())
                 : Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: Text(el.connectLoc.withIp.connect),
@@ -81,9 +80,12 @@ class _IPConnectState extends ConsumerState<IPConnect>
             ]);
 
         await Db.saveWirelessHistory(ref.read(ipHistoryProvider));
-        displayInfoBar(context,
-            builder: (context, close) => InfoLabel(
-                label: el.connectLoc.withIp.connected(to: ipInput.text)));
+        showToast(
+          context: context,
+          builder: (context, overlay) => Basic(
+            title: Text(el.connectLoc.withIp.connected(to: ipInput.text)),
+          ),
+        );
       }
 
       if (!res.success) {

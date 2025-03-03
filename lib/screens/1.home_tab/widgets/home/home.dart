@@ -1,8 +1,8 @@
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'widgets/device_tile.dart';
 
@@ -15,9 +15,8 @@ class Home extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final connected = ref.watch(adbProvider);
 
-    return ScaffoldPage.withPadding(
-      padding: const EdgeInsets.all(0),
-      content: Column(
+    return Scaffold(
+      child: Column(
         spacing: 8,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

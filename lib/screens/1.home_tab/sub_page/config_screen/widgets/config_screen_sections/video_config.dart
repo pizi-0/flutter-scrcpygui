@@ -1,7 +1,8 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
@@ -49,35 +50,20 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig)!;
     final selectedDevice = ref.watch(selectedDeviceProvider);
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return PgSectionCard(
+      label: el.videoSection.title,
       children: [
-        ConfigCustom(
-            title: el.videoSection.title, child: const Icon(FluentIcons.video)),
-        Card(
-          padding: EdgeInsets.zero,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildDisplaySelector(selectedConfig, selectedDevice!.info!),
-                const Divider(),
-                _buildVideoCodecNFormatSelector(
-                    context, selectedConfig, selectedDevice.info!),
-                const Divider(),
-                _buildVideoBitrate(context),
-                const Divider(),
-                _buildMaxFPS(selectedConfig),
-                const Divider(),
-                _buildResolutionScale(selectedConfig, selectedDevice.info!),
-              ],
-            ),
-          ),
-        ),
+        _buildDisplaySelector(selectedConfig, selectedDevice!.info!),
+        const Divider(),
+        _buildVideoCodecNFormatSelector(
+            context, selectedConfig, selectedDevice.info!),
+        const Divider(),
+        _buildVideoBitrate(context),
+        const Divider(),
+        _buildMaxFPS(selectedConfig),
+        const Divider(),
+        _buildResolutionScale(selectedConfig, selectedDevice.info!),
       ],
     );
   }
@@ -134,7 +120,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
           : el.videoSection.displays.info.alt,
       items: displays
           .map(
-            (d) => ComboBoxItem(
+            (d) => SelectItemButton(
               value: d.id,
               child: Text(d.id),
             ),
@@ -162,40 +148,38 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
 
     return ConfigCustom(
       title: el.videoSection.resolutionScale.label,
-      showinfo: showInfo,
+      showinfo:
+          showInfo || selectedConfig.videoOptions.resolutionScale != 100.0,
       subtitle: selectedConfig.videoOptions.resolutionScale == 1.0
           ? el.videoSection.resolutionScale.info.default$
           : el.videoSection.resolutionScale.info.alt(
-              size: (selectedConfig.videoOptions.resolutionScale * max.first)
+              size: ((selectedConfig.videoOptions.resolutionScale / 100) *
+                      max.first)
                   .toStringAsFixed(0)),
-      child: Row(
-        children: [
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 150),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: 150, maxWidth: 150),
+        child: Row(
+          spacing: 4,
+          children: [
+            Text('${selectedConfig.videoOptions.resolutionScale.toInt()}%')
+                .small(),
+            Expanded(
               child: Slider(
-                label:
-                    'max-size=${(selectedConfig.videoOptions.resolutionScale * max.first).toStringAsFixed(0)}',
-                value: selectedConfig.videoOptions.resolutionScale,
-                max: 1,
-                min: 0.3,
-                divisions: 7,
+                value: SliderValue.single(
+                    selectedConfig.videoOptions.resolutionScale),
+                max: 100,
+                min: 30,
+                divisions: 70,
                 onChanged: (value) {
                   ref.read(configScreenConfig.notifier).update((state) =>
                       state = state!.copyWith(
                           videoOptions: state.videoOptions
-                              .copyWith(resolutionScale: value)));
+                              .copyWith(resolutionScale: value.value)));
                 },
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 10.0),
-            child: Text(
-                selectedConfig.videoOptions.resolutionScale.toStringAsFixed(1)),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -205,6 +189,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     final showInfo = ref.watch(configScreenShowInfo);
 
     return Column(
+      spacing: 8,
       mainAxisSize: MainAxisSize.min,
       children: [
         ConfigDropdownOthers(
@@ -217,7 +202,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                         .copyWith(videoCodec: value, videoEncoder: 'default')));
           },
           items: info.videoEncoders
-              .map((e) => ComboBoxItem(value: e.codec, child: Text(e.codec)))
+              .map(
+                  (e) => SelectItemButton(value: e.codec, child: Text(e.codec)))
               .toList(),
           label: el.videoSection.codec.label,
           subtitle: selectedConfig.videoOptions.videoCodec == 'h264'
@@ -236,7 +222,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                         state.videoOptions.copyWith(videoEncoder: value)));
           },
           items: [
-            const ComboBoxItem(
+            const SelectItemButton(
               value: 'default',
               child: Text('Default'),
             ),
@@ -246,7 +232,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                     ref.read(configScreenConfig)!.videoOptions.videoCodec)
                 .encoder
                 .map(
-                  (enc) => ComboBoxItem(
+                  (enc) => SelectItemButton(
                     value: enc,
                     child: Text(enc),
                   ),
@@ -258,7 +244,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
               : el.videoSection.encoder.info
                   .alt(encoder: selectedConfig.videoOptions.videoEncoder),
         ),
-        const Divider(),
+        if (selectedConfig.isRecording) const Divider(),
         if (selectedConfig.isRecording)
           FadeIn(
             child: ConfigDropdownEnum<VideoFormat>(

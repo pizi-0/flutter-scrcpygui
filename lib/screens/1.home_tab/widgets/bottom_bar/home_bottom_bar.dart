@@ -1,9 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:scrcpygui/db/db.dart';
@@ -15,8 +15,6 @@ import '../../../../providers/settings_provider.dart';
 import '../../../../utils/const.dart';
 import '../../../../utils/scrcpy_utils.dart';
 import 'widgets/config_combobox_item.dart';
-
-final configKey = GlobalKey<ComboBoxState>(debugLabel: 'config list combo box');
 
 class HomeBottomBar extends ConsumerStatefulWidget {
   const HomeBottomBar({super.key});
@@ -40,47 +38,47 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
         Padding(
           padding: const EdgeInsets.only(left: 16, right: 16),
           child: ConfigCustom(
-            title: el.homeLoc.config.label,
-            child: Tooltip(
-              message: el.homeLoc.config.new$,
-              child: IconButton(
-                  onPressed: _onNewConfigPressed,
-                  icon: const Icon(FluentIcons.add)),
-            ),
+            title: el.configLoc.label,
+            child: IconButton(
+                variance: ButtonVariance.ghost,
+                onPressed: _onNewConfigPressed,
+                icon: const Icon(Icons.add)),
           ),
         ),
         Card(
           padding: const EdgeInsets.all(8),
-          margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           child: Row(
             spacing: 10,
             children: [
               Expanded(
-                child: ComboBox(
-                  key: configKey,
-                  isExpanded: true,
-                  placeholder: Text(el.homeLoc.config.select),
+                child: Select(
+                  itemBuilder: (context, value) => Text(value.configName),
+                  placeholder: Text(el.configLoc.select),
                   value: selectedConfig,
                   onChanged: (value) {
                     ref.read(selectedConfigProvider.notifier).state = value;
                     setState(() {});
                   },
-                  items: allconfigs
-                      .map(
-                        (c) => ComboBoxItem(
-                            value: c, child: ConfigDropDownItem(config: c)),
-                      )
-                      .toList(),
+                  popup: SelectPopup(
+                    items: SelectItemList(
+                        children: allconfigs
+                            .map(
+                              (c) => SelectItemButton(
+                                  value: c,
+                                  child: ConfigDropDownItem(config: c)),
+                            )
+                            .toList()),
+                  ).call,
                 ),
               ),
-              Button(
+              PrimaryButton(
                 onPressed: loading ? null : _start,
                 child: Padding(
                   padding: const EdgeInsets.all(3.0),
                   child: loading
                       ? const SizedBox.square(
-                          dimension: 18, child: ProgressRing())
-                      : Text(el.homeLoc.config.start),
+                          dimension: 18, child: CircularProgressIndicator())
+                      : Text(el.configLoc.start),
                 ),
               )
             ],
@@ -100,11 +98,11 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
       showDialog(
         barrierDismissible: true,
         context: context,
-        builder: (context) => ContentDialog(
+        builder: (context) => AlertDialog(
           title: Text(el.noDeviceDialogLoc.title),
-          content: Text(el.noDeviceDialogLoc.contents),
+          content: Text(el.noDeviceDialogLoc.contentsNew),
           actions: [
-            Button(
+            SecondaryButton(
               child: Text(el.buttonLabelLoc.close),
               onPressed: () => context.pop(),
             )
@@ -121,11 +119,11 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
       showDialog(
         context: context,
         barrierDismissible: true,
-        builder: (context) => ContentDialog(
+        builder: (context) => AlertDialog(
           title: Text(el.noConfigDialogLoc.title),
           content: Text(el.noConfigDialogLoc.contents),
           actions: [
-            Button(
+            SecondaryButton(
               child: Text(el.buttonLabelLoc.close),
               onPressed: () => context.pop(),
             )
@@ -143,11 +141,11 @@ class _HomeBottomBarState extends ConsumerState<HomeBottomBar> {
           showDialog(
             context: context,
             barrierDismissible: true,
-            builder: (context) => ContentDialog(
+            builder: (context) => AlertDialog(
               title: Text(el.noDeviceDialogLoc.title),
-              content: Text(el.noDeviceDialogLoc.contents),
+              content: Text(el.noDeviceDialogLoc.contentsStart),
               actions: [
-                Button(
+                SecondaryButton(
                   child: Text(el.buttonLabelLoc.close),
                   onPressed: () => context.pop(),
                 )

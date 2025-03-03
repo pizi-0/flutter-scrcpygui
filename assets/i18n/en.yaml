@@ -5,25 +5,31 @@ home_loc:
   devices: 
     label: Connected devices (${count})
   
-  device_tile: 
-    running_instances: Running (${count})
-    context: 
-      disconnect: Disconnect
-      to_wireless: To wireless
-      kill_running: Kill running instances
+device_tile_loc: 
+  running_instances: Running (${count})
+  context: 
+    disconnect: Disconnect
+    to_wireless: To wireless
+    kill_running: Kill running instances
+    all_instances: All instances
+    manage: Manage
     
 
-  config:
-    label: Start scrcpy
-    new: Create new config
-    select: Select a config
-    details: Show details
-    start: Start
+config_loc:
+  label: Start scrcpy
+  new: Create new config
+  select: Select a config
+  details: Show details
+  start: Start
 
 # error dialog
 no_device_dialog_loc:
   title: Device
-  contents: No device selected. \nSelect a device to edit scrcpy config.
+  contentsEdit: No device selected. \nSelect a device to edit scrcpy config.
+  contentsStart: No device selected. \nSelect a device to start scrcpy.
+  contentsNew: No device selected. \nSelect a device to create scrcpy config.
+
+
 
 no_config_dialog_loc:
   title: Config

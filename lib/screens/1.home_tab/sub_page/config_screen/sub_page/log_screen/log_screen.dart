@@ -1,15 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
-import 'package:scrcpygui/providers/adb_provider.dart';
-import 'package:scrcpygui/utils/scrcpy_command.dart';
-
-import '../../../../../../providers/config_provider.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class LogScreen extends ConsumerStatefulWidget {
   static const route = 'config-settings/config-log/:instance';
@@ -47,37 +41,8 @@ class _LogScreenState extends ConsumerState<LogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedConfig = ref.watch(configScreenConfig);
-    final selectedDevice = ref.watch(selectedDeviceProvider);
-
-    return NavigationView(
-      appBar: NavigationAppBar(
-        title: Text(el.logScreenLoc.title),
-        actions: IconButton(
-          icon: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Icon(FluentIcons.info),
-          ),
-          onPressed: () {
-            showDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (context) => ContentDialog(
-                title: Text(el.logScreenLoc.dialog.title),
-                content: Text(
-                    'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig!, selectedDevice!, customName: '[TEST] ${selectedConfig.configName}').join(' ')}'),
-                actions: [
-                  Button(
-                    child: Text(el.buttonLabelLoc.close),
-                    onPressed: () => context.pop(),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      ),
-      content: SizedBox.expand(
+    return Scaffold(
+      child: SizedBox.expand(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(8.0),

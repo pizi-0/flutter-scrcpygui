@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:logger/logger.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
@@ -10,6 +9,8 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/window_options.dar
 import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
 import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/device_settings_screen.dart';
+import 'package:scrcpygui/utils/themes.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../models/scrcpy_related/scrcpy_config.dart';
 import '../models/scrcpy_related/scrcpy_enum.dart';
@@ -42,7 +43,7 @@ final ScrcpyConfig defaultMirror = ScrcpyConfig(
     videoFormat: VideoFormat.mp4,
     videoCodec: 'h264',
     videoEncoder: 'default',
-    resolutionScale: 1.0,
+    resolutionScale: 100.0,
     videoBitrate: 8,
     maxFPS: 0,
     displayId: 0,
@@ -80,7 +81,7 @@ final ScrcpyConfig newConfig = ScrcpyConfig(
     videoFormat: VideoFormat.mp4,
     videoCodec: 'h264',
     videoEncoder: 'default',
-    resolutionScale: 1.0,
+    resolutionScale: 100.0,
     videoBitrate: 8,
     maxFPS: 0,
     displayId: 0,
@@ -124,7 +125,7 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
     videoFormat: VideoFormat.mp4,
     videoCodec: 'h264',
     videoEncoder: 'default',
-    resolutionScale: 1.0,
+    resolutionScale: 100.0,
     videoBitrate: 8,
     maxFPS: 0,
     displayId: 0,
@@ -157,8 +158,8 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
 );
 
 final defaultTheme = AppTheme(
-  widgetRadius: 10,
-  accentColor: Colors.blue,
+  widgetRadius: 0.5,
+  scheme: mySchemes.first,
   themeMode: ThemeMode.dark,
   fromWall: false,
   accentTintLevel: 90,

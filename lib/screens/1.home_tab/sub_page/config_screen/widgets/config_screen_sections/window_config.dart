@@ -1,6 +1,6 @@
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../providers/config_provider.dart';
 import '../../../../../../widgets/config_tiles.dart';
@@ -38,8 +38,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
       mainAxisSize: MainAxisSize.min,
       children: [
         ConfigCustom(
-            title: el.windowSection.title,
-            child: const Icon(FluentIcons.favicon)),
+            title: el.windowSection.title, child: const Icon(Icons.favorite)),
         Card(
           padding: EdgeInsets.zero,
           child: Column(
@@ -56,9 +55,11 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Checkbox(
-                      checked: selectedConfig.windowOptions.noWindow,
+                      state: selectedConfig.windowOptions.noWindow
+                          ? CheckboxState.checked
+                          : CheckboxState.unchecked,
                       onChanged: (value) {
-                        if (value!) {
+                        if (value == CheckboxState.checked) {
                           ref.read(configScreenConfig.notifier).update(
                               (state) => state = state!.copyWith(
                                       deviceOptions:
@@ -72,8 +73,9 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
 
                         ref.read(configScreenConfig.notifier).update(
                               (state) => state = state!.copyWith(
-                                  windowOptions: state.windowOptions
-                                      .copyWith(noWindow: value)),
+                                  windowOptions: state.windowOptions.copyWith(
+                                      noWindow:
+                                          value == CheckboxState.checked)),
                             );
                       }),
                 ),
@@ -89,13 +91,16 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Checkbox(
-                    checked: selectedConfig.windowOptions.noBorder,
-                    onChanged: (value) =>
-                        ref.read(configScreenConfig.notifier).update(
-                              (state) => state = state!.copyWith(
-                                  windowOptions: state.windowOptions
-                                      .copyWith(noBorder: value)),
-                            ),
+                    state: selectedConfig.windowOptions.noBorder
+                        ? CheckboxState.checked
+                        : CheckboxState.unchecked,
+                    onChanged: (value) => ref
+                        .read(configScreenConfig.notifier)
+                        .update(
+                          (state) => state = state!.copyWith(
+                              windowOptions: state.windowOptions.copyWith(
+                                  noBorder: value == CheckboxState.checked)),
+                        ),
                   ),
                 ),
               ),
@@ -110,13 +115,16 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Checkbox(
-                    checked: selectedConfig.windowOptions.alwaysOntop,
-                    onChanged: (value) =>
-                        ref.read(configScreenConfig.notifier).update(
-                              (state) => state = state!.copyWith(
-                                  windowOptions: state.windowOptions
-                                      .copyWith(alwaysOntop: value)),
-                            ),
+                    state: selectedConfig.windowOptions.alwaysOntop
+                        ? CheckboxState.checked
+                        : CheckboxState.unchecked,
+                    onChanged: (value) => ref
+                        .read(configScreenConfig.notifier)
+                        .update(
+                          (state) => state = state!.copyWith(
+                              windowOptions: state.windowOptions.copyWith(
+                                  alwaysOntop: value == CheckboxState.checked)),
+                        ),
                   ),
                 ),
               ),

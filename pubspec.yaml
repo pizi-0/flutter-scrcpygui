@@ -69,7 +69,6 @@ dependencies:
   bonsoir: ^5.1.10
   fpdart: ^1.1.1
   archive: ^4.0.2
-  fluent_ui: ^4.10.0
   keymap: ^0.0.92
   qr_flutter: ^4.1.0
   multicast_dns: ^0.3.2+8
@@ -78,6 +77,7 @@ dependencies:
   go_transitions: ^0.7.1
   collection: ^1.19.0
   easiest_localization: ^2.0.1
+  shadcn_flutter: ^0.0.26
   # flutter_single_instance: ^1.2.3
   # flutter_staggered_grid_view: ^0.7.0
   # circular_reveal_animation: ^2.0.1

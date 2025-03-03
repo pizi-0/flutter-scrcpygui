@@ -1,5 +1,4 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
@@ -10,6 +9,7 @@ import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class ControlDialog extends ConsumerStatefulWidget {
   final AdbDevices device;
@@ -51,7 +51,7 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
   Widget build(BuildContext context) {
     final allconfigs = ref.read(configsProvider);
 
-    return ContentDialog(
+    return AlertDialog(
       title: Text(widget.device.name ?? widget.device.modelName),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,22 +69,28 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
               children: [
                 const Divider(),
                 const Text('Launch:'),
-                ComboBox(
+                Select(
+                  itemBuilder: (context, value) => Text(value),
                   onChanged: (value) {
                     selectedApp = value!;
                     setState(() {});
                   },
                   placeholder: const Text('Select app'),
                   value: selectedApp,
-                  items: widget.device.info!.appList!
-                      .map((app) => ComboBoxItem(
-                            value: app.packageName,
-                            child: Text(app.name),
-                          ))
-                      .toList(),
+                  popup: SelectPopup(
+                    items: SelectItemList(
+                      children: widget.device.info!.appList!
+                          .map((app) => SelectItemButton(
+                                value: app.packageName,
+                                child: Text(app.name),
+                              ))
+                          .toList(),
+                    ),
+                  ).call,
                 ),
                 const Text('On config:'),
-                ComboBox(
+                Select(
+                  itemBuilder: (context, value) => Text(value.configName),
                   onChanged: selectedApp == null
                       ? null
                       : (config) {
@@ -94,20 +100,24 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
                         },
                   placeholder: const Text('Select config to launch the app on'),
                   value: selectedConfig,
-                  items: allconfigs
-                      .where((e) => !e.windowOptions.noWindow)
-                      .map((config) => ComboBoxItem(
-                            value: config,
-                            child: Text(config.configName),
-                          ))
-                      .toList(),
+                  popup: SelectPopup(
+                    items: SelectItemList(
+                      children: allconfigs
+                          .where((e) => !e.windowOptions.noWindow)
+                          .map((config) => SelectItemButton(
+                                value: config,
+                                child: Text(config.configName),
+                              ))
+                          .toList(),
+                    ),
+                  ).call,
                 ),
               ],
             ),
         ],
       ),
       actions: [
-        Button(
+        SecondaryButton(
           child: const Text('Close'),
           onPressed: () => ScrcpyUtils.newInstance(ref,
               selectedDevice: widget.device,
@@ -121,42 +131,36 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
   _buttonList() {
     final workDir = ref.read(execDirProvider);
     return [
-      Button(
-        child: const Icon(FluentIcons.power_button).paddingAll(2),
+      SecondaryButton(
+        child: const Icon(Icons.power).paddingAll(2),
         onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.power),
       ),
-      const Divider(
-        direction: Axis.vertical,
-        size: 10,
-      ),
-      Button(
-        child: const Icon(FluentIcons.back).paddingAll(2),
+      const VerticalDivider(),
+      SecondaryButton(
+        child: const Icon(Icons.arrow_back).paddingAll(2),
         onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.back),
       ),
-      Button(
-        child: const Icon(FluentIcons.home).paddingAll(2),
+      SecondaryButton(
+        child: const Icon(Icons.home).paddingAll(2),
         onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.home),
       ),
-      Button(
-        child: const Icon(FluentIcons.recent).paddingAll(2),
+      SecondaryButton(
+        child: const Icon(Icons.history).paddingAll(2),
         onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.recent),
       ),
-      const Divider(
-        direction: Axis.vertical,
-        size: 10,
-      ),
-      Button(
-        child: const Icon(FluentIcons.previous).paddingAll(2),
+      const VerticalDivider(),
+      SecondaryButton(
+        child: const Icon(Icons.skip_previous).paddingAll(2),
         onPressed: () =>
             widget.device.sendKeyEvent(workDir, DeviceKey.mediaPrevious),
       ),
-      Button(
-        child: const Icon(FluentIcons.play).paddingAll(2),
+      SecondaryButton(
+        child: const Icon(Icons.play_arrow).paddingAll(2),
         onPressed: () =>
             widget.device.sendKeyEvent(workDir, DeviceKey.playPause),
       ),
-      Button(
-        child: const Icon(FluentIcons.next).paddingAll(2),
+      SecondaryButton(
+        child: const Icon(Icons.skip_next).paddingAll(2),
         onPressed: () =>
             widget.device.sendKeyEvent(workDir, DeviceKey.mediaNext),
       ),

@@ -1,12 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:multicast_dns/multicast_dns.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:uuid/uuid.dart';
 
@@ -43,7 +43,7 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
 
   @override
   Widget build(BuildContext context) {
-    return ContentDialog(
+    return AlertDialog(
       title: Text(el.connectLoc.qrPair.pair),
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -68,9 +68,9 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
                     if (loading)
                       SizedBox.expand(
                         child: Container(
-                          color: Colors.grey.withAlpha(200),
+                          color: Colors.neutral.withAlpha(200),
                           child: const Center(
-                            child: ProgressRing(),
+                            child: CircularProgressIndicator(),
                           ),
                         ),
                       )
@@ -82,7 +82,7 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
         ],
       ),
       actions: [
-        Button(
+        SecondaryButton(
           child: Text(el.buttonLabelLoc.close),
           onPressed: () => context.pop(),
         )

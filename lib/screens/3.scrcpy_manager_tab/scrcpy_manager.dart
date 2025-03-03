@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
@@ -10,6 +9,7 @@ import 'package:scrcpygui/utils/directory_utils.dart';
 import 'package:scrcpygui/utils/setup.dart';
 import 'package:scrcpygui/utils/update_utils.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class ScrcpyManagerTab extends ConsumerStatefulWidget {
   static const route = '/scrcpy-manager';
@@ -37,10 +37,13 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
         await _checkForUpdate();
       } on Exception catch (e) {
         debugPrint(e.toString());
-        displayInfoBar(context,
-            builder: (context, close) => Card(
-                padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-                child: InfoLabel(label: el.scrcpyManagerLoc.infoPopup.error)));
+
+        showToast(
+          context: context,
+          builder: (context, overlay) => Basic(
+            title: Text(el.scrcpyManagerLoc.infoPopup.error),
+          ),
+        );
       }
     });
   }
@@ -54,17 +57,20 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
     if (res != null) {
       latest = res;
       if (res == ref.read(scrcpyVersionProvider)) {
-        displayInfoBar(context,
-            builder: (context, close) => Card(
-                padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-                child:
-                    InfoLabel(label: el.scrcpyManagerLoc.infoPopup.noUpdate)));
+        showToast(
+          context: context,
+          builder: (context, overlay) => Basic(
+            title: Text(el.scrcpyManagerLoc.infoPopup.noUpdate),
+          ),
+        );
       }
     } else {
-      displayInfoBar(context,
-          builder: (context, close) => Card(
-              padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-              child: InfoLabel(label: el.scrcpyManagerLoc.infoPopup.noUpdate)));
+      showToast(
+        context: context,
+        builder: (context, overlay) => Basic(
+          title: Text(el.scrcpyManagerLoc.infoPopup.noUpdate),
+        ),
+      );
     }
 
     if (mounted) {
@@ -79,42 +85,40 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
 
     final scrcpyVersion = ref.watch(scrcpyVersionProvider);
     final scrcpyDir = ref.watch(execDirProvider);
-    final theme = FluentTheme.of(context);
     final installed = ref.watch(installedScrcpyProvider);
 
-    return ScaffoldPage.withPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      header: Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: PageHeader(
-            title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(el.scrcpyManagerLoc.title),
-            Tooltip(
-              message: el.scrcpyManagerLoc.check,
-              child: IconButton(
-                icon: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: checkingForUpdate
-                      ? SizedBox.square(
-                          dimension: theme.iconTheme.size! - 4,
-                          child: const ProgressRing())
-                      : const Icon(FluentIcons.update_restore),
-                ),
-                onPressed: () async {
-                  try {
-                    await _checkForUpdate();
-                  } on Exception catch (e) {
-                    debugPrint(e.toString());
-                  }
-                },
-              ),
-            )
-          ],
-        )),
-      ),
-      content: Column(
+    return Scaffold(
+      // header: Padding(
+      //   padding: const EdgeInsets.only(top: 8.0),
+      //   child: PageHeader(
+      //       title: Row(
+      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //     children: [
+      //       Text(el.scrcpyManagerLoc.title),
+      //       Tooltip(
+      //         message: el.scrcpyManagerLoc.check,
+      //         child: IconButton(
+      //           icon: Padding(
+      //             padding: const EdgeInsets.all(3.0),
+      //             child: checkingForUpdate
+      //                 ? SizedBox.square(
+      //                     dimension: theme.iconTheme.size! - 4,
+      //                     child: const ProgressRing())
+      //                 : const Icon(FluentIcons.update_restore),
+      //           ),
+      //           onPressed: () async {
+      //             try {
+      //               await _checkForUpdate();
+      //             } on Exception catch (e) {
+      //               debugPrint(e.toString());
+      //             }
+      //           },
+      //         ),
+      //       )
+      //     ],
+      //   )),
+      // ),
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -130,7 +134,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
                           initialValue: installed
                               .firstWhere((i) => i.version == scrcpyVersion),
                           items: installed
-                              .map((ins) => ComboBoxItem(
+                              .map((ins) => SelectItemButton(
                                     value: ins,
                                     child: Text(ins.version == BUNDLED_VERSION
                                         ? '${ins.version} (${el.commonLoc.bundled})'
@@ -169,18 +173,16 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Tooltip(
-                          message: scrcpyDir.split(scrcpyVersion).first,
-                          child: Button(
-                            child: const Padding(
-                              padding: EdgeInsets.all(3.0),
-                              child: Icon(FluentIcons.folder_horizontal),
-                            ),
-                            onPressed: () async {
-                              await DirectoryUtils.openFolder(
-                                  scrcpyDir.split(scrcpyVersion).first);
-                            },
+                        IconButton(
+                          variance: ButtonVariance.ghost,
+                          icon: const Padding(
+                            padding: EdgeInsets.all(3.0),
+                            child: Icon(Icons.folder),
                           ),
+                          onPressed: () async {
+                            await DirectoryUtils.openFolder(
+                                scrcpyDir.split(scrcpyVersion).first);
+                          },
                         ),
                       ],
                     ),

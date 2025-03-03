@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:fluent_ui/fluent_ui.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -38,8 +38,6 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
-
     final runningInstance = ref.watch(scrcpyInstanceProvider);
     final wifiDevices = ref
         .watch(adbProvider)
@@ -54,14 +52,14 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                 SizedBox(
                   height: 30,
                   width: 30,
-                  child: ProgressRing(),
+                  child: CircularProgressIndicator(),
                 ),
                 SizedBox(height: 20),
                 Text('Closing'),
               ],
             ),
           )
-        : ContentDialog(
+        : AlertDialog(
             title: const Text('Quit Scrcpy GUI?'),
             content: ConstrainedBox(
               constraints:
@@ -71,48 +69,32 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   if (runningInstance.isNotEmpty)
-                    ListTile(
-                      tileColor: WidgetStatePropertyAll(theme.cardColor),
-                      onPressed: () {
-                        setState(() {
-                          instance = !instance;
-                        });
-                      },
+                    PgListTile(
                       trailing: Checkbox(
-                          checked: instance,
+                          state: instance
+                              ? CheckboxState.checked
+                              : CheckboxState.unchecked,
                           onChanged: (v) {
                             setState(() {
                               instance = !instance;
                             });
                           }),
-                      title: const Text('Kill running servers?'),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(bottom: 4.0),
-                        child: Text('${runningInstance.length} server(s)'),
-                      ),
+                      title: 'Kill running',
+                      subtitle: '${runningInstance.length} server(s)',
                     ),
                   if (wifiDevices.isNotEmpty)
-                    ListTile(
-                      tileColor: WidgetStatePropertyAll(theme.cardColor),
-                      onPressed: () {
-                        setState(() {
-                          wifi = !wifi;
-                        });
-                      },
+                    PgListTile(
                       trailing: Checkbox(
-                          checked: wifi,
+                          state: wifi
+                              ? CheckboxState.checked
+                              : CheckboxState.unchecked,
                           onChanged: (v) {
                             setState(() {
                               wifi = !wifi;
                             });
                           }),
-                      title: const Text('Disconnect Wireless ADB?'),
-                      subtitle: Padding(
-                        padding: const EdgeInsets.only(bottom: 4.0),
-                        child: Text(
-                          '${wifiDevices.length} device(s)',
-                        ),
-                      ),
+                      title: 'Disconnect Wireless ADB?',
+                      subtitle: '${wifiDevices.length} device(s)',
                     )
                 ],
               ),
@@ -122,7 +104,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                 spacing: 8,
                 children: [
                   if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
-                    Button(
+                    SecondaryButton(
                       onPressed: () {
                         if (wifi && instance) {
                           wifi = false;
@@ -137,13 +119,13 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                       child: const Text('Select all'),
                     ),
                   const Spacer(),
-                  Button(
+                  DestructiveButton(
                     onPressed: () {
                       _onClose(wifi, instance);
                     },
                     child: const Text('Quit'),
                   ),
-                  Button(
+                  SecondaryButton(
                     onPressed: () {
                       context.pop(false);
                     },

@@ -3,8 +3,7 @@
 import 'dart:async';
 
 import 'package:awesome_extensions/awesome_extensions.dart'
-    show StyledText, NumExtension, ColorExtension;
-import 'package:fluent_ui/fluent_ui.dart';
+    show StyledText, NumExtension;
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +14,7 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../providers/config_provider.dart';
 import '../../../../../../utils/scrcpy_utils.dart';
@@ -32,7 +32,6 @@ class PreviewAndTest extends ConsumerStatefulWidget {
 
 class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
   Timer? timer;
-  FlyoutController flyoutController = FlyoutController();
 
   @override
   void dispose() {
@@ -63,7 +62,6 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final runningInstance = ref.watch(scrcpyInstanceProvider);
     final testInstance = ref.watch(testInstanceProvider);
-    final theme = FluentTheme.of(context);
 
     final bool isTestRunning = runningInstance.contains(testInstance);
 
@@ -72,7 +70,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
       children: [
         ConfigCustom(
             title: el.testConfigLoc.title,
-            child: const Icon(FluentIcons.test_beaker)),
+            child: const Icon(Icons.flaky_sharp)),
         Card(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -91,21 +89,13 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                 ],
               ),
               Card(
-                  backgroundColor: theme.cardColor.lighten(80),
                   child: Text(
-                    'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice!, customName: '[TEST] ${selectedConfig.configName}').join(' ')}',
-                  )),
+                'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice!, customName: '[TEST] ${selectedConfig.configName}').join(' ')}',
+              )),
               Row(
                 children: [
                   Expanded(
-                    child: Button(
-                      style: ButtonStyle(
-                        backgroundColor: WidgetStatePropertyAll(
-                          !isTestRunning
-                              ? theme.accentColor
-                              : Colors.errorPrimaryColor,
-                        ),
-                      ),
+                    child: PrimaryButton(
                       onPressed: () async {
                         if (!isTestRunning) {
                           await ScrcpyUtils.newInstance(ref,
@@ -196,9 +186,8 @@ class _CopyButtonState extends State<CopyButton> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: copied
-          ? const Icon(FluentIcons.check_mark)
-          : const Icon(FluentIcons.copy),
+      variance: ButtonVariance.ghost,
+      icon: copied ? const Icon(Icons.check) : const Icon(Icons.copy),
       onPressed: () async {
         ClipboardData data = ClipboardData(
             text:
@@ -206,13 +195,11 @@ class _CopyButtonState extends State<CopyButton> {
 
         await Clipboard.setData(data);
         _startTimer();
-        displayInfoBar(
-          context,
+        showToast(
+          context: context,
           builder: (context, close) => const Card(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: InfoLabel.rich(
-              label: TextSpan(text: 'Copied'),
-            ),
+            child: Text('Copied'),
           ),
         );
       },

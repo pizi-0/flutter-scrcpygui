@@ -1,7 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:fluent_ui/fluent_ui.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/db/db.dart';
@@ -9,6 +7,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class ConfigScreenCloseDialog extends ConsumerStatefulWidget {
   const ConfigScreenCloseDialog({super.key});
@@ -53,14 +52,14 @@ class _ConfigScreenCloseDialogState
     final selectedConfig = ref.watch(configScreenConfig);
     final selectedDevice = ref.watch(selectedDeviceProvider);
 
-    return ContentDialog(
+    return AlertDialog(
       title: notAllowed
-          ? Text(
+          ? const Text(
               'Not allowed!',
               style: TextStyle(color: Colors.red),
             )
           : nameExist
-              ? Text(
+              ? const Text(
                   'Overwrite',
                   style: TextStyle(color: Colors.red),
                 )
@@ -82,9 +81,9 @@ class _ConfigScreenCloseDialogState
               ),
             ),
             const Text('Name:'),
-            TextBox(
+            TextField(
               controller: nameController,
-              placeholder: 'Config name',
+              placeholder: const Text('Config name'),
               onSubmitted: notAllowed ? null : (v) => _submitEdit(),
               onChanged: (value) {
                 final allConfigs = ref.read(configsProvider);
@@ -104,21 +103,21 @@ class _ConfigScreenCloseDialogState
       actions: [
         Row(
           children: [
-            Button(
+            DestructiveButton(
               onPressed: () {
                 context.pop(true);
               },
               child: const Text('Discard'),
             ),
             const Spacer(),
-            Button(
+            PrimaryButton(
               onPressed: notAllowed || nameController.text.isEmpty
                   ? null
                   : _submitEdit,
               child: Text(nameExist ? 'Overwrite' : 'Save'),
             ),
             const SizedBox(width: 10),
-            Button(
+            SecondaryButton(
               onPressed: () {
                 context.pop(false);
               },

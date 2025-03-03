@@ -1,8 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../db/db.dart';
 import '../../../../../models/scrcpy_related/scrcpy_config.dart';
@@ -21,7 +21,7 @@ class ConfigDeleteDialog extends ConsumerStatefulWidget {
 class _ConfigDeleteDialogState extends ConsumerState<ConfigDeleteDialog> {
   @override
   Widget build(BuildContext context) {
-    return ContentDialog(
+    return AlertDialog(
       title: const Text('Confirm'),
       content: Text('Delete ${widget.config.configName}?'),
       actions: [
@@ -29,7 +29,7 @@ class _ConfigDeleteDialogState extends ConsumerState<ConfigDeleteDialog> {
           mainAxisAlignment: MainAxisAlignment.end,
           spacing: 8,
           children: [
-            Button(
+            DestructiveButton(
               child: const Text('Delete'),
               onPressed: () async {
                 if (ref.read(selectedConfigProvider) == widget.config) {
@@ -49,7 +49,8 @@ class _ConfigDeleteDialogState extends ConsumerState<ConfigDeleteDialog> {
                 context.pop(true);
               },
             ),
-            Button(child: const Text('Cancel'), onPressed: () => context.pop()),
+            SecondaryButton(
+                child: const Text('Cancel'), onPressed: () => context.pop()),
           ],
         ),
       ],

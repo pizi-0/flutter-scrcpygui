@@ -2,13 +2,14 @@
 
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:bonsoir/bonsoir.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../models/adb_devices.dart';
 import '../../../providers/adb_provider.dart';
 import '../../../providers/bonsoir_devices.dart';
 import '../../../utils/adb_utils.dart';
+import '../../../widgets/custom_ui/pg_list_tile.dart';
 import '../../1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
 
 class BonsoirResults extends ConsumerStatefulWidget {
@@ -47,9 +48,9 @@ class _BdTileState extends ConsumerState<BdTile> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = FluentTheme.of(context);
     final savedDevices = ref.watch(savedAdbDevicesProvider);
     final connectedDevices = ref.watch(adbProvider);
+    final theme = Theme.of(context);
     AdbDevices? device;
     final bd = widget.bonsoirDevice;
     final isSaved =
@@ -62,31 +63,20 @@ class _BdTileState extends ConsumerState<BdTile> {
     bool connected =
         connectedDevices.where((e) => e.id.contains(bd.name)).isNotEmpty;
     return Card(
-      margin: const EdgeInsets.only(bottom: 4),
       key: ValueKey(bd),
       padding: EdgeInsets.zero,
-      child: ListTile(
-        title: Text('${bd.name} ${isSaved ? '[${device!.name!}]' : ''}'),
-        subtitle: Text('${bd.toJson()['service.host']}:${bd.port}'),
+      child: PgListTile(
+        title: '${bd.name} ${isSaved ? '[${device!.name!}]' : ''}',
+        subtitle: '${bd.toJson()['service.host']}:${bd.port}',
         trailing: IconButton(
+          variance: ButtonVariance.ghost,
           icon: Padding(
             padding: const EdgeInsets.all(8.0),
             child: loading
-                ? SizedBox.square(
-                    dimension: theme.iconTheme.size! - 4,
-                    child: const ProgressRing())
+                ? const CircularProgressIndicator()
                 : connected
-                    ? Icon(
-                        FluentIcons.check_mark,
-                        color: theme.navigationPaneTheme.backgroundColor!
-                            .basedOnLuminance(),
-                      )
-                    : const Icon(FluentIcons.link),
-          ),
-          style: ButtonStyle(
-            backgroundColor: connected
-                ? const WidgetStatePropertyAll(Colors.transparent)
-                : null,
+                    ? Icon(Icons.check)
+                    : const Icon(Icons.link),
           ),
           onPressed: loading || connected
               ? null

@@ -1,7 +1,7 @@
 import 'package:bonsoir/bonsoir.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/bonsoir_devices.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class BonsoirUtils {
   static Future<void> startDiscovery(

@@ -1,9 +1,9 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:dio/dio.dart';
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/utils/update_utils.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class DownloadUpdate extends ConsumerStatefulWidget {
   const DownloadUpdate({super.key});
@@ -20,7 +20,6 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
   Widget build(BuildContext context) {
     final progress = ref.watch(downloadPercentageProvider);
     final status = ref.watch(updateStatusProvider);
-    final theme = FluentTheme.of(context);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -33,24 +32,16 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  ProgressBar(
-                    strokeWidth: 5,
+                  LinearProgressIndicator(
                     value: progress,
                   ),
-                  Center(
-                      child: Text(status).textStyle(theme.typography.caption)),
+                  Center(child: Text(status)),
                 ],
               ),
             ),
           ),
         Expanded(
-          child: Button(
-            style: ButtonStyle(
-              padding: const WidgetStatePropertyAll(EdgeInsets.all(8)),
-              backgroundColor: WidgetStatePropertyAll(
-                  updating ? Colors.errorPrimaryColor : theme.accentColor),
-              foregroundColor: const WidgetStatePropertyAll(Colors.white),
-            ),
+          child: PrimaryButton(
             onPressed: () async {
               if (!updating) {
                 dio = Dio();
@@ -68,17 +59,14 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
             child: updating
                 ? const Padding(
                     padding: EdgeInsets.all(1.0),
-                    child: Icon(FluentIcons.cancel),
+                    child: Icon(Icons.cancel),
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(FluentIcons.download,
-                          color: theme.accentColor.basedOnLuminance()),
-                      Text(el.buttonLabelLoc.update)
-                          .textStyle(theme.typography.caption!)
-                          .textColor(theme.accentColor.basedOnLuminance()),
+                      const Icon(Icons.download),
+                      Text(el.buttonLabelLoc.update),
                     ],
                   ),
           ),

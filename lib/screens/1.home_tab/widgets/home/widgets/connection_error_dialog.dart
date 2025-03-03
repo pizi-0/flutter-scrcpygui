@@ -1,6 +1,8 @@
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
+import 'package:scrcpygui/utils/const.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class ErrorDialog extends ConsumerWidget {
   final String title;
@@ -9,16 +11,20 @@ class ErrorDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ContentDialog(
+    return AlertDialog(
       title: Text(title),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: content,
+      content: ConstrainedBox(
+        constraints:
+            const BoxConstraints(maxWidth: appWidth, minWidth: appWidth),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: content,
+        ),
       ),
       actions: [
-        Button(
-          child: const Text('Close'),
+        SecondaryButton(
+          child: Text(el.buttonLabelLoc.close),
           onPressed: () => context.pop(),
         )
       ],

@@ -1,9 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:awesome_extensions/awesome_extensions.dart' show StyledText;
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
@@ -13,6 +10,7 @@ import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../../../../providers/adb_provider.dart';
@@ -72,7 +70,6 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   @override
   Widget build(BuildContext context) {
     final showInfo = ref.watch(deviceSettingsShowInfo);
-    final theme = FluentTheme.of(context);
     final allconfigs = ref.watch(configsProvider);
     final isWireless =
         dev.id.isIpv4 || dev.id.isIpv6 || dev.id.contains(adbMdns);
@@ -82,285 +79,205 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
             [])
         .isNotEmpty;
 
-    return NavigationView(
-      appBar: NavigationAppBar(
-        title: Text('${el.deviceSettingsLoc.title} / ${dev.name}')
-            .textStyle(theme.typography.body),
-        leading: IconButton(
-          icon: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Icon(FluentIcons.back),
-          ),
-          onPressed: () {
-            context.pop();
-          },
-        ),
-        actions: Align(
-          alignment: Alignment.centerRight,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Row(
-              spacing: 8,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(el.deviceSettingsLoc.info),
-                Checkbox(
-                  checked: showInfo,
-                  onChanged: (v) {
-                    ref
-                        .read(deviceSettingsShowInfo.notifier)
-                        .update((state) => !state);
-                  },
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      pane: NavigationPane(
-        displayMode: PaneDisplayMode.compact,
-        size: const NavigationPaneSize(compactWidth: 0),
-        menuButton: const SizedBox(),
-        toggleable: false,
-        selected: 0,
-        items: [
-          PaneItem(
-            icon: const SizedBox(),
-            body: Scrollbar(
-              controller: scrollController,
-              child: ScaffoldPage.withPadding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-                content: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: appWidth * 1.3),
-                  child: CustomScrollView(
-                    scrollBehavior: ScrollConfiguration.of(context)
-                        .copyWith(scrollbars: false),
-                    controller: scrollController,
-                    slivers: [
-                      SliverToBoxAdapter(
-                          child: ConfigCustom(
-                              title: el.deviceSettingsLoc.title,
-                              child: const SizedBox())),
-                      SliverToBoxAdapter(
-                        child: Card(
-                          padding: EdgeInsets.zero,
-                          child: Column(
-                            children: [
-                              ConfigCustom(
-                                title: el.deviceSettingsLoc.rename.label,
-                                subtitle: el.deviceSettingsLoc.rename.info,
-                                showinfo: showInfo,
-                                child: SizedBox(
-                                  width: 180,
-                                  child: TextBox(
-                                    focusNode: textBox,
-                                    placeholder: dev.name,
-                                    controller: namecontroller,
-                                    onChanged: _toAllCaps,
-                                    onSubmitted: _onTextBoxSubmit,
-                                  ),
-                                ),
-                              ),
-                              if (isWireless) const Divider(),
-                              if (isWireless)
-                                ConfigCustom(
-                                  title: el.deviceSettingsLoc.autoConnect.label,
-                                  subtitle:
-                                      el.deviceSettingsLoc.autoConnect.info,
-                                  showinfo: showInfo,
-                                  child: ToggleSwitch(
-                                    checked: autoConnect,
-                                    onChanged: _onAutoConnectToggled,
-                                  ),
-                                ),
-                              const Divider(),
-                              ConfigCustom(
-                                title: el.deviceSettingsLoc.onConnected.label,
-                                subtitle: el.deviceSettingsLoc.onConnected.info,
-                                showinfo: showInfo,
-                                child: ComboBox(
-                                    placeholder:
-                                        Text(el.deviceSettingsLoc.doNothing),
-                                    value: ddValue,
-                                    onChanged: _onConnectConfig,
-                                    items: [
-                                      ComboBoxItem(
-                                        value: DO_NOTHING,
-                                        child: Text(
-                                            el.deviceSettingsLoc.doNothing),
-                                      ),
-                                      ...allconfigs.map((c) => ComboBoxItem(
-                                          value: c.id,
-                                          child: Text(c.configName)))
-                                    ]),
-                              ),
-                            ],
-                          ),
+    return Scaffold(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: appWidth * 1.3),
+        child: CustomScrollView(
+          scrollBehavior:
+              ScrollConfiguration.of(context).copyWith(scrollbars: false),
+          controller: scrollController,
+          slivers: [
+            SliverToBoxAdapter(
+                child: ConfigCustom(
+                    title: el.deviceSettingsLoc.title,
+                    child: const SizedBox())),
+            SliverToBoxAdapter(
+              child: Card(
+                padding: EdgeInsets.zero,
+                child: Column(
+                  children: [
+                    ConfigCustom(
+                      title: el.deviceSettingsLoc.rename.label,
+                      subtitle: el.deviceSettingsLoc.rename.info,
+                      showinfo: showInfo,
+                      child: SizedBox(
+                        width: 180,
+                        child: TextField(
+                          focusNode: textBox,
+                          placeholder: Text(dev.name ?? dev.modelName),
+                          controller: namecontroller,
+                          onChanged: _toAllCaps,
+                          onSubmitted: _onTextBoxSubmit,
                         ),
                       ),
-                      if (loading)
-                        SliverFillRemaining(
-                          fillOverscroll: false,
-                          hasScrollBody: false,
-                          child: Center(
-                            child: Column(
-                              spacing: 8,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const SizedBox.square(
-                                    dimension: 18, child: ProgressRing()),
-                                Text(el.deviceSettingsLoc.scrcpyInfo.fetching)
-                              ],
-                            ),
-                          ),
+                    ),
+                    if (isWireless) const Divider(),
+                    if (isWireless)
+                      ConfigCustom(
+                        title: el.deviceSettingsLoc.autoConnect.label,
+                        subtitle: el.deviceSettingsLoc.autoConnect.info,
+                        showinfo: showInfo,
+                        child: Checkbox(
+                          state: autoConnect
+                              ? CheckboxState.checked
+                              : CheckboxState.unchecked,
+                          onChanged: _onAutoConnectToggled,
                         ),
-                      if (!loading)
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Column(
-                              children: [
-                                ConfigCustom(
-                                  title: el.deviceSettingsLoc.scrcpyInfo.label,
-                                  showinfo: showInfo,
-                                  subtitle:
-                                      '--list-displays --list-cameras --list-encoders --list-apps',
-                                  child: Tooltip(
-                                    message: el.deviceSettingsLoc.refresh,
-                                    child: IconButton(
-                                      icon: const Icon(FluentIcons.refresh),
-                                      onPressed: _getScrcpyInfo,
-                                    ),
-                                  ),
-                                ),
-                                Card(
-                                  padding: const EdgeInsets.all(0),
-                                  margin:
-                                      const EdgeInsets.only(top: 0, bottom: 16),
-                                  child: Column(
-                                    children: [
-                                      ConfigCustom(
-                                          title: 'Name: ${dev.name}',
-                                          child: const SizedBox()),
-                                      ConfigCustom(
-                                          title:
-                                              'ID: ${dev.id.replaceAll('.$adbMdns', '')}',
-                                          child: const SizedBox()),
-                                      ConfigCustom(
-                                          title: 'Model: ${dev.modelName}',
-                                          child: const SizedBox()),
-                                      ConfigCustom(
-                                          title:
-                                              'Android version: ${dev.info!.buildVersion}',
-                                          child: const SizedBox()),
-                                      Expander(
-                                        initiallyExpanded: true,
-                                        headerBackgroundColor:
-                                            const WidgetStatePropertyAll(
-                                                Colors.transparent),
-                                        header: Text(
-                                            'Displays (${dev.info!.displays.length})'),
-                                        content: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: dev.info!.displays
-                                              .map((d) =>
-                                                  Text('- ${d.toString()}'))
-                                              .toList(),
-                                        ),
-                                      ),
-                                      Expander(
-                                        initiallyExpanded: true,
-                                        headerBackgroundColor:
-                                            const WidgetStatePropertyAll(
-                                                Colors.transparent),
-                                        header: Text(
-                                            'Cameras (${dev.info!.cameras.length})'),
-                                        content: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: dev.info!.cameras
-                                              .map((c) =>
-                                                  Text('- ${c.toString()}'))
-                                              .toList(),
-                                        ),
-                                      ),
-                                      Expander(
-                                        initiallyExpanded: true,
-                                        contentPadding: EdgeInsets.zero,
-                                        headerBackgroundColor:
-                                            const WidgetStatePropertyAll(
-                                                Colors.transparent),
-                                        header: const Text('Video encoders'),
-                                        content: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: dev.info!.videoEncoders
-                                              .map((c) => Expander(
-                                                    contentPadding:
-                                                        const EdgeInsets
-                                                            .fromLTRB(
-                                                            24, 0, 24, 8),
-                                                    header:
-                                                        Text('- ${c.codec}'),
-                                                    content: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: c.encoder
-                                                          .map((en) =>
-                                                              Text('- $en'))
-                                                          .toList(),
-                                                    ),
-                                                  ))
-                                              .toList(),
-                                        ),
-                                      ),
-                                      Expander(
-                                        initiallyExpanded: true,
-                                        contentPadding: EdgeInsets.zero,
-                                        headerBackgroundColor:
-                                            const WidgetStatePropertyAll(
-                                                Colors.transparent),
-                                        header: const Text('Audio encoders'),
-                                        content: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: dev.info!.audioEncoder
-                                              .map((c) => Expander(
-                                                    contentPadding:
-                                                        const EdgeInsets
-                                                            .fromLTRB(
-                                                            24, 0, 24, 8),
-                                                    header:
-                                                        Text('- ${c.codec}'),
-                                                    content: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: c.encoder
-                                                          .map((en) =>
-                                                              Text('- $en'))
-                                                          .toList(),
-                                                    ),
-                                                  ))
-                                              .toList(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
+                      ),
+                    const Divider(),
+                    ConfigCustom(
+                      title: el.deviceSettingsLoc.onConnected.label,
+                      subtitle: el.deviceSettingsLoc.onConnected.info,
+                      showinfo: showInfo,
+                      child: Select(
+                        placeholder: Text(el.deviceSettingsLoc.doNothing),
+                        itemBuilder: (context, value) => Text(value),
+                        value: ddValue,
+                        onChanged: _onConnectConfig,
+                        popup: SelectPopup(
+                          items: SelectItemList(children: [
+                            SelectItemButton(
+                              value: DO_NOTHING,
+                              child: Text(el.deviceSettingsLoc.doNothing),
                             ),
-                          ),
-                        ),
+                            ...allconfigs.map((c) => SelectItemButton(
+                                value: c.id, child: Text(c.configName)))
+                          ]),
+                        ).call,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (loading)
+              SliverFillRemaining(
+                fillOverscroll: false,
+                hasScrollBody: false,
+                child: Center(
+                  child: Column(
+                    spacing: 8,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const SizedBox.square(
+                          dimension: 18, child: CircularProgressIndicator()),
+                      Text(el.deviceSettingsLoc.scrcpyInfo.fetching)
                     ],
                   ),
                 ),
               ),
-            ),
-          )
-        ],
+            if (!loading)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Column(
+                    children: [
+                      ConfigCustom(
+                        title: el.deviceSettingsLoc.scrcpyInfo.label,
+                        showinfo: showInfo,
+                        subtitle:
+                            '--list-displays --list-cameras --list-encoders --list-apps',
+                        child: IconButton(
+                          variance: ButtonVariance.ghost,
+                          icon: const Icon(Icons.refresh),
+                          onPressed: _getScrcpyInfo,
+                        ),
+                      ),
+                      Card(
+                        padding: const EdgeInsets.all(0),
+                        child: Column(
+                          children: [
+                            ConfigCustom(
+                                title: 'Name: ${dev.name}',
+                                child: const SizedBox()),
+                            ConfigCustom(
+                                title:
+                                    'ID: ${dev.id.replaceAll('.$adbMdns', '')}',
+                                child: const SizedBox()),
+                            ConfigCustom(
+                                title: 'Model: ${dev.modelName}',
+                                child: const SizedBox()),
+                            ConfigCustom(
+                                title:
+                                    'Android version: ${dev.info!.buildVersion}',
+                                child: const SizedBox()),
+                            Accordion(
+                              items: [
+                                AccordionItem(
+                                  trigger: AccordionTrigger(
+                                    child: Text(
+                                        'Displays (${dev.info!.displays.length})'),
+                                  ),
+                                  content: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: dev.info!.displays
+                                        .map((d) => Text('- ${d.toString()}'))
+                                        .toList(),
+                                  ),
+                                ),
+                                AccordionItem(
+                                  trigger: AccordionTrigger(
+                                    child: Text(
+                                        'Cameras (${dev.info!.cameras.length})'),
+                                  ),
+                                  content: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: dev.info!.cameras
+                                        .map((c) => Text('- ${c.toString()}'))
+                                        .toList(),
+                                  ),
+                                ),
+                                AccordionItem(
+                                  trigger: const AccordionTrigger(
+                                    child: Text('Video encoders'),
+                                  ),
+                                  content: Accordion(
+                                    items: dev.info!.videoEncoders
+                                        .map((c) => AccordionItem(
+                                              trigger: Text('- ${c.codec}'),
+                                              content: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: c.encoder
+                                                    .map((en) => Text('- $en'))
+                                                    .toList(),
+                                              ),
+                                            ))
+                                        .toList(),
+                                  ),
+                                ),
+                                AccordionItem(
+                                  trigger: const AccordionTrigger(
+                                    child: Text('Audio encoders'),
+                                  ),
+                                  content: Accordion(
+                                    items: dev.info!.audioEncoder
+                                        .map((c) => AccordionItem(
+                                              trigger: Text('- ${c.codec}'),
+                                              content: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: c.encoder
+                                                    .map((en) => Text('- $en'))
+                                                    .toList(),
+                                              ),
+                                            ))
+                                        .toList(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -415,7 +332,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
     await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
   }
 
-  void _onAutoConnectToggled(value) async {
+  void _onAutoConnectToggled(CheckboxState value) async {
     final autoConnect = (dev.automationData?.actions
                 .where((a) => a.type == ActionType.autoconnect) ??
             [])

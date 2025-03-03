@@ -1,6 +1,6 @@
-import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../providers/adb_provider.dart';
 import 'config_tiles.dart';
@@ -22,7 +22,7 @@ class DisplayIdOverride extends ConsumerWidget {
           : selectedConfig?.videoOptions.displayId,
       tooltipMessage: 'Only 1 display detected',
       items: selectedDevice.info!.displays
-          .map((d) => ComboBoxItem(
+          .map((d) => SelectItemButton(
                 value: d.id,
                 child: Text(d.id),
               ))
@@ -55,8 +55,8 @@ class VideoCodecOverride extends ConsumerWidget {
       },
       items: [
         ...selectedDevice!.info!.videoEncoders
-            .map((e) => ComboBoxItem(value: e.codec, child: Text(e.codec))),
-        ComboBoxItem(value: currentCodec, child: Text('$currentCodec *'))
+            .map((e) => SelectItemButton(value: e.codec, child: Text(e.codec))),
+        SelectItemButton(value: currentCodec, child: Text('$currentCodec *'))
       ],
       label: 'Codec',
     );
