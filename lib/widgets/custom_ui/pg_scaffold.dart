@@ -29,7 +29,7 @@ class PgScaffold extends ConsumerWidget {
       headers: [
         ConstrainedBox(
           constraints: const BoxConstraints(
-              maxHeight: kToolbarHeight, minHeight: kToolbarHeight),
+              maxHeight: kToolbarHeight + 5, minHeight: kToolbarHeight + 5),
           child: AppBar(
             leading: [
               if (onBack != null)
