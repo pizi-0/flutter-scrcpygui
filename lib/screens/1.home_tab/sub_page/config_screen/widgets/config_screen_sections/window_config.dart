@@ -40,6 +40,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
       children: [
         ConfigCustom(
           childBackgroundColor: Colors.transparent,
+          childExpand: false,
           title: el.windowSection.hideWindow.label,
           showinfo: showInfo,
           subtitle: selectedConfig.windowOptions.noWindow
@@ -74,6 +75,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
         ),
         const Divider(),
         ConfigCustom(
+          childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
           title: el.windowSection.borderless.label,
@@ -97,6 +99,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
         ),
         const Divider(),
         ConfigCustom(
+          childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
           title: el.windowSection.alwaysOnTop.label,
