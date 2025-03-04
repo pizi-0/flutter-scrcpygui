@@ -137,7 +137,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                       },
                       child: const Text('Select all'),
                     ),
-                  Spacer(),
+                  const Spacer(),
                   DestructiveButton(
                     onPressed: () {
                       _onClose(wifi, instance);

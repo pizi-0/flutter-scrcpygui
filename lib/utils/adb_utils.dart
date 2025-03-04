@@ -101,8 +101,6 @@ class AdbUtils {
       },
     );
 
-    print(res.stdout);
-
     //stop unauth
     if (res.stdout.toString().contains('authenticate')) {
       logger.i('Unauthenticated, check phone');

@@ -191,7 +191,7 @@ class ConfigCustom extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return PgListTile(
       title: title,
-      trailingConstraints: BoxConstraints(maxWidth: 180, minHeight: 30),
+      trailingConstraints: const BoxConstraints(maxWidth: 180, minHeight: 30),
       trailing: child != null
           ? Padding(
               padding: EdgeInsets.only(right: padRight ?? 0),

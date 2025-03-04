@@ -34,7 +34,7 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
                 spacing: 8,
                 children: [
                   BdTile(bonsoirDevice: dev),
-                  if (index != bonsoirDevices.length - 1) Divider()
+                  if (index != bonsoirDevices.length - 1) const Divider()
                 ],
               ))
           .toList(),
