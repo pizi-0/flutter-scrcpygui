@@ -33,6 +33,9 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
 
     WidgetsBinding.instance.addPostFrameCallback((a) async {
       final installed = await UpdateUtils.listInstalledScrcpy();
+      installed.sort(
+        (a, b) => a.version.compareTo(b.version),
+      );
       ref.read(installedScrcpyProvider.notifier).setInstalled(installed);
 
       try {

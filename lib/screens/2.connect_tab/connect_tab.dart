@@ -33,7 +33,6 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
       title: el.connectLoc.title,
       appBarTrailing: [
         IconButton.ghost(
-          size: ButtonSize.small,
           icon: const Padding(
             padding: EdgeInsets.all(3.0),
             child: Icon(Icons.qr_code),
@@ -46,16 +45,36 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
             );
 
             showToast(
-              context: context,
-              builder: (context, close) => Card(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: ((res as bool?) == null)
-                    ? Text(el.connectLoc.qrPair.status.cancelled)
-                    : (res as bool)
-                        ? Text(el.connectLoc.qrPair.status.success)
-                        : Text(el.connectLoc.qrPair.status.failed),
-              ),
-            );
+                context: context,
+                builder: (context, close) => SurfaceCard(
+                      child: ((res as bool?) == null)
+                          ? Basic(
+                              title:
+                                  Text(el.connectLoc.qrPair.status.cancelled),
+                              trailing: const Icon(
+                                Icons.cancel,
+                                color: Colors.amber,
+                              ),
+                            )
+                          : (res as bool)
+                              ? Basic(
+                                  title:
+                                      Text(el.connectLoc.qrPair.status.success),
+                                  trailing: const Icon(
+                                    Icons.cancel,
+                                    color: Colors.green,
+                                  ),
+                                )
+                              : Basic(
+                                  title:
+                                      Text(el.connectLoc.qrPair.status.failed),
+                                  trailing: const Icon(
+                                    Icons.cancel,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                    ),
+                location: ToastLocation.bottomCenter);
           },
         ),
       ],

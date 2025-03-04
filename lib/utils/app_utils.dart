@@ -64,10 +64,10 @@ class AppUtils {
     final instance = ref.read(scrcpyInstanceProvider);
 
     if (wifi.isNotEmpty || instance.isNotEmpty) {
-      showAdaptiveDialog(
-        barrierColor: Colors.black.withValues(alpha: 0.9),
+      showDialog(
+        // barrierColor: Colors.black.withValues(alpha: 0.9),
         context: context,
-        builder: (context) => const QuitDialog(),
+        builder: (context) => const Center(child: QuitDialog()),
       );
     } else {
       await windowManager.isPreventClose();

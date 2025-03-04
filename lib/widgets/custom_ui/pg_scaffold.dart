@@ -34,7 +34,6 @@ class PgScaffold extends ConsumerWidget {
             leading: [
               if (onBack != null)
                 IconButton.ghost(
-                  // size: ButtonSize.small,
                   onPressed: onBack,
                   icon: const Icon(Icons.arrow_back),
                 ),

@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:awesome_extensions/awesome_extensions.dart'
+    show AlignExtensions;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
@@ -44,65 +46,82 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
         .where((e) => e.id.contains(adbMdns) || e.id.isIpv4)
         .toList();
 
-    return loading
-        ? const Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 30,
-                  width: 30,
-                  child: CircularProgressIndicator(),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: appWidth),
+      child: IntrinsicHeight(
+        child: loading
+            ? const Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: CircularProgressIndicator(),
+                    ),
+                    SizedBox(height: 20),
+                    Text('Closing'),
+                  ],
                 ),
-                SizedBox(height: 20),
-                Text('Closing'),
-              ],
-            ),
-          )
-        : AlertDialog(
-            title: const Text('Quit Scrcpy GUI?'),
-            content: ConstrainedBox(
-              constraints:
-                  const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (runningInstance.isNotEmpty)
-                    PgListTile(
-                      trailing: Checkbox(
-                          state: instance
-                              ? CheckboxState.checked
-                              : CheckboxState.unchecked,
-                          onChanged: (v) {
+              )
+            : AlertDialog(
+                title: const Text('Quit Scrcpy GUI?'),
+                content: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                      minWidth: appWidth, maxWidth: appWidth),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    spacing: 8,
+                    children: [
+                      if (runningInstance.isNotEmpty)
+                        OutlineButton(
+                          onPressed: () {
                             setState(() {
                               instance = !instance;
                             });
-                          }),
-                      title: 'Kill running',
-                      subtitle: '${runningInstance.length} server(s)',
-                    ),
-                  if (wifiDevices.isNotEmpty)
-                    PgListTile(
-                      trailing: Checkbox(
-                          state: wifi
-                              ? CheckboxState.checked
-                              : CheckboxState.unchecked,
-                          onChanged: (v) {
+                          },
+                          child: PgListTile(
+                            trailing: Checkbox(
+                                state: instance
+                                    ? CheckboxState.checked
+                                    : CheckboxState.unchecked,
+                                onChanged: (v) {
+                                  setState(() {
+                                    instance = !instance;
+                                  });
+                                }).alignAtCenterRight(),
+                            title: 'Kill running',
+                            subtitle: '${runningInstance.length} server(s)',
+                          ),
+                        ),
+                      if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
+                        const Divider(),
+                      if (wifiDevices.isNotEmpty)
+                        OutlineButton(
+                          onPressed: () {
                             setState(() {
                               wifi = !wifi;
                             });
-                          }),
-                      title: 'Disconnect Wireless ADB?',
-                      subtitle: '${wifiDevices.length} device(s)',
-                    )
-                ],
-              ),
-            ),
-            actions: [
-              Row(
-                spacing: 8,
-                children: [
+                          },
+                          child: PgListTile(
+                            trailing: Checkbox(
+                                state: wifi
+                                    ? CheckboxState.checked
+                                    : CheckboxState.unchecked,
+                                onChanged: (v) {
+                                  setState(() {
+                                    wifi = !wifi;
+                                  });
+                                }).alignAtCenterRight(),
+                            title: 'Disconnect Wireless ADB?',
+                            subtitle: '${wifiDevices.length} device(s)',
+                          ),
+                        )
+                    ],
+                  ),
+                ),
+                actions: [
                   if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
                     SecondaryButton(
                       onPressed: () {
@@ -118,7 +137,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                       },
                       child: const Text('Select all'),
                     ),
-                  const Spacer(),
+                  Spacer(),
                   DestructiveButton(
                     onPressed: () {
                       _onClose(wifi, instance);
@@ -133,8 +152,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                   )
                 ],
               ),
-            ],
-          );
+      ),
+    );
   }
 
   _onClose(bool wifi, bool instance) async {
