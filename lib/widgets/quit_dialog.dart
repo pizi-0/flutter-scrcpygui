@@ -4,6 +4,7 @@ import 'package:awesome_extensions/awesome_extensions.dart'
     show AlignExtensions;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
@@ -50,22 +51,22 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
       constraints: const BoxConstraints(maxWidth: appWidth),
       child: IntrinsicHeight(
         child: loading
-            ? const Center(
+            ? Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                       width: 30,
                       child: CircularProgressIndicator(),
                     ),
-                    SizedBox(height: 20),
-                    Text('Closing'),
+                    const SizedBox(height: 20),
+                    Text(el.statusLoc.closing),
                   ],
                 ),
               )
             : AlertDialog(
-                title: const Text('Quit Scrcpy GUI?'),
+                title: Text(el.quitDialogLoc.title),
                 content: ConstrainedBox(
                   constraints: const BoxConstraints(
                       minWidth: appWidth, maxWidth: appWidth),
@@ -91,8 +92,10 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                                     instance = !instance;
                                   });
                                 }).alignAtCenterRight(),
-                            title: 'Kill running',
-                            subtitle: '${runningInstance.length} server(s)',
+                            title: el.quitDialogLoc.killRunning.label,
+                            showSubtitle: true,
+                            subtitle: el.quitDialogLoc.killRunning
+                                .info(count: '${runningInstance.length}'),
                           ),
                         ),
                       if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
@@ -114,8 +117,10 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                                     wifi = !wifi;
                                   });
                                 }).alignAtCenterRight(),
-                            title: 'Disconnect Wireless ADB?',
-                            subtitle: '${wifiDevices.length} device(s)',
+                            title: el.quitDialogLoc.disconnect.label,
+                            subtitle: el.quitDialogLoc.disconnect
+                                .info(count: '${wifiDevices.length}'),
+                            showSubtitle: true,
                           ),
                         )
                     ],
@@ -135,20 +140,20 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
 
                         setState(() {});
                       },
-                      child: const Text('Select all'),
+                      child: Text(el.buttonLabelLoc.selectAll),
                     ),
                   const Spacer(),
                   DestructiveButton(
                     onPressed: () {
                       _onClose(wifi, instance);
                     },
-                    child: const Text('Quit'),
+                    child: Text(el.buttonLabelLoc.quit),
                   ),
                   SecondaryButton(
                     onPressed: () {
                       context.pop(false);
                     },
-                    child: const Text('Cancel'),
+                    child: Text(el.buttonLabelLoc.cancel),
                   )
                 ],
               ),

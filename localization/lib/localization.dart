@@ -4568,6 +4568,157 @@ class SettingsLocBehaviorMinimizeValue {
   }
 }
 
+class QuitDialogLoc {
+  const QuitDialogLoc({
+    required this.title,
+    required this.killRunning,
+    required this.disconnect,
+  });
+  factory QuitDialogLoc.fromJson(Map<String, dynamic> json) {
+    return QuitDialogLoc(
+      title: (json['title'] ?? '').toString(),
+      killRunning: QuitDialogLocKillRunning.fromJson(
+          (json['kill_running'] as Map).cast<String, dynamic>()),
+      disconnect: QuitDialogLocDisconnect.fromJson(
+          (json['disconnect'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String title;
+  final QuitDialogLocKillRunning killRunning;
+
+  final QuitDialogLocDisconnect disconnect;
+
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''kill_running''': killRunning,
+        r'''disconnect''': disconnect,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class QuitDialogLocKillRunning {
+  const QuitDialogLocKillRunning({
+    required this.label,
+    required this.info,
+  });
+  factory QuitDialogLocKillRunning.fromJson(Map<String, dynamic> json) {
+    return QuitDialogLocKillRunning(
+      label: (json['label'] ?? '').toString(),
+      info: ({required String count}) => (json['info'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String label;
+  final String Function({required String count}) info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class QuitDialogLocDisconnect {
+  const QuitDialogLocDisconnect({
+    required this.label,
+    required this.info,
+  });
+  factory QuitDialogLocDisconnect.fromJson(Map<String, dynamic> json) {
+    return QuitDialogLocDisconnect(
+      label: (json['label'] ?? '').toString(),
+      info: ({required String count}) => (json['info'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String label;
+  final String Function({required String count}) info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class ButtonLabelLoc {
   const ButtonLabelLoc({
     required this.ok,
@@ -4577,6 +4728,8 @@ class ButtonLabelLoc {
     required this.testConfig,
     required this.update,
     required this.info,
+    required this.selectAll,
+    required this.quit,
   });
   factory ButtonLabelLoc.fromJson(Map<String, dynamic> json) {
     return ButtonLabelLoc(
@@ -4587,6 +4740,8 @@ class ButtonLabelLoc {
       testConfig: (json['test_config'] ?? '').toString(),
       update: (json['update'] ?? '').toString(),
       info: (json['info'] ?? '').toString(),
+      selectAll: (json['select_all'] ?? '').toString(),
+      quit: (json['quit'] ?? '').toString(),
     );
   }
   final String ok;
@@ -4596,6 +4751,8 @@ class ButtonLabelLoc {
   final String testConfig;
   final String update;
   final String info;
+  final String selectAll;
+  final String quit;
   Map<String, Object> get _content => {
         r'''ok''': ok,
         r'''close''': close,
@@ -4604,6 +4761,8 @@ class ButtonLabelLoc {
         r'''test_config''': testConfig,
         r'''update''': update,
         r'''info''': info,
+        r'''select_all''': selectAll,
+        r'''quit''': quit,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -4638,21 +4797,25 @@ class StatusLoc {
     required this.failed,
     required this.error,
     required this.latest,
+    required this.closing,
   });
   factory StatusLoc.fromJson(Map<String, dynamic> json) {
     return StatusLoc(
       failed: (json['failed'] ?? '').toString(),
       error: (json['error'] ?? '').toString(),
       latest: (json['latest'] ?? '').toString(),
+      closing: (json['closing'] ?? '').toString(),
     );
   }
   final String failed;
   final String error;
   final String latest;
+  final String closing;
   Map<String, Object> get _content => {
         r'''failed''': failed,
         r'''error''': error,
         r'''latest''': latest,
+        r'''closing''': closing,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -4755,6 +4918,7 @@ class LocalizationMessages {
     required this.testConfigLoc,
     required this.scrcpyManagerLoc,
     required this.settingsLoc,
+    required this.quitDialogLoc,
     required this.buttonLabelLoc,
     required this.statusLoc,
     required this.commonLoc,
@@ -4797,6 +4961,8 @@ class LocalizationMessages {
           (json['scrcpy_manager_loc'] as Map).cast<String, dynamic>()),
       settingsLoc: SettingsLoc.fromJson(
           (json['settings_loc'] as Map).cast<String, dynamic>()),
+      quitDialogLoc: QuitDialogLoc.fromJson(
+          (json['quit_dialog_loc'] as Map).cast<String, dynamic>()),
       buttonLabelLoc: ButtonLabelLoc.fromJson(
           (json['button_label_loc'] as Map).cast<String, dynamic>()),
       statusLoc: StatusLoc.fromJson(
@@ -4841,6 +5007,8 @@ class LocalizationMessages {
 
   final SettingsLoc settingsLoc;
 
+  final QuitDialogLoc quitDialogLoc;
+
   final ButtonLabelLoc buttonLabelLoc;
 
   final StatusLoc statusLoc;
@@ -4866,6 +5034,7 @@ class LocalizationMessages {
         r'''test_config_loc''': testConfigLoc,
         r'''scrcpy_manager_loc''': scrcpyManagerLoc,
         r'''settings_loc''': settingsLoc,
+        r'''quit_dialog_loc''': quitDialogLoc,
         r'''button_label_loc''': buttonLabelLoc,
         r'''status_loc''': statusLoc,
         r'''common_loc''': commonLoc,
@@ -5263,6 +5432,18 @@ final LocalizationMessages en = LocalizationMessages(
       ),
     ),
   ),
+  quitDialogLoc: QuitDialogLoc(
+    title: 'Quit Scrcpy GUI?',
+    killRunning: QuitDialogLocKillRunning(
+      label: 'Kill running?',
+      info: ({required String count}) =>
+          '''${count} instance(s). Instances with no window will be killed regardless''',
+    ),
+    disconnect: QuitDialogLocDisconnect(
+      label: 'Disconnect wireless ADB?',
+      info: ({required String count}) => '''${count} device(s)''',
+    ),
+  ),
   buttonLabelLoc: ButtonLabelLoc(
     ok: '',
     close: 'Close',
@@ -5271,11 +5452,14 @@ final LocalizationMessages en = LocalizationMessages(
     testConfig: 'Test config',
     update: 'Update',
     info: 'Info',
+    selectAll: 'Select all',
+    quit: 'Quit',
   ),
   statusLoc: StatusLoc(
     failed: 'Failed',
     error: 'Error',
     latest: 'Latest',
+    closing: 'Closing',
   ),
   commonLoc: CommonLoc(
     default$: 'Default',

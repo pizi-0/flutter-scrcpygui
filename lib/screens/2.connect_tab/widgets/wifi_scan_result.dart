@@ -73,6 +73,7 @@ class _BdTileState extends ConsumerState<BdTile> {
       onPressed: () async => await _connectMdns(bd),
       child: PgListTile(
         title: '${bd.name} ${isSaved ? '[${device!.name!}]' : ''}',
+        titleOverflow: true,
         showSubtitle: true,
         showSubtitleLeading: false,
         subtitle: '${bd.toJson()['service.host']}:${bd.port}',

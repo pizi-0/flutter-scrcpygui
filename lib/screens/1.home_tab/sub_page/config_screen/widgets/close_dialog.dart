@@ -52,57 +52,59 @@ class _ConfigScreenCloseDialogState
     final selectedConfig = ref.watch(configScreenConfig);
     final selectedDevice = ref.watch(selectedDeviceProvider);
 
-    return AlertDialog(
-      title: notAllowed
-          ? const Text(
-              'Not allowed!',
-              style: TextStyle(color: Colors.red),
-            )
-          : nameExist
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: appWidth),
+      child: IntrinsicHeight(
+        child: AlertDialog(
+          title: notAllowed
               ? const Text(
-                  'Overwrite',
+                  'Not allowed!',
                   style: TextStyle(color: Colors.red),
                 )
-              : const Text('Save config'),
-      content: ConstrainedBox(
-        constraints:
-            const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
-        child: Column(
-          spacing: 8,
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text('Command preview:'),
-            Card(
-              child: Center(
-                child: Text(
-                  'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig!, selectedDevice!, customName: nameController.text).toString().replaceAll(',', '').replaceAll('[', '').replaceAll(']', '')}',
+              : nameExist
+                  ? const Text(
+                      'Overwrite',
+                      style: TextStyle(color: Colors.red),
+                    )
+                  : const Text('Save config'),
+          content: ConstrainedBox(
+            constraints:
+                const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
+            child: Column(
+              spacing: 8,
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text('Command preview:'),
+                Card(
+                  child: Center(
+                    child: Text(
+                      'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig!, selectedDevice!, customName: nameController.text).toString().replaceAll(',', '').replaceAll('[', '').replaceAll(']', '')}',
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            const Text('Name:'),
-            TextField(
-              controller: nameController,
-              placeholder: const Text('Config name'),
-              onSubmitted: notAllowed ? null : (v) => _submitEdit(),
-              onChanged: (value) {
-                final allConfigs = ref.read(configsProvider);
-                nameExist =
-                    allConfigs.where((e) => e.configName == value).isNotEmpty;
+                const Text('Name:'),
+                TextField(
+                  controller: nameController,
+                  placeholder: const Text('Config name'),
+                  onSubmitted: notAllowed ? null : (v) => _submitEdit(),
+                  onChanged: (value) {
+                    final allConfigs = ref.read(configsProvider);
+                    nameExist = allConfigs
+                        .where((e) => e.configName == value)
+                        .isNotEmpty;
 
-                notAllowed = name
-                    .where((e) => e.toLowerCase() == value.toLowerCase())
-                    .isNotEmpty;
+                    notAllowed = name
+                        .where((e) => e.toLowerCase() == value.toLowerCase())
+                        .isNotEmpty;
 
-                setState(() {});
-              },
+                    setState(() {});
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-      actions: [
-        Row(
-          children: [
+          ),
+          actions: [
             DestructiveButton(
               onPressed: () {
                 context.pop(true);
@@ -116,16 +118,15 @@ class _ConfigScreenCloseDialogState
                   : _submitEdit,
               child: Text(nameExist ? 'Overwrite' : 'Save'),
             ),
-            const SizedBox(width: 10),
             SecondaryButton(
               onPressed: () {
                 context.pop(false);
               },
               child: const Text('No'),
-            ),
+            )
           ],
-        )
-      ],
+        ),
+      ),
     );
   }
 

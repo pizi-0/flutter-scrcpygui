@@ -101,7 +101,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
         barrierColor: Colors.black.withValues(alpha: 0.9),
         context: context,
         builder: (context) {
-          return const ConfigScreenCloseDialog();
+          return const Center(child: ConfigScreenCloseDialog());
         },
       ).then((v) {
         if ((v as bool?) ?? false) {

@@ -7,6 +7,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 class PgListTile extends ConsumerWidget {
   final BoxConstraints? trailingConstraints;
   final String title;
+  final bool titleOverflow;
   final String? titleBadge;
   final bool showSubtitle;
   final bool showSubtitleLeading;
@@ -22,6 +23,7 @@ class PgListTile extends ConsumerWidget {
     this.showSubtitle = false,
     this.showSubtitleLeading = true,
     required this.title,
+    this.titleOverflow = false,
     this.titleBadge,
     this.subtitle,
   });
@@ -43,15 +45,22 @@ class PgListTile extends ConsumerWidget {
                 leadingAlignment: Alignment.center,
                 title: Row(
                   spacing: 8,
-                  children: [
-                    Expanded(
-                        child: OverflowMarquee(
-                            duration: 2.seconds,
-                            delayDuration: 1.seconds,
-                            child: Text(title))),
-                    if (titleBadge != null)
-                      PrimaryBadge(child: Text(titleBadge!))
-                  ],
+                  children: titleOverflow
+                      ? [
+                          Expanded(
+                            child: OverflowMarquee(
+                                duration: 2.seconds,
+                                delayDuration: 1.seconds,
+                                child: Text(title)),
+                          ),
+                          if (titleBadge != null)
+                            PrimaryBadge(child: Text(titleBadge!))
+                        ]
+                      : [
+                          Text(title),
+                          if (titleBadge != null)
+                            PrimaryBadge(child: Text(titleBadge!))
+                        ],
                 ),
                 trailing: ConstrainedBox(
                   constraints: trailingConstraints ??

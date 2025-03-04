@@ -323,6 +323,19 @@ settings_loc:
         tray: to tray
         taskbar: to taskbar
 
+
+# quit dialog
+quit_dialog_loc:
+  title: Quit Scrcpy GUI?
+  kill_running: 
+    label: Kill running?
+    info: ${count} instance(s). Instances with no window will be killed regardless
+  disconnect: 
+    label: Disconnect wireless ADB?
+    info: ${count} device(s)
+
+
+# button
 button_label_loc:
   ok: ''
   close: Close
@@ -331,12 +344,15 @@ button_label_loc:
   test_config: Test config
   update: Update
   info: Info
+  select_all: Select all
+  quit: Quit
 
 # status 
 status_loc: 
   failed: Failed
   error: Error
   latest: Latest
+  closing: Closing
 
 # common
 common_loc:
