@@ -61,7 +61,7 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
                                   title:
                                       Text(el.connectLoc.qrPair.status.success),
                                   trailing: const Icon(
-                                    Icons.cancel,
+                                    Icons.check,
                                     color: Colors.green,
                                   ),
                                 )
