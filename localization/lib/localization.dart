@@ -4719,6 +4719,63 @@ class QuitDialogLocDisconnect {
   }
 }
 
+class CloseDialogLoc {
+  const CloseDialogLoc({
+    required this.notAllowed,
+    required this.overwrite,
+    required this.save,
+    required this.commandPreview,
+    required this.name,
+  });
+  factory CloseDialogLoc.fromJson(Map<String, dynamic> json) {
+    return CloseDialogLoc(
+      notAllowed: (json['not_allowed'] ?? '').toString(),
+      overwrite: (json['overwrite'] ?? '').toString(),
+      save: (json['save'] ?? '').toString(),
+      commandPreview: (json['command_preview'] ?? '').toString(),
+      name: (json['name'] ?? '').toString(),
+    );
+  }
+  final String notAllowed;
+  final String overwrite;
+  final String save;
+  final String commandPreview;
+  final String name;
+  Map<String, Object> get _content => {
+        r'''not_allowed''': notAllowed,
+        r'''overwrite''': overwrite,
+        r'''save''': save,
+        r'''command_preview''': commandPreview,
+        r'''name''': name,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class ButtonLabelLoc {
   const ButtonLabelLoc({
     required this.ok,
@@ -4730,6 +4787,9 @@ class ButtonLabelLoc {
     required this.info,
     required this.selectAll,
     required this.quit,
+    required this.discard,
+    required this.overwrite,
+    required this.save,
   });
   factory ButtonLabelLoc.fromJson(Map<String, dynamic> json) {
     return ButtonLabelLoc(
@@ -4742,6 +4802,9 @@ class ButtonLabelLoc {
       info: (json['info'] ?? '').toString(),
       selectAll: (json['select_all'] ?? '').toString(),
       quit: (json['quit'] ?? '').toString(),
+      discard: (json['discard'] ?? '').toString(),
+      overwrite: (json['overwrite'] ?? '').toString(),
+      save: (json['save'] ?? '').toString(),
     );
   }
   final String ok;
@@ -4753,6 +4816,9 @@ class ButtonLabelLoc {
   final String info;
   final String selectAll;
   final String quit;
+  final String discard;
+  final String overwrite;
+  final String save;
   Map<String, Object> get _content => {
         r'''ok''': ok,
         r'''close''': close,
@@ -4763,6 +4829,9 @@ class ButtonLabelLoc {
         r'''info''': info,
         r'''select_all''': selectAll,
         r'''quit''': quit,
+        r'''discard''': discard,
+        r'''overwrite''': overwrite,
+        r'''save''': save,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -4919,6 +4988,7 @@ class LocalizationMessages {
     required this.scrcpyManagerLoc,
     required this.settingsLoc,
     required this.quitDialogLoc,
+    required this.closeDialogLoc,
     required this.buttonLabelLoc,
     required this.statusLoc,
     required this.commonLoc,
@@ -4963,6 +5033,8 @@ class LocalizationMessages {
           (json['settings_loc'] as Map).cast<String, dynamic>()),
       quitDialogLoc: QuitDialogLoc.fromJson(
           (json['quit_dialog_loc'] as Map).cast<String, dynamic>()),
+      closeDialogLoc: CloseDialogLoc.fromJson(
+          (json['close_dialog_loc'] as Map).cast<String, dynamic>()),
       buttonLabelLoc: ButtonLabelLoc.fromJson(
           (json['button_label_loc'] as Map).cast<String, dynamic>()),
       statusLoc: StatusLoc.fromJson(
@@ -5009,6 +5081,8 @@ class LocalizationMessages {
 
   final QuitDialogLoc quitDialogLoc;
 
+  final CloseDialogLoc closeDialogLoc;
+
   final ButtonLabelLoc buttonLabelLoc;
 
   final StatusLoc statusLoc;
@@ -5035,6 +5109,7 @@ class LocalizationMessages {
         r'''scrcpy_manager_loc''': scrcpyManagerLoc,
         r'''settings_loc''': settingsLoc,
         r'''quit_dialog_loc''': quitDialogLoc,
+        r'''close_dialog_loc''': closeDialogLoc,
         r'''button_label_loc''': buttonLabelLoc,
         r'''status_loc''': statusLoc,
         r'''common_loc''': commonLoc,
@@ -5444,6 +5519,13 @@ final LocalizationMessages en = LocalizationMessages(
       info: ({required String count}) => '''${count} device(s)''',
     ),
   ),
+  closeDialogLoc: CloseDialogLoc(
+    notAllowed: 'Not allowed!',
+    overwrite: 'Overwrite?',
+    save: 'Save config?',
+    commandPreview: 'Command preview:',
+    name: 'Name:',
+  ),
   buttonLabelLoc: ButtonLabelLoc(
     ok: '',
     close: 'Close',
@@ -5454,6 +5536,9 @@ final LocalizationMessages en = LocalizationMessages(
     info: 'Info',
     selectAll: 'Select all',
     quit: 'Quit',
+    discard: 'Discard',
+    overwrite: 'Overwrite',
+    save: 'Save',
   ),
   statusLoc: StatusLoc(
     failed: 'Failed',

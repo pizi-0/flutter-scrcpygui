@@ -2,6 +2,7 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
@@ -57,16 +58,16 @@ class _ConfigScreenCloseDialogState
       child: IntrinsicHeight(
         child: AlertDialog(
           title: notAllowed
-              ? const Text(
-                  'Not allowed!',
-                  style: TextStyle(color: Colors.red),
+              ? Text(
+                  el.closeDialogLoc.notAllowed,
+                  style: const TextStyle(color: Colors.red),
                 )
               : nameExist
-                  ? const Text(
-                      'Overwrite',
-                      style: TextStyle(color: Colors.red),
+                  ? Text(
+                      el.closeDialogLoc.overwrite,
+                      style: const TextStyle(color: Colors.red),
                     )
-                  : const Text('Save config'),
+                  : Text(el.closeDialogLoc.save),
           content: ConstrainedBox(
             constraints:
                 const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
@@ -75,7 +76,7 @@ class _ConfigScreenCloseDialogState
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const Text('Command preview:'),
+                Text(el.closeDialogLoc.commandPreview),
                 Card(
                   child: Center(
                     child: Text(
@@ -83,7 +84,7 @@ class _ConfigScreenCloseDialogState
                     ),
                   ),
                 ),
-                const Text('Name:'),
+                Text(el.closeDialogLoc.name),
                 TextField(
                   controller: nameController,
                   placeholder: const Text('Config name'),
@@ -109,20 +110,22 @@ class _ConfigScreenCloseDialogState
               onPressed: () {
                 context.pop(true);
               },
-              child: const Text('Discard'),
+              child: Text(el.buttonLabelLoc.discard),
             ),
             const Spacer(),
             PrimaryButton(
               onPressed: notAllowed || nameController.text.isEmpty
                   ? null
                   : _submitEdit,
-              child: Text(nameExist ? 'Overwrite' : 'Save'),
+              child: Text(nameExist
+                  ? el.buttonLabelLoc.overwrite
+                  : el.buttonLabelLoc.save),
             ),
             SecondaryButton(
               onPressed: () {
                 context.pop(false);
               },
-              child: const Text('No'),
+              child: Text(el.buttonLabelLoc.cancel),
             )
           ],
         ),
