@@ -78,7 +78,9 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
               filled: true,
               value: behaviour.minimizeAction,
               onChanged: (value) async {
-                ref.read(settingsProvider.notifier).changeLanguage(value!.name);
+                ref
+                    .read(settingsProvider.notifier)
+                    .changeMinimizeBehaviour(value!);
 
                 await Db.saveAppSettings(ref.read(settingsProvider));
               },
