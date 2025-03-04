@@ -35,32 +35,27 @@ class _IPConnectState extends ConsumerState<IPConnect>
     final ipHistory = ref.watch(ipHistoryProvider);
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
-    return Card(
-      child: Row(
-        spacing: 8,
-        children: [
-          Expanded(
-            child: AutoComplete(
-              suggestions: ipHistory,
-              child: TextField(
-                placeholder: Text(
-                    'Ip:port(${el.commonLoc.default$.toLowerCase()}=5555)'),
-                controller: ipInput,
-              ),
+    return Row(
+      spacing: 8,
+      children: [
+        Expanded(
+          child: AutoComplete(
+            suggestions: ipHistory,
+            child: TextField(
+              filled: true,
+              placeholder:
+                  Text('Ip:port(${el.commonLoc.default$.toLowerCase()}=5555)'),
+              controller: ipInput,
             ),
           ),
-          PrimaryButton(
-            onPressed: loading ? null : _connect,
-            child: loading
-                ? const SizedBox.square(
-                    dimension: 22, child: CircularProgressIndicator())
-                : Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Text(el.connectLoc.withIp.connect),
-                  ),
-          ),
-        ],
-      ),
+        ),
+        loading
+            ? const CircularProgressIndicator()
+            : PrimaryButton(
+                onPressed: loading ? null : _connect,
+                child: Text(el.connectLoc.withIp.connect),
+              ),
+      ],
     );
   }
 

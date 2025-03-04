@@ -65,6 +65,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
               onPressed: (context) => _killRunning([inst]),
             ),
           ),
+          const MenuDivider(),
           MenuButton(
             onPressed: (context) => _killRunning(deviceInstance),
             child: Text(el.deviceTileLoc.context.allInstances),
@@ -203,92 +204,5 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
     } catch (e) {
       debugPrint(e.toString());
     }
-  }
-
-  _showContextMenu(TapUpDetails details, bool hasRunningInstance,
-      List<ScrcpyRunningInstance> deviceInstance, bool isWireless) {
-    // contextMenuController.showFlyout(
-    //   position: Offset(details.globalPosition.dx - widthAdjustment,
-    //       details.globalPosition.dy - kCompactNavigationPaneWidth),
-    //   builder: (context) {
-    //     return MenuFlyout(
-    //       items: [
-    //         if (hasRunningInstance)
-    //           MenuFlyoutSubItem(
-    //             leading: const Icon(FluentIcons.cancel),
-    //             text: Text(el.homeLoc.deviceTile.context.killRunning),
-    //             items: (context) => deviceInstance
-    //                 .map(
-    //                   (i) => MenuFlyoutItem(
-    //                       text: Text('${i.instanceName}/${i.scrcpyPID}'),
-    //                       onPressed: () {
-    //                         try {
-    //                           ScrcpyUtils.killServer(i);
-    //                         } on Exception catch (e) {
-    //                           debugPrint(e.toString());
-    //                         }
-    //                       }),
-    //                 )
-    //                 .toList(),
-    //           ),
-    //         if (isWireless)
-    //           MenuFlyoutItem(
-    //               leading: const Icon(FluentIcons.remove_link),
-    //               text: Text(el.homeLoc.deviceTile.context.disconnect),
-    //               onPressed: () async {
-    //                 loading = true;
-    //                 setState(() {});
-
-    //                 try {
-    //                   final workDir = ref.read(execDirProvider);
-
-    //                   await AdbUtils.disconnectWirelessDevice(
-    //                       workDir, widget.device);
-    //                 } on Exception catch (e) {
-    //                   debugPrint(e.toString());
-    //                   displayInfoBar(context,
-    //                       builder: (context, close) => Card(
-    //                           child: InfoLabel(label: el.statusLoc.failed)));
-    //                 }
-
-    //                 if (mounted) {
-    //                   loading = false;
-    //                   setState(() {});
-    //                 }
-    //               }),
-    //         if (!isWireless)
-    //           MenuFlyoutItem(
-    //             leading: const Icon(FluentIcons.wifi),
-    //             text: Text(el.homeLoc.deviceTile.context.toWireless),
-    //             onPressed: () async {
-    //               loading = true;
-    //               setState(() {});
-
-    //               final workDir = ref.read(execDirProvider);
-
-    //               try {
-    //                 final ip =
-    //                     await AdbUtils.getIpForUSB(workDir, widget.device);
-
-    //                 await AdbUtils.tcpip5555(workDir, widget.device.id);
-
-    //                 await AdbUtils.connectWithIp(ref, ipport: '$ip:5555');
-    //               } on Exception catch (e) {
-    //                 debugPrint(e.toString());
-    //                 displayInfoBar(context,
-    //                     builder: (context, close) =>
-    //                         Card(child: InfoLabel(label: el.statusLoc.failed)));
-    //               }
-
-    //               if (mounted) {
-    //                 loading = false;
-    //                 setState(() {});
-    //               }
-    //             },
-    //           ),
-    //       ],
-    //     );
-    //   },
-    // );
   }
 }

@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:multicast_dns/multicast_dns.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:scrcpygui/utils/const.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:uuid/uuid.dart';
@@ -43,50 +44,54 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(el.connectLoc.qrPair.pair),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        spacing: 10,
-        children: [
-          const Text(
-              '[Developer option] > [Wireless debugging] > [Pair device with QR code]'),
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SizedBox(
-                height: 200,
-                width: 200,
-                child: Stack(
-                  children: [
-                    QrImageView(
-                      data: 'WIFI:T:ADB;S:ADB_WIFI_$id;P:${id.removeSpecial};',
-                      size: 200,
-                      backgroundColor: Colors.white,
-                    ),
-                    if (loading)
-                      SizedBox.expand(
-                        child: Container(
-                          color: Colors.neutral.withAlpha(200),
-                          child: const Center(
-                            child: CircularProgressIndicator(),
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: appWidth),
+      child: AlertDialog(
+        title: Text(el.connectLoc.qrPair.pair),
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          spacing: 10,
+          children: [
+            const Text(
+                '[Developer option] > [Wireless debugging] > [Pair device with QR code]'),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: 200,
+                  width: 200,
+                  child: Stack(
+                    children: [
+                      QrImageView(
+                        data:
+                            'WIFI:T:ADB;S:ADB_WIFI_$id;P:${id.removeSpecial};',
+                        size: 200,
+                        backgroundColor: Colors.white,
+                      ),
+                      if (loading)
+                        SizedBox.expand(
+                          child: Container(
+                            color: Colors.neutral.withAlpha(200),
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
                           ),
-                        ),
-                      )
-                  ],
+                        )
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
+        ),
+        actions: [
+          SecondaryButton(
+            child: Text(el.buttonLabelLoc.close),
+            onPressed: () => context.pop(),
+          )
         ],
       ),
-      actions: [
-        SecondaryButton(
-          child: Text(el.buttonLabelLoc.close),
-          onPressed: () => context.pop(),
-        )
-      ],
     );
   }
 

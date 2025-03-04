@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -42,30 +43,19 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
     final selectedConfig = ref.watch(configScreenConfig)!;
     final selectedDevice = ref.watch(selectedDeviceProvider);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return PgSectionCard(
+      label: el.audioSection.title,
       children: [
-        ConfigCustom(
-            title: el.audioSection.title, child: const Icon(Icons.audiotrack)),
-        Card(
-          padding: EdgeInsets.zero,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildAudioDuplicateOption(
-                  context, selectedConfig, selectedDevice!.info!),
-              const Divider(),
-              _buildAudioSourceSelector(
-                  context, selectedConfig, selectedDevice.info!),
-              const Divider(),
-              _buildAudioFormatSelector(
-                  context, selectedConfig, selectedDevice.info!),
-              const Divider(),
-              _buildAudioBitrate(context),
-            ],
-          ),
-        ),
+        _buildAudioDuplicateOption(
+            context, selectedConfig, selectedDevice!.info!),
+        const Divider(),
+        _buildAudioSourceSelector(
+            context, selectedConfig, selectedDevice.info!),
+        const Divider(),
+        _buildAudioFormatSelector(
+            context, selectedConfig, selectedDevice.info!),
+        const Divider(),
+        _buildAudioBitrate(context),
       ],
     );
   }
@@ -75,7 +65,9 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
     final showInfo = ref.watch(configScreenShowInfo);
 
     return ConfigDropdownOthers(
-      initialValue: selectedConfig.audioOptions.duplicateAudio,
+      initialValue: selectedConfig.audioOptions.duplicateAudio
+          ? el.commonLoc.yes
+          : el.commonLoc.no,
       showinfo: showInfo,
       onSelected: (info.buildVersion.toInt() ?? 0) < 13
           ? null
@@ -125,7 +117,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
               : true)
           .toList(),
       title: el.audioSection.source.label,
-      showinfo: showInfo,
+      showinfo: showInfo || selectedConfig.audioOptions.duplicateAudio,
       subtitle: selectedConfig.audioOptions.audioSource == AudioSource.output
           ? el.audioSection.source.info.default$
           : selectedConfig.audioOptions.duplicateAudio
@@ -150,6 +142,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
     final showInfo = ref.watch(configScreenShowInfo);
 
     return Column(
+      spacing: 8,
       mainAxisSize: MainAxisSize.min,
       children: [
         if (selectedConfig.isRecording &&
@@ -169,7 +162,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
           const Divider(),
         ConfigDropdownOthers(
           initialValue: selectedConfig.audioOptions.audioCodec,
-          showinfo: showInfo,
+          showinfo: showInfo || _isRecordingAudioOnly(selectedConfig),
           onSelected: _isRecordingAudioOnly(selectedConfig)
               ? null
               : (value) {
@@ -197,7 +190,10 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
         const Divider(),
         ConfigDropdownOthers(
           showinfo: showInfo,
-          initialValue: selectedConfig.audioOptions.audioEncoder,
+          popupWidthConstraint: PopoverConstraint.intrinsic,
+          initialValue: selectedConfig.audioOptions.audioEncoder == 'default'
+              ? el.commonLoc.default$
+              : selectedConfig.audioOptions.audioEncoder,
           onSelected: (value) {
             ref.read(configScreenConfig.notifier).update((state) => state =
                 state!.copyWith(

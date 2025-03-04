@@ -101,6 +101,8 @@ class AdbUtils {
       },
     );
 
+    print(res.stdout);
+
     //stop unauth
     if (res.stdout.toString().contains('authenticate')) {
       logger.i('Unauthenticated, check phone');
@@ -110,7 +112,8 @@ class AdbUtils {
     }
 
     return WiFiResult(
-      success: !res.stdout.toString().contains('failed') &&
+      success: !res.stdout.toString().contains('empty address') &&
+          !res.stdout.toString().contains('failed') &&
           !res.stdout.toString().contains('timed-out') &&
           !res.stdout.toString().contains('cannot connect'),
       errorMessage: res.stdout,

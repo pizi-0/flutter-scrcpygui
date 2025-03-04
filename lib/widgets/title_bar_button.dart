@@ -11,21 +11,29 @@ class TitleBarButton extends ConsumerWidget {
       children: [
         IconButton(
           variance: ButtonVariance.ghost,
-          icon: const Icon(Icons.minimize),
+          size: ButtonSize.small,
+          icon: const Padding(
+            padding: EdgeInsets.all(4.0),
+            child: Icon(Icons.minimize),
+          ),
           onPressed: () {
             AppUtils.onAppMinimizeRequested(ref, context);
           },
         ),
         IconButton(
           variance: ButtonVariance.ghost,
-          icon: const Icon(Icons.square_outlined),
+          size: ButtonSize.small,
+          icon: const Padding(
+              padding: EdgeInsets.all(4.0), child: Icon(Icons.square_outlined)),
           onPressed: () {
             AppUtils.onAppMaximizeRequested();
           },
         ),
         IconButton(
           variance: ButtonVariance.ghost,
-          icon: const Icon(Icons.close),
+          size: ButtonSize.small,
+          icon: const Padding(
+              padding: EdgeInsets.all(4.0), child: Icon(Icons.close)),
           onPressed: () {
             AppUtils.onAppCloseRequested(ref, context);
           },

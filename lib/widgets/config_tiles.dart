@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -35,8 +36,8 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
       showSubtitle: subtitle != null && showinfo,
       trailing: Select(
         filled: true,
-        itemBuilder: (context, value) =>
-            Text(toTitleCase ? value.value.toTitleCase : value.value),
+        itemBuilder: (context, value) => OverflowMarquee(
+            child: Text(toTitleCase ? value.value.toTitleCase : value.value)),
         value: initialValue,
         onChanged: onSelected,
         popup: SelectPopup(
@@ -44,9 +45,11 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
           children: items
               .map((e) => SelectItemButton(
                   value: e,
-                  child: Text(toTitleCase
-                      ? e.value.toString().toTitleCase
-                      : e.value.toString())))
+                  child: OverflowMarquee(
+                    child: Text(toTitleCase
+                        ? e.value.toString().toTitleCase
+                        : e.value.toString()),
+                  )))
               .toList(),
         )).call,
       ),
@@ -60,6 +63,7 @@ class ConfigDropdownOthers extends StatefulWidget {
   final String? subtitle;
   final Widget? placeholder;
   final Object? initialValue;
+  final PopoverConstraint? popupWidthConstraint;
   final ValueChanged? onSelected;
   final String? tooltipMessage;
   final bool showinfo;
@@ -74,6 +78,7 @@ class ConfigDropdownOthers extends StatefulWidget {
     this.initialValue,
     this.onSelected,
     this.tooltipMessage,
+    this.popupWidthConstraint,
   });
 
   @override
@@ -91,14 +96,19 @@ class _ConfigDropdownOthersState extends State<ConfigDropdownOthers> {
           subtitle: widget.subtitle,
           showSubtitle: widget.subtitle != null && widget.showinfo,
           trailing: Select(
-            autoClosePopover: false,
             filled: true,
-            itemBuilder: (context, value) => Text(value.toString()),
+            itemBuilder: (context, value) => OverflowMarquee(
+              duration: 2.seconds,
+              delayDuration: 1.seconds,
+              child: Text(value.toString()),
+            ),
             placeholder: widget.placeholder,
             value: widget.initialValue,
             onChanged: widget.onSelected,
-            popup: SelectPopup(
-              autoClose: false,
+            popupWidthConstraint: widget.popupWidthConstraint ??
+                PopoverConstraint.anchorFixedSize,
+            popupConstraints: const BoxConstraints(maxWidth: 300),
+            popup: SelectPopup.noVirtualization(
               items: SelectItemList(
                 children: widget.items,
               ),
@@ -159,6 +169,7 @@ class ConfigCustom extends ConsumerWidget {
   final String title;
   final String? subtitle;
   final Widget? child;
+  final bool childExpand;
   final BoxConstraints? boxConstraints;
   final Color? childBackgroundColor;
   final double? padRight;
@@ -167,6 +178,7 @@ class ConfigCustom extends ConsumerWidget {
   const ConfigCustom({
     super.key,
     required this.title,
+    this.childExpand = true,
     this.child,
     this.subtitle,
     this.showinfo = false,
@@ -179,7 +191,19 @@ class ConfigCustom extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return PgListTile(
       title: title,
-      trailing: child,
+      trailingConstraints: BoxConstraints(maxWidth: 180, minHeight: 30),
+      trailing: child != null
+          ? Padding(
+              padding: EdgeInsets.only(right: padRight ?? 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (!childExpand) child!,
+                  if (childExpand) Expanded(child: child!)
+                ],
+              ),
+            )
+          : null,
       subtitle: subtitle,
       showSubtitle: subtitle != null && showinfo,
     );

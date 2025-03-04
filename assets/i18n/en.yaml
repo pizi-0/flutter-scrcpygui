@@ -66,6 +66,7 @@ device_settings_loc:
 
 ## home_tab > config screen
 config_screen_loc:
+  title: Config settings
   connection_lost: Device connection lost
 
 ## home_tab > config screen > test config
@@ -329,6 +330,7 @@ button_label_loc:
   stop: Stop
   test_config: Test config
   update: Update
+  info: Info
 
 # status 
 status_loc: 

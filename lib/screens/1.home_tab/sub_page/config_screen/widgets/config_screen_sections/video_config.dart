@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
@@ -11,7 +12,6 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../../../../../providers/config_provider.dart';
-import '../../../../../../providers/settings_provider.dart';
 import '../../../../../../widgets/config_tiles.dart';
 
 class VideoConfig extends ConsumerStatefulWidget {
@@ -214,7 +214,10 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
         const Divider(),
         ConfigDropdownOthers(
           showinfo: showInfo,
-          initialValue: selectedConfig.videoOptions.videoEncoder,
+          popupWidthConstraint: PopoverConstraint.intrinsic,
+          initialValue: selectedConfig.videoOptions.videoEncoder == 'default'
+              ? el.commonLoc.default$
+              : selectedConfig.videoOptions.videoEncoder,
           onSelected: (value) {
             ref.read(configScreenConfig.notifier).update((state) => state =
                 state!.copyWith(
@@ -222,9 +225,12 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                         state.videoOptions.copyWith(videoEncoder: value)));
           },
           items: [
-            const SelectItemButton(
+            SelectItemButton(
               value: 'default',
-              child: Text('Default'),
+              child: OverflowMarquee(
+                duration: 2.seconds,
+                child: Text(el.commonLoc.default$),
+              ),
             ),
             ...info.videoEncoders
                 .firstWhere((ve) =>
@@ -234,7 +240,11 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                 .map(
                   (enc) => SelectItemButton(
                     value: enc,
-                    child: Text(enc),
+                    child: OverflowMarquee(
+                      duration: 2.seconds,
+                      delayDuration: 1.seconds,
+                      child: Text(enc),
+                    ),
                   ),
                 )
           ],

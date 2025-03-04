@@ -674,15 +674,19 @@ class DeviceSettingsLocScrcpyInfo {
 
 class ConfigScreenLoc {
   const ConfigScreenLoc({
+    required this.title,
     required this.connectionLost,
   });
   factory ConfigScreenLoc.fromJson(Map<String, dynamic> json) {
     return ConfigScreenLoc(
+      title: (json['title'] ?? '').toString(),
       connectionLost: (json['connection_lost'] ?? '').toString(),
     );
   }
+  final String title;
   final String connectionLost;
   Map<String, Object> get _content => {
+        r'''title''': title,
         r'''connection_lost''': connectionLost,
       };
   T getContent<T>(String key) {
@@ -4572,6 +4576,7 @@ class ButtonLabelLoc {
     required this.stop,
     required this.testConfig,
     required this.update,
+    required this.info,
   });
   factory ButtonLabelLoc.fromJson(Map<String, dynamic> json) {
     return ButtonLabelLoc(
@@ -4581,6 +4586,7 @@ class ButtonLabelLoc {
       stop: (json['stop'] ?? '').toString(),
       testConfig: (json['test_config'] ?? '').toString(),
       update: (json['update'] ?? '').toString(),
+      info: (json['info'] ?? '').toString(),
     );
   }
   final String ok;
@@ -4589,6 +4595,7 @@ class ButtonLabelLoc {
   final String stop;
   final String testConfig;
   final String update;
+  final String info;
   Map<String, Object> get _content => {
         r'''ok''': ok,
         r'''close''': close,
@@ -4596,6 +4603,7 @@ class ButtonLabelLoc {
         r'''stop''': stop,
         r'''test_config''': testConfig,
         r'''update''': update,
+        r'''info''': info,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -4958,6 +4966,7 @@ final LocalizationMessages en = LocalizationMessages(
     ),
   ),
   configScreenLoc: ConfigScreenLoc(
+    title: 'Config settings',
     connectionLost: 'Device connection lost',
   ),
   logScreenLoc: LogScreenLoc(
@@ -5261,6 +5270,7 @@ final LocalizationMessages en = LocalizationMessages(
     stop: 'Stop',
     testConfig: 'Test config',
     update: 'Update',
+    info: 'Info',
   ),
   statusLoc: StatusLoc(
     failed: 'Failed',

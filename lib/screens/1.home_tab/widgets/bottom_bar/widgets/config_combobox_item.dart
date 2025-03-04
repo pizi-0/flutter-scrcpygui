@@ -88,7 +88,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
         builder: (context) => AlertDialog(
           title: Text(el.noDeviceDialogLoc.title),
           content: Text(
-            el.noDeviceDialogLoc.contents,
+            el.noDeviceDialogLoc.contentsEdit,
             textAlign: TextAlign.start,
           ),
           actions: [

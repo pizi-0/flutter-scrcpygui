@@ -14,11 +14,11 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../providers/config_provider.dart';
 import '../../../../../../utils/scrcpy_utils.dart';
-import '../../../../../../widgets/config_tiles.dart';
 
 final testInstanceProvider =
     StateProvider<ScrcpyRunningInstance?>((ref) => null);
@@ -65,84 +65,70 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
 
     final bool isTestRunning = runningInstance.contains(testInstance);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ConfigCustom(
-            title: el.testConfigLoc.title,
-            child: const Icon(Icons.flaky_sharp)),
-        Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 8,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(el.testConfigLoc.preview),
-                  CopyButton(
-                    ref: ref,
-                    selectedConfig: selectedConfig,
-                    selectedDevice: selectedDevice,
-                  )
-                ],
-              ),
-              Card(
-                  child: Text(
-                'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice!, customName: '[TEST] ${selectedConfig.configName}').join(' ')}',
-              )),
-              Row(
-                children: [
-                  Expanded(
-                    child: PrimaryButton(
-                      onPressed: () async {
-                        if (!isTestRunning) {
-                          await ScrcpyUtils.newInstance(ref,
-                              selectedConfig: selectedConfig, isTest: true);
-
-                          timer = Timer.periodic(1.seconds, (a) async {
-                            await _isStillRunning();
-                          });
-
-                          final inst = ref
-                              .read(scrcpyInstanceProvider)
-                              .where((inst) =>
-                                  inst.device == selectedDevice &&
-                                  inst.config == selectedConfig)
-                              .first;
-
-                          ref.read(testInstanceProvider.notifier).state = inst;
-
-                          context.push(
-                              '/home/config-settings/config-log/${inst.scrcpyPID}',
-                              extra: inst);
-                        } else {
-                          await ScrcpyUtils.killServer(testInstance!);
-                          ref
-                              .read(scrcpyInstanceProvider.notifier)
-                              .removeInstance(testInstance);
-                          ref
-                              .read(testInstanceProvider.notifier)
-                              .update((state) => state = null);
-                        }
-                        setState(() {});
-                      },
-                      child: !isTestRunning
-                          ? Text(el.buttonLabelLoc.testConfig)
-                              .textColor(Colors.white)
-                          : Text(el.buttonLabelLoc.stop)
-                              .textColor(Colors.white)
-                              .bold(),
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
+    return PgSectionCard(label: el.testConfigLoc.title, children: [
+      Basic(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(el.testConfigLoc.preview),
+            CopyButton(
+              ref: ref,
+              selectedConfig: selectedConfig,
+              selectedDevice: selectedDevice,
+            ),
+          ],
         ),
-      ],
-    );
+        content: Card(
+          filled: true,
+          child: Text(
+            'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice!, customName: '[TEST] ${selectedConfig.configName}').join(' ')}',
+          ).muted().mono(),
+        ),
+      ),
+      Row(
+        children: [
+          Expanded(
+            child: PrimaryButton(
+              onPressed: () async {
+                if (!isTestRunning) {
+                  await ScrcpyUtils.newInstance(ref,
+                      selectedConfig: selectedConfig, isTest: true);
+
+                  timer = Timer.periodic(1.seconds, (a) async {
+                    await _isStillRunning();
+                  });
+
+                  final inst = ref
+                      .read(scrcpyInstanceProvider)
+                      .where((inst) =>
+                          inst.device == selectedDevice &&
+                          inst.config == selectedConfig)
+                      .first;
+
+                  ref.read(testInstanceProvider.notifier).state = inst;
+
+                  context.push(
+                      '/home/config-settings/config-log/${inst.scrcpyPID}',
+                      extra: inst);
+                } else {
+                  await ScrcpyUtils.killServer(testInstance!);
+                  ref
+                      .read(scrcpyInstanceProvider.notifier)
+                      .removeInstance(testInstance);
+                  ref
+                      .read(testInstanceProvider.notifier)
+                      .update((state) => state = null);
+                }
+                setState(() {});
+              },
+              child: !isTestRunning
+                  ? Text(el.buttonLabelLoc.testConfig).bold()
+                  : Text(el.buttonLabelLoc.stop).textColor(Colors.white).bold(),
+            ),
+          ),
+        ],
+      )
+    ]);
   }
 }
 
@@ -197,9 +183,12 @@ class _CopyButtonState extends State<CopyButton> {
         _startTimer();
         showToast(
           context: context,
-          builder: (context, close) => const Card(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: Text('Copied'),
+          location: ToastLocation.bottomCenter,
+          builder: (context, close) => SurfaceCard(
+            child: Basic(
+              title: Text('Copied'),
+              trailing: Icon(Icons.check),
+            ),
           ),
         );
       },

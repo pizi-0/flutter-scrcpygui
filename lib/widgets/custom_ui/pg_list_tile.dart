@@ -44,14 +44,18 @@ class PgListTile extends ConsumerWidget {
                 title: Row(
                   spacing: 8,
                   children: [
-                    Text(title),
+                    Expanded(
+                        child: OverflowMarquee(
+                            duration: 2.seconds,
+                            delayDuration: 1.seconds,
+                            child: Text(title))),
                     if (titleBadge != null)
                       PrimaryBadge(child: Text(titleBadge!))
                   ],
                 ),
                 trailing: ConstrainedBox(
                   constraints: trailingConstraints ??
-                      const BoxConstraints(minWidth: 150, minHeight: 30),
+                      const BoxConstraints(minWidth: 180, minHeight: 30),
                   child: trailing,
                 ).showIf(trailing != null),
               ),
