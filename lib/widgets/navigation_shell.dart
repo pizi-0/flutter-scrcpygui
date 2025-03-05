@@ -193,6 +193,9 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
             label: Text(el.scrcpyManagerLoc.title),
             child: const Icon(Icons.system_update_alt),
           ),
+          NavigationDivider(
+            color: MyColor.scaffold(context).getContrastColor().withAlpha(50),
+          ),
           NavigationItem(
             selectedStyle: const ButtonStyle.primaryIcon(),
             alignment: Alignment.centerLeft,
