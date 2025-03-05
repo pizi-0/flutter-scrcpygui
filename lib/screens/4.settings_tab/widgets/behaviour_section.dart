@@ -7,6 +7,8 @@ import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../../widgets/custom_ui/pg_divider.dart';
+
 class BehaviourSection extends ConsumerStatefulWidget {
   const BehaviourSection({super.key});
 
@@ -69,7 +71,7 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
             popup: SelectPopup(items: SelectItemList(children: langDD)).call,
           ),
         ),
-        const Divider(),
+        const PgDivider(),
         PgListTile(
           title: el.settingsLoc.behavior.minimize.label,
           trailing: ConstrainedBox(

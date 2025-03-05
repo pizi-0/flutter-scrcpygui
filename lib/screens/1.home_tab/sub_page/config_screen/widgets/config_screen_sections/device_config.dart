@@ -5,6 +5,7 @@ import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../providers/config_provider.dart';
+import '../../../../../../widgets/custom_ui/pg_divider.dart';
 
 class DeviceConfig extends ConsumerStatefulWidget {
   const DeviceConfig({super.key});
@@ -42,7 +43,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                             stayAwake: value == CheckboxState.checked))),
           ),
         ),
-        const Divider(),
+        const PgDivider(),
         ConfigCustom(
           childExpand: false,
           showinfo: showInfo,
@@ -66,7 +67,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
             ),
           ),
         ),
-        const Divider(),
+        const PgDivider(),
         ConfigCustom(
           childExpand: false,
           showinfo: showInfo,
@@ -90,7 +91,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
             ),
           ),
         ),
-        const Divider(),
+        const PgDivider(),
         ConfigCustom(
           childExpand: false,
           showinfo: showInfo,
@@ -115,7 +116,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
             ),
           ),
         ),
-        const Divider(),
+        const PgDivider(),
         ConfigCustom(
           childExpand: false,
           showinfo: showInfo,

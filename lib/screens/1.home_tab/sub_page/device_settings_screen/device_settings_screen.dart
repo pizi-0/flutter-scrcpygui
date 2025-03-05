@@ -18,6 +18,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../../../../providers/adb_provider.dart';
+import '../../../../widgets/custom_ui/pg_divider.dart';
 
 // ignore: constant_identifier_names
 const DO_NOTHING = 'Do nothing';
@@ -106,7 +107,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                 ),
               ),
             ),
-            if (isWireless) const Divider(),
+            if (isWireless) const PgDivider(),
             if (isWireless)
               ConfigCustom(
                 title: el.deviceSettingsLoc.autoConnect.label,
@@ -121,7 +122,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                   ),
                 ),
               ),
-            const Divider(),
+            const PgDivider(),
             ConfigCustom(
               title: el.deviceSettingsLoc.onConnected.label,
               subtitle: el.deviceSettingsLoc.onConnected.info,
@@ -167,9 +168,9 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
               : [
                   PgListTile(
                       title: 'ID: ${dev.id.replaceAll('.$adbMdns', '')}'),
-                  // const Divider(),
+                  // const PgDivider(),
                   PgListTile(title: 'Model: ${dev.modelName}'),
-                  // const Divider(),
+                  // const PgDivider(),
                   PgListTile(
                       title: 'Android version: ${dev.info!.buildVersion}'),
                   Accordion(
@@ -277,7 +278,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
       //                   ),
       //                 ),
       //               ),
-      //               if (isWireless) const Divider(),
+      //               if (isWireless) const PgDivider(),
       //               if (isWireless)
       //                 ConfigCustom(
       //                   title: el.deviceSettingsLoc.autoConnect.label,
@@ -290,7 +291,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
       //                     onChanged: _onAutoConnectToggled,
       //                   ),
       //                 ),
-      //               const Divider(),
+      //               const PgDivider(),
       //               ConfigCustom(
       //                 title: el.deviceSettingsLoc.onConnected.label,
       //                 subtitle: el.deviceSettingsLoc.onConnected.info,

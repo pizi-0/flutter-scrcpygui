@@ -5,6 +5,7 @@ import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/utils/color_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -90,62 +91,71 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
     ];
 
     return IntrinsicHeight(
-      child: Stack(
-        children: [
-          ContextMenu(
-            items: contextMenu,
-            child: OutlineButton(
-              onPressed: () => ref.read(selectedDeviceProvider.notifier).state =
-                  widget.device,
-              child: PgListTile(
-                key: ValueKey(widget.device.id),
-                leading:
-                    isWireless ? const Icon(Icons.wifi) : const Icon(Icons.usb),
-                title: widget.device.name ?? widget.device.modelName,
-                titleBadge: hasRunningInstance
-                    ? 'Running (${deviceInstance.length})'
-                    : null,
-                subtitle: widget.device.id,
-                showSubtitle: true,
-                showSubtitleLeading: false,
-                trailing: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton.ghost(
-                      icon: const Icon(Icons.settings),
-                      onPressed: () => context
-                          .push('/home/device-settings/${widget.device.id}'),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          IgnorePointer(
-            child: SlideInLeft(
-              duration: 150.milliseconds,
-              from: 15,
-              animate: isSelected,
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20),
-                child: Container(
-                  width: 5,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.primary,
-                    borderRadius: theme.borderRadiusSm,
+      child: Card(
+        borderRadius: BorderRadius.circular(theme.radiusMd),
+        filled: true,
+        fillColor: MyColor.tinted(context),
+        padding: const EdgeInsets.all(0),
+        borderColor: Colors.transparent,
+        child: Stack(
+          children: [
+            ContextMenu(
+              items: contextMenu,
+              child: OutlineButton(
+                onPressed: () => ref
+                    .read(selectedDeviceProvider.notifier)
+                    .state = widget.device,
+                child: PgListTile(
+                  key: ValueKey(widget.device.id),
+                  leading: isWireless
+                      ? const Icon(Icons.wifi)
+                      : const Icon(Icons.usb),
+                  title: widget.device.name ?? widget.device.modelName,
+                  titleBadge: hasRunningInstance
+                      ? 'Running (${deviceInstance.length})'
+                      : null,
+                  subtitle: widget.device.id,
+                  showSubtitle: true,
+                  showSubtitleLeading: false,
+                  trailing: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton.ghost(
+                        icon: const Icon(Icons.settings),
+                        onPressed: () => context
+                            .push('/home/device-settings/${widget.device.id}'),
+                      )
+                    ],
                   ),
                 ),
               ),
             ),
-          ),
-          if (loading)
-            Positioned.fill(
-              child: const OutlinedContainer(
-                child: SizedBox(),
-              ).withOpacity(0.5),
-            )
-        ],
+            IgnorePointer(
+              child: SlideInLeft(
+                duration: 150.milliseconds,
+                from: 15,
+                animate: isSelected,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20),
+                  child: Container(
+                    width: 5,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary,
+                      borderRadius: theme.borderRadiusSm,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if (loading)
+              Positioned.fill(
+                child: const OutlinedContainer(
+                  child: SizedBox(),
+                ).withOpacity(0.5),
+              )
+          ],
+        ),
       ),
     ).clipRRect();
   }

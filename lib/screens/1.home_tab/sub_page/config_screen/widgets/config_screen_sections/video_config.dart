@@ -13,6 +13,7 @@ import '../../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../../../../../providers/config_provider.dart';
 import '../../../../../../widgets/config_tiles.dart';
+import '../../../../../../widgets/custom_ui/pg_divider.dart';
 
 class VideoConfig extends ConsumerStatefulWidget {
   const VideoConfig({super.key});
@@ -55,14 +56,14 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
       label: el.videoSection.title,
       children: [
         _buildDisplaySelector(selectedConfig, selectedDevice!.info!),
-        const Divider(),
+        const PgDivider(),
         _buildVideoCodecNFormatSelector(
             context, selectedConfig, selectedDevice.info!),
-        const Divider(),
+        const PgDivider(),
         _buildVideoBitrate(context),
-        const Divider(),
+        const PgDivider(),
         _buildMaxFPS(selectedConfig),
-        const Divider(),
+        const PgDivider(),
         _buildResolutionScale(selectedConfig, selectedDevice.info!),
       ],
     );
@@ -211,7 +212,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
               : el.videoSection.codec.info
                   .alt(codec: selectedConfig.videoOptions.videoCodec),
         ),
-        const Divider(),
+        const PgDivider(),
         ConfigDropdownOthers(
           showinfo: showInfo,
           popupWidthConstraint: PopoverConstraint.intrinsic,
@@ -254,7 +255,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
               : el.videoSection.encoder.info
                   .alt(encoder: selectedConfig.videoOptions.videoEncoder),
         ),
-        if (selectedConfig.isRecording) const Divider(),
+        if (selectedConfig.isRecording) const PgDivider(),
         if (selectedConfig.isRecording)
           FadeIn(
             child: ConfigDropdownEnum<VideoFormat>(

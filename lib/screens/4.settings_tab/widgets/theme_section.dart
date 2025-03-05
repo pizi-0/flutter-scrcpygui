@@ -8,6 +8,7 @@ import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../utils/themes.dart';
+import '../../../widgets/custom_ui/pg_divider.dart';
 
 class ThemeSection extends ConsumerStatefulWidget {
   const ThemeSection({super.key});
@@ -60,7 +61,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
             ).call,
           ),
         ),
-        const Divider(),
+        const PgDivider(),
         PgListTile(
           title: el.settingsLoc.looks.accentColor.label,
           trailing: Select(
@@ -80,7 +81,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
             ).call,
           ),
         ),
-        const Divider(),
+        const PgDivider(),
         PgListTile(
           title: 'Corner radius',
           trailing: ConstrainedBox(

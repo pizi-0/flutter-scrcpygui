@@ -8,6 +8,7 @@ import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/device_tile.dart';
+import 'package:scrcpygui/utils/color_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
@@ -16,6 +17,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../db/db.dart';
 import '../../utils/const.dart';
+import '../../widgets/custom_ui/pg_divider.dart';
 
 class HomeTab extends ConsumerStatefulWidget {
   static const route = '/home';
@@ -54,16 +56,17 @@ class _HomeTabState extends ConsumerState<HomeTab> {
           ],
           children: [
             PgSectionCard(
+              backgroundColor: Colors.transparent,
               cardPadding: EdgeInsets.zero,
               borderColor: Colors.transparent,
               label: el.homeLoc.devices.label(count: '${connected.length}'),
               children: connected
                   .mapIndexed(
                     (index, conn) => Column(
-                      spacing: 8,
+                      spacing: 4,
                       children: [
                         DeviceTile(device: conn),
-                        if (index != connected.length - 1) const Divider()
+                        if (index != connected.length - 1) const PgDivider()
                       ],
                     ),
                   )
@@ -118,26 +121,32 @@ class ConfigListState extends ConsumerState<ConfigList> {
   Widget build(BuildContext context) {
     final allConfigs = ref.watch(configsProvider);
     final config = ref.watch(selectedConfigProvider);
+    final theme = Theme.of(context);
 
     return Row(
       spacing: 8,
       children: [
         Expanded(
-          child: Select(
-            onChanged: (value) =>
-                ref.read(selectedConfigProvider.notifier).state = value,
-            filled: true,
-            placeholder: const Text('Select config'),
-            value: config,
-            popup: SelectPopup(
-              items: SelectItemList(
-                children: allConfigs
-                    .map((conf) => SelectItemButton(
-                        value: conf, child: Text(conf.configName)))
-                    .toList(),
-              ),
-            ).call,
-            itemBuilder: (context, value) => Text(value.configName),
+          child: Container(
+            decoration: BoxDecoration(
+              color: MyColor.scaffold(context),
+              borderRadius: theme.borderRadiusLg,
+            ),
+            child: Select(
+              onChanged: (value) =>
+                  ref.read(selectedConfigProvider.notifier).state = value,
+              placeholder: const Text('Select config'),
+              value: config,
+              popup: SelectPopup(
+                items: SelectItemList(
+                  children: allConfigs
+                      .map((conf) => SelectItemButton(
+                          value: conf, child: Text(conf.configName)))
+                      .toList(),
+                ),
+              ).call,
+              itemBuilder: (context, value) => Text(value.configName),
+            ),
           ),
         ),
         PrimaryButton(

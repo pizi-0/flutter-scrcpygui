@@ -10,6 +10,7 @@ import '../../../models/adb_devices.dart';
 import '../../../providers/adb_provider.dart';
 import '../../../providers/bonsoir_devices.dart';
 import '../../../utils/adb_utils.dart';
+import '../../../widgets/custom_ui/pg_divider.dart';
 import '../../../widgets/custom_ui/pg_list_tile.dart';
 import '../../1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
 
@@ -34,7 +35,7 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
                 spacing: 8,
                 children: [
                   BdTile(bonsoirDevice: dev),
-                  if (index != bonsoirDevices.length - 1) const Divider()
+                  if (index != bonsoirDevices.length - 1) const PgDivider()
                 ],
               ))
           .toList(),

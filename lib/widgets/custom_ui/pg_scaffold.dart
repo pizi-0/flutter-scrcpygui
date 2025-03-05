@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' show kToolbarHeight;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/utils/color_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class PgScaffold extends ConsumerWidget {
@@ -23,44 +24,49 @@ class PgScaffold extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-
-    return Scaffold(
-      loadingProgressIndeterminate: showLoading,
-      headers: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(
-              maxHeight: kToolbarHeight + 5, minHeight: kToolbarHeight + 5),
-          child: AppBar(
-            leading: [
-              if (onBack != null)
-                IconButton.ghost(
-                  onPressed: onBack,
-                  icon: const Icon(Icons.arrow_back),
-                ),
-            ],
-            trailing: appBarTrailing,
-            padding: const EdgeInsets.all(8),
-            title: Text(title).xLarge(),
-            backgroundColor: theme.colorScheme.muted,
-          ),
-        )
-      ],
-      footers: footers,
-      child: showLoading
-          ? const Center(
-              child: Text('Getting device info'),
-            )
-          : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SingleChildScrollView(
-                child: Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 16,
-                  runSpacing: 16,
-                  children: children,
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(theme.radiusLg),
+          bottomLeft: Radius.circular(theme.radiusLg)),
+      child: Scaffold(
+        backgroundColor: MyColor.scaffold(context),
+        loadingProgressIndeterminate: showLoading,
+        headers: [
+          ConstrainedBox(
+            constraints: const BoxConstraints(
+                maxHeight: kToolbarHeight + 5, minHeight: kToolbarHeight + 5),
+            child: AppBar(
+              leading: [
+                if (onBack != null)
+                  IconButton.ghost(
+                    onPressed: onBack,
+                    icon: const Icon(Icons.arrow_back),
+                  ),
+              ],
+              trailing: appBarTrailing,
+              padding: const EdgeInsets.all(8),
+              title: Text(title).xLarge().bold(),
+              backgroundColor: MyColor.scaffold(context),
+            ),
+          )
+        ],
+        footers: footers,
+        child: showLoading
+            ? const Center(
+                child: Text('Getting device info'),
+              )
+            : Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 16,
+                    runSpacing: 16,
+                    children: children,
+                  ),
                 ),
               ),
-            ),
+      ),
     );
   }
 }

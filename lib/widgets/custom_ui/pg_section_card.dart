@@ -1,5 +1,6 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/utils/color_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -9,6 +10,7 @@ class PgSectionCard extends ConsumerWidget {
   final EdgeInsetsGeometry? cardPadding;
   final Color? borderColor;
   final List<Widget> children;
+  final Color? backgroundColor;
 
   const PgSectionCard(
       {super.key,
@@ -16,6 +18,7 @@ class PgSectionCard extends ConsumerWidget {
       this.labelTrail,
       this.cardPadding,
       this.borderColor,
+      this.backgroundColor,
       required this.children});
 
   @override
@@ -32,6 +35,8 @@ class PgSectionCard extends ConsumerWidget {
               trailing: labelTrail,
               child: Text(label).paddingSymmetric(vertical: 8)),
           Card(
+            filled: true,
+            fillColor: backgroundColor ?? MyColor.tinted(context),
             padding: cardPadding,
             borderColor: borderColor,
             borderRadius: theme.borderRadiusMd,

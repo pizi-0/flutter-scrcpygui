@@ -11,6 +11,8 @@ import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../../../../widgets/custom_ui/pg_divider.dart';
+
 class ControlDialog extends ConsumerStatefulWidget {
   final AdbDevices device;
   const ControlDialog(this.device, {super.key});
@@ -67,7 +69,7 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Divider(),
+                const PgDivider(),
                 const Text('Launch:'),
                 Select(
                   itemBuilder: (context, value) => Text(value),

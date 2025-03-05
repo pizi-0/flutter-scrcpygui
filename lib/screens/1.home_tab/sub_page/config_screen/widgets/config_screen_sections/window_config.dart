@@ -5,6 +5,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../providers/config_provider.dart';
 import '../../../../../../widgets/config_tiles.dart';
+import '../../../../../../widgets/custom_ui/pg_divider.dart';
 
 class WindowConfig extends ConsumerStatefulWidget {
   const WindowConfig({super.key});
@@ -73,7 +74,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
                 }),
           ),
         ),
-        const Divider(),
+        const PgDivider(),
         ConfigCustom(
           childExpand: false,
           showinfo: showInfo,
@@ -97,7 +98,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
             ),
           ),
         ),
-        const Divider(),
+        const PgDivider(),
         ConfigCustom(
           childExpand: false,
           showinfo: showInfo,
@@ -121,7 +122,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
             ),
           ),
         ),
-        const Divider(),
+        const PgDivider(),
         ConfigUserInput(
             showinfo: showInfo,
             label: el.windowSection.timeLimit.label,

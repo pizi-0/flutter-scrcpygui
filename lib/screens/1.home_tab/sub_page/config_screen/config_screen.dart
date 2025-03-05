@@ -25,6 +25,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import '../../../../providers/adb_provider.dart';
 import '../../../../utils/const.dart';
 import '../../../../utils/scrcpy_utils.dart';
+import '../../../../widgets/custom_ui/pg_divider.dart';
 import 'widgets/close_dialog.dart';
 
 class ConfigScreen extends ConsumerStatefulWidget {
@@ -167,7 +168,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
           child: Column(
             children: [
               SizedBox(height: 30),
-              Divider(),
+              PgDivider(),
               PreviewAndTest(),
               SizedBox(height: 30),
             ],

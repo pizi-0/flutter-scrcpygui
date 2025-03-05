@@ -13,6 +13,8 @@ import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../widgets/custom_ui/pg_divider.dart';
+
 class ScrcpyManagerTab extends ConsumerStatefulWidget {
   static const route = '/scrcpy-manager';
   const ScrcpyManagerTab({super.key});
@@ -146,7 +148,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
                     childExpand: false,
                     child: Text('v$scrcpyVersion').small(),
                   ),
-            const Divider(),
+            const PgDivider(),
             ConfigCustom(
               childBackgroundColor: Colors.transparent,
               title: el.scrcpyManagerLoc.exec.label,
@@ -188,7 +190,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
                   ],
                 ),
               ),
-              const Divider(),
+              const PgDivider(),
               const DownloadUpdate(),
             ],
           ),

@@ -9,6 +9,7 @@ import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
 import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
 import 'package:scrcpygui/screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
 import 'package:scrcpygui/screens/4.settings_tab/settings_tab.dart';
+import 'package:scrcpygui/utils/color_utils.dart';
 import 'package:scrcpygui/widgets/title_bar_button.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:window_manager/window_manager.dart';
@@ -54,8 +55,10 @@ class NavigationShellSmallState extends ConsumerState<NavigationShellSmall> {
   Widget build(BuildContext context) {
     final currentIndex = ref.watch(mainScreenPage);
     return Scaffold(
+      backgroundColor: MyColor.tinted(context),
       headers: [
         AppBar(
+          backgroundColor: MyColor.tinted(context),
           leading: [
             Image.asset(
               'assets/logo.png',
@@ -149,53 +152,55 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
     return TapRegion(
       onTapOutside: (event) =>
           ref.read(appSideBarStateProvider.notifier).state = false,
-      child: OutlinedContainer(
-        borderRadius: const BorderRadius.all(Radius.zero),
-        child: NavigationRail(
-          expanded: expanded,
-          index: currentPage,
-          alignment: NavigationRailAlignment.start,
-          labelPosition: NavigationLabelPosition.end,
-          labelType: NavigationLabelType.expanded,
-          onSelected: (value) =>
-              ref.read(mainScreenPage.notifier).state = value,
-          children: [
-            NavigationButton(
-              alignment: Alignment.centerLeft,
-              onPressed: () => ref
-                  .read(appSideBarStateProvider.notifier)
-                  .update((state) => !state),
-              label: const Text('Menu'),
-              child: const Icon(Icons.menu),
-            ),
-            const NavigationDivider(),
-            NavigationItem(
-              alignment: Alignment.centerLeft,
-              onChanged: (value) => context.go(HomeTab.route),
-              label: Text(el.homeLoc.title),
-              child: const Icon(Icons.home),
-            ),
-            NavigationItem(
-              alignment: Alignment.centerLeft,
-              onChanged: (value) => context.go(ConnectTab.route),
-              label: Text(el.connectLoc.title),
-              child: const Icon(Icons.link),
-            ),
-            NavigationItem(
-              alignment: Alignment.centerLeft,
-              onChanged: (value) => context.go(ScrcpyManagerTab.route),
-              label: Text(el.scrcpyManagerLoc.title),
-              child: const Icon(Icons.system_update_alt),
-            ),
-            const NavigationDivider(),
-            NavigationItem(
-              alignment: Alignment.centerLeft,
-              onChanged: (value) => context.go(SettingsTab.route),
-              label: Text(el.settingsLoc.title),
-              child: const Icon(Icons.settings),
-            ),
-          ],
-        ),
+      child: NavigationRail(
+        backgroundColor: MyColor.tinted(context),
+        expanded: expanded,
+        index: currentPage,
+        alignment: NavigationRailAlignment.start,
+        labelPosition: NavigationLabelPosition.end,
+        labelType: NavigationLabelType.expanded,
+        onSelected: (value) => ref.read(mainScreenPage.notifier).state = value,
+        children: [
+          NavigationButton(
+            alignment: Alignment.centerLeft,
+            onPressed: () => ref
+                .read(appSideBarStateProvider.notifier)
+                .update((state) => !state),
+            label: const Text('Menu'),
+            child: const Icon(Icons.menu),
+          ),
+          NavigationDivider(
+            color: MyColor.scaffold(context).getContrastColor().withAlpha(50),
+          ),
+          NavigationItem(
+            selectedStyle: const ButtonStyle.primaryIcon(),
+            alignment: Alignment.centerLeft,
+            onChanged: (value) => context.go(HomeTab.route),
+            label: Text(el.homeLoc.title),
+            child: const Icon(Icons.home),
+          ),
+          NavigationItem(
+            selectedStyle: const ButtonStyle.primaryIcon(),
+            alignment: Alignment.centerLeft,
+            onChanged: (value) => context.go(ConnectTab.route),
+            label: Text(el.connectLoc.title),
+            child: const Icon(Icons.link),
+          ),
+          NavigationItem(
+            selectedStyle: const ButtonStyle.primaryIcon(),
+            alignment: Alignment.centerLeft,
+            onChanged: (value) => context.go(ScrcpyManagerTab.route),
+            label: Text(el.scrcpyManagerLoc.title),
+            child: const Icon(Icons.system_update_alt),
+          ),
+          NavigationItem(
+            selectedStyle: const ButtonStyle.primaryIcon(),
+            alignment: Alignment.centerLeft,
+            onChanged: (value) => context.go(SettingsTab.route),
+            label: Text(el.settingsLoc.title),
+            child: const Icon(Icons.settings),
+          ),
+        ],
       ),
     );
   }

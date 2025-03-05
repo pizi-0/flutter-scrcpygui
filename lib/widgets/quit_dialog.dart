@@ -16,6 +16,7 @@ import '../providers/version_provider.dart';
 import '../utils/adb_utils.dart';
 import '../utils/const.dart';
 import '../utils/scrcpy_utils.dart';
+import 'custom_ui/pg_divider.dart';
 
 class QuitDialog extends ConsumerStatefulWidget {
   const QuitDialog({super.key});
@@ -99,7 +100,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                           ),
                         ),
                       if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
-                        const Divider(),
+                        const PgDivider(),
                       if (wifiDevices.isNotEmpty)
                         OutlineButton(
                           onPressed: () {

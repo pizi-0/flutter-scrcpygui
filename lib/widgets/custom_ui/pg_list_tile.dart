@@ -2,6 +2,7 @@
 
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/utils/color_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class PgListTile extends ConsumerWidget {
@@ -86,7 +87,7 @@ class PgListTile extends ConsumerWidget {
                     ),
                   ),
                 ).withRoundCorners(
-                    backgroundColor: theme.colorScheme.muted,
+                    backgroundColor: MyColor.scaffold(context),
                     radius: theme.radiusXs)
             ],
           ),

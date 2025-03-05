@@ -13,6 +13,7 @@ import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../../../../../providers/config_provider.dart';
 import '../../../../../../utils/const.dart';
 import '../../../../../../widgets/config_tiles.dart';
+import '../../../../../../widgets/custom_ui/pg_divider.dart';
 
 final sep = Platform.pathSeparator;
 
@@ -53,7 +54,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
             setState(() {});
           },
         ),
-        if (selectedConfig.isRecording) const Divider(),
+        if (selectedConfig.isRecording) const PgDivider(),
         if (selectedConfig.isRecording)
           FadeIn(
             child: ConfigCustom(
@@ -76,7 +77,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
               ),
             ),
           ),
-        const Divider(),
+        const PgDivider(),
         ConfigDropdownEnum<ScrcpyMode>(
           items: ScrcpyMode.values,
           title: modeLabel,

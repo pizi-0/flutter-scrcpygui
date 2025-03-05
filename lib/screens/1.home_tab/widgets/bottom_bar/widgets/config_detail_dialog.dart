@@ -6,6 +6,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../models/scrcpy_related/scrcpy_enum.dart';
+import '../../../../../widgets/custom_ui/pg_divider.dart';
 
 class ConfigDetailDialog extends ConsumerStatefulWidget {
   final ScrcpyConfig config;
@@ -37,7 +38,7 @@ class _ConfigDetailDialogState extends ConsumerState<ConfigDetailDialog> {
                 spacing: 2,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Divider(),
+                  const PgDivider(),
                   const Text('Video options:'),
                   if (widget.config.isRecording)
                     Text(
@@ -58,7 +59,7 @@ class _ConfigDetailDialogState extends ConsumerState<ConfigDetailDialog> {
                 spacing: 2,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Divider(),
+                  const PgDivider(),
                   const Text('Audio options:'),
                   if (widget.config.isRecording)
                     Text(
@@ -74,7 +75,7 @@ class _ConfigDetailDialogState extends ConsumerState<ConfigDetailDialog> {
               spacing: 2,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Divider(),
+                const PgDivider(),
                 const Text('Device options:'),
                 if (widget.config.deviceOptions.stayAwake)
                   const Text('  - stay awake'),
@@ -92,7 +93,7 @@ class _ConfigDetailDialogState extends ConsumerState<ConfigDetailDialog> {
               spacing: 2,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Divider(),
+                const PgDivider(),
                 const Text('Window options:'),
                 if (widget.config.windowOptions.noWindow)
                   const Text('  - hide window'),
@@ -109,7 +110,7 @@ class _ConfigDetailDialogState extends ConsumerState<ConfigDetailDialog> {
               spacing: 2,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Divider(),
+                const PgDivider(),
                 const Text('Additional flags:'),
                 ...widget.config.additionalFlags
                     .split('--')

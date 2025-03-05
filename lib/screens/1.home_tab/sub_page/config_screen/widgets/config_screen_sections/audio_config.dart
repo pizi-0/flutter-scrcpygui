@@ -11,6 +11,7 @@ import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../../../../../providers/adb_provider.dart';
 import '../../../../../../providers/config_provider.dart';
 import '../../../../../../widgets/config_tiles.dart';
+import '../../../../../../widgets/custom_ui/pg_divider.dart';
 
 class AudioConfig extends ConsumerStatefulWidget {
   const AudioConfig({super.key});
@@ -48,13 +49,13 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
       children: [
         _buildAudioDuplicateOption(
             context, selectedConfig, selectedDevice!.info!),
-        const Divider(),
+        const PgDivider(),
         _buildAudioSourceSelector(
             context, selectedConfig, selectedDevice.info!),
-        const Divider(),
+        const PgDivider(),
         _buildAudioFormatSelector(
             context, selectedConfig, selectedDevice.info!),
-        const Divider(),
+        const PgDivider(),
         _buildAudioBitrate(context),
       ],
     );
@@ -159,7 +160,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
           ),
         if (selectedConfig.isRecording &&
             selectedConfig.scrcpyMode == ScrcpyMode.audioOnly)
-          const Divider(),
+          const PgDivider(),
         ConfigDropdownOthers(
           initialValue: selectedConfig.audioOptions.audioCodec,
           showinfo: showInfo || _isRecordingAudioOnly(selectedConfig),
@@ -187,7 +188,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
                   : el.audioSection.codec.info
                       .alt(codec: selectedConfig.audioOptions.audioCodec),
         ),
-        const Divider(),
+        const PgDivider(),
         ConfigDropdownOthers(
           showinfo: showInfo,
           popupWidthConstraint: PopoverConstraint.intrinsic,
