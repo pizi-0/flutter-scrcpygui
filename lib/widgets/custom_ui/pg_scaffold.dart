@@ -22,8 +22,6 @@ class PgScaffold extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       loadingProgressIndeterminate: showLoading,
       headers: [
@@ -40,8 +38,8 @@ class PgScaffold extends ConsumerWidget {
             ],
             trailing: appBarTrailing,
             padding: const EdgeInsets.all(8),
-            title: Text(title).xLarge(),
-            backgroundColor: theme.colorScheme.muted,
+            title: Text(title).xLarge().bold().underline(),
+            // backgroundColor: theme.colorScheme.muted,
           ),
         )
       ],
