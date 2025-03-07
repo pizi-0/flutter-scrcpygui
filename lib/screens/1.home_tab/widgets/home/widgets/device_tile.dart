@@ -59,6 +59,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
         leading: const Icon(Icons.close_rounded),
         trailing: const Icon(Icons.chevron_right_rounded),
         subMenu: [
+          MenuLabel(child: const Text('Instances').xSmall().muted()),
           ...deviceInstance.map(
             (inst) => MenuButton(
               child: Text(inst.instanceName),
@@ -66,6 +67,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
             ),
           ),
           const MenuDivider(),
+          MenuLabel(child: const Text('All').xSmall().muted()),
           MenuButton(
             onPressed: (context) => _killRunning(deviceInstance),
             child: Text(el.deviceTileLoc.context.allInstances),
@@ -103,7 +105,8 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                     isWireless ? const Icon(Icons.wifi) : const Icon(Icons.usb),
                 title: widget.device.name ?? widget.device.modelName,
                 titleBadge: hasRunningInstance
-                    ? 'Running (${deviceInstance.length})'
+                    ? el.deviceTileLoc
+                        .runningInstances(count: '${deviceInstance.length}')
                     : null,
                 subtitle: widget.device.id,
                 showSubtitle: true,
