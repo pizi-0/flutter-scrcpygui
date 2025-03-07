@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_single_instance/flutter_single_instance.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
 import 'package:localization/localization.dart';
@@ -15,6 +18,7 @@ import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/dev
 import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
 import 'package:scrcpygui/screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
 import 'package:scrcpygui/screens/4.settings_tab/settings_tab.dart';
+import 'package:scrcpygui/utils/const.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -31,18 +35,45 @@ void main() async {
     titleBarStyle: TitleBarStyle.hidden,
     windowButtonVisibility: true,
   );
-  windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.show();
-    await windowManager.focus();
-  });
 
-  Db.getAppSettings().then((settings) {
-    runApp(
-      ProviderScope(
-        child: MyApp(settings: settings),
-      ),
-    );
-  });
+  if (Platform.isWindows) {
+    if (await FlutterSingleInstance().isFirstInstance()) {
+      windowManager.waitUntilReadyToShow(windowOptions, () async {
+        await windowManager.show();
+        await windowManager.focus();
+      });
+
+      Db.getAppSettings().then((settings) {
+        runApp(
+          ProviderScope(
+            child: MyApp(settings: settings),
+          ),
+        );
+      });
+    } else {
+      logger.i('App is already running');
+
+      final err = await FlutterSingleInstance().focus();
+
+      if (err != null) {
+        logger.i('Error focusing window: $err');
+      }
+      exit(0);
+    }
+  } else {
+    windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+    });
+
+    Db.getAppSettings().then((settings) {
+      runApp(
+        ProviderScope(
+          child: MyApp(settings: settings),
+        ),
+      );
+    });
+  }
 }
 
 class MyApp extends ConsumerStatefulWidget {
