@@ -112,13 +112,12 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                 title: el.deviceSettingsLoc.autoConnect.label,
                 subtitle: el.deviceSettingsLoc.autoConnect.info,
                 showinfo: showInfo,
-                child: Center(
-                  child: Checkbox(
-                    state: autoConnect
-                        ? CheckboxState.checked
-                        : CheckboxState.unchecked,
-                    onChanged: _onAutoConnectToggled,
-                  ),
+                childExpand: false,
+                child: Checkbox(
+                  state: autoConnect
+                      ? CheckboxState.checked
+                      : CheckboxState.unchecked,
+                  onChanged: _onAutoConnectToggled,
                 ),
               ),
             const Divider(),
@@ -175,7 +174,6 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                   Accordion(
                     items: [
                       AccordionItem(
-                        expanded: true,
                         trigger: AccordionTrigger(
                           child:
                               Text('Displays (${dev.info!.displays.length})'),
@@ -205,7 +203,6 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                         content: Accordion(
                           items: dev.info!.videoEncoders
                               .map((c) => AccordionItem(
-                                    expanded: true,
                                     trigger: AccordionTrigger(
                                       child: Text(c.codec).li(),
                                     ),
