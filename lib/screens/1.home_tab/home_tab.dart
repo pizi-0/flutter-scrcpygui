@@ -141,8 +141,10 @@ class ConfigListState extends ConsumerState<ConfigList> {
           ),
         ),
         PrimaryButton(
-          onPressed: _start,
-          child: Text(el.configLoc.start),
+          onPressed: loading ? null : _start,
+          child: loading
+              ? const CircularProgressIndicator().iconLarge()
+              : Text(el.configLoc.start),
         )
       ],
     );
