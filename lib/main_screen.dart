@@ -107,7 +107,6 @@ class _MainScreenState extends ConsumerState<MainScreen>
   Widget build(BuildContext context) {
     super.build(context);
     ref.watch(pollAdbProvider);
-    final currentPage = ref.watch(mainScreenPage);
 
     return Focus(
       focusNode: node,
@@ -117,8 +116,10 @@ class _MainScreenState extends ConsumerState<MainScreen>
           builder: (context, sizingInformation) {
             switch (sizingInformation.deviceScreenType) {
               case DeviceScreenType.desktop:
-                return NavigationShellLarge(
-                    currentPage: widget.children[currentPage]);
+                return NavigationShellLarge(children: widget.children);
+
+              case DeviceScreenType.tablet:
+                return NavigationShellLarge(children: widget.children);
 
               default:
                 return NavigationShellSmall(children: widget.children);
