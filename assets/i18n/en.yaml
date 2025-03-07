@@ -11,7 +11,9 @@ device_tile_loc:
     disconnect: Disconnect
     to_wireless: To wireless
     kill_running: Kill running instances
-    all_instances: All instances
+    instances: Instances
+    all: All
+    all_instances: Kill all instances
     manage: Manage
     
 
