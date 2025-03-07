@@ -5,7 +5,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 class PgScaffold extends ConsumerWidget {
   final List<Widget> children;
   final List<Widget> footers;
-  final List<Widget> appBarTrailing;
+  final List<Widget>? appBarTrailing;
   final bool showLoading;
   final Function()? onBack;
 
@@ -15,13 +15,14 @@ class PgScaffold extends ConsumerWidget {
     required this.children,
     required this.title,
     this.footers = const [],
-    this.appBarTrailing = const [],
+    this.appBarTrailing,
     this.onBack,
     this.showLoading = false,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     return Scaffold(
       loadingProgressIndeterminate: showLoading,
       headers: [
@@ -30,15 +31,31 @@ class PgScaffold extends ConsumerWidget {
               maxHeight: kToolbarHeight + 5, minHeight: kToolbarHeight + 5),
           child: AppBar(
             leading: [
-              if (onBack != null)
-                IconButton.ghost(
-                  onPressed: onBack,
-                  icon: const Icon(Icons.arrow_back),
-                ),
+              IconButton.ghost(
+                onPressed: onBack,
+                icon: Icon(Icons.arrow_back,
+                    color:
+                        onBack == null ? theme.colorScheme.background : null),
+              ),
             ],
-            trailing: appBarTrailing,
+            trailing: appBarTrailing ??
+                [
+                  IconButton.ghost(
+                    onPressed: null,
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Theme.of(context).colorScheme.background,
+                    ),
+                  ),
+                ],
             padding: const EdgeInsets.all(8),
-            title: Text(title).xLarge().bold().underline(),
+            title: Row(
+              children: [
+                Expanded(
+                    child:
+                        Center(child: Text(title).xLarge().bold().underline())),
+              ],
+            ),
             // backgroundColor: theme.colorScheme.muted,
           ),
         )
