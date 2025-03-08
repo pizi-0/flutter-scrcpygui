@@ -23,6 +23,19 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
       label: el.deviceSection.title,
       children: [
         ConfigCustom(
+          onPressed: selectedConfig.windowOptions.noWindow
+              ? null
+              : () {
+                  ref.read(configScreenConfig.notifier).update((state) {
+                    final stayAwake = state!.deviceOptions.stayAwake;
+
+                    return state.copyWith(
+                      deviceOptions: state.deviceOptions.copyWith(
+                        stayAwake: !stayAwake,
+                      ),
+                    );
+                  });
+                },
           childBackgroundColor: Colors.transparent,
           title: el.deviceSection.stayAwake.label,
           showinfo: showInfo,
@@ -44,6 +57,19 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
         ),
         const Divider(),
         ConfigCustom(
+          onPressed: selectedConfig.windowOptions.noWindow
+              ? null
+              : () {
+                  ref.read(configScreenConfig.notifier).update((state) {
+                    final showTouches = state!.deviceOptions.showTouches;
+
+                    return state.copyWith(
+                      deviceOptions: state.deviceOptions.copyWith(
+                        showTouches: !showTouches,
+                      ),
+                    );
+                  });
+                },
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
@@ -68,6 +94,19 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
         ),
         const Divider(),
         ConfigCustom(
+          onPressed: selectedConfig.windowOptions.noWindow
+              ? null
+              : () {
+                  ref.read(configScreenConfig.notifier).update((state) {
+                    final turnOffDisplay = state!.deviceOptions.turnOffDisplay;
+
+                    return state.copyWith(
+                      deviceOptions: state.deviceOptions.copyWith(
+                        turnOffDisplay: !turnOffDisplay,
+                      ),
+                    );
+                  });
+                },
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
@@ -92,6 +131,20 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
         ),
         const Divider(),
         ConfigCustom(
+          onPressed: selectedConfig.windowOptions.noWindow
+              ? null
+              : () {
+                  ref.read(configScreenConfig.notifier).update((state) {
+                    final offScreenOnClose =
+                        state!.deviceOptions.offScreenOnClose;
+
+                    return state.copyWith(
+                      deviceOptions: state.deviceOptions.copyWith(
+                        offScreenOnClose: !offScreenOnClose,
+                      ),
+                    );
+                  });
+                },
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
@@ -117,6 +170,17 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
         ),
         const Divider(),
         ConfigCustom(
+          onPressed: () {
+            ref.read(configScreenConfig.notifier).update((state) {
+              final noScreensaver = state!.deviceOptions.noScreensaver;
+
+              return state.copyWith(
+                deviceOptions: state.deviceOptions.copyWith(
+                  noScreensaver: !noScreensaver,
+                ),
+              );
+            });
+          },
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,

@@ -39,6 +39,17 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
       label: el.windowSection.title,
       children: [
         ConfigCustom(
+          onPressed: () {
+            ref.read(configScreenConfig.notifier).update((state) {
+              final noWindow = state!.windowOptions.noWindow;
+
+              return state.copyWith(
+                windowOptions: state.windowOptions.copyWith(
+                  noWindow: !noWindow,
+                ),
+              );
+            });
+          },
           childBackgroundColor: Colors.transparent,
           childExpand: false,
           title: el.windowSection.hideWindow.label,
@@ -75,6 +86,17 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
         ),
         const Divider(),
         ConfigCustom(
+          onPressed: () {
+            ref.read(configScreenConfig.notifier).update((state) {
+              final noBorder = state!.windowOptions.noBorder;
+
+              return state.copyWith(
+                windowOptions: state.windowOptions.copyWith(
+                  noBorder: !noBorder,
+                ),
+              );
+            });
+          },
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
@@ -99,6 +121,17 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
         ),
         const Divider(),
         ConfigCustom(
+          onPressed: () {
+            ref.read(configScreenConfig.notifier).update((state) {
+              final alwaysOntop = state!.windowOptions.alwaysOntop;
+
+              return state.copyWith(
+                windowOptions: state.windowOptions.copyWith(
+                  alwaysOntop: !alwaysOntop,
+                ),
+              );
+            });
+          },
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,

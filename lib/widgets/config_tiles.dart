@@ -174,6 +174,7 @@ class ConfigCustom extends ConsumerWidget {
   final Color? childBackgroundColor;
   final double? padRight;
   final bool showinfo;
+  final Function()? onPressed;
 
   const ConfigCustom({
     super.key,
@@ -185,27 +186,38 @@ class ConfigCustom extends ConsumerWidget {
     this.boxConstraints,
     this.childBackgroundColor,
     this.padRight,
+    this.onPressed,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PgListTile(
-      title: title,
-      trailingConstraints: const BoxConstraints(maxWidth: 180, minHeight: 30),
-      trailing: child != null
-          ? Padding(
-              padding: EdgeInsets.only(right: padRight ?? 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (!childExpand) child!,
-                  if (childExpand) Expanded(child: child!)
-                ],
-              ),
-            )
-          : null,
-      subtitle: subtitle,
-      showSubtitle: subtitle != null && showinfo,
+    return MouseRegion(
+      cursor: onPressed == null ? MouseCursor.defer : SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onPressed,
+        child: Container(
+          color: Colors.transparent,
+          child: PgListTile(
+            title: title,
+            trailingConstraints:
+                const BoxConstraints(maxWidth: 180, minHeight: 30),
+            trailing: child != null
+                ? Padding(
+                    padding: EdgeInsets.only(right: padRight ?? 0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (!childExpand) child!,
+                        if (childExpand) Expanded(child: child!)
+                      ],
+                    ),
+                  )
+                : null,
+            subtitle: subtitle,
+            showSubtitle: subtitle != null && showinfo,
+          ),
+        ),
+      ),
     );
   }
 }
