@@ -74,6 +74,8 @@ class NavigationShellSmallState extends ConsumerState<NavigationShellSmall> {
   @override
   Widget build(BuildContext context) {
     final currentIndex = ref.watch(mainScreenPage);
+    final expanded = ref.watch(appSideBarStateProvider);
+
     return Scaffold(
       headers: [
         AppBar(
@@ -105,9 +107,19 @@ class NavigationShellSmallState extends ConsumerState<NavigationShellSmall> {
               ),
             ],
           ),
-          const Align(
+          Align(
             alignment: Alignment.centerLeft,
-            child: AppSideBar(),
+            child: Row(
+              children: [
+                const AppSideBar(),
+                if (expanded)
+                  Expanded(
+                    child: Container(
+                      color: Colors.black.withAlpha(50),
+                    ),
+                  )
+              ],
+            ),
           ),
         ],
       ),
