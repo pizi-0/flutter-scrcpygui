@@ -2,7 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class LogScreen extends ConsumerStatefulWidget {
@@ -41,21 +45,17 @@ class _LogScreenState extends ConsumerState<LogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      child: SizedBox.expand(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: logs.map((l) => Text(l)).toList(),
-              ),
-            ),
-          ),
-        ),
-      ),
+    final width = MediaQuery.sizeOf(context).width;
+    return PgScaffold(
+      title: el.logScreenLoc.title,
+      wrap: false,
+      onBack: () => context.pop(),
+      children: [
+        PgSectionCard(
+          constraints: BoxConstraints(maxWidth: width),
+          children: logs.map((l) => Text(l.trim())).toList(),
+        )
+      ],
     );
   }
 }

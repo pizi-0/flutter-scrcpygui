@@ -45,36 +45,34 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
             );
 
             showToast(
-                context: context,
-                builder: (context, close) => SurfaceCard(
-                      child: ((res as bool?) == null)
-                          ? Basic(
-                              title:
-                                  Text(el.connectLoc.qrPair.status.cancelled),
-                              trailing: const Icon(
-                                Icons.cancel,
-                                color: Colors.amber,
-                              ),
-                            )
-                          : (res as bool)
-                              ? Basic(
-                                  title:
-                                      Text(el.connectLoc.qrPair.status.success),
-                                  trailing: const Icon(
-                                    Icons.check,
-                                    color: Colors.green,
-                                  ),
-                                )
-                              : Basic(
-                                  title:
-                                      Text(el.connectLoc.qrPair.status.failed),
-                                  trailing: const Icon(
-                                    Icons.cancel,
-                                    color: Colors.red,
-                                  ),
-                                ),
-                    ),
-                location: ToastLocation.bottomCenter);
+              context: context,
+              builder: (context, close) => SurfaceCard(
+                child: ((res as bool?) == null)
+                    ? Basic(
+                        title: Text(el.connectLoc.qrPair.status.cancelled),
+                        trailing: const Icon(
+                          Icons.cancel,
+                          color: Colors.amber,
+                        ),
+                      )
+                    : (res as bool)
+                        ? Basic(
+                            title: Text(el.connectLoc.qrPair.status.success),
+                            trailing: const Icon(
+                              Icons.check,
+                              color: Colors.green,
+                            ),
+                          )
+                        : Basic(
+                            title: Text(el.connectLoc.qrPair.status.failed),
+                            trailing: const Icon(
+                              Icons.cancel,
+                              color: Colors.red,
+                            ),
+                          ),
+              ),
+              location: ToastLocation.bottomCenter,
+            );
           },
         ),
       ],

@@ -4,18 +4,20 @@ import 'package:scrcpygui/utils/const.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class PgSectionCard extends ConsumerWidget {
-  final String label;
+  final String? label;
   final Widget? labelTrail;
   final EdgeInsetsGeometry? cardPadding;
   final Color? borderColor;
   final List<Widget> children;
+  final BoxConstraints? constraints;
 
   const PgSectionCard(
       {super.key,
-      required this.label,
+      this.label,
       this.labelTrail,
       this.cardPadding,
       this.borderColor,
+      this.constraints = const BoxConstraints(maxWidth: appWidth),
       required this.children});
 
   @override
@@ -23,14 +25,15 @@ class PgSectionCard extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: appWidth),
+      constraints: constraints!,
       child: Column(
         spacing: 8,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Label(
-              trailing: labelTrail,
-              child: Text(label).paddingSymmetric(vertical: 8)),
+          if (label != null)
+            Label(
+                trailing: labelTrail,
+                child: Text(label!).paddingSymmetric(vertical: 8)),
           Card(
             padding: cardPadding,
             borderColor: borderColor,

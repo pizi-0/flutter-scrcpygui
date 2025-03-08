@@ -88,7 +88,10 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
       Row(
         children: [
           Expanded(
-            child: PrimaryButton(
+            child: Button(
+              style: !isTestRunning
+                  ? const ButtonStyle.primary()
+                  : const ButtonStyle.destructive(),
               onPressed: () async {
                 if (!isTestRunning) {
                   await ScrcpyUtils.newInstance(ref,
@@ -123,7 +126,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
               },
               child: !isTestRunning
                   ? Text(el.buttonLabelLoc.testConfig).bold()
-                  : Text(el.buttonLabelLoc.stop).textColor(Colors.white).bold(),
+                  : Text(el.buttonLabelLoc.stop).bold(),
             ),
           ),
         ],

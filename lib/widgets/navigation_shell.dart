@@ -14,115 +14,132 @@ import 'package:scrcpygui/widgets/title_bar_button.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
-class NavigationShellLarge extends ConsumerStatefulWidget {
+// class NavigationShellLarge extends ConsumerStatefulWidget {
+//   final List<Widget> children;
+//   const NavigationShellLarge({super.key, required this.children});
+
+//   @override
+//   ConsumerState<ConsumerStatefulWidget> createState() =>
+//       NavigationShellLargeState();
+// }
+
+// class NavigationShellLargeState extends ConsumerState<NavigationShellLarge> {
+//   @override
+//   Widget build(BuildContext context) {
+//     final currentIndex = ref.watch(mainScreenPage);
+
+//     return Scaffold(
+//       headers: [
+//         AppBar(
+//           leading: [
+//             Image.asset(
+//               'assets/logo.png',
+//               height: 20,
+//               width: 20,
+//             )
+//           ],
+//           title: const DragToMoveArea(
+//             child: Row(
+//               children: [Expanded(child: Text('Scrcpy GUI'))],
+//             ),
+//           ),
+//           trailing: const [TitleBarButton()],
+//         ),
+//       ],
+//       child: Row(
+//         children: [
+//           const AppSideBar(),
+//           Expanded(
+//             child: AnimatedBranchContainer(
+//               currentIndex: currentIndex,
+//               children: widget.children,
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+class NavigationShell extends ConsumerStatefulWidget {
   final List<Widget> children;
-  const NavigationShellLarge({super.key, required this.children});
+  const NavigationShell({super.key, required this.children});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      NavigationShellLargeState();
+  ConsumerState<ConsumerStatefulWidget> createState() => NavigationShellState();
 }
 
-class NavigationShellLargeState extends ConsumerState<NavigationShellLarge> {
-  @override
-  Widget build(BuildContext context) {
-    final currentIndex = ref.watch(mainScreenPage);
-
-    return Scaffold(
-      headers: [
-        AppBar(
-          leading: [
-            Image.asset(
-              'assets/logo.png',
-              height: 20,
-              width: 20,
-            )
-          ],
-          title: const DragToMoveArea(
-            child: Row(
-              children: [Expanded(child: Text('Scrcpy GUI'))],
-            ),
-          ),
-          trailing: const [TitleBarButton()],
-        ),
-      ],
-      child: Row(
-        children: [
-          const AppSideBar(),
-          Expanded(
-            child: AnimatedBranchContainer(
-              currentIndex: currentIndex,
-              children: widget.children,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class NavigationShellSmall extends ConsumerStatefulWidget {
-  final List<Widget> children;
-  const NavigationShellSmall({super.key, required this.children});
-
-  @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      NavigationShellSmallState();
-}
-
-class NavigationShellSmallState extends ConsumerState<NavigationShellSmall> {
+class NavigationShellState extends ConsumerState<NavigationShell> {
   @override
   Widget build(BuildContext context) {
     final currentIndex = ref.watch(mainScreenPage);
     final expanded = ref.watch(appSideBarStateProvider);
 
-    return Scaffold(
-      headers: [
-        AppBar(
-          leading: [
-            Image.asset(
-              'assets/logo.png',
-              height: 20,
-              width: 20,
-            )
-          ],
-          title: const DragToMoveArea(
-            child: Row(
-              children: [Expanded(child: Text('Scrcpy GUI'))],
-            ),
-          ),
-          trailing: const [TitleBarButton()],
-        ),
-      ],
-      child: Stack(
-        children: [
-          Row(
-            children: [
-              const SizedBox(width: 62),
-              Expanded(
-                child: AnimatedBranchContainer(
-                  currentIndex: currentIndex,
-                  children: widget.children,
+    return ResponsiveBuilder(
+      builder: (context, sizeInfo) {
+        return Scaffold(
+          headers: [
+            AppBar(
+              leading: [
+                Image.asset(
+                  'assets/logo.png',
+                  height: 20,
+                  width: 20,
+                )
+              ],
+              title: DragToMoveArea(
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Row(
+                        textBaseline: TextBaseline.alphabetic,
+                        crossAxisAlignment: CrossAxisAlignment.baseline,
+                        children: [
+                          const Text('Scrcpy GUI  ').small(),
+                          const Text('by pizi-0').fontSize(8).underline(),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
+              trailing: const [TitleBarButton()],
+            ),
+          ],
+          child: Stack(
+            children: [
+              Row(
+                children: [
+                  if (sizeInfo.isDesktop || sizeInfo.isTablet)
+                    const AppSideBar(),
+                  if (sizeInfo.isMobile) const Gap(62),
+                  Expanded(
+                    child: AnimatedBranchContainer(
+                      currentIndex: currentIndex,
+                      children: widget.children,
+                    ),
+                  ),
+                ],
+              ),
+              if (sizeInfo.isMobile)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    children: [
+                      const AppSideBar(),
+                      if (expanded)
+                        Expanded(
+                          child: Container(
+                            color: Colors.black.withAlpha(50),
+                          ),
+                        )
+                    ],
+                  ),
+                ),
             ],
           ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Row(
-              children: [
-                const AppSideBar(),
-                if (expanded)
-                  Expanded(
-                    child: Container(
-                      color: Colors.black.withAlpha(50),
-                    ),
-                  )
-              ],
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

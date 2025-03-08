@@ -29,15 +29,23 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
 
     return Column(
       spacing: 8,
-      children: bonsoirDevices
-          .mapIndexed((index, dev) => Column(
-                spacing: 8,
-                children: [
-                  BdTile(bonsoirDevice: dev),
-                  if (index != bonsoirDevices.length - 1) const Divider()
-                ],
-              ))
-          .toList(),
+      children: [
+        ...bonsoirDevices.mapIndexed((index, dev) => Column(
+              spacing: 8,
+              children: [
+                BdTile(bonsoirDevice: dev),
+                if (index != bonsoirDevices.length - 1) const Divider()
+              ],
+            )),
+        if (bonsoirDevices.isNotEmpty) const Divider(),
+        Label(
+          leading: const Icon(Icons.info).muted().iconSmall(),
+          child: const Text(
+                  'If your device is not showing, try turning Wireless ADB off and on.')
+              .muted()
+              .small(),
+        )
+      ],
     );
   }
 }

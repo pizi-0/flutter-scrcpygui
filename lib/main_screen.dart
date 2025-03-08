@@ -11,7 +11,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 import 'package:scrcpygui/widgets/navigation_shell.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:tray_manager/tray_manager.dart';
@@ -74,7 +73,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
     }
 
     if (eventName == kWindowEventResize) {
-      await windowManager.setMinimumSize(const Size(480, 500));
+      await windowManager.setMinimumSize(const Size(480, 580));
     }
 
     super.onWindowEvent(eventName);
@@ -112,20 +111,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
       focusNode: node,
       child: GestureDetector(
         onTap: node.requestFocus,
-        child: ResponsiveBuilder(
-          builder: (context, sizingInformation) {
-            switch (sizingInformation.deviceScreenType) {
-              case DeviceScreenType.desktop:
-                return NavigationShellLarge(children: widget.children);
-
-              case DeviceScreenType.tablet:
-                return NavigationShellLarge(children: widget.children);
-
-              default:
-                return NavigationShellSmall(children: widget.children);
-            }
-          },
-        ),
+        child: NavigationShell(children: widget.children),
       ),
     );
   }

@@ -7,6 +7,7 @@ class PgScaffold extends ConsumerWidget {
   final List<Widget> footers;
   final List<Widget>? appBarTrailing;
   final bool showLoading;
+  final bool wrap;
   final Function()? onBack;
 
   final String title;
@@ -18,6 +19,7 @@ class PgScaffold extends ConsumerWidget {
     this.appBarTrailing,
     this.onBack,
     this.showLoading = false,
+    this.wrap = true,
   });
 
   @override
@@ -68,12 +70,17 @@ class PgScaffold extends ConsumerWidget {
           : Padding(
               padding: const EdgeInsets.all(8.0),
               child: SingleChildScrollView(
-                child: Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 16,
-                  runSpacing: 16,
-                  children: children,
-                ),
+                child: wrap
+                    ? Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 16,
+                        runSpacing: 16,
+                        children: children,
+                      )
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: children,
+                      ),
               ),
             ),
     );
