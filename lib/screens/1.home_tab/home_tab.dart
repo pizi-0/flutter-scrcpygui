@@ -6,6 +6,7 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:scrcpygui/screens/1.home_tab/widgets/bottom_bar/widgets/config_combobox_item.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/device_tile.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
@@ -14,8 +15,12 @@ import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+import 'package:scrcpygui/widgets/custom_ui/pg_select.dart' as pg;
+
 import '../../db/db.dart';
 import '../../utils/const.dart';
+
+final configDropdownKey = GlobalKey<pg.SelectState>();
 
 class HomeTab extends ConsumerStatefulWidget {
   static const route = '/home';
@@ -123,7 +128,8 @@ class ConfigListState extends ConsumerState<ConfigList> {
       spacing: 8,
       children: [
         Expanded(
-          child: Select(
+          child: pg.Select(
+            key: configDropdownKey,
             onChanged: (value) =>
                 ref.read(selectedConfigProvider.notifier).state = value,
             filled: true,
@@ -133,7 +139,7 @@ class ConfigListState extends ConsumerState<ConfigList> {
               items: SelectItemList(
                 children: allConfigs
                     .map((conf) => SelectItemButton(
-                        value: conf, child: Text(conf.configName)))
+                        value: conf, child: ConfigDropDownItem(config: conf)))
                     .toList(),
               ),
             ).call,

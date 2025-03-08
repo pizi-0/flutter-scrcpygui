@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
 import 'package:scrcpygui/utils/directory_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -26,6 +27,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
       children: [
         IconButton(
           variance: ButtonVariance.ghost,
+          size: ButtonSize.small,
           icon: const Icon(Icons.info),
           onPressed: _onDetailPressed,
         ),
@@ -38,15 +40,20 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
         ),
         if (widget.config.isRecording)
           IconButton(
+            size: ButtonSize.small,
             variance: ButtonVariance.ghost,
             icon: const Icon(Icons.folder),
-            onPressed: () => DirectoryUtils.openFolder(widget.config.savePath!),
+            onPressed: () => {
+              configDropdownKey.currentState?.closePopup(),
+              DirectoryUtils.openFolder(widget.config.savePath!)
+            },
           ),
         if (widget.config.isRecording &&
             !defaultConfigs.contains(widget.config))
           const VerticalDivider(),
         if (!defaultConfigs.contains(widget.config))
           IconButton(
+            size: ButtonSize.small,
             variance: ButtonVariance.ghost,
             icon: const Icon(Icons.edit),
             onPressed: () => _onEditPressed(widget.config),
@@ -54,6 +61,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
         if (!defaultConfigs.contains(widget.config)) const VerticalDivider(),
         if (!defaultConfigs.contains(widget.config))
           IconButton(
+            size: ButtonSize.small,
             variance: ButtonVariance.ghost,
             icon: const Icon(Icons.delete),
             onPressed: _onRemoveConfigPressed,
@@ -63,6 +71,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
   }
 
   _onDetailPressed() {
+    configDropdownKey.currentState?.closePopup();
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -71,6 +80,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
   }
 
   _onRemoveConfigPressed() async {
+    configDropdownKey.currentState?.closePopup();
     await showDialog(
       context: context,
       barrierDismissible: true,
@@ -80,6 +90,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
 
   _onEditPressed(ScrcpyConfig config) {
     ref.read(selectedConfigProvider.notifier).state = config;
+    configDropdownKey.currentState?.closePopup();
 
     if (ref.read(selectedDeviceProvider) == null) {
       showDialog(
@@ -101,7 +112,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
       );
     } else {
       ref.read(configScreenConfig.notifier).state = config;
-      context.push('/config-settings');
+      context.push('/home/config-settings');
     }
   }
 }
