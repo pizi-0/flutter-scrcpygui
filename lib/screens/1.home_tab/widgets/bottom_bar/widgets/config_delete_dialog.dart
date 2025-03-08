@@ -23,7 +23,10 @@ class _ConfigDeleteDialogState extends ConsumerState<ConfigDeleteDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text('Confirm'),
-      content: Text('Delete ${widget.config.configName}?'),
+      content: ConstrainedBox(
+          constraints:
+              const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
+          child: Text('Delete ${widget.config.configName}?')),
       actions: [
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
