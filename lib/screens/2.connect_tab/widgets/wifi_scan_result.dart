@@ -69,7 +69,7 @@ class _BdTileState extends ConsumerState<BdTile> {
 
     bool connected =
         connectedDevices.where((e) => e.id.contains(bd.name)).isNotEmpty;
-    return OutlineButton(
+    return GhostButton(
       onPressed: () async => await _connectMdns(bd),
       child: PgListTile(
         title: '${bd.name} ${isSaved ? '[${device!.name!}]' : ''}',

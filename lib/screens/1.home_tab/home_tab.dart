@@ -59,8 +59,8 @@ class _HomeTabState extends ConsumerState<HomeTab> {
           ],
           children: [
             PgSectionCard(
-              cardPadding: EdgeInsets.zero,
-              borderColor: Colors.transparent,
+              cardPadding: const EdgeInsets.all(8),
+              // borderColor: Colors.transparent,
               label: el.homeLoc.devices.label(count: '${connected.length}'),
               children: connected
                   .mapIndexed(

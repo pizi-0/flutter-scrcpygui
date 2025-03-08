@@ -96,7 +96,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
         children: [
           ContextMenu(
             items: contextMenu,
-            child: OutlineButton(
+            child: GhostButton(
               onPressed: () => ref.read(selectedDeviceProvider.notifier).state =
                   widget.device,
               child: PgListTile(

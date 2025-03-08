@@ -86,8 +86,7 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
           ],
         ),
         PgSectionCard(
-          cardPadding: EdgeInsets.zero,
-          borderColor: Colors.transparent,
+          cardPadding: const EdgeInsets.all(8),
           label:
               el.connectLoc.withMdns.label(count: '${bonsoirDevices.length}'),
           labelTrail: const CircularProgressIndicator(),

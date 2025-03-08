@@ -45,9 +45,14 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
 
         showToast(
           context: context,
-          builder: (context, overlay) => Basic(
+          builder: (context, overlay) => SurfaceCard(
+              child: Basic(
             title: Text(el.scrcpyManagerLoc.infoPopup.error),
-          ),
+            trailing: const Icon(
+              Icons.error_outline_rounded,
+              color: Colors.red,
+            ),
+          )),
         );
       }
     });
@@ -66,8 +71,14 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
           context: context,
           location: ToastLocation.bottomCenter,
           builder: (context, overlay) => SurfaceCard(
-              child:
-                  Basic(title: Text(el.scrcpyManagerLoc.infoPopup.noUpdate))),
+            child: Basic(
+              title: Text(el.scrcpyManagerLoc.infoPopup.noUpdate),
+              trailing: const Icon(
+                Icons.check_circle_outline,
+                color: Colors.lime,
+              ),
+            ),
+          ),
         );
       }
     } else {
@@ -75,7 +86,13 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
         context: context,
         location: ToastLocation.bottomCenter,
         builder: (context, overlay) => SurfaceCard(
-            child: Basic(title: Text(el.scrcpyManagerLoc.infoPopup.error))),
+            child: Basic(
+          title: Text(el.scrcpyManagerLoc.infoPopup.error),
+          trailing: const Icon(
+            Icons.error_outline_rounded,
+            color: Colors.red,
+          ),
+        )),
       );
     }
 
@@ -99,7 +116,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
           icon: Padding(
             padding: const EdgeInsets.all(3.0),
             child: checkingForUpdate
-                ? const CircularProgressIndicator()
+                ? const CircularProgressIndicator(size: 20)
                 : const Icon(Icons.refresh),
           ),
           onPressed: () async {
