@@ -139,7 +139,9 @@ class ConfigListState extends ConsumerState<ConfigList> {
               items: SelectItemList(
                 children: allConfigs
                     .map((conf) => SelectItemButton(
-                        value: conf, child: ConfigDropDownItem(config: conf)))
+                        value: conf,
+                        child: IntrinsicHeight(
+                            child: ConfigDropDownItem(config: conf))))
                     .toList(),
               ),
             ).call,
