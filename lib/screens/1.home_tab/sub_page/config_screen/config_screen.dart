@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
-import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
@@ -150,28 +149,5 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
   _onFocusLost() {
     namecontroller.text = ref.read(configScreenConfig)!.configName;
     setState(() {});
-  }
-
-  List<Widget> sectionList(ScrcpyConfig selectedConfig) {
-    return [
-      const SizedBox(width: appWidth, child: ModeConfig()),
-      if (selectedConfig.scrcpyMode != ScrcpyMode.audioOnly)
-        const SizedBox(width: appWidth, child: VideoConfig()),
-      if (selectedConfig.scrcpyMode != ScrcpyMode.videoOnly)
-        const SizedBox(width: appWidth, child: AudioConfig()),
-      const SizedBox(width: appWidth, child: DeviceConfig()),
-      const SizedBox(width: appWidth, child: WindowConfig()),
-      const SizedBox(width: appWidth, child: AdditionalFlagsConfig()),
-      const SizedBox(
-          width: appWidth,
-          child: Column(
-            children: [
-              SizedBox(height: 30),
-              Divider(),
-              PreviewAndTest(),
-              SizedBox(height: 30),
-            ],
-          )),
-    ];
   }
 }
