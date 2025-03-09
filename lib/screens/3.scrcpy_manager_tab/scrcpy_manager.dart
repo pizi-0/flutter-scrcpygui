@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
@@ -46,6 +47,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
         debugPrint(e.toString());
 
         showToast(
+          showDuration: 1.5.seconds,
           context: context,
           builder: (context, overlay) => SurfaceCard(
               child: Basic(
@@ -70,6 +72,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
       latest = res;
       if (res == ref.read(scrcpyVersionProvider)) {
         showToast(
+          showDuration: 1.5.seconds,
           context: context,
           location: ToastLocation.bottomCenter,
           builder: (context, overlay) => SurfaceCard(
@@ -85,6 +88,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
       }
     } else {
       showToast(
+        showDuration: 1.5.seconds,
         context: context,
         location: ToastLocation.bottomCenter,
         builder: (context, overlay) => SurfaceCard(

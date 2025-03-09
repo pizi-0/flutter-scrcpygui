@@ -185,6 +185,7 @@ class _CopyButtonState extends State<CopyButton> {
         await Clipboard.setData(data);
         _startTimer();
         showToast(
+          showDuration: 1.5.seconds,
           context: context,
           location: ToastLocation.bottomCenter,
           builder: (context, close) => SurfaceCard(

@@ -50,7 +50,7 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
             children: [
               Row(
                 children: [
-                  Text(el.connectLoc.withMdns.info.i1).muted().small(),
+                  Text(el.connectLoc.withMdns.info.i1).muted().xSmall(),
                   LinkButton(
                     density: ButtonDensity.dense,
                     onPressed: () => showDialog(
@@ -61,7 +61,7 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
                   )
                 ],
               ),
-              Text(el.connectLoc.withMdns.info.i2).muted().small(),
+              Text(el.connectLoc.withMdns.info.i2).muted().xSmall(),
             ],
           ),
         )

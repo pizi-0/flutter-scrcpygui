@@ -168,6 +168,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
     } on Exception catch (e) {
       debugPrint(e.toString());
       showToast(
+          showDuration: 1.5.seconds,
           context: context,
           builder: (context, overlay) => Text(el.statusLoc.failed));
     }
@@ -189,6 +190,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
     } on Exception catch (e) {
       debugPrint(e.toString());
       showToast(
+          showDuration: 1.5.seconds,
           context: context,
           builder: (context, overlay) => Text(el.statusLoc.failed));
     }

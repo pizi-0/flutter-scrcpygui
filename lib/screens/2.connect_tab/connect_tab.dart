@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 
@@ -46,6 +47,7 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
 
             showToast(
               context: context,
+              showDuration: 1.5.seconds,
               builder: (context, close) => SurfaceCard(
                 child: ((res as bool?) == null)
                     ? Basic(

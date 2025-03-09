@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -76,6 +77,7 @@ class _IPConnectState extends ConsumerState<IPConnect>
 
         await Db.saveWirelessHistory(ref.read(ipHistoryProvider));
         showToast(
+          showDuration: 1.5.seconds,
           context: context,
           builder: (context, overlay) => Basic(
             title: Text(el.connectLoc.withIp.connected(to: ipInput.text)),
