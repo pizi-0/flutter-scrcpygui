@@ -176,6 +176,8 @@ class DeviceTileLocContext {
     required this.disconnect,
     required this.toWireless,
     required this.killRunning,
+    required this.instances,
+    required this.all,
     required this.allInstances,
     required this.manage,
   });
@@ -184,6 +186,8 @@ class DeviceTileLocContext {
       disconnect: (json['disconnect'] ?? '').toString(),
       toWireless: (json['to_wireless'] ?? '').toString(),
       killRunning: (json['kill_running'] ?? '').toString(),
+      instances: (json['instances'] ?? '').toString(),
+      all: (json['all'] ?? '').toString(),
       allInstances: (json['all_instances'] ?? '').toString(),
       manage: (json['manage'] ?? '').toString(),
     );
@@ -191,12 +195,16 @@ class DeviceTileLocContext {
   final String disconnect;
   final String toWireless;
   final String killRunning;
+  final String instances;
+  final String all;
   final String allInstances;
   final String manage;
   Map<String, Object> get _content => {
         r'''disconnect''': disconnect,
         r'''to_wireless''': toWireless,
         r'''kill_running''': killRunning,
+        r'''instances''': instances,
+        r'''all''': all,
         r'''all_instances''': allInstances,
         r'''manage''': manage,
       };
@@ -612,26 +620,58 @@ class DeviceSettingsLocScrcpyInfo {
     return DeviceSettingsLocScrcpyInfo(
       fetching: (json['fetching'] ?? '').toString(),
       label: (json['label'] ?? '').toString(),
-      name: (json['name'] ?? '').toString(),
-      id: (json['id'] ?? '').toString(),
-      model: (json['model'] ?? '').toString(),
-      version: (json['version'] ?? '').toString(),
-      displays: (json['displays'] ?? '').toString(),
-      cameras: (json['cameras'] ?? '').toString(),
-      videoEnc: (json['video_enc'] ?? '').toString(),
-      audioEnc: (json['audio_enc'] ?? '').toString(),
+      name: ({required String name}) => (json['name'] ?? '')
+          .toString()
+          .replaceAll(r'${name}', name)
+          .replaceAll(_variableRegExp, ''),
+      id: ({required String id}) => (json['id'] ?? '')
+          .toString()
+          .replaceAll(r'${id}', id)
+          .replaceAll(_variableRegExp, ''),
+      model: ({required String model}) => (json['model'] ?? '')
+          .toString()
+          .replaceAll(r'${model}', model)
+          .replaceAll(_variableRegExp, ''),
+      version: ({required String version}) => (json['version'] ?? '')
+          .toString()
+          .replaceAll(r'${version}', version)
+          .replaceAll(_variableRegExp, ''),
+      displays: ({required String count}) => (json['displays'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
+      cameras: ({required String count}) => (json['cameras'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
+      videoEnc: ({required String count}) => (json['video_enc'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
+      audioEnc: ({required String count}) => (json['audio_enc'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String fetching;
   final String label;
-  final String name;
-  final String id;
-  final String model;
-  final String version;
-  final String displays;
-  final String cameras;
-  final String videoEnc;
-  final String audioEnc;
+  final String Function({required String name}) name;
+
+  final String Function({required String id}) id;
+
+  final String Function({required String model}) model;
+
+  final String Function({required String version}) version;
+
+  final String Function({required String count}) displays;
+
+  final String Function({required String count}) cameras;
+
+  final String Function({required String count}) videoEnc;
+
+  final String Function({required String count}) audioEnc;
+
   Map<String, Object> get _content => {
         r'''fetching''': fetching,
         r'''label''': label,
@@ -3543,6 +3583,8 @@ class ConnectLoc {
     required this.withIp,
     required this.withMdns,
     required this.qrPair,
+    required this.unauthenticated,
+    required this.failed,
   });
   factory ConnectLoc.fromJson(Map<String, dynamic> json) {
     return ConnectLoc(
@@ -3553,6 +3595,10 @@ class ConnectLoc {
           (json['with_mdns'] as Map).cast<String, dynamic>()),
       qrPair: ConnectLocQrPair.fromJson(
           (json['qr_pair'] as Map).cast<String, dynamic>()),
+      unauthenticated: ConnectLocUnauthenticated.fromJson(
+          (json['unauthenticated'] as Map).cast<String, dynamic>()),
+      failed: ConnectLocFailed.fromJson(
+          (json['failed'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
@@ -3562,11 +3608,17 @@ class ConnectLoc {
 
   final ConnectLocQrPair qrPair;
 
+  final ConnectLocUnauthenticated unauthenticated;
+
+  final ConnectLocFailed failed;
+
   Map<String, Object> get _content => {
         r'''title''': title,
         r'''with_ip''': withIp,
         r'''with_mdns''': withMdns,
         r'''qr_pair''': qrPair,
+        r'''unauthenticated''': unauthenticated,
+        r'''failed''': failed,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -3652,6 +3704,7 @@ class ConnectLocWithIp {
 class ConnectLocWithMdns {
   const ConnectLocWithMdns({
     required this.label,
+    required this.info,
   });
   factory ConnectLocWithMdns.fromJson(Map<String, dynamic> json) {
     return ConnectLocWithMdns(
@@ -3659,12 +3712,62 @@ class ConnectLocWithMdns {
           .toString()
           .replaceAll(r'${count}', count)
           .replaceAll(_variableRegExp, ''),
+      info: ConnectLocWithMdnsInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String Function({required String count}) label;
 
+  final ConnectLocWithMdnsInfo info;
+
   Map<String, Object> get _content => {
         r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ConnectLocWithMdnsInfo {
+  const ConnectLocWithMdnsInfo({
+    required this.i1,
+    required this.i2,
+  });
+  factory ConnectLocWithMdnsInfo.fromJson(Map<String, dynamic> json) {
+    return ConnectLocWithMdnsInfo(
+      i1: (json['i1'] ?? '').toString(),
+      i2: (json['i2'] ?? '').toString(),
+    );
+  }
+  final String i1;
+  final String i2;
+  Map<String, Object> get _content => {
+        r'''i1''': i1,
+        r'''i2''': i2,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -3765,6 +3868,194 @@ class ConnectLocQrPairStatus {
         r'''cancelled''': cancelled,
         r'''success''': success,
         r'''failed''': failed,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ConnectLocUnauthenticated {
+  const ConnectLocUnauthenticated({
+    required this.info,
+  });
+  factory ConnectLocUnauthenticated.fromJson(Map<String, dynamic> json) {
+    return ConnectLocUnauthenticated(
+      info: ConnectLocUnauthenticatedInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final ConnectLocUnauthenticatedInfo info;
+
+  Map<String, Object> get _content => {
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ConnectLocUnauthenticatedInfo {
+  const ConnectLocUnauthenticatedInfo({
+    required this.i1,
+    required this.i2,
+  });
+  factory ConnectLocUnauthenticatedInfo.fromJson(Map<String, dynamic> json) {
+    return ConnectLocUnauthenticatedInfo(
+      i1: (json['i1'] ?? '').toString(),
+      i2: (json['i2'] ?? '').toString(),
+    );
+  }
+  final String i1;
+  final String i2;
+  Map<String, Object> get _content => {
+        r'''i1''': i1,
+        r'''i2''': i2,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ConnectLocFailed {
+  const ConnectLocFailed({
+    required this.info,
+  });
+  factory ConnectLocFailed.fromJson(Map<String, dynamic> json) {
+    return ConnectLocFailed(
+      info: ConnectLocFailedInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final ConnectLocFailedInfo info;
+
+  Map<String, Object> get _content => {
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ConnectLocFailedInfo {
+  const ConnectLocFailedInfo({
+    required this.i1,
+    required this.i2,
+    required this.i3,
+    required this.i4,
+    required this.i5,
+  });
+  factory ConnectLocFailedInfo.fromJson(Map<String, dynamic> json) {
+    return ConnectLocFailedInfo(
+      i1: (json['i1'] ?? '').toString(),
+      i2: (json['i2'] ?? '').toString(),
+      i3: (json['i3'] ?? '').toString(),
+      i4: (json['i4'] ?? '').toString(),
+      i5: (json['i5'] ?? '').toString(),
+    );
+  }
+  final String i1;
+  final String i2;
+  final String i3;
+  final String i4;
+  final String i5;
+  Map<String, Object> get _content => {
+        r'''i1''': i1,
+        r'''i2''': i2,
+        r'''i3''': i3,
+        r'''i4''': i4,
+        r'''i5''': i5,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -4145,6 +4436,7 @@ class SettingsLocLooks {
   const SettingsLocLooks({
     required this.label,
     required this.mode,
+    required this.cornerRadius,
     required this.accentColor,
     required this.tintLevel,
   });
@@ -4153,6 +4445,8 @@ class SettingsLocLooks {
       label: (json['label'] ?? '').toString(),
       mode: SettingsLocLooksMode.fromJson(
           (json['mode'] as Map).cast<String, dynamic>()),
+      cornerRadius: SettingsLocLooksCornerRadius.fromJson(
+          (json['corner_radius'] as Map).cast<String, dynamic>()),
       accentColor: SettingsLocLooksAccentColor.fromJson(
           (json['accent_color'] as Map).cast<String, dynamic>()),
       tintLevel: SettingsLocLooksTintLevel.fromJson(
@@ -4162,6 +4456,8 @@ class SettingsLocLooks {
   final String label;
   final SettingsLocLooksMode mode;
 
+  final SettingsLocLooksCornerRadius cornerRadius;
+
   final SettingsLocLooksAccentColor accentColor;
 
   final SettingsLocLooksTintLevel tintLevel;
@@ -4169,6 +4465,7 @@ class SettingsLocLooks {
   Map<String, Object> get _content => {
         r'''label''': label,
         r'''mode''': mode,
+        r'''corner_radius''': cornerRadius,
         r'''accent_color''': accentColor,
         r'''tint_level''': tintLevel,
       };
@@ -4267,6 +4564,47 @@ class SettingsLocLooksModeValue {
         r'''dark''': dark,
         r'''light''': light,
         r'''system''': system,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class SettingsLocLooksCornerRadius {
+  const SettingsLocLooksCornerRadius({
+    required this.label,
+  });
+  factory SettingsLocLooksCornerRadius.fromJson(Map<String, dynamic> json) {
+    return SettingsLocLooksCornerRadius(
+      label: (json['label'] ?? '').toString(),
+    );
+  }
+  final String label;
+  Map<String, Object> get _content => {
+        r'''label''': label,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -4864,27 +5202,35 @@ class ButtonLabelLoc {
 class StatusLoc {
   const StatusLoc({
     required this.failed,
+    required this.unauth,
     required this.error,
     required this.latest,
     required this.closing,
+    required this.copied,
   });
   factory StatusLoc.fromJson(Map<String, dynamic> json) {
     return StatusLoc(
       failed: (json['failed'] ?? '').toString(),
+      unauth: (json['unauth'] ?? '').toString(),
       error: (json['error'] ?? '').toString(),
       latest: (json['latest'] ?? '').toString(),
       closing: (json['closing'] ?? '').toString(),
+      copied: (json['copied'] ?? '').toString(),
     );
   }
   final String failed;
+  final String unauth;
   final String error;
   final String latest;
   final String closing;
+  final String copied;
   Map<String, Object> get _content => {
         r'''failed''': failed,
+        r'''unauth''': unauth,
         r'''error''': error,
         r'''latest''': latest,
         r'''closing''': closing,
+        r'''copied''': copied,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -5155,7 +5501,9 @@ final LocalizationMessages en = LocalizationMessages(
       disconnect: 'Disconnect',
       toWireless: 'To wireless',
       killRunning: 'Kill running instances',
-      allInstances: 'All instances',
+      instances: 'Instances',
+      all: 'All',
+      allInstances: 'Kill all instances',
       manage: 'Manage',
     ),
   ),
@@ -5199,14 +5547,14 @@ final LocalizationMessages en = LocalizationMessages(
     scrcpyInfo: DeviceSettingsLocScrcpyInfo(
       fetching: 'Getting scrcpy info',
       label: 'Scrcpy info',
-      name: 'Name',
-      id: 'ID',
-      model: 'Model',
-      version: 'Android version',
-      displays: 'Displays',
-      cameras: 'Cameras',
-      videoEnc: 'Video encoders',
-      audioEnc: 'Audio encoders',
+      name: ({required String name}) => '''Name: ${name}''',
+      id: ({required String id}) => '''ID: ${id}''',
+      model: ({required String model}) => '''Model: ${model}''',
+      version: ({required String version}) => '''Android version: ${version}''',
+      displays: ({required String count}) => '''Displays (${count})''',
+      cameras: ({required String count}) => '''Cameras (${count})''',
+      videoEnc: ({required String count}) => '''Video encoders (${count})''',
+      audioEnc: ({required String count}) => '''Audio encoders (${count})''',
     ),
   ),
   configScreenLoc: ConfigScreenLoc(
@@ -5438,6 +5786,10 @@ final LocalizationMessages en = LocalizationMessages(
     ),
     withMdns: ConnectLocWithMdns(
       label: ({required String count}) => '''MDNS devices (${count})''',
+      info: ConnectLocWithMdnsInfo(
+        i1: 'Make sure your device is paired to your PC.',
+        i2: 'If your device is not showing, try turning Wireless ADB off and on.',
+      ),
     ),
     qrPair: ConnectLocQrPair(
       label: 'QR pairing',
@@ -5446,6 +5798,21 @@ final LocalizationMessages en = LocalizationMessages(
         cancelled: 'Pairing cancelled',
         success: 'Pairing successful',
         failed: 'Pairing failed',
+      ),
+    ),
+    unauthenticated: ConnectLocUnauthenticated(
+      info: ConnectLocUnauthenticatedInfo(
+        i1: 'Check your phone.',
+        i2: 'Click allow debugging.',
+      ),
+    ),
+    failed: ConnectLocFailed(
+      info: ConnectLocFailedInfo(
+        i1: 'Make sure your device is paired to your PC.',
+        i2: 'Otherwise, try turning wireless Adb off and on.',
+        i3: 'If not paired: ',
+        i4: '1. Use the pair windows (top-right button)',
+        i5: '2. Plug you device into your PC, allow debugging, and retry.',
       ),
     ),
   ),
@@ -5484,6 +5851,9 @@ final LocalizationMessages en = LocalizationMessages(
           light: 'Light',
           system: 'System',
         ),
+      ),
+      cornerRadius: SettingsLocLooksCornerRadius(
+        label: 'Corner radius',
       ),
       accentColor: SettingsLocLooksAccentColor(
         label: 'Accent color',
@@ -5527,7 +5897,7 @@ final LocalizationMessages en = LocalizationMessages(
     name: 'Name:',
   ),
   buttonLabelLoc: ButtonLabelLoc(
-    ok: '',
+    ok: 'Ok',
     close: 'Close',
     cancel: 'Cancel',
     stop: 'Stop',
@@ -5542,9 +5912,11 @@ final LocalizationMessages en = LocalizationMessages(
   ),
   statusLoc: StatusLoc(
     failed: 'Failed',
+    unauth: 'Unauthenticated',
     error: 'Error',
     latest: 'Latest',
     closing: 'Closing',
+    copied: 'Copied',
   ),
   commonLoc: CommonLoc(
     default$: 'Default',

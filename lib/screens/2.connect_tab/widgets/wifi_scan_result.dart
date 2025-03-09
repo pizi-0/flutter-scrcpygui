@@ -4,6 +4,8 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
+import 'package:scrcpygui/screens/2.connect_tab/widgets/wifi_qr_pairing_dialog.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../models/adb_devices.dart';
@@ -28,6 +30,7 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
     final bonsoirDevices = ref.watch(bonsoirDeviceProvider);
 
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       spacing: 8,
       children: [
         ...bonsoirDevices.mapIndexed((index, dev) => Column(
@@ -40,10 +43,25 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
         if (bonsoirDevices.isNotEmpty) const Divider(),
         Label(
           leading: const Icon(Icons.info).muted().iconSmall(),
-          child: const Text(
-                  'If your device is not showing, try turning Wireless ADB off and on.')
-              .muted()
-              .small(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Text(el.connectLoc.withMdns.info.i1).muted().small(),
+                  LinkButton(
+                    density: ButtonDensity.dense,
+                    onPressed: () => showDialog(
+                      context: context,
+                      builder: (context) => const WifiQrPairing(),
+                    ),
+                    child: const Icon(Icons.qr_code).iconSmall(),
+                  )
+                ],
+              ),
+              Text(el.connectLoc.withMdns.info.i2).muted().small(),
+            ],
+          ),
         )
       ],
     );
@@ -118,11 +136,11 @@ class _BdTileState extends ConsumerState<BdTile> {
         if (res.errorMessage.toLowerCase().contains('unauthenticated')) {
           showDialog(
             context: context,
-            builder: (context) => const ErrorDialog(
-              title: 'Unauthenticated',
+            builder: (context) => ErrorDialog(
+              title: el.statusLoc.unauth,
               content: [
-                Text('Check your phone.'),
-                Text('Click allow debugging.')
+                Text(el.connectLoc.unauthenticated.info.i1),
+                Text(el.connectLoc.unauthenticated.info.i2),
               ],
             ),
           );
@@ -130,16 +148,14 @@ class _BdTileState extends ConsumerState<BdTile> {
           showDialog(
             context: context,
             builder: (context) => ErrorDialog(
-              title: 'Failed',
+              title: el.statusLoc.failed,
               content: [
                 Text(res.errorMessage.capitalizeFirst),
-                const Text(
-                    'Make sure your device is paired to your PC\'s adb.'),
-                const Text('Otherwise, try turning wireless Adb off and on.'),
-                const Text('\nIf not paired:'),
-                const Text('1. Use the pair windows (top-right button) '),
-                const Text(
-                    '2. Plug you device into your PC, allow debugging, and retry.'),
+                Text(el.connectLoc.failed.info.i1),
+                Text(el.connectLoc.failed.info.i2),
+                Text('\n${el.connectLoc.failed.info.i3}'),
+                Text(el.connectLoc.failed.info.i4),
+                Text(el.connectLoc.failed.info.i5),
               ],
             ),
           );

@@ -187,10 +187,10 @@ class _CopyButtonState extends State<CopyButton> {
         showToast(
           context: context,
           location: ToastLocation.bottomCenter,
-          builder: (context, close) => const SurfaceCard(
+          builder: (context, close) => SurfaceCard(
             child: Basic(
-              title: Text('Copied'),
-              trailing: Icon(Icons.check),
+              title: Text(el.statusLoc.copied),
+              trailing: const Icon(Icons.check),
             ),
           ),
         );

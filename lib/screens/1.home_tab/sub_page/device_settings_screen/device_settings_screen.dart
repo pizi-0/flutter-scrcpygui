@@ -166,18 +166,22 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                 ]
               : [
                   PgListTile(
-                      title: 'ID: ${dev.id.replaceAll('.$adbMdns', '')}'),
-                  // const Divider(),
-                  PgListTile(title: 'Model: ${dev.modelName}'),
+                      title: el.deviceSettingsLoc.scrcpyInfo
+                          .id(id: dev.id.replaceAll('.$adbMdns', ''))),
                   // const Divider(),
                   PgListTile(
-                      title: 'Android version: ${dev.info!.buildVersion}'),
+                      title: el.deviceSettingsLoc.scrcpyInfo
+                          .model(model: dev.modelName)),
+                  // const Divider(),
+                  PgListTile(
+                      title: el.deviceSettingsLoc.scrcpyInfo
+                          .version(version: dev.info!.buildVersion)),
                   Accordion(
                     items: [
                       AccordionItem(
                         trigger: AccordionTrigger(
-                          child:
-                              Text('Displays (${dev.info!.displays.length})'),
+                          child: Text(el.deviceSettingsLoc.scrcpyInfo
+                              .displays(count: '${dev.info!.displays.length}')),
                         ),
                         content: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -188,7 +192,8 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                       ),
                       AccordionItem(
                         trigger: AccordionTrigger(
-                          child: Text('Cameras (${dev.info!.cameras.length})'),
+                          child: Text(el.deviceSettingsLoc.scrcpyInfo
+                              .cameras(count: '${dev.info!.cameras.length}')),
                         ),
                         content: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -198,8 +203,9 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                         ),
                       ),
                       AccordionItem(
-                        trigger: const AccordionTrigger(
-                          child: Text('Video encoders'),
+                        trigger: AccordionTrigger(
+                          child: Text(el.deviceSettingsLoc.scrcpyInfo.videoEnc(
+                              count: '${dev.info!.videoEncoders.length}')),
                         ),
                         content: Accordion(
                           items: dev.info!.videoEncoders
@@ -220,8 +226,9 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                         ),
                       ),
                       AccordionItem(
-                        trigger: const AccordionTrigger(
-                          child: Text('Audio encoders'),
+                        trigger: AccordionTrigger(
+                          child: Text(el.deviceSettingsLoc.scrcpyInfo.audioEnc(
+                              count: '${dev.info!.audioEncoder.length}')),
                         ),
                         content: Accordion(
                           items: dev.info!.audioEncoder

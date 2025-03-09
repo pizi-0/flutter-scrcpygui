@@ -82,7 +82,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
         ),
         const Divider(),
         PgListTile(
-          title: 'Corner radius',
+          title: el.settingsLoc.looks.cornerRadius.label,
           trailing: ConstrainedBox(
             constraints: const BoxConstraints(minWidth: 150, maxWidth: 150),
             child: Row(

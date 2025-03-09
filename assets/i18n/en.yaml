@@ -56,14 +56,14 @@ device_settings_loc:
   scrcpy_info: 
     fetching: Getting scrcpy info
     label: Scrcpy info
-    name: Name
-    id: ID
-    model: Model
-    version: Android version
-    displays: Displays
-    cameras: Cameras
-    video_enc: Video encoders
-    audio_enc: Audio encoders
+    name: 'Name: ${name}'
+    id: 'ID: ${id}'
+    model: 'Model: ${model}'
+    version: 'Android version: ${version}'
+    displays: Displays (${count})
+    cameras: Cameras (${count})
+    video_enc: Video encoders (${count})
+    audio_enc: Audio encoders (${count})
   
 
 ## home_tab > config screen
@@ -262,6 +262,9 @@ connect_loc:
 
   with_mdns: 
     label: MDNS devices (${count})
+    info: 
+      i1: Make sure your device is paired to your PC.
+      i2: If your device is not showing, try turning Wireless ADB off and on.
 
   qr_pair: 
     label: QR pairing
@@ -270,6 +273,19 @@ connect_loc:
       cancelled: Pairing cancelled
       success: Pairing successful
       failed: Pairing failed
+
+  unauthenticated: 
+    info:
+      i1: Check your phone.
+      i2: Click allow debugging.
+
+  failed:
+    info:
+      i1: Make sure your device is paired to your PC.
+      i2: Otherwise, try turning wireless Adb off and on.
+      i3: 'If not paired: '
+      i4: 1. Use the pair windows (top-right button) 
+      i5: 2. Plug you device into your PC, allow debugging, and retry.
 
 
 ### preview and test section
@@ -309,6 +325,8 @@ settings_loc:
         dark: Dark
         light: Light
         system: System
+    corner_radius: 
+      label: Corner radius
     accent_color:
       label: Accent color
     tint_level: 
@@ -347,7 +365,7 @@ close_dialog_loc:
 
 # button
 button_label_loc:
-  ok: ''
+  ok: Ok
   close: Close
   cancel: Cancel
   stop: Stop
@@ -363,9 +381,11 @@ button_label_loc:
 # status 
 status_loc: 
   failed: Failed
+  unauth: Unauthenticated
   error: Error
   latest: Latest
   closing: Closing
+  copied: Copied
 
 # common
 common_loc:
