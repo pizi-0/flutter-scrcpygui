@@ -9,6 +9,8 @@ import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../../../../../providers/settings_provider.dart';
+
 class LogScreen extends ConsumerStatefulWidget {
   static const route = 'config-settings/config-log/:instance';
   final ScrcpyRunningInstance instance;
@@ -46,6 +48,8 @@ class _LogScreenState extends ConsumerState<LogScreen> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
+
     return PgScaffold(
       title: el.logScreenLoc.title,
       wrap: false,

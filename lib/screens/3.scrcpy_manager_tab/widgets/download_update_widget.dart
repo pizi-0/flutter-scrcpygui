@@ -4,6 +4,8 @@ import 'package:localization/localization.dart';
 import 'package:scrcpygui/utils/update_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../../providers/settings_provider.dart';
+
 class DownloadUpdate extends ConsumerStatefulWidget {
   const DownloadUpdate({super.key});
 
@@ -19,6 +21,7 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
   Widget build(BuildContext context) {
     final progress = ref.watch(downloadPercentageProvider);
     final status = ref.watch(updateStatusProvider);
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

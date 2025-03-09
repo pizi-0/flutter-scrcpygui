@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:scrcpygui/main_screen.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
 import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
 import 'package:scrcpygui/screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
@@ -74,6 +75,7 @@ class NavigationShellState extends ConsumerState<NavigationShell> {
   Widget build(BuildContext context) {
     final currentIndex = ref.watch(mainScreenPage);
     final expanded = ref.watch(appSideBarStateProvider);
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return ResponsiveBuilder(
       builder: (context, sizeInfo) {
@@ -144,7 +146,7 @@ class NavigationShellState extends ConsumerState<NavigationShell> {
   }
 }
 
-class AnimatedBranchContainer extends StatelessWidget {
+class AnimatedBranchContainer extends ConsumerWidget {
   /// Creates a AnimatedBranchContainer
   const AnimatedBranchContainer(
       {super.key, required this.currentIndex, required this.children});
@@ -156,7 +158,8 @@ class AnimatedBranchContainer extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
     return Stack(
         children: children.mapIndexed(
       (int index, Widget navigator) {
@@ -174,10 +177,7 @@ class AnimatedBranchContainer extends StatelessWidget {
 
   Widget _branchNavigatorWrapper(int index, Widget navigator) => IgnorePointer(
         ignoring: index != currentIndex,
-        child: TickerMode(
-          enabled: index == currentIndex,
-          child: navigator,
-        ),
+        child: navigator,
       );
 }
 
@@ -195,6 +195,7 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
   Widget build(BuildContext context) {
     final expanded = ref.watch(appSideBarStateProvider);
     final currentPage = ref.watch(mainScreenPage);
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return TapRegion(
       onTapOutside: (event) =>

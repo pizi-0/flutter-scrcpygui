@@ -13,6 +13,8 @@ import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../providers/settings_provider.dart';
+
 class ScrcpyManagerTab extends ConsumerStatefulWidget {
   static const route = '/scrcpy-manager';
   const ScrcpyManagerTab({super.key});
@@ -105,6 +107,8 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     final scrcpyVersion = ref.watch(scrcpyVersionProvider);
     final scrcpyDir = ref.watch(execDirProvider);

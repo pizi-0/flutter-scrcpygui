@@ -1,0 +1,380 @@
+# home tab
+home_loc:
+  title: Laman Utama
+  devices:
+    label: Peranti yang disambungkan (${count})
+
+device_tile_loc:
+  running_instances: Berjalan (${count})
+  context:
+    disconnect: Putuskan sambungan
+    to_wireless: Ke tanpa wayar
+    kill_running: Matikan contoh yang sedang berjalan
+    instances: Contoh
+    all: Semua
+    all_instances: Matikan semua contoh
+    manage: Urus
+
+config_loc:
+  label: Mulakan scrcpy
+  new: Buat konfigurasi baru
+  select: Pilih konfigurasi
+  details: Tunjukkan butiran
+  start: Mulakan
+
+# error dialog
+no_device_dialog_loc:
+  title: Peranti
+  contentsEdit: Tiada peranti dipilih. \nPilih peranti untuk menyunting konfigurasi scrcpy.
+  contentsStart: Tiada peranti dipilih. \nPilih peranti untuk memulakan scrcpy.
+  contentsNew: Tiada peranti dipilih. \nPilih peranti untuk membuat konfigurasi scrcpy.
+
+no_config_dialog_loc:
+  title: Konfigurasi
+  contents: Tiada konfigurasi dipilih.\nPilih konfigurasi scrcpy untuk dimulakan.
+
+## home_tab > device settings screen
+device_settings_loc:
+  title: Tetapan
+  info: Maklumat
+  refresh: Segarkan maklumat
+  rename:
+    label: Namakan semula
+    info: Tekan [Enter] untuk menggunakan nama
+  auto_connect:
+    label: Sambung automatik
+    info: Sambung peranti tanpa wayar secara automatik
+  on_connected:
+    label: Semasa disambungkan
+    info: Mulakan (1) contoh scrcpy dengan konfigurasi terpilih semasa peranti disambungkan
+  do_nothing: Jangan buat apa-apa
+
+  scrcpy_info:
+    fetching: Mendapatkan maklumat scrcpy
+    label: Maklumat Scrcpy
+    name: 'Nama: ${name}'
+    id: 'ID: ${id}'
+    model: 'Model: ${model}'
+    version: 'Versi Android: ${version}'
+    displays: Paparan (${count})
+    cameras: Kamera (${count})
+    video_enc: Pengekod video (${count})
+    audio_enc: Pengekod audio (${count})
+
+## home_tab > config screen
+config_screen_loc:
+  title: Tetapan konfigurasi
+  connection_lost: Sambungan peranti terputus
+
+## home_tab > config screen > test config
+log_screen_loc:
+  title: Log ujian
+  dialog:
+    title: Perintah
+
+### config screen > mode section
+mode_section:
+  title: Mod
+  save_folder:
+    label: Simpan folder
+    info: "menambah laluan simpan ke '--record=laluan simpan/fail' "
+
+  main_mode:
+    label: Mod
+    mirror: Cermin
+    record: Rakam
+    info:
+      default: cermin atau rakam, tiada bendera untuk cermin
+      alt: "menggunakan bendera '--record=' "
+
+  scrcpy_mode:
+    both: Kedua-duanya
+    audio_only: Audio sahaja
+    video_only: Video sahaja
+    info:
+      default: lalai ke kedua-duanya, tiada bendera
+      alt: "menggunakan bendera '${command}' "
+
+### config screen > video section
+video_section:
+  title: Video
+  displays:
+    label: Paparan
+    info:
+      default: lalai kepada yang pertama tersedia, tiada bendera; paparan maya tidak disenaraikan
+      alt: "menggunakan bendera '--display-id=' "
+
+  codec:
+    label: Codec
+    info:
+      default: lalai ke h264, tiada bendera
+      alt: "menggunakan bendera '--video-codec=${codec}' "
+
+  encoder:
+    label: Pengekod
+    info:
+      default: lalai kepada yang pertama tersedia, tiada bendera
+      alt: "menggunakan bendera '--video-encoder=${encoder}' "
+
+  format:
+    label: Format
+    info:
+      default: menambah format ke '--record=laluan simpan/fail${format}' "
+
+  bitrate:
+    label: Kadar bit
+    info:
+      default: lalai ke 8M, tiada bendera
+      alt: "menggunakan bendera '--video-bit-rate=${bitrate}M' "
+
+  fps_limit:
+    label: Had FPS
+    info:
+      default: tiada bendera kecuali ditetapkan
+      alt: "menggunakan bendera '--max-fps=${fps}' "
+
+  resolution_scale:
+    label: Skala resolusi
+    info:
+      default: dikira berdasarkan resolusi peranti, tiada bendera kecuali ditetapkan
+      alt: "menggunakan bendera '--max-size=${size}' "
+
+### config screen > audio section
+audio_section:
+  title: Audio
+  duplicate:
+    label: Gandakan audio
+    info:
+      default: hanya untuk Android 13 dan ke atas
+      alt: "menggunakan bendera '--audio-dup' "
+
+  source:
+    label: Sumber
+    info:
+      default: lalai kepada output, tiada bendera
+      alt: "menggunakan bendera '${source}' "
+      inCaseOfDup: tersirat kepada 'Main balik' dengan '--audio-dup', tiada bendera
+
+  codec:
+    label: Codec
+    info:
+      default: lalai ke opus, tiada bendera
+      alt: "menggunakan bendera '--audio-codec=${codec}' "
+      isAudioOnly: "Format: ${format}, memerlukan Codec: ${codec}"
+
+  encoder:
+    label: Pengekod
+    info:
+      default: lalai kepada yang pertama tersedia, tiada bendera
+      alt: "menggunakan bendera '--audio-encoder=${encoder}' "
+
+  format:
+    label: Format
+    info:
+      default: menambah format ke '--record=laluan simpan/fail.${format}' "
+
+  bitrate:
+    label: Kadar bit
+    info:
+      default: lalai ke 128k, tiada bendera
+      alt: "menggunakan bendera '--audio-bit-rate=${bitrate}K' "
+
+### config screen > device section
+device_section:
+  title: Peranti
+  stay_awake:
+    label: Kekal berjaga
+    info:
+      default: menghalang peranti daripada tidur, hanya berfungsi dengan sambungan usb
+      alt: "menggunakan bendera '--stay-awake' "
+
+  show_touches:
+    label: Tunjukkan sentuhan
+    info:
+      default: tunjukkan sentuhan jari, hanya berfungsi dengan sentuhan fizikal pada peranti
+      alt: "menggunakan bendera '--show-touches' "
+
+  off_display_start:
+    label: Matikan paparan semasa mula
+    info:
+      default: matikan paparan peranti, semasa scrcpy dimulakan
+      alt: "menggunakan bendera '--turn-screen-off' "
+
+  off_display_exit:
+    label: Matikan paparan semasa keluar
+    info:
+      default: matikan paparan peranti, semasa scrcpy keluar
+      alt: "menggunakan bendera '--power-off-on-close' "
+
+  screensaver:
+    label: Lumpuhkan penyelamat skrin (HOST)
+    info:
+      default: lumpuhkan penyelamat skrin
+      alt: "menggunakan bendera '--disable-screensaver' "
+
+window_section:
+  title: Tetingkap
+  hide_window:
+    label: Sembunyikan tetingkap
+    info:
+      default: mulakan scrcpy tanpa tetingkap
+      alt: "menggunakan bendera '--no-window' "
+
+  borderless:
+    label: Tanpa sempadan
+    info:
+      default: lumpuhkan hiasan tetingkap
+      alt: "menggunakan bendera '--window-borderless' "
+
+  always_on_top:
+    label: Sentiasa di atas
+    info:
+      default: tetingkap scrcpy sentiasa di atas
+      alt: "menggunakan bendera '--always-on-top' "
+
+  time_limit:
+    label: Had masa
+    info:
+      default: hadkan sesi scrcpy, dalam saat
+      alt: "menggunakan bendera '--time-limit=${time}' "
+
+### config screen > additional flags section
+add_flags:
+  title: Bendera tambahan
+  add: Tambah
+  info: elakkan daripada menggunakan bendera yang sudah menjadi pilihan
+
+#connect tab
+connect_loc:
+  title: Sambung
+  with_ip:
+    label: Sambung dengan IP
+    connect: Sambung
+    connected: Disambungkan ke ${to}
+
+  with_mdns:
+    label: Peranti MDNS (${count})
+    info:
+      i1: Pastikan peranti anda dipasangkan ke PC anda.
+      i2: Jika peranti anda tidak dipaparkan, cuba matikan dan hidupkan ADB Tanpa Wayar.
+
+  qr_pair:
+    label: Pemasangan QR
+    pair: Pasangkan peranti
+    status:
+      cancelled: Pemasangan dibatalkan
+      success: Pemasangan berjaya
+      failed: Pemasangan gagal
+
+  unauthenticated:
+    info:
+      i1: Periksa telefon anda.
+      i2: Klik benarkan penyahpepijatan.
+
+  failed:
+    info:
+      i1: Pastikan peranti anda dipasangkan ke PC anda.
+      i2: Jika tidak, cuba matikan dan hidupkan Adb tanpa wayar.
+      i3: 'Jika tidak dipasangkan: '
+      i4: 1. Gunakan tetingkap pasangan (butang kanan atas)
+      i5: 2. Palamkan peranti anda ke PC anda, benarkan penyahpepijatan, dan cuba semula.
+
+### preview and test section
+test_config_loc:
+  title: Uji konfigurasi
+  preview: Pratonton arahan
+
+#scrcpy manager tab
+scrcpy_manager_loc:
+  title: Pengurus Scrcpy
+  check: Semak kemas kini
+  current:
+    label: Semasa
+    in_use: Digunakan
+  exec:
+    label: Buka lokasi boleh laku
+    info: Ubah suai dengan berhati-hati
+  info_popup:
+    no_update: Tiada kemas kini tersedia
+    error: Ralat menyemak kemas kini
+  updater:
+    label: Versi baru tersedia
+    new_version: Versi baru
+
+#settings tab
+settings_loc:
+  title: Tetapan
+  looks:
+    label: Rupa
+    mode:
+      label: Mod tema
+      value:
+        dark: Gelap
+        light: Terang
+        system: Sistem
+    corner_radius:
+      label: Jejari penjuru
+    accent_color:
+      label: Warna aksen
+    tint_level:
+      label: Tahap warna
+
+  behavior:
+    label: Tingkah laku aplikasi
+    language:
+      label: Bahasa
+      info: Sesetengah bahasa dijana oleh AI
+    minimize:
+      label: Minimumkan
+      value:
+        tray: ke dulang
+        taskbar: ke bar tugas
+
+# quit dialog
+quit_dialog_loc:
+  title: Keluar daripada Scrcpy GUI?
+  kill_running:
+    label: Matikan yang sedang berjalan?
+    info: ${count} contoh. Contoh tanpa tetingkap akan dimatikan tanpa mengira
+  disconnect:
+    label: Putuskan sambungan ADB tanpa wayar?
+    info: ${count} peranti
+
+# config screen > close dialog
+close_dialog_loc:
+  not_allowed: Tidak dibenarkan!
+  overwrite: Timpa?
+  save: Simpan konfigurasi?
+  command_preview: 'Pratonton arahan:'
+  name: 'Nama:'
+
+# button
+button_label_loc:
+  ok: Ok
+  close: Tutup
+  cancel: Batal
+  stop: Hentikan
+  test_config: Uji konfigurasi
+  update: Kemas kini
+  info: Maklumat
+  select_all: Pilih semua
+  quit: Keluar
+  discard: Buang
+  overwrite: Timpa
+  save: Simpan
+
+# status
+status_loc:
+  failed: Gagal
+  unauth: Tidak disahkan
+  error: Ralat
+  latest: Terkini
+  closing: Menutup
+  copied: Disalin
+
+# common
+common_loc:
+  default: Lalai
+  yes: Ya
+  no: Tidak
+  bundled: Terangkum

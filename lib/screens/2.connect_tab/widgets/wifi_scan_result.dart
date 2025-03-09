@@ -11,6 +11,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import '../../../models/adb_devices.dart';
 import '../../../providers/adb_provider.dart';
 import '../../../providers/bonsoir_devices.dart';
+import '../../../providers/settings_provider.dart';
 import '../../../utils/adb_utils.dart';
 import '../../../widgets/custom_ui/pg_list_tile.dart';
 import '../../1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
@@ -28,6 +29,7 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
   @override
   Widget build(BuildContext context) {
     final bonsoirDevices = ref.watch(bonsoirDeviceProvider);
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
