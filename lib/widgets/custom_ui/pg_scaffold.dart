@@ -54,8 +54,9 @@ class PgScaffold extends ConsumerWidget {
             title: Row(
               children: [
                 Expanded(
-                    child:
-                        Center(child: Text(title).xLarge().bold().underline())),
+                    child: Center(
+                        child: FittedBox(
+                            child: Text(title).xLarge().bold().underline()))),
               ],
             ),
             // backgroundColor: theme.colorScheme.muted,

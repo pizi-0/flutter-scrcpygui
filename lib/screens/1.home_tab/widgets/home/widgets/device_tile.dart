@@ -104,16 +104,23 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                 leading:
                     isWireless ? const Icon(Icons.wifi) : const Icon(Icons.usb),
                 title: widget.device.name ?? widget.device.modelName,
-                titleBadge: hasRunningInstance
-                    ? el.deviceTileLoc
-                        .runningInstances(count: '${deviceInstance.length}')
-                    : null,
                 subtitle: widget.device.id,
                 showSubtitle: true,
                 showSubtitleLeading: false,
+                titleOverflow: true,
                 trailing: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    if (hasRunningInstance)
+                      Row(
+                        children: [
+                          const Icon(
+                            Icons.play_arrow_rounded,
+                            color: Colors.green,
+                          ),
+                          Text('( ${runningInstances.length} )').xSmall()
+                        ],
+                      ),
                     IconButton.ghost(
                       icon: const Icon(Icons.settings),
                       onPressed: () => context
@@ -131,7 +138,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
               animate: isSelected,
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 20),
+                    const EdgeInsets.symmetric(horizontal: 2.0, vertical: 20),
                 child: Container(
                   width: 5,
                   decoration: BoxDecoration(

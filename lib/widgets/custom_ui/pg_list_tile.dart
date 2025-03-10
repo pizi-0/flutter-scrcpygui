@@ -8,7 +8,7 @@ class PgListTile extends ConsumerWidget {
   final BoxConstraints? trailingConstraints;
   final String title;
   final bool titleOverflow;
-  final String? titleBadge;
+  final bool? showBadge;
   final bool showSubtitle;
   final bool showSubtitleLeading;
   final String? subtitle;
@@ -24,7 +24,7 @@ class PgListTile extends ConsumerWidget {
     this.showSubtitleLeading = true,
     required this.title,
     this.titleOverflow = false,
-    this.titleBadge,
+    this.showBadge = false,
     this.subtitle,
   });
 
@@ -53,20 +53,12 @@ class PgListTile extends ConsumerWidget {
                                 delayDuration: 1.seconds,
                                 child: Text(title)),
                           ),
-                          if (titleBadge != null)
-                            PrimaryBadge(child: Text(titleBadge!))
                         ]
                       : [
-                          Text(title),
-                          if (titleBadge != null)
-                            PrimaryBadge(child: Text(titleBadge!))
+                          Expanded(child: Text(title)),
                         ],
                 ),
-                trailing: ConstrainedBox(
-                  constraints: trailingConstraints ??
-                      const BoxConstraints(minWidth: 180, minHeight: 30),
-                  child: trailing,
-                ).showIf(trailing != null),
+                trailing: trailing,
               ),
               if (showSubtitle && subtitle != null)
                 Container(

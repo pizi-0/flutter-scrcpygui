@@ -156,8 +156,9 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
               size: ((selectedConfig.videoOptions.resolutionScale / 100) *
                       max.first)
                   .toStringAsFixed(0)),
+      childExpand: false,
       child: ConstrainedBox(
-        constraints: const BoxConstraints(minWidth: 150, maxWidth: 150),
+        constraints: const BoxConstraints(minWidth: 180, maxWidth: 180),
         child: Row(
           spacing: 4,
           children: [

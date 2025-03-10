@@ -34,24 +34,28 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
       title: title,
       subtitle: subtitle,
       showSubtitle: subtitle != null && showinfo,
-      trailing: Select(
-        filled: true,
-        itemBuilder: (context, value) => OverflowMarquee(
-            child: Text(toTitleCase ? value.value.toTitleCase : value.value)),
-        value: initialValue,
-        onChanged: onSelected,
-        popup: SelectPopup(
-            items: SelectItemList(
-          children: items
-              .map((e) => SelectItemButton(
-                  value: e,
-                  child: OverflowMarquee(
-                    child: Text(toTitleCase
-                        ? e.value.toString().toTitleCase
-                        : e.value.toString()),
-                  )))
-              .toList(),
-        )).call,
+      trailing: ConstrainedBox(
+        constraints:
+            const BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
+        child: Select(
+          filled: true,
+          itemBuilder: (context, value) => OverflowMarquee(
+              child: Text(toTitleCase ? value.value.toTitleCase : value.value)),
+          value: initialValue,
+          onChanged: onSelected,
+          popup: SelectPopup(
+              items: SelectItemList(
+            children: items
+                .map((e) => SelectItemButton(
+                    value: e,
+                    child: OverflowMarquee(
+                      child: Text(toTitleCase
+                          ? e.value.toString().toTitleCase
+                          : e.value.toString()),
+                    )))
+                .toList(),
+          )).call,
+        ),
       ),
     );
   }
@@ -95,24 +99,28 @@ class _ConfigDropdownOthersState extends State<ConfigDropdownOthers> {
           title: widget.label,
           subtitle: widget.subtitle,
           showSubtitle: widget.subtitle != null && widget.showinfo,
-          trailing: Select(
-            filled: true,
-            itemBuilder: (context, value) => OverflowMarquee(
-              duration: 2.seconds,
-              delayDuration: 1.seconds,
-              child: Text(value.toString()),
-            ),
-            placeholder: widget.placeholder,
-            value: widget.initialValue,
-            onChanged: widget.onSelected,
-            popupWidthConstraint: widget.popupWidthConstraint ??
-                PopoverConstraint.anchorFixedSize,
-            popupConstraints: const BoxConstraints(maxWidth: 300),
-            popup: SelectPopup.noVirtualization(
-              items: SelectItemList(
-                children: widget.items,
+          trailing: ConstrainedBox(
+            constraints: const BoxConstraints(
+                minWidth: 180, maxWidth: 180, minHeight: 30),
+            child: Select(
+              filled: true,
+              itemBuilder: (context, value) => OverflowMarquee(
+                duration: 2.seconds,
+                delayDuration: 1.seconds,
+                child: Text(value.toString()),
               ),
-            ).call,
+              placeholder: widget.placeholder,
+              value: widget.initialValue,
+              onChanged: widget.onSelected,
+              popupWidthConstraint: widget.popupWidthConstraint ??
+                  PopoverConstraint.anchorFixedSize,
+              popupConstraints: const BoxConstraints(maxWidth: 300),
+              popup: SelectPopup.noVirtualization(
+                items: SelectItemList(
+                  children: widget.items,
+                ),
+              ).call,
+            ),
           ),
         ),
       ],
@@ -146,8 +154,9 @@ class ConfigUserInput extends ConsumerWidget {
       title: label,
       subtitle: subtitle,
       showSubtitle: subtitle != null && showinfo,
-      trailing: SizedBox(
-        width: 100,
+      trailing: ConstrainedBox(
+        constraints:
+            const BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
         child: TextField(
           filled: true,
           inputFormatters: [
@@ -199,17 +208,19 @@ class ConfigCustom extends ConsumerWidget {
           color: Colors.transparent,
           child: PgListTile(
             title: title,
-            trailingConstraints:
-                const BoxConstraints(maxWidth: 180, minHeight: 30),
             trailing: child != null
-                ? Padding(
-                    padding: EdgeInsets.only(right: padRight ?? 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        if (!childExpand) child!,
-                        if (childExpand) Expanded(child: child!)
-                      ],
+                ? ConstrainedBox(
+                    constraints: const BoxConstraints(
+                        minWidth: 180, maxWidth: 180, minHeight: 30),
+                    child: Padding(
+                      padding: EdgeInsets.only(right: padRight ?? 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          if (!childExpand) child!,
+                          if (childExpand) Expanded(child: child!)
+                        ],
+                      ),
                     ),
                   )
                 : null,

@@ -27,64 +27,73 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
       children: [
         PgListTile(
           title: el.settingsLoc.looks.mode.label,
-          trailing: Select(
-            placeholder: const Text('Theme mode'),
-            canUnselect: false,
-            filled: true,
-            autoClosePopover: true,
-            itemBuilder: (context, value) => Text(value.name.capitalize),
-            value: looks.themeMode,
-            onChanged: (ThemeMode? mode) async {
-              ref.read(settingsProvider.notifier).changeThememode(mode!);
-              await Db.saveAppSettings(ref.read(settingsProvider));
-            },
-            popup: SelectPopup(
-              autoClose: true,
+          trailing: ConstrainedBox(
+            constraints: const BoxConstraints(
+                minWidth: 180, maxWidth: 180, minHeight: 30),
+            child: Select(
+              placeholder: const Text('Theme mode'),
               canUnselect: false,
-              items: SelectItemList(
-                children: [
-                  SelectItemButton(
-                    value: ThemeMode.system,
-                    child: Text(el.settingsLoc.looks.mode.value.system),
-                  ),
-                  SelectItemButton(
-                    value: ThemeMode.light,
-                    child: Text(el.settingsLoc.looks.mode.value.light),
-                  ),
-                  SelectItemButton(
-                    value: ThemeMode.dark,
-                    child: Text(el.settingsLoc.looks.mode.value.dark),
-                  ),
-                ],
-              ),
-            ).call,
+              filled: true,
+              autoClosePopover: true,
+              itemBuilder: (context, value) => Text(value.name.capitalize),
+              value: looks.themeMode,
+              onChanged: (ThemeMode? mode) async {
+                ref.read(settingsProvider.notifier).changeThememode(mode!);
+                await Db.saveAppSettings(ref.read(settingsProvider));
+              },
+              popup: SelectPopup(
+                autoClose: true,
+                canUnselect: false,
+                items: SelectItemList(
+                  children: [
+                    SelectItemButton(
+                      value: ThemeMode.system,
+                      child: Text(el.settingsLoc.looks.mode.value.system),
+                    ),
+                    SelectItemButton(
+                      value: ThemeMode.light,
+                      child: Text(el.settingsLoc.looks.mode.value.light),
+                    ),
+                    SelectItemButton(
+                      value: ThemeMode.dark,
+                      child: Text(el.settingsLoc.looks.mode.value.dark),
+                    ),
+                  ],
+                ),
+              ).call,
+            ),
           ),
         ),
         const Divider(),
         PgListTile(
           title: el.settingsLoc.looks.accentColor.label,
-          trailing: Select(
-            filled: true,
-            itemBuilder: (context, value) => Text(value.name),
-            value: looks.scheme,
-            onChanged: (scheme) async {
-              ref.read(settingsProvider.notifier).changeColorScheme(scheme!);
-              await Db.saveAppSettings(ref.read(settingsProvider));
-            },
-            popup: SelectPopup(
-              items: SelectItemList(
-                  children: mySchemes
-                      .map((scheme) => SelectItemButton(
-                          value: scheme, child: Text(scheme.name)))
-                      .toList()),
-            ).call,
+          trailing: ConstrainedBox(
+            constraints: const BoxConstraints(
+                minWidth: 180, maxWidth: 180, minHeight: 30),
+            child: Select(
+              filled: true,
+              itemBuilder: (context, value) => Text(value.name),
+              value: looks.scheme,
+              onChanged: (scheme) async {
+                ref.read(settingsProvider.notifier).changeColorScheme(scheme!);
+                await Db.saveAppSettings(ref.read(settingsProvider));
+              },
+              popup: SelectPopup(
+                items: SelectItemList(
+                    children: mySchemes
+                        .map((scheme) => SelectItemButton(
+                            value: scheme, child: Text(scheme.name)))
+                        .toList()),
+              ).call,
+            ),
           ),
         ),
         const Divider(),
         PgListTile(
           title: el.settingsLoc.looks.cornerRadius.label,
           trailing: ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: 150, maxWidth: 150),
+            constraints: const BoxConstraints(
+                minWidth: 180, maxWidth: 180, minHeight: 30),
             child: Row(
               spacing: 8,
               children: [

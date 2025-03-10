@@ -56,24 +56,29 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
           title: el.settingsLoc.behavior.language.label,
           subtitle: el.settingsLoc.behavior.language.info,
           showSubtitle: true,
-          trailing: Select(
-            filled: true,
-            value: behaviour.languageCode,
-            onChanged: (value) async {
-              ref.read(settingsProvider.notifier).changeLanguage(value!);
+          trailing: ConstrainedBox(
+            constraints: const BoxConstraints(
+                minWidth: 180, maxWidth: 180, minHeight: 30),
+            child: Select(
+              filled: true,
+              value: behaviour.languageCode,
+              onChanged: (value) async {
+                ref.read(settingsProvider.notifier).changeLanguage(value!);
 
-              await Db.saveAppSettings(ref.read(settingsProvider));
-            },
-            itemBuilder: (context, value) =>
-                langDD.firstWhere((lang) => lang.value == value).child,
-            popup: SelectPopup(items: SelectItemList(children: langDD)).call,
+                await Db.saveAppSettings(ref.read(settingsProvider));
+              },
+              itemBuilder: (context, value) =>
+                  langDD.firstWhere((lang) => lang.value == value).child,
+              popup: SelectPopup(items: SelectItemList(children: langDD)).call,
+            ),
           ),
         ),
         const Divider(),
         PgListTile(
           title: el.settingsLoc.behavior.minimize.label,
           trailing: ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: 150),
+            constraints: const BoxConstraints(
+                minWidth: 180, maxWidth: 180, minHeight: 30),
             child: Select(
               filled: true,
               value: behaviour.minimizeAction,
