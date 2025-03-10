@@ -80,37 +80,7 @@ class NavigationShellState extends ConsumerState<NavigationShell> {
     return ResponsiveBuilder(
       builder: (context, sizeInfo) {
         return Scaffold(
-          headers: [
-            AppBar(
-              leading: [
-                Image.asset(
-                  'assets/logo.png',
-                  height: 20,
-                  width: 20,
-                )
-              ],
-              title: DragToMoveArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Row(
-                          textBaseline: TextBaseline.alphabetic,
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          children: [
-                            const Text('Scrcpy GUI  ').small(),
-                            const Text('by pizi-0').fontSize(8).underline(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              trailing: const [TitleBarButton()],
-            ),
-          ],
+          headers: const [TitleBar()],
           child: Stack(
             children: [
               Row(
@@ -145,6 +115,49 @@ class NavigationShellState extends ConsumerState<NavigationShell> {
           ),
         );
       },
+    );
+  }
+}
+
+class TitleBar extends StatelessWidget {
+  const TitleBar({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return OutlinedContainer(
+      borderRadius: theme.borderRadiusXs,
+      child: Row(
+        children: [
+          Expanded(
+            child: DragToMoveArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  spacing: 8,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Image.asset(
+                      'assets/logo.png',
+                      height: 20,
+                      width: 20,
+                    ),
+                    const Text('Scrcpy GUI').small(),
+                    const Text('by pizi-0')
+                        .fontSize(8)
+                        .underline()
+                        .paddingOnly(bottom: 2),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const TitleBarButton()
+        ],
+      ),
     );
   }
 }
