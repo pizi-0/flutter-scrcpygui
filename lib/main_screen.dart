@@ -73,7 +73,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
     }
 
     if (eventName == kWindowEventResize) {
-      await windowManager.setMinimumSize(const Size(480, 580));
+      await windowManager.setMinimumSize(const Size(500, 600));
     }
 
     super.onWindowEvent(eventName);
