@@ -57,9 +57,9 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
       MenuButton(
         enabled: hasRunningInstance,
         leading: const Icon(Icons.close_rounded),
-        trailing: const Icon(Icons.chevron_right_rounded),
         subMenu: [
-          MenuLabel(child: const Text('Instances').xSmall().muted()),
+          MenuLabel(
+              child: Text(el.deviceTileLoc.context.instances).xSmall().muted()),
           ...deviceInstance.map(
             (inst) => MenuButton(
               child: Text(inst.instanceName),
@@ -67,7 +67,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
             ),
           ),
           const MenuDivider(),
-          MenuLabel(child: const Text('All').xSmall().muted()),
+          MenuLabel(child: Text(el.deviceTileLoc.context.all).xSmall().muted()),
           MenuButton(
             onPressed: (context) => _killRunning(deviceInstance),
             child: Text(el.deviceTileLoc.context.allInstances),
