@@ -90,19 +90,22 @@ class NavigationShellState extends ConsumerState<NavigationShell> {
                 )
               ],
               title: DragToMoveArea(
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Row(
-                        textBaseline: TextBaseline.alphabetic,
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        children: [
-                          const Text('Scrcpy GUI  ').small(),
-                          const Text('by pizi-0').fontSize(8).underline(),
-                        ],
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Row(
+                          textBaseline: TextBaseline.alphabetic,
+                          crossAxisAlignment: CrossAxisAlignment.baseline,
+                          children: [
+                            const Text('Scrcpy GUI  ').small(),
+                            const Text('by pizi-0').fontSize(8).underline(),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               trailing: const [TitleBarButton()],
