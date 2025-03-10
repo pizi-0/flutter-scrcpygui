@@ -118,7 +118,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                             Icons.play_arrow_rounded,
                             color: Colors.green,
                           ),
-                          Text('( ${runningInstances.length} )').xSmall()
+                          Text('( ${deviceInstance.length} )').xSmall()
                         ],
                       ),
                     IconButton.ghost(
