@@ -246,14 +246,18 @@ class ConfigLoc {
   });
   factory ConfigLoc.fromJson(Map<String, dynamic> json) {
     return ConfigLoc(
-      label: (json['label'] ?? '').toString(),
+      label: ({required String count}) => (json['label'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
       new$: (json['new'] ?? '').toString(),
       select: (json['select'] ?? '').toString(),
       details: (json['details'] ?? '').toString(),
       start: (json['start'] ?? '').toString(),
     );
   }
-  final String label;
+  final String Function({required String count}) label;
+
   final String new$;
   final String select;
   final String details;
@@ -5508,8 +5512,8 @@ final LocalizationMessages en = LocalizationMessages(
     ),
   ),
   configLoc: ConfigLoc(
-    label: 'Start scrcpy',
-    new$: 'Create new config',
+    label: ({required String count}) => '''Configs (${count})''',
+    new$: 'Create',
     select: 'Select a config',
     details: 'Show details',
     start: 'Start',
@@ -5947,7 +5951,7 @@ final LocalizationMessages es = LocalizationMessages(
     ),
   ),
   configLoc: ConfigLoc(
-    label: 'Iniciar scrcpy',
+    label: ({required String count}) => 'Iniciar scrcpy',
     new$: 'Crear nueva configuración',
     select: 'Seleccionar una configuración',
     details: 'Mostrar detalles',
@@ -6395,7 +6399,7 @@ final LocalizationMessages ms = LocalizationMessages(
     ),
   ),
   configLoc: ConfigLoc(
-    label: 'Mulakan scrcpy',
+    label: ({required String count}) => 'Mulakan scrcpy',
     new$: 'Buat konfigurasi baru',
     select: 'Pilih konfigurasi',
     details: 'Tunjukkan butiran',
