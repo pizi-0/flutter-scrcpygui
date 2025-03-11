@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
-import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
 import 'package:scrcpygui/utils/directory_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -9,6 +8,7 @@ import '../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../providers/adb_provider.dart';
 import '../../../../../providers/config_provider.dart';
 import '../../../../../utils/const.dart';
+import '../../home/widgets/config_list.dart';
 import 'config_delete_dialog.dart';
 import 'config_detail_dialog.dart';
 
