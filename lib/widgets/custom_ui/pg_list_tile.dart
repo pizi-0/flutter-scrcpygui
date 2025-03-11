@@ -14,6 +14,7 @@ class PgListTile extends ConsumerWidget {
   final String? subtitle;
   final Icon? leading;
   final Widget? trailing;
+  final Widget? content;
 
   const PgListTile({
     super.key,
@@ -26,6 +27,7 @@ class PgListTile extends ConsumerWidget {
     this.titleOverflow = false,
     this.showBadge = false,
     this.subtitle,
+    this.content,
   });
 
   @override
@@ -58,6 +60,7 @@ class PgListTile extends ConsumerWidget {
                           Expanded(child: Text(title)),
                         ],
                 ),
+                content: content,
                 trailing: trailing,
               ),
               if (showSubtitle && subtitle != null)
