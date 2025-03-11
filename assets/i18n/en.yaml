@@ -18,8 +18,8 @@ device_tile_loc:
     
 
 config_loc:
-  label: Start scrcpy
-  new: Create new config
+  label: Configs (${count})
+  new: Create
   select: Select a config
   details: Show details
   start: Start
