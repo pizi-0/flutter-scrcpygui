@@ -35,30 +35,21 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               canUnselect: false,
               filled: true,
               autoClosePopover: true,
-              itemBuilder: (context, value) => Text(value.name.capitalize),
-              value: looks.themeMode,
-              onChanged: (ThemeMode? mode) async {
-                ref.read(settingsProvider.notifier).changeThememode(mode!);
+              itemBuilder: (context, value) => Text(value.$2.capitalize),
+              value: themeModeDD(context)
+                  .firstWhere((mode) => mode.$1 == looks.themeMode),
+              onChanged: (mode) async {
+                ref.read(settingsProvider.notifier).changeThememode(mode!.$1);
                 await Db.saveAppSettings(ref.read(settingsProvider));
               },
               popup: SelectPopup(
                 autoClose: true,
                 canUnselect: false,
                 items: SelectItemList(
-                  children: [
-                    SelectItemButton(
-                      value: ThemeMode.system,
-                      child: Text(el.settingsLoc.looks.mode.value.system),
-                    ),
-                    SelectItemButton(
-                      value: ThemeMode.light,
-                      child: Text(el.settingsLoc.looks.mode.value.light),
-                    ),
-                    SelectItemButton(
-                      value: ThemeMode.dark,
-                      child: Text(el.settingsLoc.looks.mode.value.dark),
-                    ),
-                  ],
+                  children: themeModeDD(context)
+                      .map((mode) =>
+                          SelectItemButton(value: mode, child: Text(mode.$2)))
+                      .toList(),
                 ),
               ).call,
             ),
@@ -116,4 +107,14 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
       ],
     );
   }
+}
+
+// ddvalue
+
+List<(ThemeMode, String)> themeModeDD(BuildContext context) {
+  return [
+    (ThemeMode.system, el.settingsLoc.looks.mode.value.system),
+    (ThemeMode.light, el.settingsLoc.looks.mode.value.light),
+    (ThemeMode.dark, el.settingsLoc.looks.mode.value.dark),
+  ];
 }

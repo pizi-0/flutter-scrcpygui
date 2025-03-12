@@ -134,7 +134,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                       ? allconfigs
                           .firstWhere((conf) => conf.id == value)
                           .configName
-                      : DO_NOTHING,
+                      : el.deviceSettingsLoc.doNothing,
                 ),
                 value: ddValue,
                 onChanged: _onConnectConfig,

@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions_dart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
@@ -18,21 +19,6 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
   @override
   Widget build(BuildContext context) {
     final behaviour = ref.watch(settingsProvider).behaviour;
-
-    final minimizeDD = [
-      SelectItemButton(
-        value: MinimizeAction.toTray,
-        child: Text(
-          el.settingsLoc.behavior.minimize.value.tray,
-        ),
-      ),
-      SelectItemButton(
-        value: MinimizeAction.toTaskBar,
-        child: Text(
-          el.settingsLoc.behavior.minimize.value.taskbar,
-        ),
-      )
-    ];
 
     final langDD = [
       const SelectItemButton(
@@ -81,17 +67,25 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
                 minWidth: 180, maxWidth: 180, minHeight: 30),
             child: Select(
               filled: true,
-              value: behaviour.minimizeAction,
-              onChanged: (value) async {
+              value: minimizeDD(context)
+                  .firstWhere((act) => act.$1 == behaviour.minimizeAction),
+              onChanged: (act) async {
                 ref
                     .read(settingsProvider.notifier)
-                    .changeMinimizeBehaviour(value!);
+                    .changeMinimizeBehaviour(act!.$1);
 
                 await Db.saveAppSettings(ref.read(settingsProvider));
               },
-              itemBuilder: (context, value) => Text(value.name),
+              itemBuilder: (context, value) => OverflowMarquee(
+                  duration: 5.seconds,
+                  delayDuration: 1.seconds,
+                  child: Text(value.$2)),
               popup: SelectPopup(
-                items: SelectItemList(children: minimizeDD),
+                items: SelectItemList(
+                    children: minimizeDD(context)
+                        .map((act) =>
+                            SelectItemButton(value: act, child: Text(act.$2)))
+                        .toList()),
               ).call,
             ),
           ),
@@ -99,4 +93,13 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
       ],
     );
   }
+}
+
+//ddvalue
+
+List<(MinimizeAction, String)> minimizeDD(BuildContext context) {
+  return [
+    (MinimizeAction.toTray, el.settingsLoc.behavior.minimize.value.tray),
+    (MinimizeAction.toTaskBar, el.settingsLoc.behavior.minimize.value.taskbar)
+  ];
 }
