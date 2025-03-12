@@ -46,14 +46,14 @@ dependencies:
   responsive_builder: ^0.7.1
   window_manager: ^0.4.3
   # provider: ^6.1.2
-  file_picker: ^8.0.6
+  file_picker: ^9.0.2
   url_launcher: ^6.3.0
   page_transition: ^2.1.0
   string_extensions: ^0.7.2
   intl: ^0.19.0
   shared_preferences: ^2.3.1
   google_fonts: ^6.2.1
-  animate_do: ^3.3.4
+  animate_do: ^4.2.0
   flutter_riverpod: ^2.5.1
   flutter_context_menu: ^0.2.0
   animated_custom_dropdown: ^3.1.1
@@ -61,7 +61,7 @@ dependencies:
   path_provider: ^2.1.4
   flex_color_picker: ^3.5.1
   hugeicons: ^0.0.7
-  tray_manager: ^0.2.4
+  tray_manager: ^0.3.2
   uuid: ^4.5.1
   dart_ping: ^9.0.1
   dio: ^5.7.0
@@ -91,7 +91,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^5.0.0
   msix: ^3.16.8
 
 # For information on the generic Dart part of this file, see the
