@@ -120,7 +120,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
     await windowManager.setPreventClose(true);
     TrayUtils.initTray(ref, context);
 
-    ref.read(scrcpyInstanceProvider.notifier).ref.listenSelf((a, b) async {
+    ref.read(scrcpyInstanceProvider.notifier).listenSelf((a, b) async {
       if (!listEquals(a, b)) {
         if (mounted) {
           await trayManager.destroy();
@@ -129,14 +129,14 @@ class _MainScreenState extends ConsumerState<MainScreen>
       }
     });
 
-    ref.read(savedAdbDevicesProvider.notifier).ref.listenSelf(
+    ref.read(savedAdbDevicesProvider.notifier).listenSelf(
       (previous, next) async {
         trayManager.destroy();
         await TrayUtils.initTray(ref, context);
       },
     );
 
-    ref.read(adbProvider.notifier).ref.listenSelf(
+    ref.read(adbProvider.notifier).listenSelf(
       (a, b) async {
         if (!listEquals(a, b)) {
           await trayManager.destroy();
