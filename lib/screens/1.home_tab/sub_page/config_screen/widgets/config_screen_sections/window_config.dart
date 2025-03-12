@@ -40,15 +40,30 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
       children: [
         ConfigCustom(
           onPressed: () {
-            ref.read(configScreenConfig.notifier).update((state) {
-              final noWindow = state!.windowOptions.noWindow;
+            ref.read(configScreenConfig.notifier).update(
+              (state) {
+                final noWindow = state!.windowOptions.noWindow;
 
-              return state.copyWith(
-                windowOptions: state.windowOptions.copyWith(
-                  noWindow: !noWindow,
-                ),
-              );
-            });
+                return state.copyWith(
+                  windowOptions: state.windowOptions.copyWith(
+                    noWindow: !noWindow,
+                  ),
+                );
+              },
+            );
+
+            if (ref.read(configScreenConfig)!.windowOptions.noWindow) {
+              ref.read(configScreenConfig.notifier).update(
+                    (state) => state = state!.copyWith(
+                      deviceOptions: state.deviceOptions.copyWith(
+                        stayAwake: false,
+                        showTouches: false,
+                        offScreenOnClose: false,
+                        turnOffDisplay: false,
+                      ),
+                    ),
+                  );
+            }
           },
           childBackgroundColor: Colors.transparent,
           childExpand: false,
@@ -64,16 +79,18 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
                     ? CheckboxState.checked
                     : CheckboxState.unchecked,
                 onChanged: (value) {
+                  debugPrint(value.toString());
                   if (value == CheckboxState.checked) {
-                    ref
-                        .read(configScreenConfig.notifier)
-                        .update((state) => state = state!.copyWith(
-                                deviceOptions: state.deviceOptions.copyWith(
+                    ref.read(configScreenConfig.notifier).update(
+                          (state) => state = state!.copyWith(
+                            deviceOptions: state.deviceOptions.copyWith(
                               stayAwake: false,
                               showTouches: false,
                               offScreenOnClose: false,
                               turnOffDisplay: false,
-                            )));
+                            ),
+                          ),
+                        );
                   }
 
                   ref.read(configScreenConfig.notifier).update(
