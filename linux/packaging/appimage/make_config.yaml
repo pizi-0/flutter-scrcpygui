@@ -1,0 +1,16 @@
+display_name: Scrcpy GUI
+
+icon: assets/logo.png
+
+keywords:
+  - scrcpy
+  - gui
+
+generic_name: Scrcpy GUI
+
+categories: 
+  - Utility
+
+startup_notify: true
+
+include: []

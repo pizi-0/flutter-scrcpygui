@@ -1,0 +1,29 @@
+display_name: Scrcpy GUI
+package_name: scrcpygui
+maintainer:
+  name: pizi-0
+  email: hafizirahim92@gmail.com
+priority: optional
+section: x11
+installed_size: 50000
+essential: false
+icon: assets/logo.png
+
+dependencies:
+  - libayatana-appindicator3-1
+
+postinstall_scripts:
+  - echo "Scrcpy GUI installed successfully"
+postuninstall_scripts:
+  - echo "Scrcpy GUI uninstalled successfully"
+
+keywords:
+  - scrcpy
+  - gui
+
+generic_name: Scrcpy GUI
+
+categories:
+  - Utility
+
+startup_notify: true
