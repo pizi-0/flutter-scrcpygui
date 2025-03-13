@@ -71,7 +71,7 @@ dependencies:
   archive: ^4.0.2
   keymap: ^0.0.92
   qr_flutter: ^4.1.0
-  multicast_dns: ^0.3.2+8
+  # multicast_dns: ^0.3.2+8
   hexcolor: ^3.0.1
   go_router: ^14.8.0
   go_transitions: ^0.7.1

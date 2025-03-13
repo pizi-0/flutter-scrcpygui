@@ -199,3 +199,4 @@ final shellEnv = {
 };
 
 const String adbMdns = '_adb-tls-connect._tcp';
+const String adbPairMdns = '_adb-tls-pairing._tcp';

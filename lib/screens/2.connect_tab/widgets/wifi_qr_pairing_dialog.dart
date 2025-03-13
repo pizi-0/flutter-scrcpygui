@@ -1,10 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
+import 'package:bonsoir/bonsoir.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
-import 'package:multicast_dns/multicast_dns.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -12,6 +11,7 @@ import 'package:string_extensions/string_extensions.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../utils/adb_utils.dart';
+import '../../../utils/bonsoir_utils.dart';
 
 class WifiQrPairing extends ConsumerStatefulWidget {
   const WifiQrPairing({super.key});
@@ -21,24 +21,31 @@ class WifiQrPairing extends ConsumerStatefulWidget {
 }
 
 class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
-  late MDnsClient client;
+  late BonsoirDiscovery discovery;
   final String id = const Uuid().v1();
   bool loading = false;
-  late Stream stream;
+  late Stream<BonsoirDiscoveryEvent>? stream;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (a) {
-        _startScan();
-      },
-    );
+    try {
+      discovery = BonsoirDiscovery(type: adbPairMdns);
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+    }
+    WidgetsBinding.instance.addPostFrameCallback((a) async {
+      stream = (await BonsoirUtils.startPairDiscovery(discovery, ref));
+
+      if (stream != null) {
+        await _pair(stream!);
+      }
+    });
   }
 
   @override
   void dispose() {
-    client.stop();
+    discovery.stop();
     super.dispose();
   }
 
@@ -95,41 +102,63 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
     );
   }
 
-  _startScan() async {
-    client = MDnsClient();
-    late PtrResourceRecord? scanResult;
+  _pair(Stream<BonsoirDiscoveryEvent> stream) async {
     late String pairRes;
 
-    await client.start();
-    debugPrint('Start scan for device to pair');
+    final toPair = (await stream.firstWhere(
+        (e) => e.type == BonsoirDiscoveryEventType.discoveryServiceFound,
+        orElse: () =>
+            BonsoirDiscoveryEvent(type: BonsoirDiscoveryEventType.unknown)));
 
-    stream = client.lookup<PtrResourceRecord>(
-        ResourceRecordQuery.serverPointer('_adb-tls-pairing._tcp'),
-        timeout: 180.seconds);
-
-    scanResult = await stream.first.onError((error, stackTrace) => null);
-
-    client.stop();
-
-    if (scanResult != null) {
+    if (toPair.type != BonsoirDiscoveryEventType.unknown) {
       if (mounted) {
         loading = true;
         setState(() {});
       }
 
-      debugPrint('Start pairing');
-
       pairRes = await AdbUtils.pairWithCode(
-          scanResult.domainName.replaceAll('._adb-tls-pairing._tcp.local', ''),
-          id.removeSpecial,
-          ref);
-
+          toPair.service!.name, id.removeSpecial, ref);
       context.pop(pairRes.contains('Successfully paired to'));
     } else {
-      debugPrint('scan is null');
-      if (mounted) {
-        context.pop();
-      }
+      context.pop();
     }
   }
+
+  // _startScan() async {
+  //   client = MDnsClient();
+  //   late PtrResourceRecord? scanResult;
+  //   late String pairRes;
+
+  //   await client.start();
+  //   debugPrint('Start scan for device to pair');
+
+  //   stream = client.lookup<PtrResourceRecord>(
+  //       ResourceRecordQuery.serverPointer('_adb-tls-pairing._tcp'),
+  //       timeout: 180.seconds);
+
+  //   scanResult = await stream.first.onError((error, stackTrace) => null);
+
+  //   client.stop();
+
+  //   if (scanResult != null) {
+  //     if (mounted) {
+  //       loading = true;
+  //       setState(() {});
+  //     }
+
+  //     debugPrint('Start pairing');
+
+  //     pairRes = await AdbUtils.pairWithCode(
+  //         scanResult.domainName.replaceAll('._adb-tls-pairing._tcp.local', ''),
+  //         id.removeSpecial,
+  //         ref);
+
+  //     context.pop(pairRes.contains('Successfully paired to'));
+  //   } else {
+  //     debugPrint('scan is null');
+  //     if (mounted) {
+  //       context.pop();
+  //     }
+  //   }
+  // }
 }

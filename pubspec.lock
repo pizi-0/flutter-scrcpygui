@@ -737,14 +737,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.16.8"
-  multicast_dns:
-    dependency: "direct main"
-    description:
-      name: multicast_dns
-      sha256: "0a568c8411ab0979ab8cd4af1c29b6d316d854ab81592463ccceb92b35fde813"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.2+8"
   nested:
     dependency: transitive
     description:

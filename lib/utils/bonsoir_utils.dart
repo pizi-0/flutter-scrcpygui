@@ -27,4 +27,17 @@ class BonsoirUtils {
       debugPrint(e.toString());
     }
   }
+
+  static Future<Stream<BonsoirDiscoveryEvent>?> startPairDiscovery(
+      BonsoirDiscovery discovery, WidgetRef ref) async {
+    try {
+      await discovery.ready;
+      await discovery.start();
+
+      return discovery.eventStream!;
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      return null;
+    }
+  }
 }
