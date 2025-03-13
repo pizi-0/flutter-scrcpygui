@@ -58,6 +58,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((a) async {
+      print(dev.info);
       if (dev.info == null) {
         _getScrcpyInfo();
       }
@@ -158,7 +159,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
             onPressed: _getScrcpyInfo,
             icon: const Icon(Icons.refresh),
           ),
-          children: loading
+          children: loading || dev.info == null
               ? [
                   const Center(
                     child: CircularProgressIndicator(),
