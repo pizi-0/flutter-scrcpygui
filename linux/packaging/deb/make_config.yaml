@@ -10,7 +10,9 @@ essential: false
 icon: assets/logo.png
 
 dependencies:
-  - libayatana-appindicator3-1
+  - libayatana-appindicator3.so.1
+  - libayatana-indicator3.so.7
+  - libayatana-ido3-0.4.so.0
 
 postinstall_scripts:
   - echo "Scrcpy GUI installed successfully"
