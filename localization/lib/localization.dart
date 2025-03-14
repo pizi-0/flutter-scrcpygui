@@ -3760,18 +3760,22 @@ class ConnectLocWithMdnsInfo {
   const ConnectLocWithMdnsInfo({
     required this.i1,
     required this.i2,
+    required this.i3,
   });
   factory ConnectLocWithMdnsInfo.fromJson(Map<String, dynamic> json) {
     return ConnectLocWithMdnsInfo(
       i1: (json['i1'] ?? '').toString(),
       i2: (json['i2'] ?? '').toString(),
+      i3: (json['i3'] ?? '').toString(),
     );
   }
   final String i1;
   final String i2;
+  final String i3;
   Map<String, Object> get _content => {
         r'''i1''': i1,
         r'''i2''': i2,
+        r'''i3''': i3,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -5061,6 +5065,108 @@ class QuitDialogLocDisconnect {
   }
 }
 
+class DisconnectDialogLoc {
+  const DisconnectDialogLoc({
+    required this.title,
+    required this.hasRunning,
+  });
+  factory DisconnectDialogLoc.fromJson(Map<String, dynamic> json) {
+    return DisconnectDialogLoc(
+      title: ({required String name}) => (json['title'] ?? '')
+          .toString()
+          .replaceAll(r'${name}', name)
+          .replaceAll(_variableRegExp, ''),
+      hasRunning: DisconnectDialogLocHasRunning.fromJson(
+          (json['has_running'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String Function({required String name}) title;
+
+  final DisconnectDialogLocHasRunning hasRunning;
+
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''has_running''': hasRunning,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class DisconnectDialogLocHasRunning {
+  const DisconnectDialogLocHasRunning({
+    required this.label,
+    required this.info,
+  });
+  factory DisconnectDialogLocHasRunning.fromJson(Map<String, dynamic> json) {
+    return DisconnectDialogLocHasRunning(
+      label: ({required String name, required String count}) =>
+          (json['label'] ?? '')
+              .toString()
+              .replaceAll(r'${name}', name)
+              .replaceAll(r'${count}', count)
+              .replaceAll(_variableRegExp, ''),
+      info: (json['info'] ?? '').toString(),
+    );
+  }
+  final String Function({required String name, required String count}) label;
+
+  final String info;
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class CloseDialogLoc {
   const CloseDialogLoc({
     required this.notAllowed,
@@ -5338,6 +5444,7 @@ class LocalizationMessages {
     required this.scrcpyManagerLoc,
     required this.settingsLoc,
     required this.quitDialogLoc,
+    required this.disconnectDialogLoc,
     required this.closeDialogLoc,
     required this.buttonLabelLoc,
     required this.statusLoc,
@@ -5383,6 +5490,8 @@ class LocalizationMessages {
           (json['settings_loc'] as Map).cast<String, dynamic>()),
       quitDialogLoc: QuitDialogLoc.fromJson(
           (json['quit_dialog_loc'] as Map).cast<String, dynamic>()),
+      disconnectDialogLoc: DisconnectDialogLoc.fromJson(
+          (json['disconnect_dialog_loc'] as Map).cast<String, dynamic>()),
       closeDialogLoc: CloseDialogLoc.fromJson(
           (json['close_dialog_loc'] as Map).cast<String, dynamic>()),
       buttonLabelLoc: ButtonLabelLoc.fromJson(
@@ -5431,6 +5540,8 @@ class LocalizationMessages {
 
   final QuitDialogLoc quitDialogLoc;
 
+  final DisconnectDialogLoc disconnectDialogLoc;
+
   final CloseDialogLoc closeDialogLoc;
 
   final ButtonLabelLoc buttonLabelLoc;
@@ -5459,6 +5570,7 @@ class LocalizationMessages {
         r'''scrcpy_manager_loc''': scrcpyManagerLoc,
         r'''settings_loc''': settingsLoc,
         r'''quit_dialog_loc''': quitDialogLoc,
+        r'''disconnect_dialog_loc''': disconnectDialogLoc,
         r'''close_dialog_loc''': closeDialogLoc,
         r'''button_label_loc''': buttonLabelLoc,
         r'''status_loc''': statusLoc,
@@ -5793,6 +5905,7 @@ final LocalizationMessages en = LocalizationMessages(
       info: ConnectLocWithMdnsInfo(
         i1: 'Make sure your device is paired to your PC.',
         i2: 'If your device is not showing, try turning Wireless ADB off and on.',
+        i3: 'MDNS devices usually will connect automatically if paired.',
       ),
     ),
     qrPair: ConnectLocQrPair(
@@ -5891,6 +6004,14 @@ final LocalizationMessages en = LocalizationMessages(
     disconnect: QuitDialogLocDisconnect(
       label: 'Disconnect wireless ADB?',
       info: ({required String count}) => '''${count} device(s)''',
+    ),
+  ),
+  disconnectDialogLoc: DisconnectDialogLoc(
+    title: ({required String name}) => '''Disconnect ${name}?''',
+    hasRunning: DisconnectDialogLocHasRunning(
+      label: ({required String name, required String count}) =>
+          '''${name} has ${count} running instance(s)''',
+      info: 'Disconnecting will kill the scrcpy instance(s)',
     ),
   ),
   closeDialogLoc: CloseDialogLoc(
@@ -6242,6 +6363,7 @@ final LocalizationMessages es = LocalizationMessages(
       info: ConnectLocWithMdnsInfo(
         i1: 'Asegúrate de que tu dispositivo esté emparejado con tu PC.',
         i2: 'Si tu dispositivo no aparece, intenta apagar y encender ADB inalámbrico.',
+        i3: '',
       ),
     ),
     qrPair: ConnectLocQrPair(
@@ -6340,6 +6462,13 @@ final LocalizationMessages es = LocalizationMessages(
     disconnect: QuitDialogLocDisconnect(
       label: '¿Desconectar ADB inalámbrico?',
       info: ({required String count}) => '''${count} dispositivo(s)''',
+    ),
+  ),
+  disconnectDialogLoc: DisconnectDialogLoc(
+    title: ({required String name}) => '',
+    hasRunning: DisconnectDialogLocHasRunning(
+      label: ({required String name, required String count}) => '',
+      info: '',
     ),
   ),
   closeDialogLoc: CloseDialogLoc(
@@ -6687,6 +6816,7 @@ final LocalizationMessages ms = LocalizationMessages(
       info: ConnectLocWithMdnsInfo(
         i1: 'Pastikan peranti anda dipasangkan ke PC anda.',
         i2: 'Jika peranti anda tidak dipaparkan, cuba matikan dan hidupkan ADB Tanpa Wayar.',
+        i3: '',
       ),
     ),
     qrPair: ConnectLocQrPair(
@@ -6785,6 +6915,13 @@ final LocalizationMessages ms = LocalizationMessages(
     disconnect: QuitDialogLocDisconnect(
       label: 'Putuskan sambungan ADB tanpa wayar?',
       info: ({required String count}) => '''${count} peranti''',
+    ),
+  ),
+  disconnectDialogLoc: DisconnectDialogLoc(
+    title: ({required String name}) => '',
+    hasRunning: DisconnectDialogLocHasRunning(
+      label: ({required String name, required String count}) => '',
+      info: '',
     ),
   ),
   closeDialogLoc: CloseDialogLoc(

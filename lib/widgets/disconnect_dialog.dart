@@ -1,11 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import '../providers/settings_provider.dart';
 import '../utils/const.dart';
 
 class DisconnectDialog extends ConsumerStatefulWidget {
@@ -31,13 +32,6 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-    final colorScheme = Theme.of(context).colorScheme;
-
-    TextStyle? style = Theme.of(context).textTheme.titleSmall;
-    final buttonStyle = ButtonStyle(
-        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(appTheme.widgetRadius * 0.8))));
     final runningInstance = ref
         .watch(scrcpyInstanceProvider)
         .where((inst) => inst.device == widget.device);
@@ -54,21 +48,19 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
                 SizedBox(
                   height: 30,
                   width: 30,
-                  child: CircularProgressIndicator.adaptive(),
+                  child: CircularProgressIndicator(),
                 ),
                 SizedBox(height: 20),
-                Material(child: Text('Closing')),
+                Text('Closing')
               ],
             ),
           )
         : AlertDialog(
-            backgroundColor: colorScheme.surface,
-            insetPadding: const EdgeInsets.all(16),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(appTheme.widgetRadius),
-            ),
             title: Text(
-                'Disconnect ${device.name?.toUpperCase() ?? device.modelName.toUpperCase()}?'),
+              el.disconnectDialogLoc.title(
+                  name: device.name?.toUpperCase() ??
+                      device.modelName.toUpperCase()),
+            ),
             content: ConstrainedBox(
               constraints:
                   const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
@@ -77,21 +69,15 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   if (runningInstance.isNotEmpty)
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.inversePrimary,
-                        borderRadius:
-                            BorderRadius.circular(appTheme.widgetRadius * 0.8),
-                      ),
-                      margin: const EdgeInsets.all(4),
-                      child: ListTile(
-                        title: Text(
-                          '${device.name?.toUpperCase() ?? device.modelName.toUpperCase()} has ${runningInstance.length} running server(s)',
-                          style: style,
-                        ),
-                        subtitle: const Text(
-                          'Disconnecting will kill the server(s)',
-                        ),
+                    OutlinedContainer(
+                      padding: EdgeInsets.all(16),
+                      child: PgListTile(
+                        title: el.disconnectDialogLoc.hasRunning.label(
+                            name: device.name?.toUpperCase() ??
+                                device.modelName.toUpperCase(),
+                            count: '${runningInstance.length}'),
+                        subtitle: el.disconnectDialogLoc.hasRunning.info,
+                        showSubtitle: true,
                       ),
                     ),
                 ],
@@ -102,21 +88,18 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  TextButton(
-                    style: buttonStyle,
+                  Button.primary(
                     onPressed: () {
                       context.pop(true);
                     },
-                    child: const Text('Yes'),
+                    child: Text(el.commonLoc.yes),
                   ),
                   const SizedBox(width: 10),
-                  TextButton(
-                    autofocus: true,
-                    style: buttonStyle,
+                  Button.secondary(
                     onPressed: () {
                       context.pop(false);
                     },
-                    child: const Text('No'),
+                    child: Text(el.commonLoc.no),
                   ),
                 ],
               )

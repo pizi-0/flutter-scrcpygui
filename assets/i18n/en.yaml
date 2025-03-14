@@ -265,6 +265,7 @@ connect_loc:
     info: 
       i1: Make sure your device is paired to your PC.
       i2: If your device is not showing, try turning Wireless ADB off and on.
+      i3: MDNS devices usually will connect automatically if paired.
 
   qr_pair: 
     label: QR pairing
@@ -353,6 +354,14 @@ quit_dialog_loc:
   disconnect: 
     label: Disconnect wireless ADB?
     info: ${count} device(s)
+
+# home tab > device tile > disconnect dialog
+disconnect_dialog_loc:
+  title: Disconnect ${name}?
+  has_running:
+    label: ${name} has ${count} running instance(s)
+    info: Disconnecting will kill the scrcpy instance(s)
+
 
 # config screen > close dialog
 close_dialog_loc:

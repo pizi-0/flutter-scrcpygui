@@ -62,6 +62,7 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
                 ],
               ),
               Text(el.connectLoc.withMdns.info.i2).muted().xSmall(),
+              Text(el.connectLoc.withMdns.info.i3).muted().xSmall(),
             ],
           ),
         )
