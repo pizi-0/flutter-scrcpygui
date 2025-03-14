@@ -58,7 +58,6 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((a) async {
-      print(dev.info);
       if (dev.info == null) {
         _getScrcpyInfo();
       }
