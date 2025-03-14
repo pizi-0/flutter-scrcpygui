@@ -47,6 +47,7 @@ class _IPConnectState extends ConsumerState<IPConnect>
               placeholder:
                   Text('Ip:port(${el.commonLoc.default$.toLowerCase()}=5555)'),
               controller: ipInput,
+              onSubmitted: (value) => _connect(),
             ),
           ),
         ),
