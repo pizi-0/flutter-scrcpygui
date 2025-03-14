@@ -231,7 +231,11 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                         widget.conf;
                     _start();
                   },
-            icon: const Icon(Icons.play_arrow_rounded),
+            icon: loading
+                ? SizedBox.square(
+                    dimension: 20,
+                    child: Center(child: CircularProgressIndicator()))
+                : const Icon(Icons.play_arrow_rounded),
           ),
         ],
       ),
