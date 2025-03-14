@@ -102,9 +102,9 @@ class _BdTileState extends ConsumerState<BdTile> {
       child: PgListTile(
         title: '${bd.name} ${isSaved ? '[${device!.name!}]' : ''}',
         titleOverflow: true,
-        showSubtitle: true,
+        // showSubtitle: true,
         showSubtitleLeading: false,
-        subtitle: '${bd.toJson()['service.host']}:${bd.port}',
+        // subtitle: '${bd.toJson()['service.host']}:${bd.port}',
         trailing: Align(
           alignment: Alignment.centerRight,
           child: Center(

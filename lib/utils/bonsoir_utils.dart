@@ -12,10 +12,10 @@ class BonsoirUtils {
 
       discovery.eventStream!.listen((event) async {
         if (event.type == BonsoirDiscoveryEventType.discoveryServiceFound) {
-          await discovery.serviceResolver.resolveService(event.service!);
+          // await discovery.serviceResolver.resolveService(event.service!);
+          ref.read(bonsoirDeviceProvider.notifier).addService(event.service!);
         } else if (event.type ==
             BonsoirDiscoveryEventType.discoveryServiceResolved) {
-          ref.read(bonsoirDeviceProvider.notifier).addService(event.service!);
         } else if (event.type ==
             BonsoirDiscoveryEventType.discoveryServiceLost) {
           ref
