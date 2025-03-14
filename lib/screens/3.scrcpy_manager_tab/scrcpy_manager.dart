@@ -142,27 +142,34 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
           label: el.scrcpyManagerLoc.current.label,
           children: [
             installed.length > 1
-                ? ConfigDropdownOthers(
-                    initialValue: installed
-                        .firstWhere((i) => i.version == scrcpyVersion)
-                        .version,
-                    items: installed
-                        .map((ins) => SelectItemButton(
-                              value: ins,
-                              child: Text(ins.version == BUNDLED_VERSION
-                                  ? '${ins.version} (${el.commonLoc.bundled})'
-                                  : ins.version),
-                            ))
-                        .toList(),
-                    label: latest == scrcpyVersion
+                ? ConfigCustom(
+                    title: latest == scrcpyVersion
                         ? '${el.scrcpyManagerLoc.current.inUse} (${el.statusLoc.latest})'
                         : el.scrcpyManagerLoc.current.inUse,
-                    onSelected: (value) async {
-                      await SetupUtils.saveCurrentScrcpyVersion(value.version);
-                      ref.read(execDirProvider.notifier).state = value.path;
-                      ref.read(scrcpyVersionProvider.notifier).state =
-                          value.version;
-                    },
+                    child: Select(
+                      filled: true,
+                      value: installed
+                          .firstWhere((ins) => ins.version == scrcpyVersion),
+                      onChanged: (value) async {
+                        await SetupUtils.saveCurrentScrcpyVersion(
+                            value!.version);
+                        ref.read(execDirProvider.notifier).state = value.path;
+                        ref.read(scrcpyVersionProvider.notifier).state =
+                            value.version;
+                      },
+                      popup: SelectPopup(
+                        items: SelectItemList(
+                            children: installed
+                                .map((ins) => SelectItemButton(
+                                      value: ins,
+                                      child: Text(ins.version == BUNDLED_VERSION
+                                          ? '${ins.version} (${el.commonLoc.bundled})'
+                                          : ins.version),
+                                    ))
+                                .toList()),
+                      ).call,
+                      itemBuilder: (context, value) => Text(value.version),
+                    ),
                   )
                 : ConfigCustom(
                     padRight: 8,
