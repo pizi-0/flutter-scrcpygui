@@ -120,45 +120,9 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
           toPair.service!.name, id.removeSpecial, ref);
       context.pop(pairRes.contains('Successfully paired to'));
     } else {
-      context.pop();
+      if (mounted) {
+        context.pop();
+      }
     }
   }
-
-  // _startScan() async {
-  //   client = MDnsClient();
-  //   late PtrResourceRecord? scanResult;
-  //   late String pairRes;
-
-  //   await client.start();
-  //   debugPrint('Start scan for device to pair');
-
-  //   stream = client.lookup<PtrResourceRecord>(
-  //       ResourceRecordQuery.serverPointer('_adb-tls-pairing._tcp'),
-  //       timeout: 180.seconds);
-
-  //   scanResult = await stream.first.onError((error, stackTrace) => null);
-
-  //   client.stop();
-
-  //   if (scanResult != null) {
-  //     if (mounted) {
-  //       loading = true;
-  //       setState(() {});
-  //     }
-
-  //     debugPrint('Start pairing');
-
-  //     pairRes = await AdbUtils.pairWithCode(
-  //         scanResult.domainName.replaceAll('._adb-tls-pairing._tcp.local', ''),
-  //         id.removeSpecial,
-  //         ref);
-
-  //     context.pop(pairRes.contains('Successfully paired to'));
-  //   } else {
-  //     debugPrint('scan is null');
-  //     if (mounted) {
-  //       context.pop();
-  //     }
-  //   }
-  // }
 }
