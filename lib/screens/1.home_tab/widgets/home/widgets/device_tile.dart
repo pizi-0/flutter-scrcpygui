@@ -5,6 +5,7 @@ import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/widgets/disconnect_dialog.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -191,9 +192,15 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
     setState(() {});
 
     try {
-      final workDir = ref.read(execDirProvider);
+      final res = await showDialog(
+        context: context,
+        builder: (context) => DisconnectDialog(device: widget.device),
+      );
 
-      await AdbUtils.disconnectWirelessDevice(workDir, widget.device);
+      if (res) {
+        final workDir = ref.read(execDirProvider);
+        await AdbUtils.disconnectWirelessDevice(workDir, widget.device);
+      }
     } on Exception catch (e) {
       debugPrint(e.toString());
       showToast(
