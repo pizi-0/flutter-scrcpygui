@@ -371,6 +371,13 @@ close_dialog_loc:
   command_preview: 'Command preview:'
   name: 'Name:'
 
+# connect tab > ip history 
+
+ip_history_loc:
+  title: History
+  empty: No history
+
+
 
 # button
 button_label_loc:
@@ -386,6 +393,7 @@ button_label_loc:
   discard: Discard
   overwrite: Overwrite
   save: Save
+  clear: Clear
 
 # status 
 status_loc: 

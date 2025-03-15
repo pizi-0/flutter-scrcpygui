@@ -5224,6 +5224,51 @@ class CloseDialogLoc {
   }
 }
 
+class IpHistoryLoc {
+  const IpHistoryLoc({
+    required this.title,
+    required this.empty,
+  });
+  factory IpHistoryLoc.fromJson(Map<String, dynamic> json) {
+    return IpHistoryLoc(
+      title: (json['title'] ?? '').toString(),
+      empty: (json['empty'] ?? '').toString(),
+    );
+  }
+  final String title;
+  final String empty;
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''empty''': empty,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class ButtonLabelLoc {
   const ButtonLabelLoc({
     required this.ok,
@@ -5238,6 +5283,7 @@ class ButtonLabelLoc {
     required this.discard,
     required this.overwrite,
     required this.save,
+    required this.clear,
   });
   factory ButtonLabelLoc.fromJson(Map<String, dynamic> json) {
     return ButtonLabelLoc(
@@ -5253,6 +5299,7 @@ class ButtonLabelLoc {
       discard: (json['discard'] ?? '').toString(),
       overwrite: (json['overwrite'] ?? '').toString(),
       save: (json['save'] ?? '').toString(),
+      clear: (json['clear'] ?? '').toString(),
     );
   }
   final String ok;
@@ -5267,6 +5314,7 @@ class ButtonLabelLoc {
   final String discard;
   final String overwrite;
   final String save;
+  final String clear;
   Map<String, Object> get _content => {
         r'''ok''': ok,
         r'''close''': close,
@@ -5280,6 +5328,7 @@ class ButtonLabelLoc {
         r'''discard''': discard,
         r'''overwrite''': overwrite,
         r'''save''': save,
+        r'''clear''': clear,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -5446,6 +5495,7 @@ class LocalizationMessages {
     required this.quitDialogLoc,
     required this.disconnectDialogLoc,
     required this.closeDialogLoc,
+    required this.ipHistoryLoc,
     required this.buttonLabelLoc,
     required this.statusLoc,
     required this.commonLoc,
@@ -5494,6 +5544,8 @@ class LocalizationMessages {
           (json['disconnect_dialog_loc'] as Map).cast<String, dynamic>()),
       closeDialogLoc: CloseDialogLoc.fromJson(
           (json['close_dialog_loc'] as Map).cast<String, dynamic>()),
+      ipHistoryLoc: IpHistoryLoc.fromJson(
+          (json['ip_history_loc'] as Map).cast<String, dynamic>()),
       buttonLabelLoc: ButtonLabelLoc.fromJson(
           (json['button_label_loc'] as Map).cast<String, dynamic>()),
       statusLoc: StatusLoc.fromJson(
@@ -5544,6 +5596,8 @@ class LocalizationMessages {
 
   final CloseDialogLoc closeDialogLoc;
 
+  final IpHistoryLoc ipHistoryLoc;
+
   final ButtonLabelLoc buttonLabelLoc;
 
   final StatusLoc statusLoc;
@@ -5572,6 +5626,7 @@ class LocalizationMessages {
         r'''quit_dialog_loc''': quitDialogLoc,
         r'''disconnect_dialog_loc''': disconnectDialogLoc,
         r'''close_dialog_loc''': closeDialogLoc,
+        r'''ip_history_loc''': ipHistoryLoc,
         r'''button_label_loc''': buttonLabelLoc,
         r'''status_loc''': statusLoc,
         r'''common_loc''': commonLoc,
@@ -6021,6 +6076,10 @@ final LocalizationMessages en = LocalizationMessages(
     commandPreview: 'Command preview:',
     name: 'Name:',
   ),
+  ipHistoryLoc: IpHistoryLoc(
+    title: 'History',
+    empty: 'No history',
+  ),
   buttonLabelLoc: ButtonLabelLoc(
     ok: 'Ok',
     close: 'Close',
@@ -6034,6 +6093,7 @@ final LocalizationMessages en = LocalizationMessages(
     discard: 'Discard',
     overwrite: 'Overwrite',
     save: 'Save',
+    clear: 'Clear',
   ),
   statusLoc: StatusLoc(
     failed: 'Failed',
@@ -6478,6 +6538,10 @@ final LocalizationMessages es = LocalizationMessages(
     commandPreview: 'Vista previa del comando:',
     name: 'Nombre:',
   ),
+  ipHistoryLoc: IpHistoryLoc(
+    title: '',
+    empty: '',
+  ),
   buttonLabelLoc: ButtonLabelLoc(
     ok: 'Aceptar',
     close: 'Cerrar',
@@ -6491,6 +6555,7 @@ final LocalizationMessages es = LocalizationMessages(
     discard: 'Descartar',
     overwrite: 'Sobrescribir',
     save: 'Guardar',
+    clear: '',
   ),
   statusLoc: StatusLoc(
     failed: 'Fallido',
@@ -6931,6 +6996,10 @@ final LocalizationMessages ms = LocalizationMessages(
     commandPreview: 'Pratonton arahan:',
     name: 'Nama:',
   ),
+  ipHistoryLoc: IpHistoryLoc(
+    title: '',
+    empty: '',
+  ),
   buttonLabelLoc: ButtonLabelLoc(
     ok: 'Ok',
     close: 'Tutup',
@@ -6944,6 +7013,7 @@ final LocalizationMessages ms = LocalizationMessages(
     discard: 'Buang',
     overwrite: 'Timpa',
     save: 'Simpan',
+    clear: '',
   ),
   statusLoc: StatusLoc(
     failed: 'Gagal',
