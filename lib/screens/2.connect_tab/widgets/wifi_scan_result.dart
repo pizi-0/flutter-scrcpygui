@@ -5,7 +5,6 @@ import 'package:bonsoir/bonsoir.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
-import 'package:scrcpygui/screens/2.connect_tab/widgets/wifi_qr_pairing_dialog.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../models/adb_devices.dart';
@@ -51,14 +50,14 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
               Row(
                 children: [
                   Text(el.connectLoc.withMdns.info.i1).muted().xSmall(),
-                  LinkButton(
-                    density: ButtonDensity.dense,
-                    onPressed: () => showDialog(
-                      context: context,
-                      builder: (context) => const WifiQrPairing(),
-                    ),
-                    child: const Icon(Icons.qr_code).iconSmall(),
-                  )
+                  // LinkButton(
+                  //   density: ButtonDensity.dense,
+                  //   onPressed: () => showDialog(
+                  //     context: context,
+                  //     builder: (context) => const WifiQrPairing(),
+                  //   ),
+                  //   child: const Icon(Icons.qr_code).iconSmall(),
+                  // )
                 ],
               ),
               Text(el.connectLoc.withMdns.info.i2).muted().xSmall(),

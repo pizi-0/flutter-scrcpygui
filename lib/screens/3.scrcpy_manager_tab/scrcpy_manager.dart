@@ -49,6 +49,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
         showToast(
           showDuration: 1.5.seconds,
           context: context,
+          location: ToastLocation.bottomCenter,
           builder: (context, overlay) => SurfaceCard(
               child: Basic(
             title: Text(el.scrcpyManagerLoc.infoPopup.error),
