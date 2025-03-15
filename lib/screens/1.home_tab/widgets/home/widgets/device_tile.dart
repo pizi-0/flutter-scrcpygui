@@ -197,7 +197,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
         builder: (context) => DisconnectDialog(device: widget.device),
       );
 
-      if (res) {
+      if (res ?? false) {
         final workDir = ref.read(execDirProvider);
         await AdbUtils.disconnectWirelessDevice(workDir, widget.device);
       }
