@@ -136,6 +136,8 @@ class ConfigUserInput extends ConsumerWidget {
   final ValueChanged<String> onChanged;
   final Function()? onTap;
   final bool showinfo;
+  final Widget? placeholder;
+  final List<TextInputFormatter>? inputFormatters;
 
   const ConfigUserInput({
     super.key,
@@ -146,6 +148,8 @@ class ConfigUserInput extends ConsumerWidget {
     this.unit,
     required this.onChanged,
     this.onTap,
+    this.placeholder,
+    this.inputFormatters,
   });
 
   @override
@@ -158,10 +162,12 @@ class ConfigUserInput extends ConsumerWidget {
         constraints:
             const BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
         child: TextField(
+          placeholder: placeholder,
           filled: true,
-          inputFormatters: [
-            FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
-          ],
+          inputFormatters: inputFormatters ??
+              [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+              ],
           trailing: Text(unit != null ? '$unit ' : '').xSmall(),
           textAlign: TextAlign.center,
           controller: controller,
