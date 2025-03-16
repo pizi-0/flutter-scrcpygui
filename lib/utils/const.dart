@@ -46,7 +46,7 @@ final ScrcpyConfig defaultMirror = ScrcpyConfig(
     resolutionScale: 100.0,
     videoBitrate: 8,
     maxFPS: 0,
-    displayId: 0,
+    displayId: '0',
   ),
   audioOptions: SAudioOptions(
     audioFormat: AudioFormat.opus,
@@ -84,7 +84,7 @@ final ScrcpyConfig newConfig = ScrcpyConfig(
     resolutionScale: 100.0,
     videoBitrate: 8,
     maxFPS: 0,
-    displayId: 0,
+    displayId: '0',
   ),
   audioOptions: SAudioOptions(
     audioFormat: AudioFormat.opus,
@@ -128,7 +128,7 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
     resolutionScale: 100.0,
     videoBitrate: 8,
     maxFPS: 0,
-    displayId: 0,
+    displayId: '0',
   ),
   audioOptions: SAudioOptions(
     audioFormat: AudioFormat.opus,

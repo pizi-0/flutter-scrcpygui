@@ -40,7 +40,6 @@ class ScrcpyConfig {
     String? configName,
     ScrcpyMode? scrcpyMode,
     bool? isRecording,
-    String? displayId,
     SVideoOptions? videoOptions,
     SAudioOptions? audioOptions,
     SDeviceOptions? deviceOptions,

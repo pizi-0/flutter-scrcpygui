@@ -29,9 +29,11 @@ class DisplayIdOverride extends ConsumerWidget {
           .toList(),
       onSelected: selectedDevice.info!.displays.length == 1
           ? null
-          : (value) => ref
-              .read(configOverrideProvider.notifier)
-              .update((state) => state = state!.copyWith(displayId: value)),
+          : (value) => ref.read(configOverrideProvider.notifier).update(
+                (state) => state = state!.copyWith(
+                    videoOptions:
+                        state.videoOptions.copyWith(displayId: value)),
+              ),
     );
   }
 }
