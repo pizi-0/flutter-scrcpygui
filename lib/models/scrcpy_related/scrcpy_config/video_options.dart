@@ -10,7 +10,9 @@ class SVideoOptions {
   final double resolutionScale;
   final int videoBitrate;
   final double maxFPS;
-  final int displayId;
+  final String displayId;
+  final String? vdResolution;
+  final String? vdDPI;
 
   SVideoOptions({
     required this.videoFormat,
@@ -20,6 +22,8 @@ class SVideoOptions {
     required this.videoBitrate,
     required this.maxFPS,
     required this.displayId,
+    this.vdResolution,
+    this.vdDPI,
   });
 
   SVideoOptions copyWith({
@@ -29,7 +33,9 @@ class SVideoOptions {
     double? resolutionScale,
     int? videoBitrate,
     double? maxFPS,
-    int? displayId,
+    String? displayId,
+    String? vdResolution,
+    String? vdDPI,
   }) {
     return SVideoOptions(
       videoFormat: videoFormat ?? this.videoFormat,
@@ -39,6 +45,8 @@ class SVideoOptions {
       videoBitrate: videoBitrate ?? this.videoBitrate,
       maxFPS: maxFPS ?? this.maxFPS,
       displayId: displayId ?? this.displayId,
+      vdResolution: vdResolution ?? this.vdResolution,
+      vdDPI: vdDPI ?? this.vdDPI,
     );
   }
 
@@ -51,6 +59,8 @@ class SVideoOptions {
       'videoBitrate': videoBitrate,
       'maxFPS': maxFPS,
       'displayId': displayId,
+      'vdResolution': vdResolution,
+      'vdDPI': vdDPI,
     };
   }
 
@@ -62,7 +72,9 @@ class SVideoOptions {
       resolutionScale: map['resolutionScale'] as double,
       videoBitrate: map['videoBitrate'] as int,
       maxFPS: map['maxFPS'].toDouble(),
-      displayId: map['displayId'] as int,
+      displayId: map['displayId'] as String,
+      vdResolution: map['vdResolution'] as String?,
+      vdDPI: map['vdDPI'] as String?,
     );
   }
 
@@ -86,7 +98,9 @@ class SVideoOptions {
         other.resolutionScale == resolutionScale &&
         other.videoBitrate == videoBitrate &&
         other.maxFPS == maxFPS &&
-        other.displayId == displayId;
+        other.displayId == displayId &&
+        other.vdResolution == vdResolution &&
+        other.vdDPI == vdDPI;
   }
 
   @override
@@ -97,6 +111,8 @@ class SVideoOptions {
         resolutionScale.hashCode ^
         videoBitrate.hashCode ^
         maxFPS.hashCode ^
-        displayId.hashCode;
+        displayId.hashCode ^
+        vdResolution.hashCode ^
+        vdDPI.hashCode;
   }
 }

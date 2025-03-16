@@ -5,6 +5,7 @@ import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
+import 'package:scrcpygui/utils/extension.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 class ScrcpyCommand {
@@ -105,7 +106,22 @@ class ScrcpyCommand {
   }
 
   static String _displayId(ScrcpyConfig config) {
-    if (config.videoOptions.displayId != 0) {
+    if (config.videoOptions.displayId == 'new') {
+      var newVd = ' --new-display';
+      var res = config.videoOptions.vdResolution != null &&
+              config.videoOptions.vdResolution!.isValidResolution
+          ? config.videoOptions.vdResolution
+          : '';
+
+      var dpi =
+          config.videoOptions.vdDPI != null && config.videoOptions.vdDPI != ''
+              ? '/${config.videoOptions.vdDPI}'
+              : '';
+
+      return '$newVd${res!.isNotEmpty || dpi.isNotEmpty ? '=' : ''}$res$dpi';
+    }
+
+    if (config.videoOptions.displayId != '0') {
       return ' --display-id=${config.videoOptions.displayId}';
     }
     return '';
@@ -119,16 +135,20 @@ class ScrcpyCommand {
   }
 
   static String _maxSize(ScrcpyConfig config, ScrcpyInfo info) {
-    final maxRes = info.displays
-        .firstWhere((d) => d.id == config.videoOptions.displayId.toString())
-        .resolution
-        .split('x');
+    if (config.videoOptions.displayId == 'new') {
+      return '';
+    } else if (config.videoOptions.displayId != 'new') {
+      final maxRes = info.displays
+          .firstWhere((d) => d.id == config.videoOptions.displayId.toString())
+          .resolution
+          .split('x');
 
-    final max = maxRes.map((e) => int.parse(e.removeLetters!)).toList();
-    max.sort((a, b) => b.compareTo(a));
+      final max = maxRes.map((e) => int.parse(e.removeLetters!)).toList();
+      max.sort((a, b) => b.compareTo(a));
 
-    if (config.videoOptions.resolutionScale != 1) {
-      return ' --max-size=${((config.videoOptions.resolutionScale / 100) * max.first).toInt()}';
+      if (config.videoOptions.resolutionScale != 100) {
+        return ' --max-size=${((config.videoOptions.resolutionScale / 100) * max.first).toInt()}';
+      }
     }
 
     return '';

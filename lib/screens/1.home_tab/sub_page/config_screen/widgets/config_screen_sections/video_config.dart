@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -24,6 +25,8 @@ class VideoConfig extends ConsumerStatefulWidget {
 class _VideoConfigState extends ConsumerState<VideoConfig> {
   late TextEditingController videoBitrateController;
   late TextEditingController maxFPSController;
+  late TextEditingController vdResolutionController;
+  late TextEditingController vdDPIController;
 
   @override
   void initState() {
@@ -36,6 +39,14 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
         text: selectedConfig.videoOptions.maxFPS == 0
             ? '-'
             : selectedConfig.videoOptions.maxFPS.toString());
+
+    vdResolutionController = TextEditingController(
+      text: selectedConfig.videoOptions.vdResolution ?? '',
+    );
+
+    vdDPIController = TextEditingController(
+      text: selectedConfig.videoOptions.vdDPI ?? '',
+    );
     super.initState();
   }
 
@@ -43,6 +54,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   void dispose() {
     videoBitrateController.dispose();
     maxFPSController.dispose();
+    vdResolutionController.dispose();
+    vdDPIController.dispose();
     super.dispose();
   }
 
@@ -62,8 +75,9 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
         _buildVideoBitrate(context),
         const Divider(),
         _buildMaxFPS(selectedConfig),
-        const Divider(),
-        _buildResolutionScale(selectedConfig, selectedDevice.info!),
+        if (selectedConfig.videoOptions.displayId != 'new') const Divider(),
+        if (selectedConfig.videoOptions.displayId != 'new')
+          _buildResolutionScale(selectedConfig, selectedDevice.info!),
       ],
     );
   }
@@ -108,29 +122,83 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     final displays =
         info.displays.where((d) => (int.tryParse(d.id) ?? 11) < 10).toList();
 
-    return ConfigDropdownOthers(
-      label: el.videoSection.displays.label,
-      initialValue: displays.length == 1
-          ? displays[0].id
-          : selectedConfig.videoOptions.displayId.toString(),
-      tooltipMessage: 'Only 1 display detected',
-      showinfo: showInfo,
-      subtitle: selectedConfig.videoOptions.displayId == 0
-          ? el.videoSection.displays.info.default$
-          : el.videoSection.displays.info.alt,
-      items: displays
-          .map(
-            (d) => SelectItemButton(
-              value: d.id,
-              child: Text(d.id),
-            ),
+    final displayDD = [
+      ...displays.map((d) => (d.id, d.id)),
+      ('new', 'New display'),
+    ];
+
+    return Column(
+      spacing: 8,
+      children: [
+        ConfigCustom(
+          title: el.videoSection.displays.label,
+          showinfo: showInfo,
+          subtitle: selectedConfig.videoOptions.displayId == 'new'
+              ? el.videoSection.displays.virtual.newDisplay.info.alt
+              : selectedConfig.videoOptions.displayId == '0'
+                  ? el.videoSection.displays.info.default$
+                  : el.videoSection.displays.info.alt,
+          child: Select(
+            filled: true,
+            onChanged: (value) {
+              ref.read(configScreenConfig.notifier).update((state) => state =
+                  state!.copyWith(
+                      videoOptions:
+                          state.videoOptions.copyWith(displayId: value!.$1)));
+            },
+            value: displayDD.firstWhere(
+                (d) => d.$1 == selectedConfig.videoOptions.displayId),
+            popup: SelectPopup(
+              items: SelectItemList(
+                children: displayDD
+                    .map((d) => SelectItemButton(value: d, child: Text(d.$2)))
+                    .toList(),
+              ),
+            ).call,
+            itemBuilder: (context, value) => Text(value.$2),
+          ),
+        ),
+        if (selectedConfig.videoOptions.displayId == 'new') const Divider(),
+        if (selectedConfig.videoOptions.displayId == 'new')
+          ConfigUserInput(
+            placeholder: Text('eg: 1920x1080'),
+            inputFormatters: [],
+            showinfo: showInfo,
+            label: el.videoSection.displays.virtual.resolution.label,
+            subtitle: selectedConfig.videoOptions.vdResolution == null ||
+                    vdResolutionController.text.isEmpty ||
+                    !selectedConfig.videoOptions.vdResolution!.isValidResolution
+                ? el.videoSection.displays.virtual.resolution.info.default$
+                : el.videoSection.displays.virtual.resolution.info
+                    .alt(res: vdResolutionController.text),
+            controller: vdResolutionController,
+            onChanged: (value) {
+              ref.read(configScreenConfig.notifier).update((state) => state =
+                  state!.copyWith(
+                      videoOptions:
+                          state.videoOptions.copyWith(vdResolution: value)));
+            },
+          ),
+        if (selectedConfig.videoOptions.displayId == 'new') const Divider(),
+        if (selectedConfig.videoOptions.displayId == 'new')
+          ConfigUserInput(
+            placeholder: Text('eg: 420'),
+            showinfo: showInfo,
+            label: el.videoSection.displays.virtual.dpi.label,
+            subtitle: selectedConfig.videoOptions.vdDPI == null ||
+                    vdDPIController.text.isEmpty
+                ? el.videoSection.displays.virtual.dpi.info.default$
+                : el.videoSection.displays.virtual.dpi.info.alt(
+                    dpi: vdDPIController.text,
+                    res: vdResolutionController.text),
+            controller: vdDPIController,
+            onChanged: (value) {
+              ref.read(configScreenConfig.notifier).update((state) => state =
+                  state!.copyWith(
+                      videoOptions: state.videoOptions.copyWith(vdDPI: value)));
+            },
           )
-          .toList(),
-      onSelected: displays.length == 1
-          ? null
-          : (value) => ref
-              .read(configScreenConfig.notifier)
-              .update((state) => state = state!.copyWith(displayId: value)),
+      ],
     );
   }
 

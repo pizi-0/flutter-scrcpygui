@@ -259,8 +259,10 @@ class ScrcpyUtils {
     List<FlagCheckResult> result = [];
 
     bool display = selectedDevice.info!.displays
-        .where((d) => d.id == selectedConfig.videoOptions.displayId.toString())
-        .isNotEmpty;
+            .where(
+                (d) => d.id == selectedConfig.videoOptions.displayId.toString())
+            .isNotEmpty ||
+        selectedConfig.videoOptions.displayId == 'new';
 
     bool videoCodec = selectedDevice.info!.videoEncoders
         .where((enc) => enc.codec == selectedConfig.videoOptions.videoCodec)
