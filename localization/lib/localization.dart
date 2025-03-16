@@ -1244,20 +1244,26 @@ class VideoSectionDisplays {
   const VideoSectionDisplays({
     required this.label,
     required this.info,
+    required this.virtual,
   });
   factory VideoSectionDisplays.fromJson(Map<String, dynamic> json) {
     return VideoSectionDisplays(
       label: (json['label'] ?? '').toString(),
       info: VideoSectionDisplaysInfo.fromJson(
           (json['info'] as Map).cast<String, dynamic>()),
+      virtual: VideoSectionDisplaysVirtual.fromJson(
+          (json['virtual'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
   final VideoSectionDisplaysInfo info;
 
+  final VideoSectionDisplaysVirtual virtual;
+
   Map<String, Object> get _content => {
         r'''label''': label,
         r'''info''': info,
+        r'''virtual''': virtual,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -1300,6 +1306,347 @@ class VideoSectionDisplaysInfo {
   }
   final String default$;
   final String alt;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class VideoSectionDisplaysVirtual {
+  const VideoSectionDisplaysVirtual({
+    required this.newDisplay,
+    required this.resolution,
+    required this.dpi,
+  });
+  factory VideoSectionDisplaysVirtual.fromJson(Map<String, dynamic> json) {
+    return VideoSectionDisplaysVirtual(
+      newDisplay: VideoSectionDisplaysVirtualNewDisplay.fromJson(
+          (json['new_display'] as Map).cast<String, dynamic>()),
+      resolution: VideoSectionDisplaysVirtualResolution.fromJson(
+          (json['resolution'] as Map).cast<String, dynamic>()),
+      dpi: VideoSectionDisplaysVirtualDpi.fromJson(
+          (json['dpi'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final VideoSectionDisplaysVirtualNewDisplay newDisplay;
+
+  final VideoSectionDisplaysVirtualResolution resolution;
+
+  final VideoSectionDisplaysVirtualDpi dpi;
+
+  Map<String, Object> get _content => {
+        r'''new_display''': newDisplay,
+        r'''resolution''': resolution,
+        r'''dpi''': dpi,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class VideoSectionDisplaysVirtualNewDisplay {
+  const VideoSectionDisplaysVirtualNewDisplay({
+    required this.label,
+    required this.info,
+  });
+  factory VideoSectionDisplaysVirtualNewDisplay.fromJson(
+      Map<String, dynamic> json) {
+    return VideoSectionDisplaysVirtualNewDisplay(
+      label: (json['label'] ?? '').toString(),
+      info: VideoSectionDisplaysVirtualNewDisplayInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final VideoSectionDisplaysVirtualNewDisplayInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class VideoSectionDisplaysVirtualNewDisplayInfo {
+  const VideoSectionDisplaysVirtualNewDisplayInfo({
+    required this.alt,
+  });
+  factory VideoSectionDisplaysVirtualNewDisplayInfo.fromJson(
+      Map<String, dynamic> json) {
+    return VideoSectionDisplaysVirtualNewDisplayInfo(
+      alt: (json['alt'] ?? '').toString(),
+    );
+  }
+  final String alt;
+  Map<String, Object> get _content => {
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class VideoSectionDisplaysVirtualResolution {
+  const VideoSectionDisplaysVirtualResolution({
+    required this.label,
+    required this.info,
+  });
+  factory VideoSectionDisplaysVirtualResolution.fromJson(
+      Map<String, dynamic> json) {
+    return VideoSectionDisplaysVirtualResolution(
+      label: (json['label'] ?? '').toString(),
+      info: VideoSectionDisplaysVirtualResolutionInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final VideoSectionDisplaysVirtualResolutionInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class VideoSectionDisplaysVirtualResolutionInfo {
+  const VideoSectionDisplaysVirtualResolutionInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory VideoSectionDisplaysVirtualResolutionInfo.fromJson(
+      Map<String, dynamic> json) {
+    return VideoSectionDisplaysVirtualResolutionInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: ({required String res}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${res}', res)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String default$;
+  final String Function({required String res}) alt;
+
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class VideoSectionDisplaysVirtualDpi {
+  const VideoSectionDisplaysVirtualDpi({
+    required this.label,
+    required this.info,
+  });
+  factory VideoSectionDisplaysVirtualDpi.fromJson(Map<String, dynamic> json) {
+    return VideoSectionDisplaysVirtualDpi(
+      label: (json['label'] ?? '').toString(),
+      info: VideoSectionDisplaysVirtualDpiInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final VideoSectionDisplaysVirtualDpiInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class VideoSectionDisplaysVirtualDpiInfo {
+  const VideoSectionDisplaysVirtualDpiInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory VideoSectionDisplaysVirtualDpiInfo.fromJson(
+      Map<String, dynamic> json) {
+    return VideoSectionDisplaysVirtualDpiInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: ({required String res, required String dpi}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${res}', res)
+          .replaceAll(r'${dpi}', dpi)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String default$;
+  final String Function({required String res, required String dpi}) alt;
+
   Map<String, Object> get _content => {
         r'''default''': default$,
         r'''alt''': alt,
@@ -5768,9 +6115,32 @@ final LocalizationMessages en = LocalizationMessages(
     displays: VideoSectionDisplays(
       label: 'Displays',
       info: VideoSectionDisplaysInfo(
-        default$:
-            'defaults to first available, no flag; virtual displays is not listed',
+        default$: 'defaults to first available, no flag',
         alt: '''uses '--display-id=' flag ''',
+      ),
+      virtual: VideoSectionDisplaysVirtual(
+        newDisplay: VideoSectionDisplaysVirtualNewDisplay(
+          label: 'New display',
+          info: VideoSectionDisplaysVirtualNewDisplayInfo(
+            alt: '''uses '--new-display' flag''',
+          ),
+        ),
+        resolution: VideoSectionDisplaysVirtualResolution(
+          label: 'Resolution',
+          info: VideoSectionDisplaysVirtualResolutionInfo(
+            default$: '''defaults to device's resolution''',
+            alt: ({required String res}) =>
+                '''appends resolution to '--new-display=${res}' flag''',
+          ),
+        ),
+        dpi: VideoSectionDisplaysVirtualDpi(
+          label: 'DPI',
+          info: VideoSectionDisplaysVirtualDpiInfo(
+            default$: '''defaults to device's DPI''',
+            alt: ({required String res, required String dpi}) =>
+                '''appends DPI to '--new-display=${res}/${dpi}' flag''',
+          ),
+        ),
       ),
     ),
     codec: VideoSectionCodec(
@@ -6232,6 +6602,28 @@ final LocalizationMessages es = LocalizationMessages(
             'por defecto la primera disponible, sin indicador; las pantallas virtuales no están listadas',
         alt: '''usa el indicador '--display-id=' ''',
       ),
+      virtual: VideoSectionDisplaysVirtual(
+        newDisplay: VideoSectionDisplaysVirtualNewDisplay(
+          label: '',
+          info: VideoSectionDisplaysVirtualNewDisplayInfo(
+            alt: '',
+          ),
+        ),
+        resolution: VideoSectionDisplaysVirtualResolution(
+          label: '',
+          info: VideoSectionDisplaysVirtualResolutionInfo(
+            default$: '',
+            alt: ({required String res}) => '',
+          ),
+        ),
+        dpi: VideoSectionDisplaysVirtualDpi(
+          label: '',
+          info: VideoSectionDisplaysVirtualDpiInfo(
+            default$: '',
+            alt: ({required String res, required String dpi}) => '',
+          ),
+        ),
+      ),
     ),
     codec: VideoSectionCodec(
       label: 'Códec',
@@ -6688,6 +7080,28 @@ final LocalizationMessages ms = LocalizationMessages(
         default$:
             'lalai kepada yang pertama tersedia, tiada bendera; paparan maya tidak disenaraikan',
         alt: '''menggunakan bendera '--display-id=' ''',
+      ),
+      virtual: VideoSectionDisplaysVirtual(
+        newDisplay: VideoSectionDisplaysVirtualNewDisplay(
+          label: '',
+          info: VideoSectionDisplaysVirtualNewDisplayInfo(
+            alt: '',
+          ),
+        ),
+        resolution: VideoSectionDisplaysVirtualResolution(
+          label: '',
+          info: VideoSectionDisplaysVirtualResolutionInfo(
+            default$: '',
+            alt: ({required String res}) => '',
+          ),
+        ),
+        dpi: VideoSectionDisplaysVirtualDpi(
+          label: '',
+          info: VideoSectionDisplaysVirtualDpiInfo(
+            default$: '',
+            alt: ({required String res, required String dpi}) => '',
+          ),
+        ),
       ),
     ),
     codec: VideoSectionCodec(

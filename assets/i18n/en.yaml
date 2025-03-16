@@ -106,8 +106,24 @@ video_section:
   displays: 
     label: Displays
     info: 
-      default: defaults to first available, no flag; virtual displays is not listed
+      default: defaults to first available, no flag
       alt: "uses '--display-id=' flag "
+
+    virtual:
+      new_display: 
+        label: New display
+        info:
+          alt: "uses '--new-display' flag"
+      resolution: 
+        label: Resolution
+        info: 
+          default: "defaults to device's resolution"
+          alt: "appends resolution to '--new-display=${res}' flag"
+      dpi: 
+        label: DPI
+        info: 
+          default: "defaults to device's DPI"
+          alt: "appends DPI to '--new-display=${res}/${dpi}' flag"
 
   codec:
     label: Codec
