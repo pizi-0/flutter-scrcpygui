@@ -10,6 +10,7 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/app_config.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/additional_flags.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/audio_config.dart';
@@ -136,6 +137,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
             const SizedBox(width: appWidth, child: VideoConfig()),
           if (selectedConfig.scrcpyMode != ScrcpyMode.videoOnly)
             const SizedBox(width: appWidth, child: AudioConfig()),
+          const SizedBox(width: appWidth, child: AppConfig()),
           const SizedBox(width: appWidth, child: DeviceConfig()),
           const SizedBox(width: appWidth, child: WindowConfig()),
           const SizedBox(width: appWidth, child: AdditionalFlagsConfig()),

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/app_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/device_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/video_options.dart';
@@ -17,6 +18,7 @@ class ScrcpyConfig {
 
   final SVideoOptions videoOptions;
   final SAudioOptions audioOptions;
+  final SAppOptions? appOptions;
   final SDeviceOptions deviceOptions;
   final SWindowOptions windowOptions;
   final String additionalFlags;
@@ -29,6 +31,7 @@ class ScrcpyConfig {
     required this.isRecording,
     required this.videoOptions,
     required this.audioOptions,
+    this.appOptions,
     required this.deviceOptions,
     required this.windowOptions,
     required this.additionalFlags,
@@ -42,6 +45,7 @@ class ScrcpyConfig {
     bool? isRecording,
     SVideoOptions? videoOptions,
     SAudioOptions? audioOptions,
+    SAppOptions? appOptions,
     SDeviceOptions? deviceOptions,
     SWindowOptions? windowOptions,
     String? additionalFlags,
@@ -54,6 +58,7 @@ class ScrcpyConfig {
       isRecording: isRecording ?? this.isRecording,
       videoOptions: videoOptions ?? this.videoOptions,
       audioOptions: audioOptions ?? this.audioOptions,
+      appOptions: appOptions,
       deviceOptions: deviceOptions ?? this.deviceOptions,
       windowOptions: windowOptions ?? this.windowOptions,
       additionalFlags: additionalFlags ?? this.additionalFlags,
@@ -69,6 +74,7 @@ class ScrcpyConfig {
       'isRecording': isRecording,
       'videoOptions': videoOptions.toMap(),
       'audioOptions': audioOptions.toMap(),
+      'appOptions': appOptions?.toMap(),
       'deviceOptions': deviceOptions.toMap(),
       'windowOptions': windowOptions.toMap(),
       'additionalFlags': additionalFlags,
@@ -86,6 +92,9 @@ class ScrcpyConfig {
           SVideoOptions.fromMap(map['videoOptions'] as Map<String, dynamic>),
       audioOptions:
           SAudioOptions.fromMap(map['audioOptions'] as Map<String, dynamic>),
+      appOptions: map['appOptions'] != null
+          ? SAppOptions.fromMap(map['appOptions'] as Map<String, dynamic>)
+          : null,
       deviceOptions:
           SDeviceOptions.fromMap(map['deviceOptions'] as Map<String, dynamic>),
       windowOptions:
@@ -113,6 +122,7 @@ class ScrcpyConfig {
         other.isRecording == isRecording &&
         other.videoOptions == videoOptions &&
         other.audioOptions == audioOptions &&
+        other.appOptions == appOptions &&
         other.deviceOptions == deviceOptions &&
         other.windowOptions == windowOptions &&
         other.additionalFlags == additionalFlags &&
@@ -126,6 +136,7 @@ class ScrcpyConfig {
         isRecording.hashCode ^
         videoOptions.hashCode ^
         audioOptions.hashCode ^
+        appOptions.hashCode ^
         deviceOptions.hashCode ^
         windowOptions.hashCode ^
         additionalFlags.hashCode ^
