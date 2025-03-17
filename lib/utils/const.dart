@@ -34,6 +34,13 @@ const double appWidth = 450;
 //   ),
 // ];
 
+final defaultVdOptions = SVirtualDisplayOptions(
+  resolution: null,
+  dpi: null,
+  disableDecorations: false,
+  preseveContent: false,
+);
+
 final ScrcpyConfig defaultMirror = ScrcpyConfig(
   id: 'default-mirror',
   configName: 'Default (Mirror)',

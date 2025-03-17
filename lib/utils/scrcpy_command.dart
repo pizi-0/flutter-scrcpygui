@@ -5,6 +5,7 @@ import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
+import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/extension.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -17,7 +18,7 @@ class ScrcpyCommand {
     command = command
             .append('-s ${device.id}')
             .append(config.scrcpyMode.command) // Both / video / audio
-            .append(_displayId(config)) // display id
+            .append(_displayOptions(config)) // display id
             .append(_videoCodec(config)) // video codec
             .append(_videoEncoder(config)) // video encoder
             .append(_videoBitrate(config)) // video bitrate
@@ -106,20 +107,30 @@ class ScrcpyCommand {
     }
   }
 
-  static String _displayId(ScrcpyConfig config) {
+  static String _displayOptions(ScrcpyConfig config) {
     if (config.videoOptions.displayId == 'new') {
-      var newVd = ' --new-display';
-      var res = config.videoOptions.vdResolution != null &&
-              config.videoOptions.vdResolution!.isValidResolution
-          ? config.videoOptions.vdResolution
+      final newVd = ' --new-display';
+
+      final vdOptions =
+          config.videoOptions.virtualDisplayOptions ?? defaultVdOptions;
+
+      final res = vdOptions.resolution != null
+          ? vdOptions.resolution!.isValidResolution
+              ? vdOptions.resolution
+              : ''
           : '';
 
-      var dpi =
-          config.videoOptions.vdDPI != null && config.videoOptions.vdDPI != ''
-              ? '/${config.videoOptions.vdDPI}'
-              : '';
+      final dpi = vdOptions.dpi != null && vdOptions.dpi != ''
+          ? '/${vdOptions.dpi}'
+          : '';
 
-      return '$newVd${res!.isNotEmpty || dpi.isNotEmpty ? '=' : ''}$res$dpi';
+      final deco =
+          vdOptions.disableDecorations ? ' --no-vd-system-decorations' : '';
+
+      final preseve =
+          vdOptions.preseveContent ? ' --no-vd-destroy-content' : '';
+
+      return '$newVd${res!.isNotEmpty || dpi.isNotEmpty ? '=' : ''}$res$dpi$deco$preseve';
     }
 
     if (config.videoOptions.displayId != '0') {

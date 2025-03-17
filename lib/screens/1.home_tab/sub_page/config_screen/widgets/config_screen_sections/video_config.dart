@@ -13,6 +13,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../../../../../providers/config_provider.dart';
+import '../../../../../../utils/const.dart';
 import '../../../../../../widgets/config_tiles.dart';
 
 class VideoConfig extends ConsumerStatefulWidget {
@@ -41,11 +42,11 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
             : selectedConfig.videoOptions.maxFPS.toString());
 
     vdResolutionController = TextEditingController(
-      text: selectedConfig.videoOptions.vdResolution ?? '',
+      text: selectedConfig.videoOptions.virtualDisplayOptions?.resolution ?? '',
     );
 
     vdDPIController = TextEditingController(
-      text: selectedConfig.videoOptions.vdDPI ?? '',
+      text: selectedConfig.videoOptions.virtualDisplayOptions?.dpi ?? '',
     );
     super.initState();
   }
@@ -161,45 +162,199 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
         ),
         if (selectedConfig.videoOptions.displayId == 'new') const Divider(),
         if (selectedConfig.videoOptions.displayId == 'new')
-          ConfigUserInput(
-            placeholder: Text('eg: 1920x1080'),
-            inputFormatters: [],
-            showinfo: showInfo,
-            label: el.videoSection.displays.virtual.resolution.label,
-            subtitle: selectedConfig.videoOptions.vdResolution == null ||
-                    vdResolutionController.text.isEmpty ||
-                    !selectedConfig.videoOptions.vdResolution!.isValidResolution
-                ? el.videoSection.displays.virtual.resolution.info.default$
-                : el.videoSection.displays.virtual.resolution.info
-                    .alt(res: vdResolutionController.text),
-            controller: vdResolutionController,
-            onChanged: (value) {
-              ref.read(configScreenConfig.notifier).update((state) => state =
-                  state!.copyWith(
-                      videoOptions:
-                          state.videoOptions.copyWith(vdResolution: value)));
-            },
+          Card(
+            borderRadius: Theme.of(context).borderRadiusMd,
+            filled: true,
+            padding: EdgeInsets.all(8),
+            child: Column(
+              spacing: 8,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Label(child: Text('Virtual display settings')).small(),
+                PgSectionCard(
+                  cardPadding: EdgeInsets.all(8),
+                  children: [
+                    ConfigUserInput(
+                      placeholder: Text('eg: 1920x1080'),
+                      inputFormatters: [],
+                      showinfo: showInfo,
+                      label: el.videoSection.displays.virtual.resolution.label,
+                      subtitle: selectedConfig.videoOptions
+                                      .virtualDisplayOptions?.resolution ==
+                                  null ||
+                              vdResolutionController.text.isEmpty ||
+                              !selectedConfig
+                                  .videoOptions
+                                  .virtualDisplayOptions!
+                                  .resolution!
+                                  .isValidResolution
+                          ? el.videoSection.displays.virtual.resolution.info
+                              .default$
+                          : el.videoSection.displays.virtual.resolution.info
+                              .alt(res: vdResolutionController.text),
+                      controller: vdResolutionController,
+                      onChanged: _onVdResolutionChanged,
+                    ),
+                    Divider(),
+                    ConfigUserInput(
+                      placeholder: Text('eg: 420'),
+                      showinfo: showInfo,
+                      label: el.videoSection.displays.virtual.dpi.label,
+                      subtitle: selectedConfig.videoOptions
+                                      .virtualDisplayOptions?.dpi ==
+                                  null ||
+                              vdDPIController.text.isEmpty
+                          ? el.videoSection.displays.virtual.dpi.info.default$
+                          : el.videoSection.displays.virtual.dpi.info.alt(
+                              dpi: vdDPIController.text,
+                              res: vdResolutionController.text),
+                      controller: vdDPIController,
+                      onChanged: _onVdDpiChanged,
+                    ),
+                    Divider(),
+                    ConfigCustom(
+                      title: 'Disable system decorations',
+                      childExpand: false,
+                      onPressed: _onVdDisableDecoChanged,
+                      child: Checkbox(
+                        state: (selectedConfig
+                                        .videoOptions.virtualDisplayOptions ??
+                                    defaultVdOptions)
+                                .disableDecorations
+                            ? CheckboxState.checked
+                            : CheckboxState.unchecked,
+                        onChanged: (val) => _onVdDisableDecoChanged(),
+                      ),
+                    ),
+                    Divider(),
+                    ConfigCustom(
+                      title: 'Preserve app',
+                      childExpand: false,
+                      onPressed: _onVdDestroyContentChanged,
+                      child: Checkbox(
+                        state: (selectedConfig
+                                        .videoOptions.virtualDisplayOptions ??
+                                    defaultVdOptions)
+                                .preseveContent
+                            ? CheckboxState.checked
+                            : CheckboxState.unchecked,
+                        onChanged: (value) => _onVdDestroyContentChanged(),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
-        if (selectedConfig.videoOptions.displayId == 'new') const Divider(),
-        if (selectedConfig.videoOptions.displayId == 'new')
-          ConfigUserInput(
-            placeholder: Text('eg: 420'),
-            showinfo: showInfo,
-            label: el.videoSection.displays.virtual.dpi.label,
-            subtitle: selectedConfig.videoOptions.vdDPI == null ||
-                    vdDPIController.text.isEmpty
-                ? el.videoSection.displays.virtual.dpi.info.default$
-                : el.videoSection.displays.virtual.dpi.info.alt(
-                    dpi: vdDPIController.text,
-                    res: vdResolutionController.text),
-            controller: vdDPIController,
-            onChanged: (value) {
-              ref.read(configScreenConfig.notifier).update((state) => state =
-                  state!.copyWith(
-                      videoOptions: state.videoOptions.copyWith(vdDPI: value)));
-            },
-          )
+
+        // if (selectedConfig.videoOptions.displayId == 'new') const Divider(),
+        // if (selectedConfig.videoOptions.displayId == 'new')
+        //   ConfigUserInput(
+        //     placeholder: Text('eg: 1920x1080'),
+        //     inputFormatters: [],
+        //     showinfo: showInfo,
+        //     label: el.videoSection.displays.virtual.resolution.label,
+        //     subtitle: selectedConfig.videoOptions.vdResolution == null ||
+        //             vdResolutionController.text.isEmpty ||
+        //             !selectedConfig.videoOptions.vdResolution!.isValidResolution
+        //         ? el.videoSection.displays.virtual.resolution.info.default$
+        //         : el.videoSection.displays.virtual.resolution.info
+        //             .alt(res: vdResolutionController.text),
+        //     controller: vdResolutionController,
+        //     onChanged: (value) {
+        //       ref.read(configScreenConfig.notifier).update((state) => state =
+        //           state!.copyWith(
+        //               videoOptions:
+        //                   state.videoOptions.copyWith(vdResolution: value)));
+        //     },
+        //   ),
+        // if (selectedConfig.videoOptions.displayId == 'new') const Divider(),
+        // if (selectedConfig.videoOptions.displayId == 'new')
+        //   ConfigUserInput(
+        //     placeholder: Text('eg: 420'),
+        //     showinfo: showInfo,
+        //     label: el.videoSection.displays.virtual.dpi.label,
+        //     subtitle: selectedConfig.videoOptions.vdDPI == null ||
+        //             vdDPIController.text.isEmpty
+        //         ? el.videoSection.displays.virtual.dpi.info.default$
+        //         : el.videoSection.displays.virtual.dpi.info.alt(
+        //             dpi: vdDPIController.text,
+        //             res: vdResolutionController.text),
+        //     controller: vdDPIController,
+        //     onChanged: (value) {
+        //       ref.read(configScreenConfig.notifier).update((state) => state =
+        //           state!.copyWith(
+        //               videoOptions: state.videoOptions.copyWith(vdDPI: value)));
+        //     },
+        //   )
       ],
+    );
+  }
+
+  _onVdResolutionChanged(value) {
+    final selectedConfig = ref.read(configScreenConfig)!;
+
+    var currentVdOptions = selectedConfig.videoOptions.virtualDisplayOptions;
+
+    currentVdOptions ??= defaultVdOptions;
+
+    ref.read(configScreenConfig.notifier).update(
+      (state) {
+        return state!.copyWith(
+            videoOptions: state.videoOptions.copyWith(
+                virtualDisplayOptions:
+                    currentVdOptions!.copyWith(resolution: value)));
+      },
+    );
+  }
+
+  _onVdDpiChanged(value) {
+    final selectedConfig = ref.read(configScreenConfig)!;
+
+    var currentVdOptions = selectedConfig.videoOptions.virtualDisplayOptions;
+
+    currentVdOptions ??= defaultVdOptions;
+
+    ref.read(configScreenConfig.notifier).update(
+      (state) {
+        return state!.copyWith(
+            videoOptions: state.videoOptions.copyWith(
+                virtualDisplayOptions: currentVdOptions!.copyWith(dpi: value)));
+      },
+    );
+  }
+
+  _onVdDisableDecoChanged() {
+    final selectedConfig = ref.read(configScreenConfig)!;
+
+    var currentVdOptions = selectedConfig.videoOptions.virtualDisplayOptions;
+
+    currentVdOptions ??= defaultVdOptions;
+
+    ref.read(configScreenConfig.notifier).update(
+      (state) {
+        return state!.copyWith(
+            videoOptions: state.videoOptions.copyWith(
+                virtualDisplayOptions: currentVdOptions!.copyWith(
+                    disableDecorations: !currentVdOptions.disableDecorations)));
+      },
+    );
+  }
+
+  _onVdDestroyContentChanged() {
+    final selectedConfig = ref.read(configScreenConfig)!;
+
+    var currentVdOptions = selectedConfig.videoOptions.virtualDisplayOptions;
+
+    currentVdOptions ??= defaultVdOptions;
+
+    ref.read(configScreenConfig.notifier).update(
+      (state) {
+        return state!.copyWith(
+            videoOptions: state.videoOptions.copyWith(
+                virtualDisplayOptions: currentVdOptions!.copyWith(
+                    preseveContent: !currentVdOptions.preseveContent)));
+      },
     );
   }
 

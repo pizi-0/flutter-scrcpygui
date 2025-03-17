@@ -11,8 +11,7 @@ class SVideoOptions {
   final int videoBitrate;
   final double maxFPS;
   final String displayId;
-  final String? vdResolution;
-  final String? vdDPI;
+  final SVirtualDisplayOptions? virtualDisplayOptions;
 
   SVideoOptions({
     required this.videoFormat,
@@ -22,8 +21,7 @@ class SVideoOptions {
     required this.videoBitrate,
     required this.maxFPS,
     required this.displayId,
-    this.vdResolution,
-    this.vdDPI,
+    this.virtualDisplayOptions,
   });
 
   SVideoOptions copyWith({
@@ -34,8 +32,7 @@ class SVideoOptions {
     int? videoBitrate,
     double? maxFPS,
     String? displayId,
-    String? vdResolution,
-    String? vdDPI,
+    SVirtualDisplayOptions? virtualDisplayOptions,
   }) {
     return SVideoOptions(
       videoFormat: videoFormat ?? this.videoFormat,
@@ -45,8 +42,8 @@ class SVideoOptions {
       videoBitrate: videoBitrate ?? this.videoBitrate,
       maxFPS: maxFPS ?? this.maxFPS,
       displayId: displayId ?? this.displayId,
-      vdResolution: vdResolution ?? this.vdResolution,
-      vdDPI: vdDPI ?? this.vdDPI,
+      virtualDisplayOptions:
+          virtualDisplayOptions ?? this.virtualDisplayOptions,
     );
   }
 
@@ -59,8 +56,7 @@ class SVideoOptions {
       'videoBitrate': videoBitrate,
       'maxFPS': maxFPS,
       'displayId': displayId,
-      'vdResolution': vdResolution,
-      'vdDPI': vdDPI,
+      'virtualDisplayOptions': virtualDisplayOptions?.toMap()
     };
   }
 
@@ -73,8 +69,10 @@ class SVideoOptions {
       videoBitrate: map['videoBitrate'] as int,
       maxFPS: map['maxFPS'].toDouble(),
       displayId: map['displayId'] as String,
-      vdResolution: map['vdResolution'] as String?,
-      vdDPI: map['vdDPI'] as String?,
+      virtualDisplayOptions: map['virtualDisplayOptions'] != null
+          ? SVirtualDisplayOptions.fromMap(
+              map['virtualDisplayOptions'] as Map<String, dynamic>)
+          : null,
     );
   }
 
@@ -99,8 +97,7 @@ class SVideoOptions {
         other.videoBitrate == videoBitrate &&
         other.maxFPS == maxFPS &&
         other.displayId == displayId &&
-        other.vdResolution == vdResolution &&
-        other.vdDPI == vdDPI;
+        other.virtualDisplayOptions == virtualDisplayOptions;
   }
 
   @override
@@ -112,7 +109,82 @@ class SVideoOptions {
         videoBitrate.hashCode ^
         maxFPS.hashCode ^
         displayId.hashCode ^
-        vdResolution.hashCode ^
-        vdDPI.hashCode;
+        virtualDisplayOptions.hashCode;
+  }
+}
+
+class SVirtualDisplayOptions {
+  final String? resolution;
+  final String? dpi;
+  final bool disableDecorations;
+  final bool preseveContent;
+
+  SVirtualDisplayOptions({
+    required this.resolution,
+    required this.dpi,
+    required this.disableDecorations,
+    required this.preseveContent,
+  });
+
+  SVirtualDisplayOptions copyWith({
+    String? resolution,
+    String? dpi,
+    bool? disableDecorations,
+    bool? preseveContent,
+  }) {
+    return SVirtualDisplayOptions(
+      resolution: resolution ?? this.resolution,
+      dpi: dpi ?? this.dpi,
+      disableDecorations: disableDecorations ?? this.disableDecorations,
+      preseveContent: preseveContent ?? this.preseveContent,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'resolution': resolution,
+      'dpi': dpi,
+      'disableDecorations': disableDecorations,
+      'preseveContent': preseveContent,
+    };
+  }
+
+  factory SVirtualDisplayOptions.fromMap(Map<String, dynamic> map) {
+    return SVirtualDisplayOptions(
+      resolution:
+          map['resolution'] != null ? map['resolution'] as String : null,
+      dpi: map['dpi'] != null ? map['dpi'] as String : null,
+      disableDecorations: map['disableDecorations'] as bool,
+      preseveContent: map['preseveContent'] as bool,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory SVirtualDisplayOptions.fromJson(String source) =>
+      SVirtualDisplayOptions.fromMap(
+          json.decode(source) as Map<String, dynamic>);
+
+  @override
+  String toString() {
+    return 'SVirtualDisplayOptions(resolution: $resolution, dpi: $dpi, disableDecorations: $disableDecorations, preseveContent: $preseveContent)';
+  }
+
+  @override
+  bool operator ==(covariant SVirtualDisplayOptions other) {
+    if (identical(this, other)) return true;
+
+    return other.resolution == resolution &&
+        other.dpi == dpi &&
+        other.disableDecorations == disableDecorations &&
+        other.preseveContent == preseveContent;
+  }
+
+  @override
+  int get hashCode {
+    return resolution.hashCode ^
+        dpi.hashCode ^
+        disableDecorations.hashCode ^
+        preseveContent.hashCode;
   }
 }
