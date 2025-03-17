@@ -35,6 +35,7 @@ class ScrcpyCommand {
             .append(_noBorder(config)) // no border
             .append(_alwaysOnTop(config)) // always ontop
             .append(_timeLimit(config)) // time limit
+            .append(_startApp(config)) // start app
         ;
 
     // recording, savepath, video/audio format
@@ -219,6 +220,16 @@ class ScrcpyCommand {
   static String _timeLimit(ScrcpyConfig config) {
     if (config.windowOptions.timeLimit != 0) {
       return ' --time-limit=${config.windowOptions.timeLimit}';
+    }
+
+    return '';
+  }
+
+  static String _startApp(ScrcpyConfig config) {
+    if (config.appOptions?.selectedApp != null) {
+      final forceClose = config.appOptions?.forceClose ?? false;
+      final packageName = config.appOptions?.selectedApp?.packageName;
+      return ' --start-app=${forceClose ? '+' : ''}$packageName';
     }
 
     return '';
