@@ -91,6 +91,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
           label: el.deviceSettingsLoc.title,
           children: [
             ConfigCustom(
+              dimTitle: false,
               title: el.deviceSettingsLoc.rename.label,
               subtitle: el.deviceSettingsLoc.rename.info,
               showinfo: showInfo,
@@ -123,6 +124,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
               ),
             const Divider(),
             ConfigCustom(
+              dimTitle: false,
               title: el.deviceSettingsLoc.onConnected.label,
               subtitle: el.deviceSettingsLoc.onConnected.info,
               showinfo: showInfo,

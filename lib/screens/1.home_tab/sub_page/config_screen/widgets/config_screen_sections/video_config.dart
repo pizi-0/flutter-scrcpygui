@@ -131,6 +131,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
       spacing: 8,
       children: [
         ConfigCustom(
+          dimTitle: false,
           title: el.videoSection.displays.label,
           showinfo: showInfo,
           subtitle: selectedConfig.videoOptions.displayId == 'new'
@@ -215,6 +216,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     max.sort((a, b) => b.compareTo(a));
 
     return ConfigCustom(
+      dimTitle: false,
       title: el.videoSection.resolutionScale.label,
       showinfo:
           showInfo || selectedConfig.videoOptions.resolutionScale != 100.0,

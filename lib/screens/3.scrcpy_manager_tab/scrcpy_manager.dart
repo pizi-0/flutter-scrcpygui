@@ -144,6 +144,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
           children: [
             installed.length > 1
                 ? ConfigCustom(
+                    dimTitle: false,
                     title: latest == scrcpyVersion
                         ? '${el.scrcpyManagerLoc.current.inUse} (${el.statusLoc.latest})'
                         : el.scrcpyManagerLoc.current.inUse,
@@ -173,6 +174,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
                     ),
                   )
                 : ConfigCustom(
+                    dimTitle: false,
                     padRight: 8,
                     childBackgroundColor: Colors.transparent,
                     title: el.scrcpyManagerLoc.current.inUse,
@@ -181,6 +183,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
                   ),
             const Divider(),
             ConfigCustom(
+              dimTitle: false,
               childBackgroundColor: Colors.transparent,
               title: el.scrcpyManagerLoc.exec.label,
               subtitle: el.scrcpyManagerLoc.exec.info,
@@ -211,6 +214,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
             label: el.scrcpyManagerLoc.updater.label,
             children: [
               ConfigCustom(
+                dimTitle: false,
                 padRight: 6,
                 childBackgroundColor: Colors.transparent,
                 title: el.scrcpyManagerLoc.updater.newVersion,

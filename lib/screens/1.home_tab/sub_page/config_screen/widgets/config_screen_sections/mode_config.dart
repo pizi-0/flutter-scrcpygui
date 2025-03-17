@@ -57,6 +57,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
         if (selectedConfig.isRecording)
           FadeIn(
             child: ConfigCustom(
+              dimTitle: false,
               title: el.modeSection.saveFolder.label,
               subtitle: el.modeSection.saveFolder.info,
               showinfo: showInfo,

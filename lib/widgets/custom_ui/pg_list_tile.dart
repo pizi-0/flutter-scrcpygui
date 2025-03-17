@@ -7,6 +7,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 class PgListTile extends ConsumerWidget {
   final BoxConstraints? trailingConstraints;
   final String title;
+  final bool dimTitle;
   final bool titleOverflow;
   final bool? showBadge;
   final bool showSubtitle;
@@ -24,6 +25,7 @@ class PgListTile extends ConsumerWidget {
     this.showSubtitle = false,
     this.showSubtitleLeading = true,
     required this.title,
+    this.dimTitle = false,
     this.titleOverflow = false,
     this.showBadge = false,
     this.subtitle,
@@ -53,11 +55,15 @@ class PgListTile extends ConsumerWidget {
                             child: OverflowMarquee(
                                 duration: 2.seconds,
                                 delayDuration: 1.seconds,
-                                child: Text(title)),
+                                child: dimTitle
+                                    ? Text(title).muted()
+                                    : Text(title)),
                           ),
                         ]
                       : [
-                          Expanded(child: Text(title)),
+                          Expanded(
+                              child:
+                                  dimTitle ? Text(title).muted() : Text(title)),
                         ],
                 ),
                 content: content,

@@ -34,18 +34,34 @@ class PgSectionCard extends ConsumerWidget {
             Label(
                 trailing: labelTrail,
                 child: Text(label!).paddingSymmetric(vertical: 8)),
-          Card(
-            padding: cardPadding,
-            borderColor: borderColor,
-            borderRadius: theme.borderRadiusMd,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                spacing: 8,
-                children: children,
+          if (constraints!.maxHeight == double.infinity)
+            Card(
+              padding: cardPadding,
+              borderColor: borderColor,
+              borderRadius: theme.borderRadiusMd,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  spacing: 8,
+                  children: children,
+                ),
               ),
             ),
-          )
+          if (constraints!.maxHeight != double.infinity)
+            Expanded(
+              child: Card(
+                padding: cardPadding,
+                borderColor: borderColor,
+                borderRadius: theme.borderRadiusMd,
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    spacing: 8,
+                    children: children,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );

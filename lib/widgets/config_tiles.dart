@@ -182,6 +182,7 @@ class ConfigUserInput extends ConsumerWidget {
 
 class ConfigCustom extends ConsumerWidget {
   final String title;
+  final bool? dimTitle;
   final String? subtitle;
   final Widget? child;
   final bool childExpand;
@@ -194,6 +195,7 @@ class ConfigCustom extends ConsumerWidget {
   const ConfigCustom({
     super.key,
     required this.title,
+    this.dimTitle,
     this.childExpand = true,
     this.child,
     this.subtitle,
@@ -214,6 +216,7 @@ class ConfigCustom extends ConsumerWidget {
           color: Colors.transparent,
           child: PgListTile(
             title: title,
+            dimTitle: dimTitle ?? onPressed == null,
             trailing: child != null
                 ? ConstrainedBox(
                     constraints: const BoxConstraints(
