@@ -53,7 +53,7 @@ extension ResolutionStringExtension on String {
     if (!isValidResolution) {
       return null;
     }
-    return int.tryParse(this.split('x').first);
+    return int.tryParse(split('x').first);
   }
 
   /// Returns the height of the resolution if the string is a valid resolution format.
@@ -63,6 +63,6 @@ extension ResolutionStringExtension on String {
     if (!isValidResolution) {
       return null;
     }
-    return int.tryParse(this.split('x').last);
+    return int.tryParse(split('x').last);
   }
 }
