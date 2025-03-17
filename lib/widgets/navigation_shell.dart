@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:awesome_extensions/awesome_extensions.dart'
+    show StyledText, PaddingX, NumExtension;
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -14,53 +15,6 @@ import 'package:scrcpygui/screens/4.settings_tab/settings_tab.dart';
 import 'package:scrcpygui/widgets/title_bar_button.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:window_manager/window_manager.dart';
-
-// class NavigationShellLarge extends ConsumerStatefulWidget {
-//   final List<Widget> children;
-//   const NavigationShellLarge({super.key, required this.children});
-
-//   @override
-//   ConsumerState<ConsumerStatefulWidget> createState() =>
-//       NavigationShellLargeState();
-// }
-
-// class NavigationShellLargeState extends ConsumerState<NavigationShellLarge> {
-//   @override
-//   Widget build(BuildContext context) {
-//     final currentIndex = ref.watch(mainScreenPage);
-
-//     return Scaffold(
-//       headers: [
-//         AppBar(
-//           leading: [
-//             Image.asset(
-//               'assets/logo.png',
-//               height: 20,
-//               width: 20,
-//             )
-//           ],
-//           title: const DragToMoveArea(
-//             child: Row(
-//               children: [Expanded(child: Text('Scrcpy GUI'))],
-//             ),
-//           ),
-//           trailing: const [TitleBarButton()],
-//         ),
-//       ],
-//       child: Row(
-//         children: [
-//           const AppSideBar(),
-//           Expanded(
-//             child: AnimatedBranchContainer(
-//               currentIndex: currentIndex,
-//               children: widget.children,
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
 
 class NavigationShell extends ConsumerStatefulWidget {
   final List<Widget> children;
