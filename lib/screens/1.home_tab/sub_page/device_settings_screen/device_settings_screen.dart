@@ -255,6 +255,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   }
 
   _getScrcpyInfo() async {
+    final selectedDevice = ref.read(selectedDeviceProvider);
     loading = true;
     setState(() {});
 
@@ -263,6 +264,12 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
     dev = dev.copyWith(info: info);
     ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
     await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+
+    if (selectedDevice != null) {
+      if (selectedDevice.id == dev.id) {
+        ref.read(selectedDeviceProvider.notifier).state = dev;
+      }
+    }
 
     loading = false;
     setState(() {});
