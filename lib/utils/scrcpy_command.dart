@@ -25,6 +25,7 @@ class ScrcpyCommand {
             .append(_maxFps(config)) // fps limit
             .append(_maxSize(config, device.info!)) // resolution scale
             .append(_audioCodec(config)) // audio codec
+            .append(_audioEncoder(config)) // audio encoder
             .append(_audioSourceAndDup(config)) // Audio source + audio dup
             .append(_audioBitrate(config)) // audio bitrate
             .append(_stayAwake(config)) // stay awake
@@ -42,7 +43,7 @@ class ScrcpyCommand {
     // recording, savepath, video/audio format
     var comm = command.split(' ') +
         [
-          "--window-title=\"${customName ?? config.configName}\"",
+          "--window-title=${customName ?? config.configName}",
           _recordingFormat(config, customName ?? config.configName),
           ...config.additionalFlags.trim().split(' '),
         ];
@@ -179,6 +180,14 @@ class ScrcpyCommand {
   static String _audioCodec(ScrcpyConfig config) {
     if (config.audioOptions.audioCodec != 'opus') {
       return ' --audio-codec=${config.audioOptions.audioCodec}';
+    } else {
+      return '';
+    }
+  }
+
+  static String _audioEncoder(ScrcpyConfig config) {
+    if (config.audioOptions.audioEncoder != 'default') {
+      return ' --audio-encoder=${config.audioOptions.audioEncoder}';
     } else {
       return '';
     }
