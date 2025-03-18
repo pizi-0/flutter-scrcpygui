@@ -4,14 +4,12 @@ import 'package:animate_do/animate_do.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
-import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../../../../../providers/config_provider.dart';
-import '../../../../../../utils/const.dart';
 import '../../../../../../widgets/config_tiles.dart';
 
 final sep = Platform.pathSeparator;
@@ -46,8 +44,9 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
           onSelected: (value) {
             bool isRecording = value == MainMode.record;
 
-            ref.read(configScreenConfig.notifier).update(
-                (state) => state = state!.copyWith(isRecording: isRecording));
+            ref
+                .read(configScreenConfig.notifier)
+                .setModeConfig(isRecording: isRecording);
 
             modeLabel = value!.value;
             setState(() {});
@@ -67,8 +66,9 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
                   final res = await FilePicker.platform.getDirectoryPath();
 
                   if (res != null) {
-                    ref.read(configScreenConfig.notifier).update(
-                        (state) => state = state!.copyWith(savePath: res));
+                    ref
+                        .read(configScreenConfig.notifier)
+                        .setModeConfig(savePath: res);
                   }
                 },
                 child: Text(
@@ -90,44 +90,40 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
           onSelected: (value) {
             ref
                 .read(configScreenConfig.notifier)
-                .update((state) => state = state!.copyWith(scrcpyMode: value));
-
-            final def =
-                selectedConfig.isRecording ? defaultRecord : defaultMirror;
+                .setModeConfig(scrcpyMode: value);
 
             if (value == ScrcpyMode.audioOnly) {
               final audioFormat = _audioFormat(selectedConfig);
 
               ref
                   .read(configScreenConfig.notifier)
-                  .update((state) => state = state!.copyWith(
-                      videoOptions: def.videoOptions,
-                      audioOptions: SAudioOptions(
-                        audioFormat: audioFormat,
-                        audioBitrate: selectedConfig.audioOptions.audioBitrate,
-                        audioCodec: selectedConfig.audioOptions.audioCodec,
-                        audioEncoder: selectedConfig.audioOptions.audioEncoder,
-                        audioSource: selectedConfig.audioOptions.audioSource,
-                        duplicateAudio:
-                            selectedConfig.audioOptions.duplicateAudio,
-                      )));
+                  .setVideoConfig(setToDefault: true);
+
+              ref.read(configScreenConfig.notifier).setAudioConfig(
+                    audioFormat: audioFormat,
+                    audioBitrate: selectedConfig.audioOptions.audioBitrate,
+                    audioCodec: selectedConfig.audioOptions.audioCodec,
+                    audioEncoder: selectedConfig.audioOptions.audioEncoder,
+                    audioSource: selectedConfig.audioOptions.audioSource,
+                    duplicateAudio: selectedConfig.audioOptions.duplicateAudio,
+                  );
             }
 
             if (value == ScrcpyMode.videoOnly) {
               ref
                   .read(configScreenConfig.notifier)
-                  .update((state) => state = state!.copyWith(
-                        videoOptions: selectedConfig.videoOptions,
-                        audioOptions: SAudioOptions(
-                          audioBitrate: def.audioOptions.audioBitrate,
-                          audioCodec: def.audioOptions.audioCodec,
-                          audioEncoder: def.audioOptions.audioEncoder,
-                          audioFormat: def.audioOptions.audioFormat,
-                          audioSource: def.audioOptions.audioSource,
-                          duplicateAudio:
-                              selectedConfig.audioOptions.duplicateAudio,
-                        ),
-                      ));
+                  .setAudioConfig(setToDefault: true);
+
+              ref.read(configScreenConfig.notifier).setVideoConfig(
+                    displayId: selectedConfig.videoOptions.displayId,
+                    maxFPS: selectedConfig.videoOptions.maxFPS,
+                    resolutionScale:
+                        selectedConfig.videoOptions.resolutionScale,
+                    videoBitrate: selectedConfig.videoOptions.videoBitrate,
+                    videoCodec: selectedConfig.videoOptions.videoCodec,
+                    videoEncoder: selectedConfig.videoOptions.videoEncoder,
+                    videoFormat: selectedConfig.videoOptions.videoFormat,
+                  );
             }
           },
         )

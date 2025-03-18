@@ -39,32 +39,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
       label: el.windowSection.title,
       children: [
         ConfigCustom(
-          onPressed: () {
-            ref.read(configScreenConfig.notifier).update(
-              (state) {
-                final noWindow = state!.windowOptions.noWindow;
-
-                return state.copyWith(
-                  windowOptions: state.windowOptions.copyWith(
-                    noWindow: !noWindow,
-                  ),
-                );
-              },
-            );
-
-            if (ref.read(configScreenConfig)!.windowOptions.noWindow) {
-              ref.read(configScreenConfig.notifier).update(
-                    (state) => state = state!.copyWith(
-                      deviceOptions: state.deviceOptions.copyWith(
-                        stayAwake: false,
-                        showTouches: false,
-                        offScreenOnClose: false,
-                        turnOffDisplay: false,
-                      ),
-                    ),
-                  );
-            }
-          },
+          onPressed: _toggleWindow,
           childBackgroundColor: Colors.transparent,
           childExpand: false,
           title: el.windowSection.hideWindow.label,
@@ -75,45 +50,16 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: Checkbox(
-                state: selectedConfig.windowOptions.noWindow
-                    ? CheckboxState.checked
-                    : CheckboxState.unchecked,
-                onChanged: (value) {
-                  debugPrint(value.toString());
-                  if (value == CheckboxState.checked) {
-                    ref.read(configScreenConfig.notifier).update(
-                          (state) => state = state!.copyWith(
-                            deviceOptions: state.deviceOptions.copyWith(
-                              stayAwake: false,
-                              showTouches: false,
-                              offScreenOnClose: false,
-                              turnOffDisplay: false,
-                            ),
-                          ),
-                        );
-                  }
-
-                  ref.read(configScreenConfig.notifier).update(
-                        (state) => state = state!.copyWith(
-                            windowOptions: state.windowOptions.copyWith(
-                                noWindow: value == CheckboxState.checked)),
-                      );
-                }),
+              state: selectedConfig.windowOptions.noWindow
+                  ? CheckboxState.checked
+                  : CheckboxState.unchecked,
+              onChanged: (value) => _toggleWindow(),
+            ),
           ),
         ),
         const Divider(),
         ConfigCustom(
-          onPressed: () {
-            ref.read(configScreenConfig.notifier).update((state) {
-              final noBorder = state!.windowOptions.noBorder;
-
-              return state.copyWith(
-                windowOptions: state.windowOptions.copyWith(
-                  noBorder: !noBorder,
-                ),
-              );
-            });
-          },
+          onPressed: _toggleBorder,
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
@@ -127,28 +73,13 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
               state: selectedConfig.windowOptions.noBorder
                   ? CheckboxState.checked
                   : CheckboxState.unchecked,
-              onChanged: (value) =>
-                  ref.read(configScreenConfig.notifier).update(
-                        (state) => state = state!.copyWith(
-                            windowOptions: state.windowOptions.copyWith(
-                                noBorder: value == CheckboxState.checked)),
-                      ),
+              onChanged: (value) => _toggleBorder(),
             ),
           ),
         ),
         const Divider(),
         ConfigCustom(
-          onPressed: () {
-            ref.read(configScreenConfig.notifier).update((state) {
-              final alwaysOntop = state!.windowOptions.alwaysOntop;
-
-              return state.copyWith(
-                windowOptions: state.windowOptions.copyWith(
-                  alwaysOntop: !alwaysOntop,
-                ),
-              );
-            });
-          },
+          onPressed: _toggleOntop,
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
@@ -162,48 +93,73 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
               state: selectedConfig.windowOptions.alwaysOntop
                   ? CheckboxState.checked
                   : CheckboxState.unchecked,
-              onChanged: (value) =>
-                  ref.read(configScreenConfig.notifier).update(
-                        (state) => state = state!.copyWith(
-                            windowOptions: state.windowOptions.copyWith(
-                                alwaysOntop: value == CheckboxState.checked)),
-                      ),
+              onChanged: (value) => _toggleOntop(),
             ),
           ),
         ),
         const Divider(),
         ConfigUserInput(
-            showinfo: showInfo,
-            label: el.windowSection.timeLimit.label,
-            controller: timeLimitController,
-            subtitle: timeLimitController.text == '-'
-                ? el.windowSection.timeLimit.info.default$
-                : el.windowSection.timeLimit.info
-                    .alt(time: timeLimitController.text.trim()),
-            unit: 's',
-            onTap: () => setState(() {
-                  timeLimitController.selection = TextSelection(
-                      baseOffset: 0,
-                      extentOffset: timeLimitController.text.length);
-                }),
-            onChanged: (value) {
-              if (value.isEmpty) {
-                ref.read(configScreenConfig.notifier).update((state) => state =
-                    state!.copyWith(
-                        windowOptions:
-                            state.windowOptions.copyWith(timeLimit: 0)));
-
-                setState(() {
-                  timeLimitController.text = '-';
-                });
-              } else {
-                ref.read(configScreenConfig.notifier).update((state) => state =
-                    state!.copyWith(
-                        windowOptions: state.windowOptions
-                            .copyWith(timeLimit: int.parse(value))));
-              }
-            })
+          showinfo: showInfo,
+          label: el.windowSection.timeLimit.label,
+          controller: timeLimitController,
+          subtitle: timeLimitController.text == '-'
+              ? el.windowSection.timeLimit.info.default$
+              : el.windowSection.timeLimit.info
+                  .alt(time: timeLimitController.text.trim()),
+          unit: 's',
+          onTap: () => setState(() {
+            timeLimitController.selection = TextSelection(
+                baseOffset: 0, extentOffset: timeLimitController.text.length);
+          }),
+          onChanged: _setTimeLimit,
+        )
       ],
     );
+  }
+
+  _toggleWindow() {
+    final config = ref.read(configScreenConfig);
+    final noWindow = config!.windowOptions.noWindow;
+
+    ref.read(configScreenConfig.notifier).setWindowConfig(noWindow: !noWindow);
+
+    if (!noWindow) {
+      ref.read(configScreenConfig.notifier).setDeviceConfig(
+            stayAwake: false,
+            showTouches: false,
+            offScreenOnClose: false,
+            turnOffDisplay: false,
+          );
+    }
+  }
+
+  _toggleBorder() {
+    final config = ref.read(configScreenConfig);
+    final noBorder = config!.windowOptions.noBorder;
+
+    ref.read(configScreenConfig.notifier).setWindowConfig(noBorder: !noBorder);
+  }
+
+  _toggleOntop() {
+    final config = ref.read(configScreenConfig);
+    final alwaysOntop = config!.windowOptions.alwaysOntop;
+
+    ref
+        .read(configScreenConfig.notifier)
+        .setWindowConfig(alwaysOntop: !alwaysOntop);
+  }
+
+  _setTimeLimit(value) {
+    if (value.isEmpty) {
+      ref.read(configScreenConfig.notifier).setWindowConfig(timeLimit: 0);
+
+      setState(() {
+        timeLimitController.text = '-';
+      });
+    } else {
+      ref
+          .read(configScreenConfig.notifier)
+          .setWindowConfig(timeLimit: int.parse(value));
+    }
   }
 }

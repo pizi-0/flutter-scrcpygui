@@ -111,7 +111,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
         ),
       );
     } else {
-      ref.read(configScreenConfig.notifier).state = config;
+      ref.read(configScreenConfig.notifier).setConfig(config);
       context.push('/home/config-settings');
     }
   }

@@ -86,7 +86,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
     final selectedDevice = ref.read(selectedDeviceProvider);
     if (selectedDevice != null) {
       final newconfig = newConfig.copyWith(id: const Uuid().v4());
-      ref.read(configScreenConfig.notifier).state = newconfig;
+      ref.read(configScreenConfig.notifier).setConfig(newconfig);
       context.push('/home/config-settings');
     } else {
       showDialog(
@@ -191,7 +191,7 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
     final selectedDevice = ref.read(selectedDeviceProvider);
     if (selectedDevice != null) {
       final newconfig = newConfig.copyWith(id: const Uuid().v4());
-      ref.read(configScreenConfig.notifier).state = newconfig;
+      ref.read(configScreenConfig.notifier).setConfig(newconfig);
       context.push('/home/config-settings');
     } else {
       showDialog(
@@ -376,7 +376,7 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
         ),
       );
     } else {
-      ref.read(configScreenConfig.notifier).state = config;
+      ref.read(configScreenConfig.notifier).setConfig(config);
       context.push('/home/config-settings');
     }
   }

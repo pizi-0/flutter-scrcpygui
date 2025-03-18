@@ -72,21 +72,18 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
       onSelected: (info.buildVersion.toInt() ?? 0) < 13
           ? null
           : (value) {
-              ref.read(configScreenConfig.notifier).update((state) => state =
-                  state!.copyWith(
-                      audioOptions:
-                          state.audioOptions.copyWith(duplicateAudio: value)));
+              ref
+                  .read(configScreenConfig.notifier)
+                  .setAudioConfig(duplicateAudio: value);
 
               if (value == true) {
-                ref.read(configScreenConfig.notifier).update((state) => state =
-                    state!.copyWith(
-                        audioOptions: state.audioOptions
-                            .copyWith(audioSource: AudioSource.playback)));
+                ref
+                    .read(configScreenConfig.notifier)
+                    .setAudioConfig(audioSource: AudioSource.playback);
               } else {
-                ref.read(configScreenConfig.notifier).update((state) => state!
-                    .copyWith(
-                        audioOptions: state.audioOptions
-                            .copyWith(audioSource: AudioSource.output)));
+                ref
+                    .read(configScreenConfig.notifier)
+                    .setAudioConfig(audioSource: AudioSource.output);
               }
             },
       items: [
@@ -129,10 +126,9 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
       onSelected: selectedConfig.audioOptions.duplicateAudio
           ? null
           : (value) {
-              ref.read(configScreenConfig.notifier).update((state) => state =
-                  state!.copyWith(
-                      audioOptions:
-                          state.audioOptions.copyWith(audioSource: value)));
+              ref
+                  .read(configScreenConfig.notifier)
+                  .setAudioConfig(audioSource: value);
             },
     );
   }
@@ -166,10 +162,10 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
           onSelected: _isRecordingAudioOnly(selectedConfig)
               ? null
               : (value) {
-                  ref.read(configScreenConfig.notifier).update((state) =>
-                      state = state!.copyWith(
-                          audioOptions: state.audioOptions.copyWith(
-                              audioCodec: value, audioEncoder: 'default')));
+                  ref.read(configScreenConfig.notifier).setAudioConfig(
+                        audioCodec: value,
+                        audioEncoder: 'default',
+                      );
                 },
           items: [
             ...info.audioEncoder.map(
@@ -195,10 +191,9 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
               ? el.commonLoc.default$
               : selectedConfig.audioOptions.audioEncoder,
           onSelected: (value) {
-            ref.read(configScreenConfig.notifier).update((state) => state =
-                state!.copyWith(
-                    audioOptions:
-                        state.audioOptions.copyWith(audioEncoder: value)));
+            ref
+                .read(configScreenConfig.notifier)
+                .setAudioConfig(audioEncoder: value);
           },
           items: [
             SelectItemButton(
@@ -244,37 +239,26 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
 
   _onFormatSelected(AudioFormat? value) {
     if (value == AudioFormat.wav) {
-      ref.read(configScreenConfig.notifier).update((state) => state = state!
-          .copyWith(
-              audioOptions: state.audioOptions.copyWith(audioCodec: 'raw')));
+      ref.read(configScreenConfig.notifier).setAudioConfig(audioCodec: 'raw');
     }
 
     if (value == AudioFormat.flac) {
-      ref.read(configScreenConfig.notifier).update((state) => state = state!
-          .copyWith(
-              audioOptions: state.audioOptions.copyWith(audioCodec: 'flac')));
+      ref.read(configScreenConfig.notifier).setAudioConfig(audioCodec: 'flac');
     }
 
     if (value == AudioFormat.aac) {
-      ref.read(configScreenConfig.notifier).update((state) => state = state!
-          .copyWith(
-              audioOptions: state.audioOptions.copyWith(audioCodec: 'aac')));
+      ref.read(configScreenConfig.notifier).setAudioConfig(audioCodec: 'aac');
     }
 
     if (value == AudioFormat.opus) {
-      ref.read(configScreenConfig.notifier).update((state) => state = state!
-          .copyWith(
-              audioOptions: state.audioOptions.copyWith(audioCodec: 'opus')));
+      ref.read(configScreenConfig.notifier).setAudioConfig(audioCodec: 'opus');
     }
 
     if (value == AudioFormat.m4a) {
-      ref.read(configScreenConfig.notifier).update((state) => state = state!
-          .copyWith(
-              audioOptions: state.audioOptions.copyWith(audioCodec: 'opus')));
+      ref.read(configScreenConfig.notifier).setAudioConfig(audioCodec: 'opus');
     }
 
-    ref.read(configScreenConfig.notifier).update((state) => state!.copyWith(
-        audioOptions: state.audioOptions.copyWith(audioFormat: value)));
+    ref.read(configScreenConfig.notifier).setAudioConfig(audioFormat: value);
   }
 
   Widget _buildAudioBitrate(BuildContext context) {
@@ -287,17 +271,15 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
         unit: 'K',
         onChanged: (value) {
           if (value.isEmpty) {
-            ref.read(configScreenConfig.notifier).update((state) => state =
-                state!.copyWith(
-                    audioOptions:
-                        state.audioOptions.copyWith(audioBitrate: 128)));
+            ref
+                .read(configScreenConfig.notifier)
+                .setAudioConfig(audioBitrate: 128);
             audioBitrateController.text = '128';
             setState(() {});
           } else {
-            ref.read(configScreenConfig.notifier).update((state) => state =
-                state!.copyWith(
-                    audioOptions: state.audioOptions
-                        .copyWith(audioBitrate: int.parse(value))));
+            ref
+                .read(configScreenConfig.notifier)
+                .setAudioConfig(audioBitrate: int.parse(value));
           }
         },
         onTap: () => setState(() {

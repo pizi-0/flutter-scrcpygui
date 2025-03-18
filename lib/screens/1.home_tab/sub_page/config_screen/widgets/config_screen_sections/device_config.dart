@@ -23,19 +23,8 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
       label: el.deviceSection.title,
       children: [
         ConfigCustom(
-          onPressed: selectedConfig.windowOptions.noWindow
-              ? null
-              : () {
-                  ref.read(configScreenConfig.notifier).update((state) {
-                    final stayAwake = state!.deviceOptions.stayAwake;
-
-                    return state.copyWith(
-                      deviceOptions: state.deviceOptions.copyWith(
-                        stayAwake: !stayAwake,
-                      ),
-                    );
-                  });
-                },
+          onPressed:
+              selectedConfig.windowOptions.noWindow ? null : _toggleStayAwake,
           childBackgroundColor: Colors.transparent,
           title: el.deviceSection.stayAwake.label,
           showinfo: showInfo,
@@ -49,27 +38,13 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                 : CheckboxState.unchecked,
             onChanged: selectedConfig.windowOptions.noWindow
                 ? null
-                : (value) => ref.read(configScreenConfig.notifier).update(
-                    (state) => state = state!.copyWith(
-                        deviceOptions: state.deviceOptions.copyWith(
-                            stayAwake: value == CheckboxState.checked))),
+                : (value) => _toggleStayAwake(),
           ),
         ),
         const Divider(),
         ConfigCustom(
-          onPressed: selectedConfig.windowOptions.noWindow
-              ? null
-              : () {
-                  ref.read(configScreenConfig.notifier).update((state) {
-                    final showTouches = state!.deviceOptions.showTouches;
-
-                    return state.copyWith(
-                      deviceOptions: state.deviceOptions.copyWith(
-                        showTouches: !showTouches,
-                      ),
-                    );
-                  });
-                },
+          onPressed:
+              selectedConfig.windowOptions.noWindow ? null : _toggleShowTouches,
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
@@ -85,10 +60,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                   : CheckboxState.unchecked,
               onChanged: selectedConfig.windowOptions.noWindow
                   ? null
-                  : (value) => ref.read(configScreenConfig.notifier).update(
-                      (state) => state = state!.copyWith(
-                          deviceOptions: state.deviceOptions.copyWith(
-                              showTouches: value == CheckboxState.checked))),
+                  : (value) => _toggleShowTouches(),
             ),
           ),
         ),
@@ -96,17 +68,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
         ConfigCustom(
           onPressed: selectedConfig.windowOptions.noWindow
               ? null
-              : () {
-                  ref.read(configScreenConfig.notifier).update((state) {
-                    final turnOffDisplay = state!.deviceOptions.turnOffDisplay;
-
-                    return state.copyWith(
-                      deviceOptions: state.deviceOptions.copyWith(
-                        turnOffDisplay: !turnOffDisplay,
-                      ),
-                    );
-                  });
-                },
+              : _toggleTurnOffDisplay,
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
@@ -122,10 +84,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                   : CheckboxState.unchecked,
               onChanged: selectedConfig.windowOptions.noWindow
                   ? null
-                  : (value) => ref.read(configScreenConfig.notifier).update(
-                      (state) => state = state!.copyWith(
-                          deviceOptions: state.deviceOptions.copyWith(
-                              turnOffDisplay: value == CheckboxState.checked))),
+                  : (value) => _toggleTurnOffDisplay(),
             ),
           ),
         ),
@@ -133,18 +92,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
         ConfigCustom(
           onPressed: selectedConfig.windowOptions.noWindow
               ? null
-              : () {
-                  ref.read(configScreenConfig.notifier).update((state) {
-                    final offScreenOnClose =
-                        state!.deviceOptions.offScreenOnClose;
-
-                    return state.copyWith(
-                      deviceOptions: state.deviceOptions.copyWith(
-                        offScreenOnClose: !offScreenOnClose,
-                      ),
-                    );
-                  });
-                },
+              : _toggleOffScreenOnClose,
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
@@ -160,27 +108,13 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
                   : CheckboxState.unchecked,
               onChanged: selectedConfig.windowOptions.noWindow
                   ? null
-                  : (value) => ref.read(configScreenConfig.notifier).update(
-                      (state) => state = state!.copyWith(
-                          deviceOptions: state.deviceOptions.copyWith(
-                              offScreenOnClose:
-                                  value == CheckboxState.checked))),
+                  : (value) => _toggleOffScreenOnClose(),
             ),
           ),
         ),
         const Divider(),
         ConfigCustom(
-          onPressed: () {
-            ref.read(configScreenConfig.notifier).update((state) {
-              final noScreensaver = state!.deviceOptions.noScreensaver;
-
-              return state.copyWith(
-                deviceOptions: state.deviceOptions.copyWith(
-                  noScreensaver: !noScreensaver,
-                ),
-              );
-            });
-          },
+          onPressed: _toggleScreenSaver,
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
@@ -194,15 +128,54 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
               state: selectedConfig.deviceOptions.noScreensaver
                   ? CheckboxState.checked
                   : CheckboxState.unchecked,
-              onChanged: (value) => ref
-                  .read(configScreenConfig.notifier)
-                  .update((state) => state = state!.copyWith(
-                      deviceOptions: state.deviceOptions.copyWith(
-                          noScreensaver: value == CheckboxState.checked))),
+              onChanged: (value) => _toggleScreenSaver(),
             ),
           ),
         ),
       ],
     );
+  }
+
+  _toggleStayAwake() {
+    final config = ref.read(configScreenConfig)!;
+    final stayAwake = config.deviceOptions.stayAwake;
+    ref
+        .read(configScreenConfig.notifier)
+        .setDeviceConfig(stayAwake: !stayAwake);
+  }
+
+  _toggleShowTouches() {
+    final config = ref.read(configScreenConfig)!;
+    final showTouches = config.deviceOptions.showTouches;
+    ref
+        .read(configScreenConfig.notifier)
+        .setDeviceConfig(showTouches: !showTouches);
+  }
+
+  _toggleTurnOffDisplay() {
+    final config = ref.read(configScreenConfig)!;
+    final turnOffDisplay = config.deviceOptions.turnOffDisplay;
+
+    ref
+        .read(configScreenConfig.notifier)
+        .setDeviceConfig(turnOffDisplay: !turnOffDisplay);
+  }
+
+  _toggleOffScreenOnClose() {
+    final config = ref.read(configScreenConfig)!;
+    final offScreenOnClose = config.deviceOptions.offScreenOnClose;
+
+    ref.read(configScreenConfig.notifier).setDeviceConfig(
+          offScreenOnClose: !offScreenOnClose,
+        );
+  }
+
+  _toggleScreenSaver() {
+    final config = ref.read(configScreenConfig)!;
+    final noScreensaver = config.deviceOptions.noScreensaver;
+
+    ref.read(configScreenConfig.notifier).setDeviceConfig(
+          noScreensaver: !noScreensaver,
+        );
   }
 }

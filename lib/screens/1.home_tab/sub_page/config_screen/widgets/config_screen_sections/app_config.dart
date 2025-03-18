@@ -48,21 +48,9 @@ class AppConfigState extends ConsumerState<AppConfig> {
                   placeholder: Text('Select an app'),
                   popupConstraints: BoxConstraints(maxHeight: appWidth - 100),
                   onChanged: (app) {
-                    ref.read(configScreenConfig.notifier).update(
-                      (state) {
-                        var currentAppOption = state!.appOptions;
-                        currentAppOption ??= SAppOptions(
-                          forceClose: false,
-                          selectedApp: null,
-                        );
-
-                        return state.copyWith(
-                          appOptions: currentAppOption.copyWith(
-                            selectedApp: app,
-                          ),
-                        );
-                      },
-                    );
+                    ref
+                        .read(configScreenConfig.notifier)
+                        .setAppConfig(selectedApp: app);
                   },
                   popup: SelectPopup.builder(
                     searchPlaceholder: Text('Search'),
@@ -88,7 +76,7 @@ class AppConfigState extends ConsumerState<AppConfig> {
                     density: ButtonDensity.iconDense,
                     onPressed: () => ref
                         .read(configScreenConfig.notifier)
-                        .update((state) => state!.copyWith(appOptions: null)),
+                        .setAppConfig(reset: true),
                     icon: Icon(Icons.clear),
                   ),
                 )
@@ -116,20 +104,15 @@ class AppConfigState extends ConsumerState<AppConfig> {
   }
 
   _onForceCloseCheck() {
-    ref.read(configScreenConfig.notifier).update(
-      (state) {
-        var currentAppOption = state!.appOptions;
-        currentAppOption ??= SAppOptions(
-          forceClose: false,
-          selectedApp: null,
-        );
-
-        return state.copyWith(
-          appOptions: currentAppOption.copyWith(
-            forceClose: !currentAppOption.forceClose,
-          ),
-        );
-      },
+    final config = ref.read(configScreenConfig);
+    var currentAppOption = config!.appOptions;
+    currentAppOption ??= SAppOptions(
+      forceClose: false,
+      selectedApp: null,
     );
+
+    ref
+        .read(configScreenConfig.notifier)
+        .setAppConfig(forceClose: !currentAppOption.forceClose);
   }
 }

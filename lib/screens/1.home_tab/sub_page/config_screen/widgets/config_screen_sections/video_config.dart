@@ -101,17 +101,15 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
       }),
       onChanged: (value) {
         if (value.isEmpty) {
-          ref.read(configScreenConfig.notifier).update((state) => state = state!
-              .copyWith(videoOptions: state.videoOptions.copyWith(maxFPS: 0)));
+          ref.read(configScreenConfig.notifier).setVideoConfig(maxFPS: 0);
 
           setState(() {
             maxFPSController.text = '-';
           });
         } else {
-          ref.read(configScreenConfig.notifier).update((state) => state = state!
-              .copyWith(
-                  videoOptions: state.videoOptions
-                      .copyWith(maxFPS: double.parse(value))));
+          ref
+              .read(configScreenConfig.notifier)
+              .setVideoConfig(maxFPS: double.parse(value));
         }
       },
     );
@@ -143,10 +141,9 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
           child: Select(
             filled: true,
             onChanged: (value) {
-              ref.read(configScreenConfig.notifier).update((state) => state =
-                  state!.copyWith(
-                      videoOptions:
-                          state.videoOptions.copyWith(displayId: value!.$1)));
+              ref
+                  .read(configScreenConfig.notifier)
+                  .setVideoConfig(displayId: value!.$1);
             },
             value: displayDD.firstWhere(
                 (d) => d.$1 == selectedConfig.videoOptions.displayId),
@@ -292,70 +289,34 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   }
 
   _onVdResolutionChanged(value) {
-    final selectedConfig = ref.read(configScreenConfig)!;
-
-    var currentVdOptions = selectedConfig.videoOptions.virtualDisplayOptions;
-
-    currentVdOptions ??= defaultVdOptions;
-
-    ref.read(configScreenConfig.notifier).update(
-      (state) {
-        return state!.copyWith(
-            videoOptions: state.videoOptions.copyWith(
-                virtualDisplayOptions:
-                    currentVdOptions!.copyWith(resolution: value)));
-      },
-    );
+    ref
+        .read(configScreenConfig.notifier)
+        .setVirtDisplayConfig(resolution: value);
   }
 
   _onVdDpiChanged(value) {
-    final selectedConfig = ref.read(configScreenConfig)!;
-
-    var currentVdOptions = selectedConfig.videoOptions.virtualDisplayOptions;
-
-    currentVdOptions ??= defaultVdOptions;
-
-    ref.read(configScreenConfig.notifier).update(
-      (state) {
-        return state!.copyWith(
-            videoOptions: state.videoOptions.copyWith(
-                virtualDisplayOptions: currentVdOptions!.copyWith(dpi: value)));
-      },
-    );
+    ref.read(configScreenConfig.notifier).setVirtDisplayConfig(dpi: value);
   }
 
   _onVdDisableDecoChanged() {
     final selectedConfig = ref.read(configScreenConfig)!;
 
-    var currentVdOptions = selectedConfig.videoOptions.virtualDisplayOptions;
+    var currentVdOptions =
+        selectedConfig.videoOptions.virtualDisplayOptions ?? defaultVdOptions;
 
-    currentVdOptions ??= defaultVdOptions;
-
-    ref.read(configScreenConfig.notifier).update(
-      (state) {
-        return state!.copyWith(
-            videoOptions: state.videoOptions.copyWith(
-                virtualDisplayOptions: currentVdOptions!.copyWith(
-                    disableDecorations: !currentVdOptions.disableDecorations)));
-      },
-    );
+    ref.read(configScreenConfig.notifier).setVirtDisplayConfig(
+        disableDecorations: !currentVdOptions.disableDecorations);
   }
 
   _onVdDestroyContentChanged() {
     final selectedConfig = ref.read(configScreenConfig)!;
 
-    var currentVdOptions = selectedConfig.videoOptions.virtualDisplayOptions;
+    var currentVdOptions =
+        selectedConfig.videoOptions.virtualDisplayOptions ?? defaultVdOptions;
 
-    currentVdOptions ??= defaultVdOptions;
-
-    ref.read(configScreenConfig.notifier).update(
-      (state) {
-        return state!.copyWith(
-            videoOptions: state.videoOptions.copyWith(
-                virtualDisplayOptions: currentVdOptions!.copyWith(
-                    preseveContent: !currentVdOptions.preseveContent)));
-      },
-    );
+    ref
+        .read(configScreenConfig.notifier)
+        .setVirtDisplayConfig(preseveContent: !currentVdOptions.preseveContent);
   }
 
   Widget _buildResolutionScale(ScrcpyConfig selectedConfig, ScrcpyInfo info) {
@@ -397,10 +358,9 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                 min: 30,
                 divisions: 70,
                 onChanged: (value) {
-                  ref.read(configScreenConfig.notifier).update((state) =>
-                      state = state!.copyWith(
-                          videoOptions: state.videoOptions
-                              .copyWith(resolutionScale: value.value)));
+                  ref
+                      .read(configScreenConfig.notifier)
+                      .setVideoConfig(resolutionScale: value.value);
                 },
               ),
             ),
@@ -422,10 +382,9 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
           showinfo: showInfo,
           initialValue: selectedConfig.videoOptions.videoCodec,
           onSelected: (value) {
-            ref.read(configScreenConfig.notifier).update((state) => state =
-                state!.copyWith(
-                    videoOptions: state.videoOptions
-                        .copyWith(videoCodec: value, videoEncoder: 'default')));
+            ref
+                .read(configScreenConfig.notifier)
+                .setVideoConfig(videoCodec: value, videoEncoder: 'default');
           },
           items: info.videoEncoders
               .map(
@@ -445,10 +404,9 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
               ? el.commonLoc.default$
               : selectedConfig.videoOptions.videoEncoder,
           onSelected: (value) {
-            ref.read(configScreenConfig.notifier).update((state) => state =
-                state!.copyWith(
-                    videoOptions:
-                        state.videoOptions.copyWith(videoEncoder: value)));
+            ref
+                .read(configScreenConfig.notifier)
+                .setVideoConfig(videoEncoder: value);
           },
           items: [
             SelectItemButton(
@@ -491,12 +449,9 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                   format: selectedConfig.videoOptions.videoFormat.command),
               initialValue: selectedConfig.videoOptions.videoFormat,
               toTitleCase: false,
-              onSelected: (value) {
-                ref.read(configScreenConfig.notifier).update((state) => state =
-                    state!.copyWith(
-                        videoOptions:
-                            state.videoOptions.copyWith(videoFormat: value)));
-              },
+              onSelected: (value) => ref
+                  .read(configScreenConfig.notifier)
+                  .setVideoConfig(videoFormat: value),
             ),
           )
       ],
@@ -517,16 +472,14 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
       unit: 'M',
       onChanged: (value) {
         if (value.isEmpty) {
-          ref.read(configScreenConfig.notifier).update((state) => state!
-              .copyWith(
-                  videoOptions: state.videoOptions.copyWith(videoBitrate: 8)));
+          ref.read(configScreenConfig.notifier).setVideoConfig(videoBitrate: 8);
+
           videoBitrateController.text = '8';
           setState(() {});
         } else {
-          ref.read(configScreenConfig.notifier).update((state) => state!
-              .copyWith(
-                  videoOptions: state.videoOptions
-                      .copyWith(videoBitrate: int.parse(value))));
+          ref
+              .read(configScreenConfig.notifier)
+              .setVideoConfig(videoBitrate: int.parse(value));
         }
       },
       onTap: () => setState(() {

@@ -50,8 +50,9 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
               ...availableFlags.map((e) => FilteringTextInputFormatter.deny(e))
             ],
             onChanged: (val) {
-              ref.read(configScreenConfig.notifier).update(
-                  (state) => state = state!.copyWith(additionalFlags: val));
+              ref
+                  .read(configScreenConfig.notifier)
+                  .setAdditionalFlags(additionalFlags: val);
             },
           ),
         ),
