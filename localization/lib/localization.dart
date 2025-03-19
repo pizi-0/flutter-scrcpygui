@@ -6280,7 +6280,7 @@ final LocalizationMessages en = LocalizationMessages(
   ),
   configScreenLoc: ConfigScreenLoc(
     title: 'Config settings',
-    connectionLost: 'Device connection lost',
+    connectionLost: 'Lost connection to device',
   ),
   logScreenLoc: LogScreenLoc(
     title: 'Test log',

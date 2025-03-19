@@ -69,7 +69,7 @@ device_settings_loc:
 ## home_tab > config screen
 config_screen_loc:
   title: Config settings
-  connection_lost: Device connection lost
+  connection_lost: Lost connection to device
 
 ## home_tab > config screen > test config
 log_screen_loc: 
