@@ -115,6 +115,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig)!;
     final showInfo = ref.watch(configScreenShowInfo);
+    final selectedDevice = ref.watch(selectedDeviceProvider);
 
     return PopScope(
       canPop: false,
@@ -129,21 +130,29 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
                 .update((state) => !state),
           ),
         ],
-        onBack: () => _handleOnClose(),
+        onBack: selectedDevice == null
+            ? () => context.pop()
+            : () => _handleOnClose(),
         title: el.configScreenLoc.title,
-        children: [
-          const SizedBox(width: appWidth, child: ModeConfig()),
-          if (selectedConfig.scrcpyMode != ScrcpyMode.audioOnly)
-            const SizedBox(width: appWidth, child: VideoConfig()),
-          if (selectedConfig.scrcpyMode != ScrcpyMode.videoOnly)
-            const SizedBox(width: appWidth, child: AudioConfig()),
-          const SizedBox(width: appWidth, child: AppConfig()),
-          const SizedBox(width: appWidth, child: DeviceConfig()),
-          const SizedBox(width: appWidth, child: WindowConfig()),
-          const SizedBox(width: appWidth, child: AdditionalFlagsConfig()),
-          const PreviewAndTest(),
-          const SizedBox(height: 20),
-        ],
+        children: selectedDevice == null
+            ? [
+                Center(
+                  child: Text(el.configScreenLoc.connectionLost),
+                )
+              ]
+            : [
+                const SizedBox(width: appWidth, child: ModeConfig()),
+                if (selectedConfig.scrcpyMode != ScrcpyMode.audioOnly)
+                  const SizedBox(width: appWidth, child: VideoConfig()),
+                if (selectedConfig.scrcpyMode != ScrcpyMode.videoOnly)
+                  const SizedBox(width: appWidth, child: AudioConfig()),
+                const SizedBox(width: appWidth, child: AppConfig()),
+                const SizedBox(width: appWidth, child: DeviceConfig()),
+                const SizedBox(width: appWidth, child: WindowConfig()),
+                const SizedBox(width: appWidth, child: AdditionalFlagsConfig()),
+                const PreviewAndTest(),
+                const SizedBox(height: 20),
+              ],
       ),
     );
   }

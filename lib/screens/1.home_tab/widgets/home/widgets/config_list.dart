@@ -42,6 +42,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
     return PgSectionCard(
       label: el.configLoc.label(count: '${allConfigs.length}'),
       labelTrail: IconButton.ghost(
+        leading: Text(el.configLoc.new$),
         icon: const Icon(Icons.add),
         onPressed: _onNewConfigPressed,
       ),
