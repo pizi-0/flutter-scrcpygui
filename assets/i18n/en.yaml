@@ -110,6 +110,7 @@ video_section:
       alt: "uses '--display-id=' flag "
 
     virtual:
+      label: Virtual display settings
       new_display: 
         label: New display
         info:
@@ -124,6 +125,18 @@ video_section:
         info: 
           default: "defaults to device's DPI"
           alt: "appends DPI to '--new-display=${res}/${dpi}' flag"
+
+      deco:
+        label: Disable system decorations
+        info: 
+          default: defaults with system decorations
+          alt: "uses '--no-vd-system-decorations' flag"
+
+      preserve: 
+        label: Preserve app
+        info:
+          default: apps are destroyed by default when a scrcpy session ends
+          alt: "move app to main display when session ends; uses '--no-vd-destroy-content' flag"
 
   codec:
     label: Codec

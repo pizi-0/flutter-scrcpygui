@@ -167,7 +167,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
               spacing: 8,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Label(child: Text('Virtual display settings')).small(),
+                Label(child: Text(el.videoSection.displays.virtual.label))
+                    .small(),
                 PgSectionCard(
                   cardPadding: EdgeInsets.all(8),
                   children: [
@@ -210,7 +211,13 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                     ),
                     Divider(),
                     ConfigCustom(
-                      title: 'Disable system decorations',
+                      title: el.videoSection.displays.virtual.deco.label,
+                      subtitle: selectedConfig.videoOptions
+                                  .virtualDisplayOptions?.disableDecorations ??
+                              false
+                          ? el.videoSection.displays.virtual.deco.info.alt
+                          : el.videoSection.displays.virtual.deco.info.default$,
+                      showinfo: showInfo,
                       childExpand: false,
                       onPressed: _onVdDisableDecoChanged,
                       child: Checkbox(
@@ -225,7 +232,14 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                     ),
                     Divider(),
                     ConfigCustom(
-                      title: 'Preserve app',
+                      title: el.videoSection.displays.virtual.preserve.label,
+                      subtitle: selectedConfig.videoOptions
+                                  .virtualDisplayOptions?.preseveContent ??
+                              false
+                          ? el.videoSection.displays.virtual.preserve.info.alt
+                          : el.videoSection.displays.virtual.preserve.info
+                              .default$,
+                      showinfo: showInfo,
                       childExpand: false,
                       onPressed: _onVdDestroyContentChanged,
                       child: Checkbox(

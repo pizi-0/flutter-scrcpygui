@@ -1340,30 +1340,46 @@ class VideoSectionDisplaysInfo {
 
 class VideoSectionDisplaysVirtual {
   const VideoSectionDisplaysVirtual({
+    required this.label,
     required this.newDisplay,
     required this.resolution,
     required this.dpi,
+    required this.deco,
+    required this.preserve,
   });
   factory VideoSectionDisplaysVirtual.fromJson(Map<String, dynamic> json) {
     return VideoSectionDisplaysVirtual(
+      label: (json['label'] ?? '').toString(),
       newDisplay: VideoSectionDisplaysVirtualNewDisplay.fromJson(
           (json['new_display'] as Map).cast<String, dynamic>()),
       resolution: VideoSectionDisplaysVirtualResolution.fromJson(
           (json['resolution'] as Map).cast<String, dynamic>()),
       dpi: VideoSectionDisplaysVirtualDpi.fromJson(
           (json['dpi'] as Map).cast<String, dynamic>()),
+      deco: VideoSectionDisplaysVirtualDeco.fromJson(
+          (json['deco'] as Map).cast<String, dynamic>()),
+      preserve: VideoSectionDisplaysVirtualPreserve.fromJson(
+          (json['preserve'] as Map).cast<String, dynamic>()),
     );
   }
+  final String label;
   final VideoSectionDisplaysVirtualNewDisplay newDisplay;
 
   final VideoSectionDisplaysVirtualResolution resolution;
 
   final VideoSectionDisplaysVirtualDpi dpi;
 
+  final VideoSectionDisplaysVirtualDeco deco;
+
+  final VideoSectionDisplaysVirtualPreserve preserve;
+
   Map<String, Object> get _content => {
+        r'''label''': label,
         r'''new_display''': newDisplay,
         r'''resolution''': resolution,
         r'''dpi''': dpi,
+        r'''deco''': deco,
+        r'''preserve''': preserve,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -1647,6 +1663,193 @@ class VideoSectionDisplaysVirtualDpiInfo {
   final String default$;
   final String Function({required String res, required String dpi}) alt;
 
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class VideoSectionDisplaysVirtualDeco {
+  const VideoSectionDisplaysVirtualDeco({
+    required this.label,
+    required this.info,
+  });
+  factory VideoSectionDisplaysVirtualDeco.fromJson(Map<String, dynamic> json) {
+    return VideoSectionDisplaysVirtualDeco(
+      label: (json['label'] ?? '').toString(),
+      info: VideoSectionDisplaysVirtualDecoInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final VideoSectionDisplaysVirtualDecoInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class VideoSectionDisplaysVirtualDecoInfo {
+  const VideoSectionDisplaysVirtualDecoInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory VideoSectionDisplaysVirtualDecoInfo.fromJson(
+      Map<String, dynamic> json) {
+    return VideoSectionDisplaysVirtualDecoInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: (json['alt'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String alt;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class VideoSectionDisplaysVirtualPreserve {
+  const VideoSectionDisplaysVirtualPreserve({
+    required this.label,
+    required this.info,
+  });
+  factory VideoSectionDisplaysVirtualPreserve.fromJson(
+      Map<String, dynamic> json) {
+    return VideoSectionDisplaysVirtualPreserve(
+      label: (json['label'] ?? '').toString(),
+      info: VideoSectionDisplaysVirtualPreserveInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final VideoSectionDisplaysVirtualPreserveInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class VideoSectionDisplaysVirtualPreserveInfo {
+  const VideoSectionDisplaysVirtualPreserveInfo({
+    required this.default$,
+    required this.alt,
+  });
+  factory VideoSectionDisplaysVirtualPreserveInfo.fromJson(
+      Map<String, dynamic> json) {
+    return VideoSectionDisplaysVirtualPreserveInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: (json['alt'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String alt;
   Map<String, Object> get _content => {
         r'''default''': default$,
         r'''alt''': alt,
@@ -6119,6 +6322,7 @@ final LocalizationMessages en = LocalizationMessages(
         alt: '''uses '--display-id=' flag ''',
       ),
       virtual: VideoSectionDisplaysVirtual(
+        label: 'Virtual display settings',
         newDisplay: VideoSectionDisplaysVirtualNewDisplay(
           label: 'New display',
           info: VideoSectionDisplaysVirtualNewDisplayInfo(
@@ -6139,6 +6343,22 @@ final LocalizationMessages en = LocalizationMessages(
             default$: '''defaults to device's DPI''',
             alt: ({required String res, required String dpi}) =>
                 '''appends DPI to '--new-display=${res}/${dpi}' flag''',
+          ),
+        ),
+        deco: VideoSectionDisplaysVirtualDeco(
+          label: 'Disable system decorations',
+          info: VideoSectionDisplaysVirtualDecoInfo(
+            default$: 'defaults with system decorations',
+            alt: '''uses '--no-vd-system-decorations' flag''',
+          ),
+        ),
+        preserve: VideoSectionDisplaysVirtualPreserve(
+          label: 'Preserve app',
+          info: VideoSectionDisplaysVirtualPreserveInfo(
+            default$:
+                'apps are destroyed by default when a scrcpy session ends',
+            alt:
+                '''move app to main display when session ends; uses '--no-vd-destroy-content' flag''',
           ),
         ),
       ),
@@ -6603,6 +6823,7 @@ final LocalizationMessages es = LocalizationMessages(
         alt: '''usa el indicador '--display-id=' ''',
       ),
       virtual: VideoSectionDisplaysVirtual(
+        label: '',
         newDisplay: VideoSectionDisplaysVirtualNewDisplay(
           label: '',
           info: VideoSectionDisplaysVirtualNewDisplayInfo(
@@ -6621,6 +6842,20 @@ final LocalizationMessages es = LocalizationMessages(
           info: VideoSectionDisplaysVirtualDpiInfo(
             default$: '',
             alt: ({required String res, required String dpi}) => '',
+          ),
+        ),
+        deco: VideoSectionDisplaysVirtualDeco(
+          label: '',
+          info: VideoSectionDisplaysVirtualDecoInfo(
+            default$: '',
+            alt: '',
+          ),
+        ),
+        preserve: VideoSectionDisplaysVirtualPreserve(
+          label: '',
+          info: VideoSectionDisplaysVirtualPreserveInfo(
+            default$: '',
+            alt: '',
           ),
         ),
       ),
@@ -7082,6 +7317,7 @@ final LocalizationMessages ms = LocalizationMessages(
         alt: '''menggunakan bendera '--display-id=' ''',
       ),
       virtual: VideoSectionDisplaysVirtual(
+        label: '',
         newDisplay: VideoSectionDisplaysVirtualNewDisplay(
           label: '',
           info: VideoSectionDisplaysVirtualNewDisplayInfo(
@@ -7100,6 +7336,20 @@ final LocalizationMessages ms = LocalizationMessages(
           info: VideoSectionDisplaysVirtualDpiInfo(
             default$: '',
             alt: ({required String res, required String dpi}) => '',
+          ),
+        ),
+        deco: VideoSectionDisplaysVirtualDeco(
+          label: '',
+          info: VideoSectionDisplaysVirtualDecoInfo(
+            default$: '',
+            alt: '',
+          ),
+        ),
+        preserve: VideoSectionDisplaysVirtualPreserve(
+          label: '',
+          info: VideoSectionDisplaysVirtualPreserveInfo(
+            default$: '',
+            alt: '',
           ),
         ),
       ),
