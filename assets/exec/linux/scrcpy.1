@@ -370,6 +370,12 @@ Do not forward mouse hover (mouse motion without any clicks) events.
 Do not power on the device on start.
 
 .TP
+.B \-\-no\-vd\-destroy\-content
+Disable virtual display "destroy content on removal" flag.
+
+With this option, when the virtual display is closed, the running apps are moved to the main display rather than being destroyed.
+
+.TP
 .B \-\-no\-vd\-system\-decorations
 Disable virtual display system decorations flag.
 
@@ -518,12 +524,14 @@ Enable "show touches" on start, restore the initial value on exit.
 It only shows physical touches (not clicks from scrcpy).
 
 .TP
-.BI "\-\-tcpip\fR[=\fIip\fR[:\fIport\fR]]
-Configure and reconnect the device over TCP/IP.
+.BI "\-\-tcpip\fR[=[+]\fIip\fR[:\fIport\fR]]
+Configure and connect the device over TCP/IP.
 
 If a destination address is provided, then scrcpy connects to this address before starting. The device must listen on the given TCP port (default is 5555).
 
 If no destination address is provided, then scrcpy attempts to find the IP address and adb port of the current device (typically connected over USB), enables TCP/IP mode if necessary, then connects to this address before starting.
+
+Prefix the address with a '+' to force a reconnection.
 
 .TP
 .BI "\-\-time\-limit " seconds
