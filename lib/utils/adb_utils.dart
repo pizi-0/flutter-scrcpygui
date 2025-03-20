@@ -68,7 +68,7 @@ class AdbUtils {
     final videoEncoderInfo = _getVideoEncoders(info.stdout);
     final audioEncoderInfo = _getAudioEncoders(info.stdout);
     final displayInfo = _getDisplays(info.stdout);
-    final appsList = _getAppsList(info.stdout);
+    final appsList = getAppsList(info.stdout);
 
     return ScrcpyInfo(
       device: dev,
@@ -352,7 +352,7 @@ List<ScrcpyDisplay> _getDisplays(String res) {
   return displays;
 }
 
-List<ScrcpyApp> _getAppsList(String res) {
+List<ScrcpyApp> getAppsList(String res) {
   List<ScrcpyApp> apps = [];
 
   final split = res.split('[server] INFO: List of apps:');
