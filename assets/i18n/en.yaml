@@ -213,6 +213,20 @@ audio_section:
       default: defaults to 128k, no flag
       alt: "uses '--audio-bit-rate=${bitrate}K' flag "
 
+### config screen > app section
+app_section:
+  title: Start app
+  select: 
+    label: Select an app
+    info: 
+      alt: "uses '--start-app=${app}' flag "
+      fc: "uses '--start-app=+${app}' flag "
+  force_close:
+    label: Force close app before starting
+    info: 
+      alt: "prepend the app package name with '+' "
+  
+
 ### config screen > device section
 device_section:
   title: Device

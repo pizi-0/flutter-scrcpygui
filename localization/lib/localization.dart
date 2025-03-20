@@ -3114,6 +3114,247 @@ class AudioSectionBitrateInfo {
   }
 }
 
+class AppSection {
+  const AppSection({
+    required this.title,
+    required this.select,
+    required this.forceClose,
+  });
+  factory AppSection.fromJson(Map<String, dynamic> json) {
+    return AppSection(
+      title: (json['title'] ?? '').toString(),
+      select: AppSectionSelect.fromJson(
+          (json['select'] as Map).cast<String, dynamic>()),
+      forceClose: AppSectionForceClose.fromJson(
+          (json['force_close'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String title;
+  final AppSectionSelect select;
+
+  final AppSectionForceClose forceClose;
+
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''select''': select,
+        r'''force_close''': forceClose,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AppSectionSelect {
+  const AppSectionSelect({
+    required this.label,
+    required this.info,
+  });
+  factory AppSectionSelect.fromJson(Map<String, dynamic> json) {
+    return AppSectionSelect(
+      label: (json['label'] ?? '').toString(),
+      info: AppSectionSelectInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final AppSectionSelectInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AppSectionSelectInfo {
+  const AppSectionSelectInfo({
+    required this.alt,
+    required this.fc,
+  });
+  factory AppSectionSelectInfo.fromJson(Map<String, dynamic> json) {
+    return AppSectionSelectInfo(
+      alt: ({required String app}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${app}', app)
+          .replaceAll(_variableRegExp, ''),
+      fc: ({required String app}) => (json['fc'] ?? '')
+          .toString()
+          .replaceAll(r'${app}', app)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String Function({required String app}) alt;
+
+  final String Function({required String app}) fc;
+
+  Map<String, Object> get _content => {
+        r'''alt''': alt,
+        r'''fc''': fc,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AppSectionForceClose {
+  const AppSectionForceClose({
+    required this.label,
+    required this.info,
+  });
+  factory AppSectionForceClose.fromJson(Map<String, dynamic> json) {
+    return AppSectionForceClose(
+      label: (json['label'] ?? '').toString(),
+      info: AppSectionForceCloseInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final AppSectionForceCloseInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class AppSectionForceCloseInfo {
+  const AppSectionForceCloseInfo({
+    required this.alt,
+  });
+  factory AppSectionForceCloseInfo.fromJson(Map<String, dynamic> json) {
+    return AppSectionForceCloseInfo(
+      alt: (json['alt'] ?? '').toString(),
+    );
+  }
+  final String alt;
+  Map<String, Object> get _content => {
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class DeviceSection {
   const DeviceSection({
     required this.title,
@@ -6035,6 +6276,7 @@ class LocalizationMessages {
     required this.modeSection,
     required this.videoSection,
     required this.audioSection,
+    required this.appSection,
     required this.deviceSection,
     required this.windowSection,
     required this.addFlags,
@@ -6074,6 +6316,8 @@ class LocalizationMessages {
           (json['video_section'] as Map).cast<String, dynamic>()),
       audioSection: AudioSection.fromJson(
           (json['audio_section'] as Map).cast<String, dynamic>()),
+      appSection: AppSection.fromJson(
+          (json['app_section'] as Map).cast<String, dynamic>()),
       deviceSection: DeviceSection.fromJson(
           (json['device_section'] as Map).cast<String, dynamic>()),
       windowSection: WindowSection.fromJson(
@@ -6126,6 +6370,8 @@ class LocalizationMessages {
 
   final AudioSection audioSection;
 
+  final AppSection appSection;
+
   final DeviceSection deviceSection;
 
   final WindowSection windowSection;
@@ -6166,6 +6412,7 @@ class LocalizationMessages {
         r'''mode_section''': modeSection,
         r'''video_section''': videoSection,
         r'''audio_section''': audioSection,
+        r'''app_section''': appSection,
         r'''device_section''': deviceSection,
         r'''window_section''': windowSection,
         r'''add_flags''': addFlags,
@@ -6458,6 +6705,22 @@ final LocalizationMessages en = LocalizationMessages(
         default$: 'defaults to 128k, no flag',
         alt: ({required String bitrate}) =>
             '''uses '--audio-bit-rate=${bitrate}K' flag ''',
+      ),
+    ),
+  ),
+  appSection: AppSection(
+    title: 'Start app',
+    select: AppSectionSelect(
+      label: 'Select an app',
+      info: AppSectionSelectInfo(
+        alt: ({required String app}) => '''uses '--start-app=${app}' flag ''',
+        fc: ({required String app}) => '''uses '--start-app=+${app}' flag ''',
+      ),
+    ),
+    forceClose: AppSectionForceClose(
+      label: 'Force close app before starting',
+      info: AppSectionForceCloseInfo(
+        alt: '''prepend the app package name with '+' ''',
       ),
     ),
   ),
@@ -6961,6 +7224,22 @@ final LocalizationMessages es = LocalizationMessages(
       ),
     ),
   ),
+  appSection: AppSection(
+    title: '',
+    select: AppSectionSelect(
+      label: '',
+      info: AppSectionSelectInfo(
+        alt: ({required String app}) => '',
+        fc: ({required String app}) => '',
+      ),
+    ),
+    forceClose: AppSectionForceClose(
+      label: '',
+      info: AppSectionForceCloseInfo(
+        alt: '',
+      ),
+    ),
+  ),
   deviceSection: DeviceSection(
     title: 'Dispositivo',
     stayAwake: DeviceSectionStayAwake(
@@ -7453,6 +7732,22 @@ final LocalizationMessages ms = LocalizationMessages(
         default$: 'lalai ke 128k, tiada bendera',
         alt: ({required String bitrate}) =>
             '''menggunakan bendera '--audio-bit-rate=${bitrate}K' ''',
+      ),
+    ),
+  ),
+  appSection: AppSection(
+    title: '',
+    select: AppSectionSelect(
+      label: '',
+      info: AppSectionSelectInfo(
+        alt: ({required String app}) => '',
+        fc: ({required String app}) => '',
+      ),
+    ),
+    forceClose: AppSectionForceClose(
+      label: '',
+      info: AppSectionForceCloseInfo(
+        alt: '',
       ),
     ),
   ),
