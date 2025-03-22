@@ -6263,6 +6263,91 @@ class CommonLoc {
   }
 }
 
+class ColorSchemeNameLoc {
+  const ColorSchemeNameLoc({
+    required this.blue,
+    required this.gray,
+    required this.green,
+    required this.neutral,
+    required this.orange,
+    required this.red,
+    required this.rose,
+    required this.slate,
+    required this.stone,
+    required this.violet,
+    required this.yellow,
+    required this.zinc,
+  });
+  factory ColorSchemeNameLoc.fromJson(Map<String, dynamic> json) {
+    return ColorSchemeNameLoc(
+      blue: (json['blue'] ?? '').toString(),
+      gray: (json['gray'] ?? '').toString(),
+      green: (json['green'] ?? '').toString(),
+      neutral: (json['neutral'] ?? '').toString(),
+      orange: (json['orange'] ?? '').toString(),
+      red: (json['red'] ?? '').toString(),
+      rose: (json['rose'] ?? '').toString(),
+      slate: (json['slate'] ?? '').toString(),
+      stone: (json['stone'] ?? '').toString(),
+      violet: (json['violet'] ?? '').toString(),
+      yellow: (json['yellow'] ?? '').toString(),
+      zinc: (json['zinc'] ?? '').toString(),
+    );
+  }
+  final String blue;
+  final String gray;
+  final String green;
+  final String neutral;
+  final String orange;
+  final String red;
+  final String rose;
+  final String slate;
+  final String stone;
+  final String violet;
+  final String yellow;
+  final String zinc;
+  Map<String, Object> get _content => {
+        r'''blue''': blue,
+        r'''gray''': gray,
+        r'''green''': green,
+        r'''neutral''': neutral,
+        r'''orange''': orange,
+        r'''red''': red,
+        r'''rose''': rose,
+        r'''slate''': slate,
+        r'''stone''': stone,
+        r'''violet''': violet,
+        r'''yellow''': yellow,
+        r'''zinc''': zinc,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class LocalizationMessages {
   LocalizationMessages({
     required this.homeLoc,
@@ -6291,6 +6376,7 @@ class LocalizationMessages {
     required this.buttonLabelLoc,
     required this.statusLoc,
     required this.commonLoc,
+    required this.colorSchemeNameLoc,
   });
   factory LocalizationMessages.fromJson(Map<String, dynamic> json) {
     return LocalizationMessages(
@@ -6346,6 +6432,8 @@ class LocalizationMessages {
           (json['status_loc'] as Map).cast<String, dynamic>()),
       commonLoc: CommonLoc.fromJson(
           (json['common_loc'] as Map).cast<String, dynamic>()),
+      colorSchemeNameLoc: ColorSchemeNameLoc.fromJson(
+          (json['color_scheme_name_loc'] as Map).cast<String, dynamic>()),
     );
   }
   final HomeLoc homeLoc;
@@ -6400,6 +6488,8 @@ class LocalizationMessages {
 
   final CommonLoc commonLoc;
 
+  final ColorSchemeNameLoc colorSchemeNameLoc;
+
   Map<String, Object> get _content => {
         r'''home_loc''': homeLoc,
         r'''device_tile_loc''': deviceTileLoc,
@@ -6427,6 +6517,7 @@ class LocalizationMessages {
         r'''button_label_loc''': buttonLabelLoc,
         r'''status_loc''': statusLoc,
         r'''common_loc''': commonLoc,
+        r'''color_scheme_name_loc''': colorSchemeNameLoc,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -6962,6 +7053,20 @@ final LocalizationMessages en = LocalizationMessages(
     no: 'No',
     bundled: 'Bundled',
   ),
+  colorSchemeNameLoc: ColorSchemeNameLoc(
+    blue: 'Blue',
+    gray: 'Gray',
+    green: 'Green',
+    neutral: 'Neutral',
+    orange: 'Orange',
+    red: 'Red',
+    rose: 'Rose',
+    slate: 'Slate',
+    stone: 'stone',
+    violet: 'Violet',
+    yellow: 'Yellow',
+    zinc: 'Zinc',
+  ),
 );
 final LocalizationMessages es = LocalizationMessages(
   homeLoc: HomeLoc(
@@ -7477,6 +7582,20 @@ final LocalizationMessages es = LocalizationMessages(
     no: 'No',
     bundled: 'Incluido',
   ),
+  colorSchemeNameLoc: ColorSchemeNameLoc(
+    blue: '',
+    gray: '',
+    green: '',
+    neutral: '',
+    orange: '',
+    red: '',
+    rose: '',
+    slate: '',
+    stone: '',
+    violet: '',
+    yellow: '',
+    zinc: '',
+  ),
 );
 final LocalizationMessages ms = LocalizationMessages(
   homeLoc: HomeLoc(
@@ -7987,6 +8106,20 @@ final LocalizationMessages ms = LocalizationMessages(
     yes: 'Ya',
     no: 'Tidak',
     bundled: 'Terangkum',
+  ),
+  colorSchemeNameLoc: ColorSchemeNameLoc(
+    blue: '',
+    gray: '',
+    green: '',
+    neutral: '',
+    orange: '',
+    red: '',
+    rose: '',
+    slate: '',
+    stone: '',
+    violet: '',
+    yellow: '',
+    zinc: '',
   ),
 );
 final Map<Locale, LocalizationMessages> _languageMap = {

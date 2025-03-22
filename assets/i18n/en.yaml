@@ -453,3 +453,18 @@ common_loc:
   yes: Yes
   no: No
   bundled: Bundled
+
+
+color_scheme_name_loc:
+  blue: Blue
+  gray: Gray
+  green: Green
+  neutral: Neutral
+  orange: Orange
+  red: Red
+  rose: Rose
+  slate: Slate
+  stone: stone
+  violet: Violet
+  yellow: Yellow
+  zinc: Zinc

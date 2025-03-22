@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:localization/localization.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class ColorSchemesWithName {
@@ -33,27 +34,28 @@ class ColorSchemesWithName {
 }
 
 List<ColorSchemesWithName> mySchemes = [
-  ColorSchemesWithName(
-      'Blue', ColorSchemes.lightBlue(), ColorSchemes.darkBlue()),
-  ColorSchemesWithName(
-      'Gray', ColorSchemes.lightGray(), ColorSchemes.darkGray()),
-  ColorSchemesWithName(
-      'Green', ColorSchemes.lightGreen(), ColorSchemes.darkGreen()),
-  ColorSchemesWithName(
-      'Neutral', ColorSchemes.lightNeutral(), ColorSchemes.darkNeutral()),
-  ColorSchemesWithName(
-      'Orange', ColorSchemes.lightOrange(), ColorSchemes.darkOrange()),
-  ColorSchemesWithName('Red', ColorSchemes.lightRed(), ColorSchemes.darkRed()),
-  ColorSchemesWithName(
-      'Rose', ColorSchemes.lightRose(), ColorSchemes.darkRose()),
-  ColorSchemesWithName(
-      'Slate', ColorSchemes.lightSlate(), ColorSchemes.darkSlate()),
-  ColorSchemesWithName(
-      'Stone', ColorSchemes.lightStone(), ColorSchemes.darkStone()),
-  ColorSchemesWithName(
-      'Violet', ColorSchemes.lightViolet(), ColorSchemes.darkViolet()),
-  ColorSchemesWithName(
-      'Yellow', ColorSchemes.lightYellow(), ColorSchemes.darkYellow()),
-  ColorSchemesWithName(
-      'Zinc', ColorSchemes.lightZinc(), ColorSchemes.darkZinc()),
+  ColorSchemesWithName(el.colorSchemeNameLoc.blue, ColorSchemes.lightBlue(),
+      ColorSchemes.darkBlue()),
+  ColorSchemesWithName(el.colorSchemeNameLoc.gray, ColorSchemes.lightGray(),
+      ColorSchemes.darkGray()),
+  ColorSchemesWithName(el.colorSchemeNameLoc.green, ColorSchemes.lightGreen(),
+      ColorSchemes.darkGreen()),
+  ColorSchemesWithName(el.colorSchemeNameLoc.neutral,
+      ColorSchemes.lightNeutral(), ColorSchemes.darkNeutral()),
+  ColorSchemesWithName(el.colorSchemeNameLoc.orange, ColorSchemes.lightOrange(),
+      ColorSchemes.darkOrange()),
+  ColorSchemesWithName(el.colorSchemeNameLoc.red, ColorSchemes.lightRed(),
+      ColorSchemes.darkRed()),
+  ColorSchemesWithName(el.colorSchemeNameLoc.rose, ColorSchemes.lightRose(),
+      ColorSchemes.darkRose()),
+  ColorSchemesWithName(el.colorSchemeNameLoc.slate, ColorSchemes.lightSlate(),
+      ColorSchemes.darkSlate()),
+  ColorSchemesWithName(el.colorSchemeNameLoc.stone, ColorSchemes.lightStone(),
+      ColorSchemes.darkStone()),
+  ColorSchemesWithName(el.colorSchemeNameLoc.violet, ColorSchemes.lightViolet(),
+      ColorSchemes.darkViolet()),
+  ColorSchemesWithName(el.colorSchemeNameLoc.yellow, ColorSchemes.lightYellow(),
+      ColorSchemes.darkYellow()),
+  ColorSchemesWithName(el.colorSchemeNameLoc.zinc, ColorSchemes.lightZinc(),
+      ColorSchemes.darkZinc()),
 ];
