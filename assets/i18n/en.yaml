@@ -93,7 +93,7 @@ mode_section:
       alt: "uses '--record=' flag "
   
   scrcpy_mode:
-    both: Both
+    both: Audio + video
     audio_only: Audio only
     video_only: Video only
     info:

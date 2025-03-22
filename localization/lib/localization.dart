@@ -6551,7 +6551,7 @@ final LocalizationMessages en = LocalizationMessages(
       ),
     ),
     scrcpyMode: ModeSectionScrcpyMode(
-      both: 'Both',
+      both: 'Audio + video',
       audioOnly: 'Audio only',
       videoOnly: 'Video only',
       info: ModeSectionScrcpyModeInfo(
