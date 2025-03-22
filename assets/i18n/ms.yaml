@@ -5,29 +5,29 @@ home_loc:
     label: Peranti yang disambungkan (${count})
 
 device_tile_loc:
-  running_instances: Berjalan (${count})
+  running_instances: Sedang Berjalan (${count})
   context:
-    disconnect: Putuskan sambungan
-    to_wireless: Ke tanpa wayar
-    kill_running: Matikan contoh yang sedang berjalan
+    disconnect: Putuskan Sambungan
+    to_wireless: Ke Tanpa Wayar
+    kill_running: Hentikan scrcpy
     instances: Contoh
     all: Semua
-    all_instances: Matikan semua contoh
+    all_instances: Hentikan semua scrcpy
     manage: Urus
 
 config_loc:
-  label: Mulakan scrcpy
-  new: Buat konfigurasi baru
+  label: Konfigurasi (${count})
+  new: Cipta
   select: Pilih konfigurasi
   details: Tunjukkan butiran
-  start: Mulakan
+  start: Mula
 
 # error dialog
 no_device_dialog_loc:
   title: Peranti
-  contentsEdit: Tiada peranti dipilih. \nPilih peranti untuk menyunting konfigurasi scrcpy.
+  contentsEdit: Tiada peranti dipilih. \nPilih peranti untuk mengedit konfigurasi scrcpy.
   contentsStart: Tiada peranti dipilih. \nPilih peranti untuk memulakan scrcpy.
-  contentsNew: Tiada peranti dipilih. \nPilih peranti untuk membuat konfigurasi scrcpy.
+  contentsNew: Tiada peranti dipilih. \nPilih peranti untuk mencipta konfigurasi scrcpy.
 
 no_config_dialog_loc:
   title: Konfigurasi
@@ -37,21 +37,21 @@ no_config_dialog_loc:
 device_settings_loc:
   title: Tetapan
   info: Maklumat
-  refresh: Segarkan maklumat
+  refresh: Muat Semula Maklumat
   rename:
-    label: Namakan semula
+    label: Namakan Semula
     info: Tekan [Enter] untuk menggunakan nama
   auto_connect:
-    label: Sambung automatik
+    label: Sambung Automatik
     info: Sambung peranti tanpa wayar secara automatik
   on_connected:
-    label: Semasa disambungkan
-    info: Mulakan (1) contoh scrcpy dengan konfigurasi terpilih semasa peranti disambungkan
+    label: Semasa Disambungkan
+    info: Mulakan (1) scrcpy dengan konfigurasi yang dipilih semasa sambungan peranti
   do_nothing: Jangan buat apa-apa
 
   scrcpy_info:
     fetching: Mendapatkan maklumat scrcpy
-    label: Maklumat Scrcpy
+    label: Maklumat scrcpy
     name: 'Nama: ${name}'
     id: 'ID: ${id}'
     model: 'Model: ${model}'
@@ -64,11 +64,11 @@ device_settings_loc:
 ## home_tab > config screen
 config_screen_loc:
   title: Tetapan konfigurasi
-  connection_lost: Sambungan peranti terputus
+  connection_lost: Sambungan ke peranti terputus
 
 ## home_tab > config screen > test config
 log_screen_loc:
-  title: Log ujian
+  title: Log Ujian
   dialog:
     title: Perintah
 
@@ -76,8 +76,8 @@ log_screen_loc:
 mode_section:
   title: Mod
   save_folder:
-    label: Simpan folder
-    info: "menambah laluan simpan ke '--record=laluan simpan/fail' "
+    label: Folder Simpan
+    info: "menambah laluan simpan ke '--record=laluan_simpan/fail' "
 
   main_mode:
     label: Mod
@@ -88,11 +88,11 @@ mode_section:
       alt: "menggunakan bendera '--record=' "
 
   scrcpy_mode:
-    both: Kedua-duanya
+    both: Audio + video
     audio_only: Audio sahaja
     video_only: Video sahaja
     info:
-      default: lalai ke kedua-duanya, tiada bendera
+      default: lalai kepada kedua-duanya, tiada bendera
       alt: "menggunakan bendera '${command}' "
 
 ### config screen > video section
@@ -101,13 +101,39 @@ video_section:
   displays:
     label: Paparan
     info:
-      default: lalai kepada yang pertama tersedia, tiada bendera; paparan maya tidak disenaraikan
+      default: lalai kepada yang pertama tersedia, tiada bendera
       alt: "menggunakan bendera '--display-id=' "
+    virtual:
+      label: Tetapan Paparan Maya
+      new_display:
+        label: Paparan Baru
+        info:
+          alt: "menggunakan bendera '--new-display' "
+      resolution:
+        label: Resolusi
+        info:
+          default: "lalai kepada resolusi peranti"
+          alt: "menambah resolusi ke bendera '--new-display=${res}' "
+      dpi:
+        label: DPI
+        info:
+          default: "lalai kepada DPI peranti"
+          alt: "menambah DPI ke bendera '--new-display=${res}/${dpi}' "
+      deco:
+        label: Lumpuhkan Hiasan Sistem
+        info:
+          default: lalai dengan hiasan sistem
+          alt: "menggunakan bendera '--no-vd-system-decorations' "
+      preserve:
+        label: Kekalkan Aplikasi
+        info:
+          default: aplikasi dimusnahkan secara lalai apabila sesi scrcpy berakhir
+          alt: "pindahkan aplikasi ke paparan utama apabila sesi berakhir; menggunakan bendera '--no-vd-destroy-content' "
 
   codec:
     label: Codec
     info:
-      default: lalai ke h264, tiada bendera
+      default: lalai kepada h264, tiada bendera
       alt: "menggunakan bendera '--video-codec=${codec}' "
 
   encoder:
@@ -119,31 +145,31 @@ video_section:
   format:
     label: Format
     info:
-      default: menambah format ke '--record=laluan simpan/fail${format}' "
+      default: menambah format ke '--record=laluan_simpan/fail${format}' "
 
   bitrate:
-    label: Kadar bit
+    label: Kadar Bit
     info:
-      default: lalai ke 8M, tiada bendera
+      default: lalai kepada 8M, tiada bendera
       alt: "menggunakan bendera '--video-bit-rate=${bitrate}M' "
 
   fps_limit:
     label: Had FPS
     info:
-      default: tiada bendera kecuali ditetapkan
+      default: tiada bendera melainkan ditetapkan
       alt: "menggunakan bendera '--max-fps=${fps}' "
 
   resolution_scale:
-    label: Skala resolusi
+    label: Skala Resolusi
     info:
-      default: dikira berdasarkan resolusi peranti, tiada bendera kecuali ditetapkan
+      default: dikira berdasarkan resolusi peranti, tiada bendera melainkan ditetapkan
       alt: "menggunakan bendera '--max-size=${size}' "
 
 ### config screen > audio section
 audio_section:
   title: Audio
   duplicate:
-    label: Gandakan audio
+    label: Gandakan Audio
     info:
       default: hanya untuk Android 13 dan ke atas
       alt: "menggunakan bendera '--audio-dup' "
@@ -153,12 +179,12 @@ audio_section:
     info:
       default: lalai kepada output, tiada bendera
       alt: "menggunakan bendera '${source}' "
-      inCaseOfDup: tersirat kepada 'Main balik' dengan '--audio-dup', tiada bendera
+      inCaseOfDup: tersirat kepada 'Main Semula' dengan '--audio-dup', tiada bendera
 
   codec:
     label: Codec
     info:
-      default: lalai ke opus, tiada bendera
+      default: lalai kepada opus, tiada bendera
       alt: "menggunakan bendera '--audio-codec=${codec}' "
       isAudioOnly: "Format: ${format}, memerlukan Codec: ${codec}"
 
@@ -171,78 +197,91 @@ audio_section:
   format:
     label: Format
     info:
-      default: menambah format ke '--record=laluan simpan/fail.${format}' "
+      default: menambah format ke '--record=laluan_simpan/fail.${format}' "
 
   bitrate:
-    label: Kadar bit
+    label: Kadar Bit
     info:
-      default: lalai ke 128k, tiada bendera
+      default: lalai kepada 128k, tiada bendera
       alt: "menggunakan bendera '--audio-bit-rate=${bitrate}K' "
+
+### config screen > app section
+app_section:
+  title: Mulakan Aplikasi
+  select:
+    label: Pilih Aplikasi
+    info:
+      alt: "menggunakan bendera '--start-app=${app}' "
+      fc: "menggunakan bendera '--start-app=+${app}' "
+  force_close:
+    label: Paksa Tutup Aplikasi Sebelum Memulakan
+    info:
+      alt: "awalkan nama pakej aplikasi dengan '+' "
 
 ### config screen > device section
 device_section:
   title: Peranti
   stay_awake:
-    label: Kekal berjaga
+    label: Kekal Berjaga
     info:
-      default: menghalang peranti daripada tidur, hanya berfungsi dengan sambungan usb
+      default: menghalang peranti daripada tidur, hanya berfungsi dengan sambungan USB
       alt: "menggunakan bendera '--stay-awake' "
 
   show_touches:
-    label: Tunjukkan sentuhan
+    label: Tunjukkan Sentuhan
     info:
-      default: tunjukkan sentuhan jari, hanya berfungsi dengan sentuhan fizikal pada peranti
+      default: menunjukkan sentuhan jari, hanya berfungsi dengan sentuhan fizikal pada peranti
       alt: "menggunakan bendera '--show-touches' "
 
   off_display_start:
-    label: Matikan paparan semasa mula
+    label: Matikan Paparan Semasa Mula
     info:
-      default: matikan paparan peranti, semasa scrcpy dimulakan
+      default: matikan paparan peranti, semasa permulaan scrcpy
       alt: "menggunakan bendera '--turn-screen-off' "
 
   off_display_exit:
-    label: Matikan paparan semasa keluar
+    label: Matikan Paparan Semasa Keluar
     info:
-      default: matikan paparan peranti, semasa scrcpy keluar
+      default: matikan paparan peranti, semasa keluar scrcpy
       alt: "menggunakan bendera '--power-off-on-close' "
 
   screensaver:
-    label: Lumpuhkan penyelamat skrin (HOST)
+    label: Lumpuhkan Penjimat Skrin (HOST)
     info:
-      default: lumpuhkan penyelamat skrin
+      default: lumpuhkan penjimat skrin
       alt: "menggunakan bendera '--disable-screensaver' "
 
 window_section:
   title: Tetingkap
   hide_window:
-    label: Sembunyikan tetingkap
+    label: Sembunyikan Tetingkap
     info:
       default: mulakan scrcpy tanpa tetingkap
       alt: "menggunakan bendera '--no-window' "
 
   borderless:
-    label: Tanpa sempadan
+    label: Tanpa Sempadan
     info:
       default: lumpuhkan hiasan tetingkap
       alt: "menggunakan bendera '--window-borderless' "
 
   always_on_top:
-    label: Sentiasa di atas
+    label: Sentiasa di Atas
     info:
       default: tetingkap scrcpy sentiasa di atas
       alt: "menggunakan bendera '--always-on-top' "
 
   time_limit:
-    label: Had masa
+    label: Had Masa
     info:
-      default: hadkan sesi scrcpy, dalam saat
+      default: mengehadkan sesi scrcpy, dalam saat
       alt: "menggunakan bendera '--time-limit=${time}' "
 
 ### config screen > additional flags section
 add_flags:
-  title: Bendera tambahan
+  title: Bendera Tambahan
   add: Tambah
-  info: elakkan daripada menggunakan bendera yang sudah menjadi pilihan
+  info: elakkan menggunakan bendera yang sudah menjadi pilihan
 
 #connect tab
 connect_loc:
@@ -255,51 +294,52 @@ connect_loc:
   with_mdns:
     label: Peranti MDNS (${count})
     info:
-      i1: Pastikan peranti anda dipasangkan ke PC anda.
-      i2: Jika peranti anda tidak dipaparkan, cuba matikan dan hidupkan ADB Tanpa Wayar.
+      i1: Pastikan peranti anda dipasangkan dengan PC anda.
+      i2: Jika peranti anda tidak muncul, cuba matikan dan hidupkan ADB Tanpa Wayar.
+      i3: Peranti MDNS biasanya akan bersambung secara automatik jika dipasangkan.
 
   qr_pair:
     label: Pemasangan QR
-    pair: Pasangkan peranti
+    pair: Pasangkan Peranti
     status:
-      cancelled: Pemasangan dibatalkan
-      success: Pemasangan berjaya
-      failed: Pemasangan gagal
+      cancelled: Pemasangan Dibatalkan
+      success: Pemasangan Berjaya
+      failed: Pemasangan Gagal
 
   unauthenticated:
     info:
-      i1: Periksa telefon anda.
+      i1: Semak telefon anda.
       i2: Klik benarkan penyahpepijatan.
 
   failed:
     info:
-      i1: Pastikan peranti anda dipasangkan ke PC anda.
+      i1: Pastikan peranti anda dipasangkan dengan PC anda.
       i2: Jika tidak, cuba matikan dan hidupkan Adb tanpa wayar.
       i3: 'Jika tidak dipasangkan: '
-      i4: 1. Gunakan tetingkap pasangan (butang kanan atas)
-      i5: 2. Palamkan peranti anda ke PC anda, benarkan penyahpepijatan, dan cuba semula.
+      i4: 1. Gunakan tetingkap pemasangan (butang kanan atas)
+      i5: 2. Palamkan peranti anda ke PC anda, benarkan penyahpepijatan, dan cuba lagi.
 
 ### preview and test section
 test_config_loc:
-  title: Uji konfigurasi
-  preview: Pratonton arahan
+  title: Uji Konfigurasi
+  preview: Pratonton Perintah
 
 #scrcpy manager tab
 scrcpy_manager_loc:
-  title: Pengurus Scrcpy
-  check: Semak kemas kini
+  title: Pengurus scrcpy
+  check: Semak Kemas Kini
   current:
     label: Semasa
     in_use: Digunakan
   exec:
-    label: Buka lokasi boleh laku
+    label: Buka Lokasi Boleh Laku
     info: Ubah suai dengan berhati-hati
   info_popup:
     no_update: Tiada kemas kini tersedia
     error: Ralat menyemak kemas kini
   updater:
-    label: Versi baru tersedia
-    new_version: Versi baru
+    label: Versi Baru Tersedia
+    new_version: Versi Baru
 
 #settings tab
 settings_loc:
@@ -307,20 +347,20 @@ settings_loc:
   looks:
     label: Rupa
     mode:
-      label: Mod tema
+      label: Mod Tema
       value:
         dark: Gelap
-        light: Terang
+        light: Cerah
         system: Sistem
     corner_radius:
-      label: Jejari penjuru
+      label: Jejari Sudut
     accent_color:
-      label: Warna aksen
+      label: Warna Aksen
     tint_level:
-      label: Tahap warna
+      label: Tahap Warna
 
   behavior:
-    label: Tingkah laku aplikasi
+    label: Tingkah Laku Aplikasi
     language:
       label: Bahasa
       info: Sesetengah bahasa dijana oleh AI
@@ -332,21 +372,33 @@ settings_loc:
 
 # quit dialog
 quit_dialog_loc:
-  title: Keluar daripada Scrcpy GUI?
+  title: Keluar dari GUI scrcpy?
   kill_running:
-    label: Matikan yang sedang berjalan?
-    info: ${count} contoh. Contoh tanpa tetingkap akan dimatikan tanpa mengira
+    label: Hentikan yang Sedang Berjalan?
+    info: ${count} scrcpy. scrcpy tanpa tetingkap akan dihentikan juga
   disconnect:
-    label: Putuskan sambungan ADB tanpa wayar?
+    label: Putuskan Sambungan ADB Tanpa Wayar?
     info: ${count} peranti
+
+# home tab > device tile > disconnect dialog
+disconnect_dialog_loc:
+  title: Putuskan Sambungan ${name}?
+  has_running:
+    label: ${name} mempunyai ${count} scrcpy yang sedang berjalan
+    info: Memutuskan sambungan akan menghentikan scrcpy
 
 # config screen > close dialog
 close_dialog_loc:
-  not_allowed: Tidak dibenarkan!
+  not_allowed: Tidak Dibenarkan!
   overwrite: Timpa?
-  save: Simpan konfigurasi?
-  command_preview: 'Pratonton arahan:'
+  save: Simpan Konfigurasi?
+  command_preview: 'Pratonton Perintah:'
   name: 'Nama:'
+
+# connect tab > ip history
+ip_history_loc:
+  title: Sejarah
+  empty: Tiada Sejarah
 
 # button
 button_label_loc:
@@ -354,19 +406,20 @@ button_label_loc:
   close: Tutup
   cancel: Batal
   stop: Hentikan
-  test_config: Uji konfigurasi
-  update: Kemas kini
+  test_config: Uji Konfigurasi
+  update: Kemas Kini
   info: Maklumat
-  select_all: Pilih semua
+  select_all: Pilih Semua
   quit: Keluar
   discard: Buang
   overwrite: Timpa
   save: Simpan
+  clear: Kosongkan
 
 # status
 status_loc:
   failed: Gagal
-  unauth: Tidak disahkan
+  unauth: Tidak Disahkan
   error: Ralat
   latest: Terkini
   closing: Menutup
@@ -377,4 +430,18 @@ common_loc:
   default: Lalai
   yes: Ya
   no: Tidak
-  bundled: Terangkum
+  bundled: Dibundel
+
+color_scheme_name_loc:
+  blue: Biru
+  gray: Kelabu
+  green: Hijau
+  neutral: Neutral
+  orange: Jingga
+  red: Merah
+  rose: Merah Jambu
+  slate: Batu Tulis
+  stone: Batu
+  violet: Ungu
+  yellow: Kuning
+  zinc: Zink

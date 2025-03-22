@@ -166,7 +166,7 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
 
 final defaultTheme = AppTheme(
   widgetRadius: 0.5,
-  scheme: mySchemes.first,
+  scheme: mySchemes().first,
   themeMode: ThemeMode.dark,
   fromWall: false,
   accentTintLevel: 90,

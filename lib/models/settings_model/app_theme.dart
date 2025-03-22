@@ -53,7 +53,7 @@ class AppTheme {
       fromWall: map['fromWall'] ?? false,
       scheme: map['scheme'] != null
           ? ColorSchemesWithName.fromMap(map['scheme'])
-          : mySchemes.first,
+          : mySchemes().first,
       themeMode: ThemeMode.values[map['themeMode']],
       accentTintLevel: map['accentTintLevel'],
     );

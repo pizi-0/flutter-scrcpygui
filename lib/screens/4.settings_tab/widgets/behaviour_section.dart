@@ -30,6 +30,10 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
         child: Text('Spanish'),
       ),
       const SelectItemButton(
+        value: 'it',
+        child: Text('Italian'),
+      ),
+      const SelectItemButton(
         value: 'ms',
         child: Text('Bahasa Malaysia'),
       ),

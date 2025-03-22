@@ -1,0 +1,447 @@
+# home tab
+home_loc:
+  title: Home
+  devices:
+    label: Dispositivi connessi (${count})
+
+device_tile_loc:
+  running_instances: In esecuzione (${count})
+  context:
+    disconnect: Disconnetti
+    to_wireless: A wireless
+    kill_running: Termina scrcpy in esecuzione
+    scrcpy: Scrcpy
+    all: Tutti
+    all_scrcpy: Termina tutti gli scrcpy
+    manage: Gestisci
+
+config_loc:
+  label: Config (${count})
+  new: Crea
+  select: Seleziona una configurazione
+  details: Mostra dettagli
+  start: Avvia
+
+# error dialog
+no_device_dialog_loc:
+  title: Dispositivo
+  contentsEdit: Nessun dispositivo selezionato. \nSeleziona un dispositivo per modificare la configurazione di scrcpy.
+  contentsStart: Nessun dispositivo selezionato. \nSeleziona un dispositivo per avviare scrcpy.
+  contentsNew: Nessun dispositivo selezionato. \nSeleziona un dispositivo per creare la configurazione di scrcpy.
+
+no_config_dialog_loc:
+  title: Configurazione
+  contents: Nessuna configurazione selezionata.\nSeleziona una configurazione di scrcpy da avviare.
+
+## home_tab > device settings screen
+device_settings_loc:
+  title: Impostazioni
+  info: Info
+  refresh: Aggiorna info
+  rename:
+    label: Rinomina
+    info: Premi [Invio] per applicare il nome
+  auto_connect:
+    label: Connessione automatica
+    info: Connetti automaticamente il dispositivo wireless
+  on_connected:
+    label: Alla connessione
+    info: Avvia (1) scrcpy con la configurazione selezionata alla connessione del dispositivo
+  do_nothing: Non fare nulla
+
+  scrcpy_info:
+    fetching: Recupero informazioni scrcpy
+    label: Informazioni scrcpy
+    name: 'Nome: ${name}'
+    id: 'ID: ${id}'
+    model: 'Modello: ${model}'
+    version: 'Versione Android: ${version}'
+    displays: Display (${count})
+    cameras: Fotocamere (${count})
+    video_enc: Encoder video (${count})
+    audio_enc: Encoder audio (${count})
+
+## home_tab > config screen
+config_screen_loc:
+  title: Impostazioni configurazione
+  connection_lost: Connessione al dispositivo persa
+
+## home_tab > config screen > test config
+log_screen_loc:
+  title: Log di test
+  dialog:
+    title: Comando
+
+### config screen > mode section
+mode_section:
+  title: Modalità
+  save_folder:
+    label: Cartella di salvataggio
+    info: "aggiunge il percorso di salvataggio a '--record=percorso_salvataggio/file' "
+
+  main_mode:
+    label: Modalità
+    mirror: Mirror
+    record: Registra
+    info:
+      default: mirror o registra, nessun flag per mirror
+      alt: "usa il flag '--record=' "
+
+  scrcpy_mode:
+    both: Audio + video
+    audio_only: Solo audio
+    video_only: Solo video
+    info:
+      default: predefinito su entrambi, nessun flag
+      alt: "usa il flag '${command}' "
+
+### config screen > video section
+video_section:
+  title: Video
+  displays:
+    label: Display
+    info:
+      default: predefinito sul primo disponibile, nessun flag
+      alt: "usa il flag '--display-id=' "
+    virtual:
+      label: Impostazioni display virtuale
+      new_display:
+        label: Nuovo display
+        info:
+          alt: "usa il flag '--new-display' "
+      resolution:
+        label: Risoluzione
+        info:
+          default: "predefinito sulla risoluzione del dispositivo"
+          alt: "aggiunge la risoluzione al flag '--new-display=${res}' "
+      dpi:
+        label: DPI
+        info:
+          default: "predefinito sul DPI del dispositivo"
+          alt: "aggiunge il DPI al flag '--new-display=${res}/${dpi}' "
+      deco:
+        label: Disabilita decorazioni di sistema
+        info:
+          default: predefinito con decorazioni di sistema
+          alt: "usa il flag '--no-vd-system-decorations' "
+      preserve:
+        label: Mantieni app
+        info:
+          default: le app vengono distrutte per impostazione predefinita quando una sessione scrcpy termina
+          alt: "sposta l'app sul display principale al termine della sessione; usa il flag '--no-vd-destroy-content' "
+
+  codec:
+    label: Codec
+    info:
+      default: predefinito su h264, nessun flag
+      alt: "usa il flag '--video-codec=${codec}' "
+
+  encoder:
+    label: Encoder
+    info:
+      default: predefinito sul primo disponibile, nessun flag
+      alt: "usa il flag '--video-encoder=${encoder}' "
+
+  format:
+    label: Formato
+    info:
+      default: aggiunge il formato a '--record=percorso_salvataggio/file${format}' "
+
+  bitrate:
+    label: Bitrate
+    info:
+      default: predefinito su 8M, nessun flag
+      alt: "usa il flag '--video-bit-rate=${bitrate}M' "
+
+  fps_limit:
+    label: Limite FPS
+    info:
+      default: nessun flag a meno che non sia impostato
+      alt: "usa il flag '--max-fps=${fps}' "
+
+  resolution_scale:
+    label: Scala risoluzione
+    info:
+      default: calcolata in base alla risoluzione del dispositivo, nessun flag a meno che non sia impostato
+      alt: "usa il flag '--max-size=${size}' "
+
+### config screen > audio section
+audio_section:
+  title: Audio
+  duplicate:
+    label: Duplica audio
+    info:
+      default: solo per Android 13 e versioni successive
+      alt: "usa il flag '--audio-dup' "
+
+  source:
+    label: Sorgente
+    info:
+      default: predefinito su output, nessun flag
+      alt: "usa il flag '${source}' "
+      inCaseOfDup: implicito su 'Riproduzione' con '--audio-dup', nessun flag
+
+  codec:
+    label: Codec
+    info:
+      default: predefinito su opus, nessun flag
+      alt: "usa il flag '--audio-codec=${codec}' "
+      isAudioOnly: "Formato: ${format}, richiede Codec: ${codec}"
+
+  encoder:
+    label: Encoder
+    info:
+      default: predefinito sul primo disponibile, nessun flag
+      alt: "usa il flag '--audio-encoder=${encoder}' "
+
+  format:
+    label: Formato
+    info:
+      default: aggiunge il formato a '--record=percorso_salvataggio/file.${format}' "
+
+  bitrate:
+    label: Bitrate
+    info:
+      default: predefinito su 128k, nessun flag
+      alt: "usa il flag '--audio-bit-rate=${bitrate}K' "
+
+### config screen > app section
+app_section:
+  title: Avvia app
+  select:
+    label: Seleziona un'app
+    info:
+      alt: "usa il flag '--start-app=${app}' "
+      fc: "usa il flag '--start-app=+${app}' "
+  force_close:
+    label: Forza chiusura app prima dell'avvio
+    info:
+      alt: "anteponi il nome del pacchetto dell'app con '+' "
+
+### config screen > device section
+device_section:
+  title: Dispositivo
+  stay_awake:
+    label: Mantieni attivo
+    info:
+      default: impedisce al dispositivo di andare in sospensione, funziona solo con connessione USB
+      alt: "usa il flag '--stay-awake' "
+
+  show_touches:
+    label: Mostra tocchi
+    info:
+      default: mostra i tocchi delle dita, funziona solo con tocchi fisici sul dispositivo
+      alt: "usa il flag '--show-touches' "
+
+  off_display_start:
+    label: Spegni display all'avvio
+    info:
+      default: spegne il display del dispositivo, all'avvio di scrcpy
+      alt: "usa il flag '--turn-screen-off' "
+
+  off_display_exit:
+    label: Spegni display all'uscita
+    info:
+      default: spegne il display del dispositivo, all'uscita di scrcpy
+      alt: "usa il flag '--power-off-on-close' "
+
+  screensaver:
+    label: Disabilita screensaver (HOST)
+    info:
+      default: disabilita lo screensaver
+      alt: "usa il flag '--disable-screensaver' "
+
+window_section:
+  title: Finestra
+  hide_window:
+    label: Nascondi finestra
+    info:
+      default: avvia scrcpy senza finestra
+      alt: "usa il flag '--no-window' "
+
+  borderless:
+    label: Senza bordi
+    info:
+      default: disabilita le decorazioni della finestra
+      alt: "usa il flag '--window-borderless' "
+
+  always_on_top:
+    label: Sempre in primo piano
+    info:
+      default: finestra scrcpy sempre in primo piano
+      alt: "usa il flag '--always-on-top' "
+
+  time_limit:
+    label: Limite di tempo
+    info:
+      default: limita la sessione scrcpy, in secondi
+      alt: "usa il flag '--time-limit=${time}' "
+
+### config screen > additional flags section
+add_flags:
+  title: Flag aggiuntivi
+  add: Aggiungi
+  info: evitare di usare flag che sono già un'opzione
+
+#connect tab
+connect_loc:
+  title: Connetti
+  with_ip:
+    label: Connetti con IP
+    connect: Connetti
+    connected: Connesso a ${to}
+
+  with_mdns:
+    label: Dispositivi MDNS (${count})
+    info:
+      i1: Assicurati che il tuo dispositivo sia associato al tuo PC.
+      i2: Se il tuo dispositivo non viene visualizzato, prova a disattivare e riattivare ADB wireless.
+      i3: I dispositivi MDNS di solito si connettono automaticamente se associati.
+
+  qr_pair:
+    label: Associazione QR
+    pair: Associa dispositivo
+    status:
+      cancelled: Associazione annullata
+      success: Associazione riuscita
+      failed: Associazione fallita
+
+  unauthenticated:
+    info:
+      i1: Controlla il tuo telefono.
+      i2: Clicca su consenti debug.
+
+  failed:
+    info:
+      i1: Assicurati che il tuo dispositivo sia associato al tuo PC.
+      i2: Altrimenti, prova a disattivare e riattivare Adb wireless.
+      i3: 'Se non associato: '
+      i4: 1. Usa la finestra di associazione (pulsante in alto a destra)
+      i5: 2. Collega il tuo dispositivo al PC, consenti il debug e riprova.
+
+### preview and test section
+test_config_loc:
+  title: Prova configurazione
+  preview: Anteprima comando
+
+#scrcpy manager tab
+scrcpy_manager_loc:
+  title: Gestione Scrcpy
+  check: Controlla aggiornamenti
+  current:
+    label: Corrente
+    in_use: In uso
+  exec:
+    label: Apri percorso eseguibile
+    info: Modificare con attenzione
+  info_popup:
+    no_update: Nessun aggiornamento disponibile
+    error: Errore durante il controllo degli aggiornamenti
+  updater:
+    label: Nuova versione disponibile
+    new_version: Nuova versione
+
+#settings tab
+settings_loc:
+  title: Impostazioni
+  looks:
+    label: Aspetto
+    mode:
+      label: Modalità tema
+      value:
+        dark: Scuro
+        light: Chiaro
+        system: Sistema
+    corner_radius:
+      label: Raggio angoli
+    accent_color:
+      label: Colore accento
+    tint_level:
+      label: Livello tinta
+
+  behavior:
+    label: Comportamento app
+    language:
+      label: Lingua
+      info: Alcune lingue sono generate dall'IA
+    minimize:
+      label: Riduci a icona
+      value:
+        tray: a icona
+        taskbar: a barra delle applicazioni
+
+# quit dialog
+quit_dialog_loc:
+  title: Uscire da Scrcpy GUI?
+  kill_running:
+    label: Terminare in esecuzione?
+    info: ${count} scrcpy(s). Gli scrcpy senza finestra verranno terminati comunque
+  disconnect:
+    label: Disconnettere ADB wireless?
+    info: ${count} dispositivo(i)
+
+# home tab > device tile > disconnect dialog
+disconnect_dialog_loc:
+  title: Disconnettere ${name}?
+  has_running:
+    label: ${name} ha ${count} scrcpy(s) in esecuzione
+    info: La disconnessione terminerà gli scrcpy(s)
+
+# config screen > close dialog
+close_dialog_loc:
+  not_allowed: Non consentito!
+  overwrite: Sovrascrivere?
+  save: Salvare configurazione?
+  command_preview: 'Anteprima comando:'
+  name: 'Nome:'
+
+# connect tab > ip history
+ip_history_loc:
+  title: Cronologia
+  empty: Nessuna cronologia
+
+# button
+button_label_loc:
+  ok: Ok
+  close: Chiudi
+  cancel: Annulla
+  stop: Ferma
+  test_config: Prova configurazione
+  update: Aggiorna
+  info: Info
+  select_all: Seleziona tutto
+  quit: Esci
+  discard: Scarta
+  overwrite: Sovrascrivi
+  save: Salva
+  clear: Cancella
+
+# status
+status_loc:
+  failed: Fallito
+  unauth: Non autenticato
+  error: Errore
+  latest: Ultimo
+  closing: Chiusura in corso
+  copied: Copiato
+
+# common
+common_loc:
+  default: Predefinito
+  yes: Sì
+  no: No
+  bundled: Incluso
+
+color_scheme_name_loc:
+  blue: Blu
+  gray: Grigio
+  green: Verde
+  neutral: Neutro
+  orange: Arancione
+  red: Rosso
+  rose: Rosa
+  slate: Ardesia
+  stone: Pietra
+  violet: Viola
+  yellow: Giallo
+  zinc: Zinco

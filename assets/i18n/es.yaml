@@ -9,15 +9,15 @@ device_tile_loc:
   context:
     disconnect: Desconectar
     to_wireless: A inalámbrico
-    kill_running: Matar instancias en ejecución
-    instances: Instancias
-    all: Todas
-    all_instances: Matar todas las instancias
+    kill_running: Detener scrcpy en ejecución
+    scrcpy: Scrcpy
+    all: Todos
+    all_scrcpy: Detener todo scrcpy
     manage: Administrar
 
 config_loc:
-  label: Iniciar scrcpy
-  new: Crear nueva configuración
+  label: Configuraciones (${count})
+  new: Crear
   select: Seleccionar una configuración
   details: Mostrar detalles
   start: Iniciar
@@ -46,12 +46,12 @@ device_settings_loc:
     info: Conectar automáticamente dispositivo inalámbrico
   on_connected:
     label: Al conectar
-    info: Iniciar (1) instancia de scrcpy con la configuración seleccionada al conectar el dispositivo
+    info: Iniciar (1) scrcpy con la configuración seleccionada al conectar el dispositivo
   do_nothing: No hacer nada
 
   scrcpy_info:
     fetching: Obteniendo información de scrcpy
-    label: Información de Scrcpy
+    label: Información de scrcpy
     name: 'Nombre: ${name}'
     id: 'ID: ${id}'
     model: 'Modelo: ${model}'
@@ -88,7 +88,7 @@ mode_section:
       alt: "usa el indicador '--record=' "
 
   scrcpy_mode:
-    both: Ambos
+    both: Audio + vídeo
     audio_only: Solo audio
     video_only: Solo vídeo
     info:
@@ -101,8 +101,34 @@ video_section:
   displays:
     label: Pantallas
     info:
-      default: por defecto la primera disponible, sin indicador; las pantallas virtuales no están listadas
+      default: por defecto la primera disponible, sin indicador
       alt: "usa el indicador '--display-id=' "
+    virtual:
+      label: Ajustes de pantalla virtual
+      new_display:
+        label: Nueva pantalla
+        info:
+          alt: "usa el indicador '--new-display' "
+      resolution:
+        label: Resolución
+        info:
+          default: "por defecto la resolución del dispositivo"
+          alt: "agrega la resolución al indicador '--new-display=${res}' "
+      dpi:
+        label: DPI
+        info:
+          default: "por defecto el DPI del dispositivo"
+          alt: "agrega el DPI al indicador '--new-display=${res}/${dpi}' "
+      deco:
+        label: Deshabilitar decoraciones del sistema
+        info:
+          default: por defecto con decoraciones del sistema
+          alt: "usa el indicador '--no-vd-system-decorations' "
+      preserve:
+        label: Preservar aplicación
+        info:
+          default: las aplicaciones se destruyen por defecto cuando una sesión de scrcpy termina
+          alt: "mueve la aplicación a la pantalla principal cuando la sesión termina; usa el indicador '--no-vd-destroy-content' "
 
   codec:
     label: Códec
@@ -179,6 +205,19 @@ audio_section:
       default: por defecto 128k, sin indicador
       alt: "usa el indicador '--audio-bit-rate=${bitrate}K' "
 
+### config screen > app section
+app_section:
+  title: Iniciar aplicación
+  select:
+    label: Seleccionar una aplicación
+    info:
+      alt: "usa el indicador '--start-app=${app}' "
+      fc: "usa el indicador '--start-app=+${app}' "
+  force_close:
+    label: Forzar cierre de la aplicación antes de iniciar
+    info:
+      alt: "anteponer el nombre del paquete de la aplicación con '+' "
+
 ### config screen > device section
 device_section:
   title: Dispositivo
@@ -211,7 +250,6 @@ device_section:
     info:
       default: deshabilita el protector de pantalla
       alt: "usa el indicador '--disable-screensaver' "
-
 
 window_section:
   title: Ventana
@@ -258,6 +296,7 @@ connect_loc:
     info:
       i1: Asegúrate de que tu dispositivo esté emparejado con tu PC.
       i2: Si tu dispositivo no aparece, intenta apagar y encender ADB inalámbrico.
+      i3: Los dispositivos MDNS generalmente se conectarán automáticamente si están emparejados.
 
   qr_pair:
     label: Emparejamiento QR
@@ -285,10 +324,9 @@ test_config_loc:
   title: Probar configuración
   preview: Vista previa del comando
 
-
 #scrcpy manager tab
 scrcpy_manager_loc:
-  title: Administrador de Scrcpy
+  title: Administrador de scrcpy
   check: Buscar actualizaciones
   current:
     label: Actual
@@ -332,16 +370,22 @@ settings_loc:
         tray: a la bandeja
         taskbar: a la barra de tareas
 
-
 # quit dialog
 quit_dialog_loc:
-  title: ¿Salir de Scrcpy GUI?
+  title: ¿Salir de la GUI de scrcpy?
   kill_running:
-    label: ¿Matar instancias en ejecución?
-    info: ${count} instancia(s). Las instancias sin ventana se cerrarán de todos modos
+    label: ¿Detener scrcpy en ejecución?
+    info: ${count} scrcpy(s). Las instancias sin ventana se cerrarán de todos modos
   disconnect:
     label: ¿Desconectar ADB inalámbrico?
     info: ${count} dispositivo(s)
+
+# home tab > device tile > disconnect dialog
+disconnect_dialog_loc:
+  title: ¿Desconectar ${name}?
+  has_running:
+    label: ${name} tiene ${count} scrcpy(s) en ejecución
+    info: La desconexión detendrá scrcpy(s)
 
 # config screen > close dialog
 close_dialog_loc:
@@ -351,6 +395,10 @@ close_dialog_loc:
   command_preview: 'Vista previa del comando:'
   name: 'Nombre:'
 
+# connect tab > ip history
+ip_history_loc:
+  title: Historial
+  empty: Sin historial
 
 # button
 button_label_loc:
@@ -366,6 +414,7 @@ button_label_loc:
   discard: Descartar
   overwrite: Sobrescribir
   save: Guardar
+  clear: Limpiar
 
 # status
 status_loc:
@@ -382,3 +431,17 @@ common_loc:
   yes: Sí
   no: No
   bundled: Incluido
+
+color_scheme_name_loc:
+  blue: Azul
+  gray: Gris
+  green: Verde
+  neutral: Neutro
+  orange: Naranja
+  red: Rojo
+  rose: Rosa
+  slate: Pizarra
+  stone: Piedra
+  violet: Violeta
+  yellow: Amarillo
+  zinc: Zinc

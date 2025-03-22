@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -38,6 +39,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
   Widget build(BuildContext context) {
     final allConfigs = ref.watch(configsProvider);
     final config = ref.watch(selectedConfigProvider);
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return PgSectionCard(
       label: el.configLoc.label(count: '${allConfigs.length}'),

@@ -63,7 +63,8 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                 minWidth: 180, maxWidth: 180, minHeight: 30),
             child: Select(
               filled: true,
-              itemBuilder: (context, value) => Text(value.name),
+              itemBuilder: (context, value) => Text(
+                  mySchemes().firstWhere((scheme) => scheme == value).name),
               value: looks.scheme,
               onChanged: (scheme) async {
                 ref.read(settingsProvider.notifier).changeColorScheme(scheme!);
@@ -71,7 +72,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               },
               popup: SelectPopup(
                 items: SelectItemList(
-                    children: mySchemes
+                    children: mySchemes()
                         .map((scheme) => SelectItemButton(
                             value: scheme, child: Text(scheme.name)))
                         .toList()),

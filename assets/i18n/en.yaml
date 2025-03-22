@@ -10,10 +10,10 @@ device_tile_loc:
   context: 
     disconnect: Disconnect
     to_wireless: To wireless
-    kill_running: Kill running instances
-    instances: Instances
+    kill_running: Kill running scrcpy
+    scrcpy: Scrcpy
     all: All
-    all_instances: Kill all instances
+    all_scrcpy: Kill all scrcpy
     manage: Manage
     
 
@@ -50,7 +50,7 @@ device_settings_loc:
     info: Auto connect wireless device
   on_connected: 
     label: On connected
-    info: Start (1) scrcpy instance with selected config on device connection
+    info: Start (1) scrcpy with selected config on device connection
   do_nothing: Do nothing
   
   scrcpy_info: 
@@ -393,7 +393,7 @@ quit_dialog_loc:
   title: Quit Scrcpy GUI?
   kill_running: 
     label: Kill running?
-    info: ${count} instance(s). Instances with no window will be killed regardless
+    info: ${count} scrcpy(s). Scrcpys with no window will be killed regardless
   disconnect: 
     label: Disconnect wireless ADB?
     info: ${count} device(s)
@@ -402,8 +402,8 @@ quit_dialog_loc:
 disconnect_dialog_loc:
   title: Disconnect ${name}?
   has_running:
-    label: ${name} has ${count} running instance(s)
-    info: Disconnecting will kill the scrcpy instance(s)
+    label: ${name} has ${count} running scrcpy(s)
+    info: Disconnecting will kill the scrcpy(s)
 
 
 # config screen > close dialog
