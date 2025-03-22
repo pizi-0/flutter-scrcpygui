@@ -7,7 +7,7 @@
     ayatana-appindicator3-0.1 or appindicator3-0.1
 
 - requirements for [bonsoir](https://bonsoir.skyost.eu/docs#installation) plugin
-    - windows: Win 10 (19H1/1903) (Mai 2019 Update)
+    - windows: Win 10 (19H1/1903) (Mai 2019 Update) minimum
     - linux: avahi-daemon
 
 ## Steps
