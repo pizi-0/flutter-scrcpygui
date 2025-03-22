@@ -15,6 +15,7 @@
 ```bash
 git clone https://github.com/pizi-0/flutter-scrcpygui.git
 cd flutter-scrcpygui
+fvm install 3.29.0
 fvm use 3.29.0
 fvm flutter pub get
 fvm flutter build linux/windows --release
