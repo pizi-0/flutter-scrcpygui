@@ -1,9 +1,10 @@
 import 'package:awesome_extensions/awesome_extensions.dart'
     show StringExtension;
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/utils/const.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../models/scrcpy_related/scrcpy_enum.dart';
@@ -124,9 +125,10 @@ class _ConfigDetailDialogState extends ConsumerState<ConfigDetailDialog> {
           ),
         ),
         actions: [
-          SecondaryButton(
-            child: const Text('Close'),
-            onPressed: () => context.pop(),
+          FButton(
+            style: FButtonStyle.secondary,
+            label: const Text('Close'),
+            onPress: () => context.pop(),
           )
         ],
       ),

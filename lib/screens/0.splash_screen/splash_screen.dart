@@ -2,7 +2,9 @@
 
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
@@ -12,7 +14,6 @@ import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/setup.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../utils/app_utils.dart';
 
@@ -79,8 +80,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      child: Center(
+    return FScaffold(
+      content: Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

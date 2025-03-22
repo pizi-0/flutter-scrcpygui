@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/utils/directory_utils.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../providers/adb_provider.dart';
@@ -26,8 +27,6 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
     return Row(
       children: [
         IconButton(
-          variance: ButtonVariance.ghost,
-          size: ButtonSize.small,
           icon: const Icon(Icons.info),
           onPressed: _onDetailPressed,
         ),
@@ -40,29 +39,21 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
         ),
         if (widget.config.isRecording)
           IconButton(
-            size: ButtonSize.small,
-            variance: ButtonVariance.ghost,
             icon: const Icon(Icons.folder),
-            onPressed: () => {
-              configDropdownKey.currentState?.closePopup(),
-              DirectoryUtils.openFolder(widget.config.savePath!)
-            },
+            onPressed: () =>
+                {DirectoryUtils.openFolder(widget.config.savePath!)},
           ),
         if (widget.config.isRecording &&
             !defaultConfigs.contains(widget.config))
           const VerticalDivider(),
         if (!defaultConfigs.contains(widget.config))
           IconButton(
-            size: ButtonSize.small,
-            variance: ButtonVariance.ghost,
             icon: const Icon(Icons.edit),
             onPressed: () => _onEditPressed(widget.config),
           ),
         if (!defaultConfigs.contains(widget.config)) const VerticalDivider(),
         if (!defaultConfigs.contains(widget.config))
           IconButton(
-            size: ButtonSize.small,
-            variance: ButtonVariance.ghost,
             icon: const Icon(Icons.delete),
             onPressed: _onRemoveConfigPressed,
           ),
@@ -71,7 +62,6 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
   }
 
   _onDetailPressed() {
-    configDropdownKey.currentState?.closePopup();
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -80,7 +70,6 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
   }
 
   _onRemoveConfigPressed() async {
-    configDropdownKey.currentState?.closePopup();
     await showDialog(
       context: context,
       barrierDismissible: true,
@@ -90,7 +79,6 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
 
   _onEditPressed(ScrcpyConfig config) {
     ref.read(selectedConfigProvider.notifier).state = config;
-    configDropdownKey.currentState?.closePopup();
 
     if (ref.read(selectedDeviceProvider) == null) {
       showDialog(
@@ -103,9 +91,10 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
             textAlign: TextAlign.start,
           ),
           actions: [
-            SecondaryButton(
-              child: Text(el.buttonLabelLoc.close),
-              onPressed: () => context.pop(),
+            FButton(
+              style: FButtonStyle.primary,
+              label: Text(el.buttonLabelLoc.close),
+              onPress: () => context.pop(),
             )
           ],
         ),

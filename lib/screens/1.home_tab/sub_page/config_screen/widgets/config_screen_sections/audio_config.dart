@@ -1,7 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
@@ -64,43 +64,45 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
       BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
     final showInfo = ref.watch(configScreenShowInfo);
 
-    return ConfigDropdownOthers(
-      initialValue: selectedConfig.audioOptions.duplicateAudio
-          ? el.commonLoc.yes
-          : el.commonLoc.no,
-      showinfo: showInfo,
-      onSelected: (info.buildVersion.toInt() ?? 0) < 13
-          ? null
-          : (value) {
-              ref
-                  .read(configScreenConfig.notifier)
-                  .setAudioConfig(duplicateAudio: value);
+    return Placeholder();
 
-              if (value == true) {
-                ref
-                    .read(configScreenConfig.notifier)
-                    .setAudioConfig(audioSource: AudioSource.playback);
-              } else {
-                ref
-                    .read(configScreenConfig.notifier)
-                    .setAudioConfig(audioSource: AudioSource.output);
-              }
-            },
-      items: [
-        SelectItemButton(
-          value: true,
-          child: Text(el.commonLoc.yes),
-        ),
-        SelectItemButton(
-          value: false,
-          child: Text(el.commonLoc.no),
-        ),
-      ],
-      label: el.audioSection.duplicate.label,
-      subtitle: selectedConfig.audioOptions.duplicateAudio
-          ? el.audioSection.duplicate.info.alt
-          : el.audioSection.duplicate.info.default$,
-    );
+    // return ConfigDropdownOthers(
+    //   initialValue: selectedConfig.audioOptions.duplicateAudio
+    //       ? el.commonLoc.yes
+    //       : el.commonLoc.no,
+    //   showinfo: showInfo,
+    //   onSelected: (info.buildVersion.toInt() ?? 0) < 13
+    //       ? null
+    //       : (value) {
+    //           ref
+    //               .read(configScreenConfig.notifier)
+    //               .setAudioConfig(duplicateAudio: value);
+
+    //           if (value == true) {
+    //             ref
+    //                 .read(configScreenConfig.notifier)
+    //                 .setAudioConfig(audioSource: AudioSource.playback);
+    //           } else {
+    //             ref
+    //                 .read(configScreenConfig.notifier)
+    //                 .setAudioConfig(audioSource: AudioSource.output);
+    //           }
+    //         },
+    //   items: [
+    //     SelectItemButton(
+    //       value: true,
+    //       child: Text(el.commonLoc.yes),
+    //     ),
+    //     SelectItemButton(
+    //       value: false,
+    //       child: Text(el.commonLoc.no),
+    //     ),
+    //   ],
+    //   label: el.audioSection.duplicate.label,
+    //   subtitle: selectedConfig.audioOptions.duplicateAudio
+    //       ? el.audioSection.duplicate.info.alt
+    //       : el.audioSection.duplicate.info.default$,
+    // );
   }
 
   Widget _buildAudioSourceSelector(
@@ -156,69 +158,69 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
         if (selectedConfig.isRecording &&
             selectedConfig.scrcpyMode == ScrcpyMode.audioOnly)
           const Divider(),
-        ConfigDropdownOthers(
-          initialValue: selectedConfig.audioOptions.audioCodec,
-          showinfo: showInfo || _isRecordingAudioOnly(selectedConfig),
-          onSelected: _isRecordingAudioOnly(selectedConfig)
-              ? null
-              : (value) {
-                  ref.read(configScreenConfig.notifier).setAudioConfig(
-                        audioCodec: value,
-                        audioEncoder: 'default',
-                      );
-                },
-          items: [
-            ...info.audioEncoder.map(
-                (e) => SelectItemButton(value: e.codec, child: Text(e.codec))),
-            if (selectedConfig.audioOptions.audioFormat != AudioFormat.m4a)
-              const SelectItemButton(value: 'raw', child: Text('raw'))
-          ],
-          label: el.audioSection.codec.label,
-          subtitle: _isRecordingAudioOnly(selectedConfig)
-              ? el.audioSection.codec.info.isAudioOnly(
-                  codec: selectedConfig.audioOptions.audioCodec,
-                  format: selectedConfig.audioOptions.audioFormat.value)
-              : selectedConfig.audioOptions.audioCodec == 'opus'
-                  ? el.audioSection.codec.info.default$
-                  : el.audioSection.codec.info
-                      .alt(codec: selectedConfig.audioOptions.audioCodec),
-        ),
+        // ConfigDropdownOthers(
+        //   initialValue: selectedConfig.audioOptions.audioCodec,
+        //   showinfo: showInfo || _isRecordingAudioOnly(selectedConfig),
+        //   onSelected: _isRecordingAudioOnly(selectedConfig)
+        //       ? null
+        //       : (value) {
+        //           ref.read(configScreenConfig.notifier).setAudioConfig(
+        //                 audioCodec: value,
+        //                 audioEncoder: 'default',
+        //               );
+        //         },
+        //   items: [
+        //     ...info.audioEncoder.map(
+        //         (e) => SelectItemButton(value: e.codec, child: Text(e.codec))),
+        //     if (selectedConfig.audioOptions.audioFormat != AudioFormat.m4a)
+        //       const SelectItemButton(value: 'raw', child: Text('raw'))
+        //   ],
+        //   label: el.audioSection.codec.label,
+        //   subtitle: _isRecordingAudioOnly(selectedConfig)
+        //       ? el.audioSection.codec.info.isAudioOnly(
+        //           codec: selectedConfig.audioOptions.audioCodec,
+        //           format: selectedConfig.audioOptions.audioFormat.value)
+        //       : selectedConfig.audioOptions.audioCodec == 'opus'
+        //           ? el.audioSection.codec.info.default$
+        //           : el.audioSection.codec.info
+        //               .alt(codec: selectedConfig.audioOptions.audioCodec),
+        // ),
         const Divider(),
-        ConfigDropdownOthers(
-          showinfo: showInfo,
-          popupWidthConstraint: PopoverConstraint.intrinsic,
-          initialValue: selectedConfig.audioOptions.audioEncoder == 'default'
-              ? el.commonLoc.default$
-              : selectedConfig.audioOptions.audioEncoder,
-          onSelected: (value) {
-            ref
-                .read(configScreenConfig.notifier)
-                .setAudioConfig(audioEncoder: value);
-          },
-          items: [
-            SelectItemButton(
-              value: 'default',
-              child: Text(el.commonLoc.default$),
-            ),
-            if (selectedConfig.audioOptions.audioCodec != 'raw')
-              ...info.audioEncoder
-                  .firstWhere((ae) =>
-                      ae.codec ==
-                      ref.read(configScreenConfig)!.audioOptions.audioCodec)
-                  .encoder
-                  .map(
-                    (enc) => SelectItemButton(
-                      value: enc,
-                      child: Text(enc),
-                    ),
-                  )
-          ],
-          label: el.audioSection.encoder.label,
-          subtitle: selectedConfig.audioOptions.audioEncoder == 'default'
-              ? el.audioSection.encoder.info.default$
-              : el.audioSection.encoder.info
-                  .alt(encoder: selectedConfig.audioOptions.audioEncoder),
-        ),
+        // ConfigDropdownOthers(
+        //   showinfo: showInfo,
+        //   popupWidthConstraint: PopoverConstraint.intrinsic,
+        //   initialValue: selectedConfig.audioOptions.audioEncoder == 'default'
+        //       ? el.commonLoc.default$
+        //       : selectedConfig.audioOptions.audioEncoder,
+        //   onSelected: (value) {
+        //     ref
+        //         .read(configScreenConfig.notifier)
+        //         .setAudioConfig(audioEncoder: value);
+        //   },
+        //   items: [
+        //     SelectItemButton(
+        //       value: 'default',
+        //       child: Text(el.commonLoc.default$),
+        //     ),
+        //     if (selectedConfig.audioOptions.audioCodec != 'raw')
+        //       ...info.audioEncoder
+        //           .firstWhere((ae) =>
+        //               ae.codec ==
+        //               ref.read(configScreenConfig)!.audioOptions.audioCodec)
+        //           .encoder
+        //           .map(
+        //             (enc) => SelectItemButton(
+        //               value: enc,
+        //               child: Text(enc),
+        //             ),
+        //           )
+        //   ],
+        //   label: el.audioSection.encoder.label,
+        //   subtitle: selectedConfig.audioOptions.audioEncoder == 'default'
+        //       ? el.audioSection.encoder.info.default$
+        //       : el.audioSection.encoder.info
+        //           .alt(encoder: selectedConfig.audioOptions.audioEncoder),
+        // ),
       ],
     );
   }

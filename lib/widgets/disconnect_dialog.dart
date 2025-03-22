@@ -1,11 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../utils/const.dart';
 
@@ -69,7 +70,7 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   if (runningInstance.isNotEmpty)
-                    OutlinedContainer(
+                    Container(
                       padding: EdgeInsets.all(16),
                       child: PgListTile(
                         title: el.disconnectDialogLoc.hasRunning.label(
@@ -88,18 +89,20 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Button.primary(
-                    onPressed: () {
+                  FButton(
+                    style: FButtonStyle.destructive,
+                    onPress: () {
                       context.pop(true);
                     },
-                    child: Text(el.commonLoc.yes),
+                    label: Text(el.commonLoc.yes),
                   ),
                   const SizedBox(width: 10),
-                  Button.secondary(
-                    onPressed: () {
+                  FButton(
+                    style: FButtonStyle.secondary,
+                    onPress: () {
                       context.pop(false);
                     },
-                    child: Text(el.commonLoc.no),
+                    label: Text(el.commonLoc.no),
                   ),
                 ],
               )

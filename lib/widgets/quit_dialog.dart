@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:awesome_extensions/awesome_extensions.dart'
     show AlignExtensions;
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -76,18 +77,17 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                     spacing: 8,
                     children: [
                       if (runningInstance.isNotEmpty)
-                        OutlineButton(
-                          onPressed: () {
+                        FButton(
+                          style: FButtonStyle.outline,
+                          onPress: () {
                             setState(() {
                               instance = !instance;
                             });
                           },
-                          child: PgListTile(
-                            trailing: Checkbox(
-                                state: instance
-                                    ? CheckboxState.checked
-                                    : CheckboxState.unchecked,
-                                onChanged: (v) {
+                          label: PgListTile(
+                            trailing: FCheckbox(
+                                value: instance,
+                                onChange: (v) {
                                   setState(() {
                                     instance = !instance;
                                   });
@@ -101,18 +101,17 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                       if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
                         const Divider(),
                       if (wifiDevices.isNotEmpty)
-                        OutlineButton(
-                          onPressed: () {
+                        FButton(
+                          style: FButtonStyle.outline,
+                          onPress: () {
                             setState(() {
                               wifi = !wifi;
                             });
                           },
-                          child: PgListTile(
-                            trailing: Checkbox(
-                                state: wifi
-                                    ? CheckboxState.checked
-                                    : CheckboxState.unchecked,
-                                onChanged: (v) {
+                          label: PgListTile(
+                            trailing: FCheckbox(
+                                value: wifi,
+                                onChange: (v) {
                                   setState(() {
                                     wifi = !wifi;
                                   });
@@ -128,8 +127,9 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                 ),
                 actions: [
                   if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
-                    SecondaryButton(
-                      onPressed: () {
+                    FButton(
+                      style: FButtonStyle.secondary,
+                      onPress: () {
                         if (wifi && instance) {
                           wifi = false;
                           instance = false;
@@ -140,20 +140,22 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
 
                         setState(() {});
                       },
-                      child: Text(el.buttonLabelLoc.selectAll),
+                      label: Text(el.buttonLabelLoc.selectAll),
                     ),
                   const Spacer(),
-                  DestructiveButton(
-                    onPressed: () {
+                  FButton(
+                    style: FButtonStyle.destructive,
+                    onPress: () {
                       _onClose(wifi, instance);
                     },
-                    child: Text(el.buttonLabelLoc.quit),
+                    label: Text(el.buttonLabelLoc.quit),
                   ),
-                  SecondaryButton(
-                    onPressed: () {
+                  FButton(
+                    style: FButtonStyle.secondary,
+                    onPress: () {
                       context.pop(false);
                     },
-                    child: Text(el.buttonLabelLoc.cancel),
+                    label: Text(el.buttonLabelLoc.cancel),
                   )
                 ],
               ),

@@ -1,10 +1,11 @@
 import 'package:awesome_extensions/awesome_extensions.dart' show PaddingX;
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../db/db.dart';
@@ -15,13 +16,12 @@ import '../../../../../utils/const.dart';
 import '../../../../../utils/directory_utils.dart';
 import '../../../../../utils/scrcpy_utils.dart';
 import '../../../../../widgets/custom_ui/pg_section_card.dart';
-import '../../../../../widgets/custom_ui/pg_select.dart' as pg;
-import '../../bottom_bar/widgets/config_combobox_item.dart';
+
 import '../../bottom_bar/widgets/config_delete_dialog.dart';
 import '../../bottom_bar/widgets/config_detail_dialog.dart';
 import 'connection_error_dialog.dart';
 
-final configDropdownKey = GlobalKey<pg.SelectState>();
+// final configDropdownKey = GlobalKey<pg.SelectState>();
 
 // for isMobile
 class ConfigListSmall extends ConsumerStatefulWidget {
@@ -33,6 +33,13 @@ class ConfigListSmall extends ConsumerStatefulWidget {
 
 class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
   bool loading = false;
+  late FRadioSelectGroupController<ScrcpyConfig> controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = FRadioSelectGroupController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,43 +47,57 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
     final config = ref.watch(selectedConfigProvider);
 
     return PgSectionCard(
+      cardPadding: EdgeInsets.zero,
       label: el.configLoc.label(count: '${allConfigs.length}'),
-      labelTrail: IconButton.ghost(
-        leading: Text(el.configLoc.new$),
-        icon: const Icon(Icons.add),
-        onPressed: _onNewConfigPressed,
+      labelTrail: FButton(
+        style: FButtonStyle.ghost,
+        label: Text(el.configLoc.new$),
+        suffix: FIcon(FAssets.icons.plus),
+        onPress: _onNewConfigPressed,
       ),
       children: [
         Row(
           spacing: 8,
           children: [
             Expanded(
-              child: pg.Select(
-                key: configDropdownKey,
-                onChanged: (value) =>
-                    ref.read(selectedConfigProvider.notifier).state = value,
-                filled: true,
-                placeholder: const Text('Select config'),
-                value: config,
-                popup: SelectPopup(
-                  items: SelectItemList(
-                    children: allConfigs
-                        .map((conf) => SelectItemButton(
-                            value: conf,
-                            child: IntrinsicHeight(
-                                child: ConfigDropDownItem(config: conf))))
-                        .toList(),
-                  ),
-                ).call,
-                itemBuilder: (context, value) => Text(value.configName),
+              child: FSelectMenuTile<ScrcpyConfig>(
+                groupController: controller,
+                title: Text(el.configLoc.select),
+                shift: FPortalShift.flip,
+                menu: allConfigs
+                    .map((conf) =>
+                        FSelectTile(title: Text(conf.configName), value: conf))
+                    .toList(),
               ),
             ),
-            PrimaryButton(
-              onPressed: loading ? null : _start,
-              child: loading
-                  ? const CircularProgressIndicator().iconLarge()
-                  : Text(el.configLoc.start),
-            )
+            // Expanded(
+            //   child: pg.Select(
+            //     key: configDropdownKey,
+            //     onChanged: (value) =>
+            //         ref.read(selectedConfigProvider.notifier).state = value,
+            //     filled: true,
+            //     placeholder: const Text('Select config'),
+            //     value: config,
+            //     popup: SelectPopup(
+            //       items: SelectItemList(
+            //         children: allConfigs
+            //             .map((conf) => SelectItemButton(
+            //                 value: conf,
+            //                 child: IntrinsicHeight(
+            //                     child: ConfigDropDownItem(config: conf))))
+            //             .toList(),
+            //       ),
+            //     ).call,
+            //     itemBuilder: (context, value) => Text(value.configName),
+            //   ),
+            // ),
+            // FButton(
+            //   style: FButtonStyle.primary,
+            //   onPress: loading ? null : _start,
+            //   label: loading
+            //       ? const CircularProgressIndicator()
+            //       : Text(el.configLoc.start),
+            // ),
           ],
         )
       ],
@@ -111,9 +132,10 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
           title: Text(el.noConfigDialogLoc.title),
           content: Text(el.noConfigDialogLoc.contents),
           actions: [
-            SecondaryButton(
-              child: Text(el.buttonLabelLoc.close),
-              onPressed: () => context.pop(),
+            FButton(
+              style: FButtonStyle.secondary,
+              label: Text(el.buttonLabelLoc.close),
+              onPress: () => context.pop(),
             )
           ],
         ),
@@ -169,10 +191,11 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
 
     return PgSectionCard(
       label: el.configLoc.label(count: '${allConfigs.length}'),
-      labelTrail: IconButton.ghost(
-        icon: const Icon(Icons.add),
-        leading: Text(el.configLoc.new$),
-        onPressed: _onNewConfigPressed,
+      labelTrail: FButton(
+        style: FButtonStyle.ghost,
+        suffix: const Icon(Icons.add),
+        label: Text(el.configLoc.new$),
+        onPress: _onNewConfigPressed,
       ),
       children: [
         ...allConfigs.mapIndexed(
@@ -224,15 +247,15 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
       title: widget.conf.configName,
       trailing: Row(
         children: [
-          IconButton.ghost(
-            onPressed: loading
+          FButton.icon(
+            onPress: loading
                 ? null
                 : () {
                     ref.read(selectedConfigProvider.notifier).state =
                         widget.conf;
                     _start();
                   },
-            icon: loading
+            child: loading
                 ? SizedBox.square(
                     dimension: 20,
                     child: Center(child: CircularProgressIndicator()))
@@ -240,42 +263,37 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
           ),
         ],
       ),
-      content: OutlinedContainer(
-        borderRadius: theme.borderRadiusSm,
+      content: Container(
         child: IntrinsicHeight(
           child: Row(
             mainAxisSize: MainAxisSize.min,
             spacing: 8,
             children: [
-              IconButton.ghost(
-                size: ButtonSize.small,
-                onPressed: () => _onDetailPressed(widget.conf),
-                icon: const Icon(Icons.info_rounded),
+              FButton.icon(
+                onPress: () => _onDetailPressed(widget.conf),
+                child: const Icon(Icons.info_rounded),
               ),
               if (widget.conf.isRecording)
                 const VerticalDivider(indent: 10, endIndent: 10),
               if (widget.conf.isRecording)
-                IconButton.ghost(
-                  size: ButtonSize.small,
-                  onPressed: () =>
+                FButton.icon(
+                  onPress: () =>
                       DirectoryUtils.openFolder(widget.conf.savePath!),
-                  icon: const Icon(Icons.folder),
+                  child: const Icon(Icons.folder),
                 ),
               if (!defaultConfigs.contains(widget.conf))
                 const VerticalDivider(indent: 10, endIndent: 10),
               if (!defaultConfigs.contains(widget.conf))
-                IconButton.ghost(
-                  size: ButtonSize.small,
-                  onPressed: () => _onEditPressed(widget.conf),
-                  icon: const Icon(Icons.edit_rounded),
+                FButton.icon(
+                  onPress: () => _onEditPressed(widget.conf),
+                  child: const Icon(Icons.edit_rounded),
                 ),
               if (!defaultConfigs.contains(widget.conf))
                 const VerticalDivider(indent: 10, endIndent: 10),
               if (!defaultConfigs.contains(widget.conf))
-                IconButton.ghost(
-                  size: ButtonSize.small,
-                  onPressed: _onRemoveConfigPressed,
-                  icon: const Icon(Icons.delete_rounded),
+                FButton.icon(
+                  onPress: _onRemoveConfigPressed,
+                  child: const Icon(Icons.delete_rounded),
                 ),
             ],
           ),
@@ -295,9 +313,10 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
           title: Text(el.noConfigDialogLoc.title),
           content: Text(el.noConfigDialogLoc.contents),
           actions: [
-            SecondaryButton(
-              child: Text(el.buttonLabelLoc.close),
-              onPressed: () => context.pop(),
+            FButton(
+              style: FButtonStyle.secondary,
+              label: Text(el.buttonLabelLoc.close),
+              onPress: () => context.pop(),
             )
           ],
         ),
@@ -336,7 +355,6 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
   }
 
   _onDetailPressed(ScrcpyConfig config) {
-    configDropdownKey.currentState?.closePopup();
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -346,7 +364,6 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
 
   _onRemoveConfigPressed() async {
     final config = ref.read(selectedConfigProvider)!;
-    configDropdownKey.currentState?.closePopup();
     await showDialog(
       context: context,
       barrierDismissible: true,
@@ -356,7 +373,6 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
 
   _onEditPressed(ScrcpyConfig config) {
     ref.read(selectedConfigProvider.notifier).state = config;
-    configDropdownKey.currentState?.closePopup();
 
     if (ref.read(selectedDeviceProvider) == null) {
       showDialog(
@@ -369,9 +385,10 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
             textAlign: TextAlign.start,
           ),
           actions: [
-            SecondaryButton(
-              child: Text(el.buttonLabelLoc.close),
-              onPressed: () => context.pop(),
+            FButton(
+              style: FButtonStyle.secondary,
+              label: Text(el.buttonLabelLoc.close),
+              onPress: () => context.pop(),
             )
           ],
         ),

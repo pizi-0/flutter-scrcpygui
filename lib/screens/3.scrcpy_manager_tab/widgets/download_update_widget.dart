@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/utils/update_utils.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../providers/settings_provider.dart';
 
@@ -43,8 +44,9 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
             ),
           ),
         Expanded(
-          child: PrimaryButton(
-            onPressed: () async {
+          child: FButton(
+            style: FButtonStyle.primary,
+            onPress: () async {
               if (!updating) {
                 dio = Dio();
                 updating = true;
@@ -58,7 +60,7 @@ class _DownloadUpdateState extends ConsumerState<DownloadUpdate> {
               }
               dio.close(force: true);
             },
-            child: updating
+            label: updating
                 ? const Padding(
                     padding: EdgeInsets.all(1.0),
                     child: Icon(Icons.cancel),

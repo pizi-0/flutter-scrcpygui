@@ -1,76 +1,48 @@
-import 'package:flutter/material.dart' show kToolbarHeight;
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:forui/forui.dart';
 
 class PgScaffold extends ConsumerWidget {
   final List<Widget> children;
-  final List<Widget> footers;
+  final Widget? footers;
   final List<Widget>? appBarTrailing;
   final bool showLoading;
   final bool wrap;
   final Function()? onBack;
+  final bool shouldScroll;
 
   final String title;
   const PgScaffold({
     super.key,
     required this.children,
     required this.title,
-    this.footers = const [],
+    this.footers,
     this.appBarTrailing,
     this.onBack,
     this.showLoading = false,
     this.wrap = true,
+    this.shouldScroll = true,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      loadingProgressIndeterminate: showLoading,
-      headers: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(
-              maxHeight: kToolbarHeight + 5, minHeight: kToolbarHeight + 5),
-          child: AppBar(
-            leading: [
-              IconButton.ghost(
-                onPressed: onBack,
-                icon: Icon(Icons.arrow_back,
-                    color:
-                        onBack == null ? theme.colorScheme.background : null),
-              ),
-            ],
-            trailing: appBarTrailing ??
-                [
-                  IconButton.ghost(
-                    onPressed: null,
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Theme.of(context).colorScheme.background,
-                    ),
-                  ),
-                ],
-            padding: const EdgeInsets.all(8),
-            title: Row(
-              children: [
-                Expanded(
-                    child: Center(
-                        child: FittedBox(
-                            child: Text(title).xLarge().bold().underline()))),
-              ],
-            ),
-            // backgroundColor: theme.colorScheme.muted,
-          ),
-        )
-      ],
-      footers: footers,
-      child: showLoading
-          ? const Center(
-              child: Text('Getting device info'),
+    return FScaffold(
+      header: FHeader.nested(
+        prefixActions: [
+          if (onBack != null)
+            FButton.icon(
+              onPress: onBack,
+              child: FIcon(FAssets.icons.arrowLeft),
             )
-          : Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SingleChildScrollView(
+        ],
+        suffixActions: appBarTrailing ?? [],
+        title: Text(title),
+      ),
+      content: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: shouldScroll
+            ? SingleChildScrollView(
+                primary: false,
                 child: wrap
                     ? Wrap(
                         alignment: WrapAlignment.center,
@@ -82,8 +54,58 @@ class PgScaffold extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: children,
                       ),
-              ),
-            ),
+              )
+            : wrap
+                ? Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 16,
+                    runSpacing: 16,
+                    children: children,
+                  )
+                : Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: children,
+                  ),
+      ),
+      footer: footers,
+
+      // headers: [
+      //   ConstrainedBox(
+      //     constraints: const BoxConstraints(
+      //         maxHeight: kToolbarHeight + 5, minHeight: kToolbarHeight + 5),
+      //     child: AppBar(
+      //       leading: [
+      //         IconButton.ghost(
+      //           onPressed: onBack,
+      //           icon: Icon(Icons.arrow_back,
+      //               color:
+      //                   onBack == null ? theme.colorScheme.background : null),
+      //         ),
+      //       ],
+      //       trailing: appBarTrailing ??
+      //           [
+      //             IconButton.ghost(
+      //               onPressed: null,
+      //               icon: Icon(
+      //                 Icons.arrow_back,
+      //                 color: Theme.of(context).colorScheme.background,
+      //               ),
+      //             ),
+      //           ],
+      //       padding: const EdgeInsets.all(8),
+      //       title: Row(
+      //         children: [
+      //           Expanded(
+      //               child: Center(
+      //                   child: FittedBox(
+      //                       child: Text(title).xLarge().bold().underline()))),
+      //         ],
+      //       ),
+      //       // backgroundColor: theme.colorScheme.muted,
+      //     ),
+      //   )
+      // ],
+      // footers: footers,
     );
   }
 }

@@ -1,7 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../providers/config_provider.dart';
 import '../../../../../../widgets/config_tiles.dart';
@@ -47,15 +47,15 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
           subtitle: selectedConfig.windowOptions.noWindow
               ? el.windowSection.hideWindow.info.alt
               : el.windowSection.hideWindow.info.default$,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Checkbox(
-              state: selectedConfig.windowOptions.noWindow
-                  ? CheckboxState.checked
-                  : CheckboxState.unchecked,
-              onChanged: (value) => _toggleWindow(),
-            ),
-          ),
+          // child: Padding(
+          //   padding: const EdgeInsets.symmetric(vertical: 4.0),
+          //   child: Checkbox(
+          //     state: selectedConfig.windowOptions.noWindow
+          //         ? CheckboxState.checked
+          //         : CheckboxState.unchecked,
+          //     onChanged: (value) => _toggleWindow(),
+          //   ),
+          // ),
         ),
         const Divider(),
         ConfigCustom(
@@ -67,15 +67,15 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
           subtitle: selectedConfig.windowOptions.noBorder
               ? el.windowSection.borderless.info.alt
               : el.windowSection.borderless.info.default$,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Checkbox(
-              state: selectedConfig.windowOptions.noBorder
-                  ? CheckboxState.checked
-                  : CheckboxState.unchecked,
-              onChanged: (value) => _toggleBorder(),
-            ),
-          ),
+          // child: Padding(
+          //   padding: const EdgeInsets.symmetric(vertical: 4.0),
+          //   child: Checkbox(
+          //     state: selectedConfig.windowOptions.noBorder
+          //         ? CheckboxState.checked
+          //         : CheckboxState.unchecked,
+          //     onChanged: (value) => _toggleBorder(),
+          //   ),
+          // ),
         ),
         const Divider(),
         ConfigCustom(
@@ -87,15 +87,15 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
           subtitle: selectedConfig.windowOptions.alwaysOntop
               ? el.windowSection.alwaysOnTop.info.alt
               : el.windowSection.alwaysOnTop.info.default$,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Checkbox(
-              state: selectedConfig.windowOptions.alwaysOntop
-                  ? CheckboxState.checked
-                  : CheckboxState.unchecked,
-              onChanged: (value) => _toggleOntop(),
-            ),
-          ),
+          // child: Padding(
+          //   padding: const EdgeInsets.symmetric(vertical: 4.0),
+          //   child: Checkbox(
+          //     state: selectedConfig.windowOptions.alwaysOntop
+          //         ? CheckboxState.checked
+          //         : CheckboxState.unchecked,
+          //     onChanged: (value) => _toggleOntop(),
+          //   ),
+          // ),
         ),
         const Divider(),
         ConfigUserInput(

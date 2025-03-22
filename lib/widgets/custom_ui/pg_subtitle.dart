@@ -1,8 +1,8 @@
 // ignore_for_file: avoid_unnecessary_containers
 
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class PgSubtitle extends ConsumerWidget {
   final Widget child;
@@ -36,15 +36,12 @@ class PgSubtitle extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   if (showSubtitleLeading)
-                    const Icon(Icons.info_outline_rounded)
-                        .iconXSmall()
-                        .iconMutedForeground(),
-                  Expanded(child: Text(subtitle).xSmall().muted()),
+                    const Icon(Icons.info_outline_rounded),
+                  Expanded(child: Text(subtitle)),
                 ],
               ),
             ),
-          ).withRoundCorners(
-              backgroundColor: theme.colorScheme.muted, radius: theme.radiusXs)
+          )
       ],
     );
   }

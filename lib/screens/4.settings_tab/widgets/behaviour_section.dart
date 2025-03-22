@@ -1,4 +1,5 @@
 import 'package:awesome_extensions/awesome_extensions_dart.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
@@ -6,7 +7,6 @@ import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class BehaviourSection extends ConsumerStatefulWidget {
   const BehaviourSection({super.key});
@@ -20,20 +20,20 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
   Widget build(BuildContext context) {
     final behaviour = ref.watch(settingsProvider).behaviour;
 
-    final langDD = [
-      const SelectItemButton(
-        value: 'en',
-        child: Text('English'),
-      ),
-      const SelectItemButton(
-        value: 'es',
-        child: Text('Spanish'),
-      ),
-      const SelectItemButton(
-        value: 'ms',
-        child: Text('Bahasa Malaysia'),
-      ),
-    ];
+    // final langDD = [
+    //   const SelectItemButton(
+    //     value: 'en',
+    //     child: Text('English'),
+    //   ),
+    //   const SelectItemButton(
+    //     value: 'es',
+    //     child: Text('Spanish'),
+    //   ),
+    //   const SelectItemButton(
+    //     value: 'ms',
+    //     child: Text('Bahasa Malaysia'),
+    //   ),
+    // ];
 
     return PgSectionCard(
       label: el.settingsLoc.behavior.label,
@@ -45,18 +45,18 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
           trailing: ConstrainedBox(
             constraints: const BoxConstraints(
                 minWidth: 180, maxWidth: 180, minHeight: 30),
-            child: Select(
-              filled: true,
-              value: behaviour.languageCode,
-              onChanged: (value) async {
-                ref.read(settingsProvider.notifier).changeLanguage(value!);
+            // child: Select(
+            //   filled: true,
+            //   value: behaviour.languageCode,
+            //   onChanged: (value) async {
+            //     ref.read(settingsProvider.notifier).changeLanguage(value!);
 
-                await Db.saveAppSettings(ref.read(settingsProvider));
-              },
-              itemBuilder: (context, value) =>
-                  langDD.firstWhere((lang) => lang.value == value).child,
-              popup: SelectPopup(items: SelectItemList(children: langDD)).call,
-            ),
+            //     await Db.saveAppSettings(ref.read(settingsProvider));
+            //   },
+            //   itemBuilder: (context, value) =>
+            //       langDD.firstWhere((lang) => lang.value == value).child,
+            //   popup: SelectPopup(items: SelectItemList(children: langDD)).call,
+            // ),
           ),
         ),
         const Divider(),
@@ -65,29 +65,29 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
           trailing: ConstrainedBox(
             constraints: const BoxConstraints(
                 minWidth: 180, maxWidth: 180, minHeight: 30),
-            child: Select(
-              filled: true,
-              value: minimizeDD(context)
-                  .firstWhere((act) => act.$1 == behaviour.minimizeAction),
-              onChanged: (act) async {
-                ref
-                    .read(settingsProvider.notifier)
-                    .changeMinimizeBehaviour(act!.$1);
+            // child: Select(
+            //   filled: true,
+            //   value: minimizeDD(context)
+            //       .firstWhere((act) => act.$1 == behaviour.minimizeAction),
+            //   onChanged: (act) async {
+            //     ref
+            //         .read(settingsProvider.notifier)
+            //         .changeMinimizeBehaviour(act!.$1);
 
-                await Db.saveAppSettings(ref.read(settingsProvider));
-              },
-              itemBuilder: (context, value) => OverflowMarquee(
-                  duration: 5.seconds,
-                  delayDuration: 1.seconds,
-                  child: Text(value.$2)),
-              popup: SelectPopup(
-                items: SelectItemList(
-                    children: minimizeDD(context)
-                        .map((act) =>
-                            SelectItemButton(value: act, child: Text(act.$2)))
-                        .toList()),
-              ).call,
-            ),
+            //     await Db.saveAppSettings(ref.read(settingsProvider));
+            //   },
+            //   itemBuilder: (context, value) => OverflowMarquee(
+            //       duration: 5.seconds,
+            //       delayDuration: 1.seconds,
+            //       child: Text(value.$2)),
+            //   popup: SelectPopup(
+            //     items: SelectItemList(
+            //         children: minimizeDD(context)
+            //             .map((act) =>
+            //                 SelectItemButton(value: act, child: Text(act.$2)))
+            //             .toList()),
+            //   ).call,
+            // ),
           ),
         ),
       ],

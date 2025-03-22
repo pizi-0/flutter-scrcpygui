@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/widgets/checkbox.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
@@ -20,7 +22,6 @@ import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/conf
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/video_config.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/window_config.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../providers/adb_provider.dart';
 import '../../../../utils/const.dart';
@@ -122,10 +123,10 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
       child: PgScaffold(
         showLoading: dev.info == null,
         appBarTrailing: [
-          Checkbox(
-            leading: Text(el.buttonLabelLoc.info),
-            state: showInfo ? CheckboxState.checked : CheckboxState.unchecked,
-            onChanged: (value) => ref
+          FCheckbox(
+            label: Text(el.buttonLabelLoc.info),
+            value: showInfo,
+            onChange: (value) => ref
                 .read(configScreenShowInfo.notifier)
                 .update((state) => !state),
           ),

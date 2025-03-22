@@ -1,10 +1,11 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
@@ -138,37 +139,33 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
               : selectedConfig.videoOptions.displayId == '0'
                   ? el.videoSection.displays.info.default$
                   : el.videoSection.displays.info.alt,
-          child: Select(
-            filled: true,
-            onChanged: (value) {
-              ref
-                  .read(configScreenConfig.notifier)
-                  .setVideoConfig(displayId: value!.$1);
-            },
-            value: displayDD.firstWhere(
-                (d) => d.$1 == selectedConfig.videoOptions.displayId),
-            popup: SelectPopup(
-              items: SelectItemList(
-                children: displayDD
-                    .map((d) => SelectItemButton(value: d, child: Text(d.$2)))
-                    .toList(),
-              ),
-            ).call,
-            itemBuilder: (context, value) => Text(value.$2),
-          ),
+          // child: Select(
+          //   filled: true,
+          //   onChanged: (value) {
+          //     ref
+          //         .read(configScreenConfig.notifier)
+          //         .setVideoConfig(displayId: value!.$1);
+          //   },
+          //   value: displayDD.firstWhere(
+          //       (d) => d.$1 == selectedConfig.videoOptions.displayId),
+          //   popup: SelectPopup(
+          //     items: SelectItemList(
+          //       children: displayDD
+          //           .map((d) => SelectItemButton(value: d, child: Text(d.$2)))
+          //           .toList(),
+          //     ),
+          //   ).call,
+          //   itemBuilder: (context, value) => Text(value.$2),
+          // ),
         ),
         if (selectedConfig.videoOptions.displayId == 'new') const Divider(),
         if (selectedConfig.videoOptions.displayId == 'new')
           Card(
-            borderRadius: Theme.of(context).borderRadiusMd,
-            filled: true,
-            padding: EdgeInsets.all(8),
             child: Column(
               spacing: 8,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Label(child: Text(el.videoSection.displays.virtual.label))
-                    .small(),
+                Text(el.videoSection.displays.virtual.label),
                 PgSectionCard(
                   cardPadding: EdgeInsets.all(8),
                   children: [
@@ -220,15 +217,15 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                       showinfo: showInfo,
                       childExpand: false,
                       onPressed: _onVdDisableDecoChanged,
-                      child: Checkbox(
-                        state: (selectedConfig
-                                        .videoOptions.virtualDisplayOptions ??
-                                    defaultVdOptions)
-                                .disableDecorations
-                            ? CheckboxState.checked
-                            : CheckboxState.unchecked,
-                        onChanged: (val) => _onVdDisableDecoChanged(),
-                      ),
+                      // child: Checkbox(
+                      //   state: (selectedConfig
+                      //                   .videoOptions.virtualDisplayOptions ??
+                      //               defaultVdOptions)
+                      //           .disableDecorations
+                      //       ? CheckboxState.checked
+                      //       : CheckboxState.unchecked,
+                      //   onChanged: (val) => _onVdDisableDecoChanged(),
+                      // ),
                     ),
                     Divider(),
                     ConfigCustom(
@@ -242,15 +239,15 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                       showinfo: showInfo,
                       childExpand: false,
                       onPressed: _onVdDestroyContentChanged,
-                      child: Checkbox(
-                        state: (selectedConfig
-                                        .videoOptions.virtualDisplayOptions ??
-                                    defaultVdOptions)
-                                .preseveContent
-                            ? CheckboxState.checked
-                            : CheckboxState.unchecked,
-                        onChanged: (value) => _onVdDestroyContentChanged(),
-                      ),
+                      // child: Checkbox(
+                      //   state: (selectedConfig
+                      //                   .videoOptions.virtualDisplayOptions ??
+                      //               defaultVdOptions)
+                      //           .preseveContent
+                      //       ? CheckboxState.checked
+                      //       : CheckboxState.unchecked,
+                      //   onChanged: (value) => _onVdDestroyContentChanged(),
+                      // ),
                     ),
                   ],
                 ),
@@ -362,22 +359,21 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
         child: Row(
           spacing: 4,
           children: [
-            Text('${selectedConfig.videoOptions.resolutionScale.toInt()}%')
-                .small(),
-            Expanded(
-              child: Slider(
-                value: SliderValue.single(
-                    selectedConfig.videoOptions.resolutionScale),
-                max: 100,
-                min: 30,
-                divisions: 70,
-                onChanged: (value) {
-                  ref
-                      .read(configScreenConfig.notifier)
-                      .setVideoConfig(resolutionScale: value.value);
-                },
-              ),
-            ),
+            Text('${selectedConfig.videoOptions.resolutionScale.toInt()}%'),
+            // Expanded(
+            //   child: Slider(
+            //     value: SliderValue.single(
+            //         selectedConfig.videoOptions.resolutionScale),
+            //     max: 100,
+            //     min: 30,
+            //     divisions: 70,
+            //     onChanged: (value) {
+            //       ref
+            //           .read(configScreenConfig.notifier)
+            //           .setVideoConfig(resolutionScale: value.value);
+            //     },
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -392,66 +388,66 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
       spacing: 8,
       mainAxisSize: MainAxisSize.min,
       children: [
-        ConfigDropdownOthers(
-          showinfo: showInfo,
-          initialValue: selectedConfig.videoOptions.videoCodec,
-          onSelected: (value) {
-            ref
-                .read(configScreenConfig.notifier)
-                .setVideoConfig(videoCodec: value, videoEncoder: 'default');
-          },
-          items: info.videoEncoders
-              .map(
-                  (e) => SelectItemButton(value: e.codec, child: Text(e.codec)))
-              .toList(),
-          label: el.videoSection.codec.label,
-          subtitle: selectedConfig.videoOptions.videoCodec == 'h264'
-              ? el.videoSection.codec.info.default$
-              : el.videoSection.codec.info
-                  .alt(codec: selectedConfig.videoOptions.videoCodec),
-        ),
-        const Divider(),
-        ConfigDropdownOthers(
-          showinfo: showInfo,
-          popupWidthConstraint: PopoverConstraint.intrinsic,
-          initialValue: selectedConfig.videoOptions.videoEncoder == 'default'
-              ? el.commonLoc.default$
-              : selectedConfig.videoOptions.videoEncoder,
-          onSelected: (value) {
-            ref
-                .read(configScreenConfig.notifier)
-                .setVideoConfig(videoEncoder: value);
-          },
-          items: [
-            SelectItemButton(
-              value: 'default',
-              child: OverflowMarquee(
-                duration: 2.seconds,
-                child: Text(el.commonLoc.default$),
-              ),
-            ),
-            ...info.videoEncoders
-                .firstWhere((ve) =>
-                    ve.codec ==
-                    ref.read(configScreenConfig)!.videoOptions.videoCodec)
-                .encoder
-                .map(
-                  (enc) => SelectItemButton(
-                    value: enc,
-                    child: OverflowMarquee(
-                      duration: 2.seconds,
-                      delayDuration: 1.seconds,
-                      child: Text(enc),
-                    ),
-                  ),
-                )
-          ],
-          label: el.videoSection.encoder.label,
-          subtitle: selectedConfig.videoOptions.videoEncoder == 'default'
-              ? el.videoSection.encoder.info.default$
-              : el.videoSection.encoder.info
-                  .alt(encoder: selectedConfig.videoOptions.videoEncoder),
-        ),
+        // ConfigDropdownOthers(
+        //   showinfo: showInfo,
+        //   initialValue: selectedConfig.videoOptions.videoCodec,
+        //   onSelected: (value) {
+        //     ref
+        //         .read(configScreenConfig.notifier)
+        //         .setVideoConfig(videoCodec: value, videoEncoder: 'default');
+        //   },
+        //   items: info.videoEncoders
+        //       .map(
+        //           (e) => SelectItemButton(value: e.codec, child: Text(e.codec)))
+        //       .toList(),
+        //   label: el.videoSection.codec.label,
+        //   subtitle: selectedConfig.videoOptions.videoCodec == 'h264'
+        //       ? el.videoSection.codec.info.default$
+        //       : el.videoSection.codec.info
+        //           .alt(codec: selectedConfig.videoOptions.videoCodec),
+        // ),
+        // const Divider(),
+        // ConfigDropdownOthers(
+        //   showinfo: showInfo,
+        //   popupWidthConstraint: PopoverConstraint.intrinsic,
+        //   initialValue: selectedConfig.videoOptions.videoEncoder == 'default'
+        //       ? el.commonLoc.default$
+        //       : selectedConfig.videoOptions.videoEncoder,
+        //   onSelected: (value) {
+        //     ref
+        //         .read(configScreenConfig.notifier)
+        //         .setVideoConfig(videoEncoder: value);
+        //   },
+        //   items: [
+        //     SelectItemButton(
+        //       value: 'default',
+        //       child: OverflowMarquee(
+        //         duration: 2.seconds,
+        //         child: Text(el.commonLoc.default$),
+        //       ),
+        //     ),
+        //     ...info.videoEncoders
+        //         .firstWhere((ve) =>
+        //             ve.codec ==
+        //             ref.read(configScreenConfig)!.videoOptions.videoCodec)
+        //         .encoder
+        //         .map(
+        //           (enc) => SelectItemButton(
+        //             value: enc,
+        //             child: OverflowMarquee(
+        //               duration: 2.seconds,
+        //               delayDuration: 1.seconds,
+        //               child: Text(enc),
+        //             ),
+        //           ),
+        //         )
+        //   ],
+        //   label: el.videoSection.encoder.label,
+        //   subtitle: selectedConfig.videoOptions.videoEncoder == 'default'
+        //       ? el.videoSection.encoder.info.default$
+        //       : el.videoSection.encoder.info
+        //           .alt(encoder: selectedConfig.videoOptions.videoEncoder),
+        // ),
         if (selectedConfig.isRecording) const Divider(),
         if (selectedConfig.isRecording)
           FadeIn(

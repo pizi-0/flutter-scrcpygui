@@ -1,5 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/device_key.dart';
@@ -9,7 +11,6 @@ import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class ControlDialog extends ConsumerStatefulWidget {
   final AdbDevices device;
@@ -69,57 +70,58 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
               children: [
                 const Divider(),
                 const Text('Launch:'),
-                Select(
-                  itemBuilder: (context, value) => Text(value),
-                  onChanged: (value) {
-                    selectedApp = value!;
-                    setState(() {});
-                  },
-                  placeholder: const Text('Select app'),
-                  value: selectedApp,
-                  popup: SelectPopup(
-                    items: SelectItemList(
-                      children: widget.device.info!.appList!
-                          .map((app) => SelectItemButton(
-                                value: app.packageName,
-                                child: Text(app.name),
-                              ))
-                          .toList(),
-                    ),
-                  ).call,
-                ),
+                // Select(
+                //   itemBuilder: (context, value) => Text(value),
+                //   onChanged: (value) {
+                //     selectedApp = value!;
+                //     setState(() {});
+                //   },
+                //   placeholder: const Text('Select app'),
+                //   value: selectedApp,
+                //   popup: SelectPopup(
+                //     items: SelectItemList(
+                //       children: widget.device.info!.appList!
+                //           .map((app) => SelectItemButton(
+                //                 value: app.packageName,
+                //                 child: Text(app.name),
+                //               ))
+                //           .toList(),
+                //     ),
+                //   ).call,
+                // ),
                 const Text('On config:'),
-                Select(
-                  itemBuilder: (context, value) => Text(value.configName),
-                  onChanged: selectedApp == null
-                      ? null
-                      : (config) {
-                          selectedConfig = config as ScrcpyConfig?;
+                // Select(
+                //   itemBuilder: (context, value) => Text(value.configName),
+                //   onChanged: selectedApp == null
+                //       ? null
+                //       : (config) {
+                //           selectedConfig = config as ScrcpyConfig?;
 
-                          setState(() {});
-                        },
-                  placeholder: const Text('Select config to launch the app on'),
-                  value: selectedConfig,
-                  popup: SelectPopup(
-                    items: SelectItemList(
-                      children: allconfigs
-                          .where((e) => !e.windowOptions.noWindow)
-                          .map((config) => SelectItemButton(
-                                value: config,
-                                child: Text(config.configName),
-                              ))
-                          .toList(),
-                    ),
-                  ).call,
-                ),
+                //           setState(() {});
+                //         },
+                //   placeholder: const Text('Select config to launch the app on'),
+                //   value: selectedConfig,
+                //   popup: SelectPopup(
+                //     items: SelectItemList(
+                //       children: allconfigs
+                //           .where((e) => !e.windowOptions.noWindow)
+                //           .map((config) => SelectItemButton(
+                //                 value: config,
+                //                 child: Text(config.configName),
+                //               ))
+                //           .toList(),
+                //     ),
+                //   ).call,
+                // ),
               ],
             ),
         ],
       ),
       actions: [
-        SecondaryButton(
-          child: const Text('Close'),
-          onPressed: () => ScrcpyUtils.newInstance(ref,
+        FButton(
+          style: FButtonStyle.secondary,
+          label: const Text('Close'),
+          onPress: () => ScrcpyUtils.newInstance(ref,
               selectedDevice: widget.device,
               selectedConfig: selectedConfig!.copyWith(
                   additionalFlags: '--new-display --start-app=$selectedApp')),
@@ -131,38 +133,43 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
   _buttonList() {
     final workDir = ref.read(execDirProvider);
     return [
-      SecondaryButton(
-        child: const Icon(Icons.power).paddingAll(2),
-        onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.power),
+      FButton(
+        style: FButtonStyle.secondary,
+        label: const Icon(Icons.power).paddingAll(2),
+        onPress: () => widget.device.sendKeyEvent(workDir, DeviceKey.power),
       ),
       const VerticalDivider(),
-      SecondaryButton(
-        child: const Icon(Icons.arrow_back).paddingAll(2),
-        onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.back),
+      FButton(
+        style: FButtonStyle.secondary,
+        label: const Icon(Icons.arrow_back).paddingAll(2),
+        onPress: () => widget.device.sendKeyEvent(workDir, DeviceKey.back),
       ),
-      SecondaryButton(
-        child: const Icon(Icons.home).paddingAll(2),
-        onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.home),
+      FButton(
+        style: FButtonStyle.secondary,
+        label: const Icon(Icons.home).paddingAll(2),
+        onPress: () => widget.device.sendKeyEvent(workDir, DeviceKey.home),
       ),
-      SecondaryButton(
-        child: const Icon(Icons.history).paddingAll(2),
-        onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.recent),
+      FButton(
+        style: FButtonStyle.secondary,
+        label: const Icon(Icons.history).paddingAll(2),
+        onPress: () => widget.device.sendKeyEvent(workDir, DeviceKey.recent),
       ),
       const VerticalDivider(),
-      SecondaryButton(
-        child: const Icon(Icons.skip_previous).paddingAll(2),
-        onPressed: () =>
+      FButton(
+        style: FButtonStyle.secondary,
+        label: const Icon(Icons.skip_previous).paddingAll(2),
+        onPress: () =>
             widget.device.sendKeyEvent(workDir, DeviceKey.mediaPrevious),
       ),
-      SecondaryButton(
-        child: const Icon(Icons.play_arrow).paddingAll(2),
-        onPressed: () =>
-            widget.device.sendKeyEvent(workDir, DeviceKey.playPause),
+      FButton(
+        style: FButtonStyle.secondary,
+        label: const Icon(Icons.play_arrow).paddingAll(2),
+        onPress: () => widget.device.sendKeyEvent(workDir, DeviceKey.playPause),
       ),
-      SecondaryButton(
-        child: const Icon(Icons.skip_next).paddingAll(2),
-        onPressed: () =>
-            widget.device.sendKeyEvent(workDir, DeviceKey.mediaNext),
+      FButton(
+        style: FButtonStyle.secondary,
+        label: const Icon(Icons.skip_next).paddingAll(2),
+        onPress: () => widget.device.sendKeyEvent(workDir, DeviceKey.mediaNext),
       ),
     ];
   }

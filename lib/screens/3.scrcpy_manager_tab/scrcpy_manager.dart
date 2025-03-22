@@ -1,7 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
@@ -12,7 +14,6 @@ import 'package:scrcpygui/utils/update_utils.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../providers/settings_provider.dart';
 
@@ -46,19 +47,19 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
       } on Exception catch (e) {
         debugPrint(e.toString());
 
-        showToast(
-          showDuration: 1.5.seconds,
-          context: context,
-          location: ToastLocation.bottomCenter,
-          builder: (context, overlay) => SurfaceCard(
-              child: Basic(
-            title: Text(el.scrcpyManagerLoc.infoPopup.error),
-            trailing: const Icon(
-              Icons.error_outline_rounded,
-              color: Colors.red,
-            ),
-          )),
-        );
+        // showToast(
+        //   showDuration: 1.5.seconds,
+        //   context: context,
+        //   location: ToastLocation.bottomCenter,
+        //   builder: (context, overlay) => SurfaceCard(
+        //       child: Basic(
+        //     title: Text(el.scrcpyManagerLoc.infoPopup.error),
+        //     trailing: const Icon(
+        //       Icons.error_outline_rounded,
+        //       color: Colors.red,
+        //     ),
+        //   )),
+        // );
       }
     });
   }
@@ -72,35 +73,35 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
     if (res != null) {
       latest = res;
       if (res == ref.read(scrcpyVersionProvider)) {
-        showToast(
-          showDuration: 1.5.seconds,
-          context: context,
-          location: ToastLocation.bottomCenter,
-          builder: (context, overlay) => SurfaceCard(
-            child: Basic(
-              title: Text(el.scrcpyManagerLoc.infoPopup.noUpdate),
-              trailing: const Icon(
-                Icons.check_circle_outline,
-                color: Colors.lime,
-              ),
-            ),
-          ),
-        );
+        // showToast(
+        //   showDuration: 1.5.seconds,
+        //   context: context,
+        //   location: ToastLocation.bottomCenter,
+        //   builder: (context, overlay) => SurfaceCard(
+        //     child: Basic(
+        //       title: Text(el.scrcpyManagerLoc.infoPopup.noUpdate),
+        //       trailing: const Icon(
+        //         Icons.check_circle_outline,
+        //         color: Colors.lime,
+        //       ),
+        //     ),
+        //   ),
+        // );
       }
     } else {
-      showToast(
-        showDuration: 1.5.seconds,
-        context: context,
-        location: ToastLocation.bottomCenter,
-        builder: (context, overlay) => SurfaceCard(
-            child: Basic(
-          title: Text(el.scrcpyManagerLoc.infoPopup.error),
-          trailing: const Icon(
-            Icons.error_outline_rounded,
-            color: Colors.red,
-          ),
-        )),
-      );
+      // showToast(
+      //   showDuration: 1.5.seconds,
+      //   context: context,
+      //   location: ToastLocation.bottomCenter,
+      //   builder: (context, overlay) => SurfaceCard(
+      //       child: Basic(
+      //     title: Text(el.scrcpyManagerLoc.infoPopup.error),
+      //     trailing: const Icon(
+      //       Icons.error_outline_rounded,
+      //       color: Colors.red,
+      //     ),
+      //   )),
+      // );
     }
 
     if (mounted) {
@@ -121,14 +122,14 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
 
     return PgScaffold(
       appBarTrailing: [
-        IconButton.ghost(
-          icon: Padding(
+        FButton.icon(
+          child: Padding(
             padding: const EdgeInsets.all(3.0),
             child: checkingForUpdate
-                ? const CircularProgressIndicator(size: 20)
+                ? const CircularProgressIndicator()
                 : const Icon(Icons.refresh),
           ),
-          onPressed: () async {
+          onPress: () async {
             try {
               await _checkForUpdate();
             } on Exception catch (e) {
@@ -148,30 +149,30 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
                     title: latest == scrcpyVersion
                         ? '${el.scrcpyManagerLoc.current.inUse} (${el.statusLoc.latest})'
                         : el.scrcpyManagerLoc.current.inUse,
-                    child: Select(
-                      filled: true,
-                      value: installed
-                          .firstWhere((ins) => ins.version == scrcpyVersion),
-                      onChanged: (value) async {
-                        await SetupUtils.saveCurrentScrcpyVersion(
-                            value!.version);
-                        ref.read(execDirProvider.notifier).state = value.path;
-                        ref.read(scrcpyVersionProvider.notifier).state =
-                            value.version;
-                      },
-                      popup: SelectPopup(
-                        items: SelectItemList(
-                            children: installed
-                                .map((ins) => SelectItemButton(
-                                      value: ins,
-                                      child: Text(ins.version == BUNDLED_VERSION
-                                          ? '${ins.version} (${el.commonLoc.bundled})'
-                                          : ins.version),
-                                    ))
-                                .toList()),
-                      ).call,
-                      itemBuilder: (context, value) => Text(value.version),
-                    ),
+                    // child: Select(
+                    //   filled: true,
+                    //   value: installed
+                    //       .firstWhere((ins) => ins.version == scrcpyVersion),
+                    //   onChanged: (value) async {
+                    //     await SetupUtils.saveCurrentScrcpyVersion(
+                    //         value!.version);
+                    //     ref.read(execDirProvider.notifier).state = value.path;
+                    //     ref.read(scrcpyVersionProvider.notifier).state =
+                    //         value.version;
+                    //   },
+                    //   popup: SelectPopup(
+                    //     items: SelectItemList(
+                    //         children: installed
+                    //             .map((ins) => SelectItemButton(
+                    //                   value: ins,
+                    //                   child: Text(ins.version == BUNDLED_VERSION
+                    //                       ? '${ins.version} (${el.commonLoc.bundled})'
+                    //                       : ins.version),
+                    //                 ))
+                    //             .toList()),
+                    //   ).call,
+                    //   itemBuilder: (context, value) => Text(value.version),
+                    // ),
                   )
                 : ConfigCustom(
                     dimTitle: false,
@@ -179,7 +180,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
                     childBackgroundColor: Colors.transparent,
                     title: el.scrcpyManagerLoc.current.inUse,
                     childExpand: false,
-                    child: Text('v$scrcpyVersion').small(),
+                    child: Text('v$scrcpyVersion'),
                   ),
             const Divider(),
             ConfigCustom(
@@ -191,13 +192,12 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  IconButton(
-                    variance: ButtonVariance.ghost,
-                    icon: const Padding(
+                  FButton.icon(
+                    child: const Padding(
                       padding: EdgeInsets.all(3.0),
                       child: Icon(Icons.folder),
                     ),
-                    onPressed: () async {
+                    onPress: () async {
                       await DirectoryUtils.openFolder(
                           scrcpyDir.split(scrcpyVersion).first);
                     },

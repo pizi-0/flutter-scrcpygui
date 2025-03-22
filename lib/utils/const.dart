@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
@@ -10,7 +11,6 @@ import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
 import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/device_settings_screen.dart';
 import 'package:scrcpygui/utils/themes.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../models/scrcpy_related/scrcpy_config.dart';
 import '../models/scrcpy_related/scrcpy_enum.dart';
@@ -166,7 +166,7 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
 
 final defaultTheme = AppTheme(
   widgetRadius: 0.5,
-  scheme: mySchemes.first,
+  scheme: mySchemes().first,
   themeMode: ThemeMode.dark,
   fromWall: false,
   accentTintLevel: 90,

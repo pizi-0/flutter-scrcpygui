@@ -1,12 +1,12 @@
 // ignore_for_file: avoid_unnecessary_containers
 
-import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/available_flags.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../providers/config_provider.dart';
 
@@ -36,15 +36,14 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return PgSectionCard(
       label: el.addFlags.title,
       children: [
-        Basic(
-          title: Text(el.addFlags.add),
-          content: TextField(
+        FLabel(
+          axis: Axis.vertical,
+          label: const Text('--flag1 --flag-2 --flag-3=\'3 oh 3\''),
+          child: TextField(
             controller: add,
-            placeholder: const Text('--flag1 --flag-2 --flag-3=\'3 oh 3\''),
             maxLines: 5,
             inputFormatters: [
               ...availableFlags.map((e) => FilteringTextInputFormatter.deny(e))
@@ -63,15 +62,12 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
               spacing: 4,
               mainAxisSize: MainAxisSize.max,
               children: [
-                const Icon(Icons.info_outline_rounded)
-                    .iconXSmall()
-                    .iconMutedForeground(),
-                Expanded(child: Text(el.addFlags.info).xSmall().muted()),
+                const Icon(Icons.info_outline_rounded),
+                Expanded(child: Text(el.addFlags.info)),
               ],
             ),
           ),
-        ).withRoundCorners(
-            backgroundColor: theme.colorScheme.muted, radius: theme.radiusXs)
+        )
       ],
     );
   }

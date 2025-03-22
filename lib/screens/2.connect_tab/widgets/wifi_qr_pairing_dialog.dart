@@ -1,12 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:bonsoir/bonsoir.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:scrcpygui/utils/const.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:uuid/uuid.dart';
 
@@ -79,7 +80,7 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
                       if (loading)
                         SizedBox.expand(
                           child: Container(
-                            color: Colors.neutral.withAlpha(200),
+                            // color: Colors.neutral.withAlpha(200),
                             child: const Center(
                               child: CircularProgressIndicator(),
                             ),
@@ -93,9 +94,9 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
           ],
         ),
         actions: [
-          SecondaryButton(
-            child: Text(el.buttonLabelLoc.close),
-            onPressed: () => context.pop(),
+          FButton(
+            label: Text(el.buttonLabelLoc.close),
+            onPress: () => context.pop(),
           )
         ],
       ),

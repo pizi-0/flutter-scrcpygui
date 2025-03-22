@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/widgets/button.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class TitleBarButton extends ConsumerWidget {
   const TitleBarButton({super.key});
@@ -9,32 +10,24 @@ class TitleBarButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       children: [
-        IconButton(
-          variance: ButtonVariance.ghost,
-          size: ButtonSize.small,
-          icon: const Padding(
-            padding: EdgeInsets.all(4.0),
-            child: Icon(Icons.minimize),
-          ),
-          onPressed: () {
+        FButton.icon(
+          style: FButtonStyle.ghost,
+          child: Icon(Icons.minimize),
+          onPress: () {
             AppUtils.onAppMinimizeRequested(ref, context);
           },
         ),
-        IconButton(
-          variance: ButtonVariance.ghost,
-          size: ButtonSize.small,
-          icon: const Padding(
-              padding: EdgeInsets.all(4.0), child: Icon(Icons.square_outlined)),
-          onPressed: () {
+        FButton.icon(
+          style: FButtonStyle.ghost,
+          child: Icon(Icons.square_outlined),
+          onPress: () {
             AppUtils.onAppMaximizeRequested();
           },
         ),
-        IconButton(
-          variance: ButtonVariance.ghost,
-          size: ButtonSize.small,
-          icon: const Padding(
-              padding: EdgeInsets.all(4.0), child: Icon(Icons.close)),
-          onPressed: () {
+        FButton.icon(
+          style: FButtonStyle.ghost,
+          child: Icon(Icons.close),
+          onPress: () {
             AppUtils.onAppCloseRequested(ref, context);
           },
         ),

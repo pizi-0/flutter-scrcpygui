@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
@@ -8,7 +10,6 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class ConfigScreenCloseDialog extends ConsumerStatefulWidget {
   const ConfigScreenCloseDialog({super.key});
@@ -87,7 +88,6 @@ class _ConfigScreenCloseDialogState
                 Text(el.closeDialogLoc.name),
                 TextField(
                   controller: nameController,
-                  placeholder: const Text('Config name'),
                   onSubmitted: notAllowed ? null : (v) => _submitEdit(),
                   onChanged: (value) {
                     final allConfigs = ref.read(configsProvider);
@@ -106,26 +106,29 @@ class _ConfigScreenCloseDialogState
             ),
           ),
           actions: [
-            DestructiveButton(
-              onPressed: () {
+            FButton(
+              style: FButtonStyle.destructive,
+              onPress: () {
                 context.pop(true);
               },
-              child: Text(el.buttonLabelLoc.discard),
+              label: Text(el.buttonLabelLoc.discard),
             ),
             const Spacer(),
-            PrimaryButton(
-              onPressed: notAllowed || nameController.text.isEmpty
+            FButton(
+              style: FButtonStyle.primary,
+              onPress: notAllowed || nameController.text.isEmpty
                   ? null
                   : _submitEdit,
-              child: Text(nameExist
+              label: Text(nameExist
                   ? el.buttonLabelLoc.overwrite
                   : el.buttonLabelLoc.save),
             ),
-            SecondaryButton(
-              onPressed: () {
+            FButton(
+              style: FButtonStyle.secondary,
+              onPress: () {
                 context.pop(false);
               },
-              child: Text(el.buttonLabelLoc.cancel),
+              label: Text(el.buttonLabelLoc.cancel),
             )
           ],
         ),

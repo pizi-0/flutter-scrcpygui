@@ -3,7 +3,9 @@
 import 'package:awesome_extensions/awesome_extensions.dart'
     show NumExtension, WidgetCommonExtension;
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/widgets/button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:responsive_builder/responsive_builder.dart';
@@ -15,7 +17,6 @@ import 'package:scrcpygui/screens/2.connect_tab/widgets/wifi_qr_pairing_dialog.d
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'widgets/ip_connect.dart';
 import 'widgets/wifi_scan_result.dart';
@@ -45,48 +46,48 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
     return PgScaffold(
       title: el.connectLoc.title,
       appBarTrailing: [
-        IconButton.ghost(
-          icon: const Padding(
+        FButton.icon(
+          child: const Padding(
             padding: EdgeInsets.all(3.0),
             child: Icon(Icons.qr_code),
           ),
-          onPressed: () async {
+          onPress: () async {
             final res = await showDialog(
               barrierDismissible: true,
               context: context,
               builder: (context) => const WifiQrPairing(),
             );
 
-            showToast(
-              context: context,
-              showDuration: 1.5.seconds,
-              builder: (context, close) => SurfaceCard(
-                child: ((res as bool?) == null)
-                    ? Basic(
-                        title: Text(el.connectLoc.qrPair.status.cancelled),
-                        trailing: const Icon(
-                          Icons.cancel,
-                          color: Colors.amber,
-                        ),
-                      )
-                    : (res as bool)
-                        ? Basic(
-                            title: Text(el.connectLoc.qrPair.status.success),
-                            trailing: const Icon(
-                              Icons.check,
-                              color: Colors.green,
-                            ),
-                          )
-                        : Basic(
-                            title: Text(el.connectLoc.qrPair.status.failed),
-                            trailing: const Icon(
-                              Icons.cancel,
-                              color: Colors.red,
-                            ),
-                          ),
-              ),
-              location: ToastLocation.bottomCenter,
-            );
+            // showToast(
+            //   context: context,
+            //   showDuration: 1.5.seconds,
+            //   builder: (context, close) => SurfaceCard(
+            //     child: ((res as bool?) == null)
+            //         ? Basic(
+            //             title: Text(el.connectLoc.qrPair.status.cancelled),
+            //             trailing: const Icon(
+            //               Icons.cancel,
+            //               color: Colors.amber,
+            //             ),
+            //           )
+            //         : (res as bool)
+            //             ? Basic(
+            //                 title: Text(el.connectLoc.qrPair.status.success),
+            //                 trailing: const Icon(
+            //                   Icons.check,
+            //                   color: Colors.green,
+            //                 ),
+            //               )
+            //             : Basic(
+            //                 title: Text(el.connectLoc.qrPair.status.failed),
+            //                 trailing: const Icon(
+            //                   Icons.cancel,
+            //                   color: Colors.red,
+            //                 ),
+            //               ),
+            //   ),
+            //   location: ToastLocation.bottomCenter,
+            // );
           },
         ),
       ],
@@ -96,13 +97,14 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
             final ipHistory = ref.watch(ipHistoryProvider);
             return PgSectionCard(
               label: el.connectLoc.withIp.label,
-              labelTrail: IconButton.ghost(
-                onPressed: () => showDialog(
+              labelTrail: FButton(
+                style: FButtonStyle.ghost,
+                onPress: () => showDialog(
                   context: context,
                   builder: (context) => IPHistoryDialog(controller: ipInput),
                 ),
-                icon: Icon(Icons.history_rounded),
-                leading: Text(el.ipHistoryLoc.title),
+                suffix: Icon(Icons.history_rounded),
+                label: Text(el.ipHistoryLoc.title),
               ).showIf(
                   (size.isMobile || size.isTablet) && ipHistory.isNotEmpty),
               children: [
@@ -151,12 +153,12 @@ class _IPHistoryDialogState extends ConsumerState<IPHistoryDialog> {
                     title: ip,
                     trailing: Row(
                       children: [
-                        IconButton.ghost(
-                          onPressed: () => {
+                        FButton.icon(
+                          onPress: () => {
                             widget.controller.text = ip,
                             context.pop(),
                           },
-                          icon: Icon(Icons.edit_rounded),
+                          child: Icon(Icons.edit_rounded),
                         ),
                       ],
                     ),
@@ -168,9 +170,10 @@ class _IPHistoryDialogState extends ConsumerState<IPHistoryDialog> {
             .toList(),
       ),
       actions: [
-        Button.secondary(
-          onPressed: () => context.pop(),
-          child: Text(el.buttonLabelLoc.close),
+        FButton(
+          style: FButtonStyle.secondary,
+          onPress: () => context.pop(),
+          label: Text(el.buttonLabelLoc.close),
         ),
       ],
     );

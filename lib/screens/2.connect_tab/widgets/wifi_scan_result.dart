@@ -3,9 +3,10 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:localization/localization.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../models/adb_devices.dart';
 import '../../../providers/adb_provider.dart';
@@ -42,28 +43,25 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
               ],
             )),
         if (bonsoirDevices.isNotEmpty) const Divider(),
-        Label(
-          leading: const Icon(Icons.info).muted().iconSmall(),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Row(
-                children: [
-                  Text(el.connectLoc.withMdns.info.i1).muted().xSmall(),
-                  // LinkButton(
-                  //   density: ButtonDensity.dense,
-                  //   onPressed: () => showDialog(
-                  //     context: context,
-                  //     builder: (context) => const WifiQrPairing(),
-                  //   ),
-                  //   child: const Icon(Icons.qr_code).iconSmall(),
-                  // )
-                ],
-              ),
-              Text(el.connectLoc.withMdns.info.i2).muted().xSmall(),
-              Text(el.connectLoc.withMdns.info.i3).muted().xSmall(),
-            ],
-          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                Text(el.connectLoc.withMdns.info.i1),
+                // LinkButton(
+                //   density: ButtonDensity.dense,
+                //   onPressed: () => showDialog(
+                //     context: context,
+                //     builder: (context) => const WifiQrPairing(),
+                //   ),
+                //   child: const Icon(Icons.qr_code).iconSmall(),
+                // )
+              ],
+            ),
+            Text(el.connectLoc.withMdns.info.i2),
+            Text(el.connectLoc.withMdns.info.i3),
+          ],
         )
       ],
     );
@@ -97,9 +95,10 @@ class _BdTileState extends ConsumerState<BdTile> {
 
     bool connected =
         connectedDevices.where((e) => e.id.contains(bd.name)).isNotEmpty;
-    return GhostButton(
-      onPressed: () async => await _connectMdns(bd),
-      child: PgListTile(
+    return FButton(
+      style: FButtonStyle.ghost,
+      onPress: () async => await _connectMdns(bd),
+      label: PgListTile(
         title: '${bd.name} ${isSaved ? '[${device!.name!}]' : ''}',
         titleOverflow: true,
         // showSubtitle: true,
@@ -108,18 +107,15 @@ class _BdTileState extends ConsumerState<BdTile> {
         trailing: Align(
           alignment: Alignment.centerRight,
           child: Center(
-            child: IconButton(
-              variance: ButtonVariance.ghost,
-              icon: loading
-                  ? CircularProgressIndicator(
-                      size: theme.iconTheme.medium.size,
-                    )
+            child: FButton.icon(
+              onPress: loading || connected
+                  ? null
+                  : () async => await _connectMdns(bd),
+              child: loading
+                  ? CircularProgressIndicator()
                   : connected
                       ? const Icon(Icons.check)
                       : const Icon(Icons.link),
-              onPressed: loading || connected
-                  ? null
-                  : () async => await _connectMdns(bd),
             ),
           ),
         ),

@@ -1,8 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:scrcpygui/utils/themes.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class AppTheme {
   final double widgetRadius;
@@ -46,14 +46,12 @@ class AppTheme {
   }
 
   factory AppTheme.fromMap(Map<String, dynamic> map) {
-    ColorSchemes();
-
     return AppTheme(
       widgetRadius: map['widgetRadius'] ?? 0.5,
       fromWall: map['fromWall'] ?? false,
       scheme: map['scheme'] != null
           ? ColorSchemesWithName.fromMap(map['scheme'])
-          : mySchemes.first,
+          : mySchemes().first,
       themeMode: ThemeMode.values[map['themeMode']],
       accentTintLevel: map['accentTintLevel'],
     );

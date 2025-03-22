@@ -1,14 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/app_options.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
-import 'package:scrcpygui/utils/const.dart';
-import 'package:scrcpygui/widgets/config_tiles.dart';
+
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_subtitle.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../providers/adb_provider.dart';
 import '../../../../../../providers/version_provider.dart';
@@ -37,9 +37,9 @@ class AppConfigState extends ConsumerState<AppConfig> {
 
     return PgSectionCard(
       label: el.appSection.title,
-      labelTrail: IconButton.ghost(
-        onPressed: loading ? null : _onRefreshApp,
-        icon: loading
+      labelTrail: FButton.icon(
+        onPress: loading ? null : _onRefreshApp,
+        child: loading
             ? SizedBox.square(
                 dimension: 20,
                 child: Center(child: CircularProgressIndicator()))
@@ -58,68 +58,68 @@ class AppConfigState extends ConsumerState<AppConfig> {
           child: Row(
             spacing: 8,
             children: [
-              Expanded(
-                child: Select(
-                  filled: true,
-                  value: selectedConfig.appOptions?.selectedApp,
-                  placeholder: Text('Select an app'),
-                  popupConstraints: BoxConstraints(maxHeight: appWidth - 100),
-                  onChanged: (app) {
-                    ref
-                        .read(configScreenConfig.notifier)
-                        .setAppConfig(selectedApp: app);
-                  },
-                  popup: SelectPopup.builder(
-                    searchPlaceholder: Text('Search'),
-                    builder: (context, searchQuery) {
-                      return SelectItemList(
-                        children: appList
-                            .where((app) => app.name
-                                .toLowerCase()
-                                .contains(searchQuery?.toLowerCase() ?? ''))
-                            .map((e) =>
-                                SelectItemButton(value: e, child: Text(e.name)))
-                            .toList(),
-                      );
-                    },
-                  ).call,
-                  itemBuilder: (context, value) => Text(value.name),
-                ),
-              ),
-              if (selectedConfig.appOptions?.selectedApp != null)
-                SizedBox.square(
-                  dimension: 33,
-                  child: IconButton.ghost(
-                    density: ButtonDensity.iconDense,
-                    onPressed: () => ref
-                        .read(configScreenConfig.notifier)
-                        .setAppConfig(reset: true),
-                    icon: Icon(Icons.clear),
-                  ),
-                )
+              // Expanded(
+              //   child: Select(
+              //     filled: true,
+              //     value: selectedConfig.appOptions?.selectedApp,
+              //     placeholder: Text('Select an app'),
+              //     popupConstraints: BoxConstraints(maxHeight: appWidth - 100),
+              //     onChanged: (app) {
+              //       ref
+              //           .read(configScreenConfig.notifier)
+              //           .setAppConfig(selectedApp: app);
+              //     },
+              //     popup: SelectPopup.builder(
+              //       searchPlaceholder: Text('Search'),
+              //       builder: (context, searchQuery) {
+              //         return SelectItemList(
+              //           children: appList
+              //               .where((app) => app.name
+              //                   .toLowerCase()
+              //                   .contains(searchQuery?.toLowerCase() ?? ''))
+              //               .map((e) =>
+              //                   SelectItemButton(value: e, child: Text(e.name)))
+              //               .toList(),
+              //         );
+              //       },
+              //     ).call,
+              //     itemBuilder: (context, value) => Text(value.name),
+              //   ),
+              // ),
+              // if (selectedConfig.appOptions?.selectedApp != null)
+              //   SizedBox.square(
+              //     dimension: 33,
+              //     child: IconButton.ghost(
+              //       density: ButtonDensity.iconDense,
+              //       onPressed: () => ref
+              //           .read(configScreenConfig.notifier)
+              //           .setAppConfig(reset: true),
+              //       icon: Icon(Icons.clear),
+              //     ),
+              //   )
             ],
           ),
         ),
         Divider(),
-        ConfigCustom(
-          onPressed: selectedConfig.appOptions?.selectedApp != null
-              ? () => _onForceCloseCheck()
-              : null,
-          title: el.appSection.forceClose.label,
-          childExpand: false,
-          subtitle: selectedConfig.appOptions?.forceClose ?? false
-              ? el.appSection.forceClose.info.alt
-              : el.appSection.forceClose.label.toLowerCase(),
-          showinfo: showInfo,
-          child: Checkbox(
-            state: selectedConfig.appOptions?.forceClose ?? false
-                ? CheckboxState.checked
-                : CheckboxState.unchecked,
-            onChanged: selectedConfig.appOptions?.selectedApp != null
-                ? (val) => _onForceCloseCheck()
-                : null,
-          ),
-        )
+        // ConfigCustom(
+        //   onPressed: selectedConfig.appOptions?.selectedApp != null
+        //       ? () => _onForceCloseCheck()
+        //       : null,
+        //   title: el.appSection.forceClose.label,
+        //   childExpand: false,
+        //   subtitle: selectedConfig.appOptions?.forceClose ?? false
+        //       ? el.appSection.forceClose.info.alt
+        //       : el.appSection.forceClose.label.toLowerCase(),
+        //   showinfo: showInfo,
+        //   child: Checkbox(
+        //     state: selectedConfig.appOptions?.forceClose ?? false
+        //         ? CheckboxState.checked
+        //         : CheckboxState.unchecked,
+        //     onChanged: selectedConfig.appOptions?.selectedApp != null
+        //         ? (val) => _onForceCloseCheck()
+        //         : null,
+        //   ),
+        // )
       ],
     );
   }

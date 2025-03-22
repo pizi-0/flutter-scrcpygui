@@ -1,9 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
 import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/themes.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class SettingsNotifier extends Notifier<AppSettings> {
   @override

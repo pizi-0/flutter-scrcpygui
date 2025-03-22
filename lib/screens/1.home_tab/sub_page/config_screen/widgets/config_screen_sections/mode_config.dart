@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
@@ -65,32 +66,34 @@ class MainModeFlag extends ConsumerWidget {
         ref.watch(configScreenConfig.select((val) => val!.isRecording));
     final showInfo = ref.watch(configScreenShowInfo);
 
-    return ConfigCustom(
-      title: el.modeSection.mainMode.label,
-      subtitle: !isRecording
-          ? el.modeSection.mainMode.info.default$
-          : el.modeSection.mainMode.info.alt,
-      showinfo: showInfo,
-      dimTitle: false,
-      child: Select(
-        value: isRecording ? mainModeDD(context)[1] : mainModeDD(context)[0],
-        filled: true,
-        popup: SelectPopup(
-          items: SelectItemList(
-            children: mainModeDD(context)
-                .map(
-                  (mode) => SelectItemButton(value: mode, child: Text(mode.$2)),
-                )
-                .toList(),
-          ),
-        ).call,
-        onChanged: (value) =>
-            ref.read(configScreenConfig.notifier).setModeConfig(
-                  isRecording: value!.$1 == MainMode.record,
-                ),
-        itemBuilder: (context, value) => Text(value.$2),
-      ),
-    );
+    return Placeholder();
+
+    // return ConfigCustom(
+    //   title: el.modeSection.mainMode.label,
+    //   subtitle: !isRecording
+    //       ? el.modeSection.mainMode.info.default$
+    //       : el.modeSection.mainMode.info.alt,
+    //   showinfo: showInfo,
+    //   dimTitle: false,
+    //   child: Select(
+    //     value: isRecording ? mainModeDD(context)[1] : mainModeDD(context)[0],
+    //     filled: true,
+    //     popup: SelectPopup(
+    //       items: SelectItemList(
+    //         children: mainModeDD(context)
+    //             .map(
+    //               (mode) => SelectItemButton(value: mode, child: Text(mode.$2)),
+    //             )
+    //             .toList(),
+    //       ),
+    //     ).call,
+    //     onChanged: (value) =>
+    //         ref.read(configScreenConfig.notifier).setModeConfig(
+    //               isRecording: value!.$1 == MainMode.record,
+    //             ),
+    //     itemBuilder: (context, value) => Text(value.$2),
+    //   ),
+    // );
   }
 }
 
@@ -108,16 +111,17 @@ class SaveFolderFlag extends ConsumerWidget {
       title: el.modeSection.saveFolder.label,
       subtitle: el.modeSection.saveFolder.info,
       showinfo: showInfo,
-      child: SecondaryButton(
-        trailing: const Icon(Icons.folder),
-        onPressed: () async {
+      child: FButton(
+        style: FButtonStyle.primary,
+        suffix: const Icon(Icons.folder),
+        onPress: () async {
           final res = await FilePicker.platform.getDirectoryPath();
 
           if (res != null) {
             ref.read(configScreenConfig.notifier).setModeConfig(savePath: res);
           }
         },
-        child: Text(
+        label: Text(
           (savePath ?? '').split(sep).last,
         ),
       ),
@@ -153,58 +157,58 @@ class ScrcpyModeFlag extends ConsumerWidget {
           : el.modeSection.scrcpyMode.info
               .alt(command: scrcpyMode.command.trim()),
       showinfo: showInfo,
-      child: Select(
-        value:
-            scrcpyModeDD(context).firstWhere((mode) => mode.$1 == scrcpyMode),
-        onChanged: (value) {
-          ref
-              .read(configScreenConfig.notifier)
-              .setModeConfig(scrcpyMode: value!.$1);
+      // child: Select(
+      //   value:
+      //       scrcpyModeDD(context).firstWhere((mode) => mode.$1 == scrcpyMode),
+      //   onChanged: (value) {
+      //     ref
+      //         .read(configScreenConfig.notifier)
+      //         .setModeConfig(scrcpyMode: value!.$1);
 
-          if (value.$1 == ScrcpyMode.audioOnly) {
-            final audioFormat = _audioFormat(ref.read(selectedConfigProvider)!);
+      //     if (value.$1 == ScrcpyMode.audioOnly) {
+      //       final audioFormat = _audioFormat(ref.read(selectedConfigProvider)!);
 
-            ref
-                .read(configScreenConfig.notifier)
-                .setVideoConfig(setToDefault: true);
+      //       ref
+      //           .read(configScreenConfig.notifier)
+      //           .setVideoConfig(setToDefault: true);
 
-            ref.read(configScreenConfig.notifier).setAudioConfig(
-                  audioFormat: audioFormat,
-                  audioBitrate: audioOptions.audioBitrate,
-                  audioCodec: audioOptions.audioCodec,
-                  audioEncoder: audioOptions.audioEncoder,
-                  audioSource: audioOptions.audioSource,
-                  duplicateAudio: audioOptions.duplicateAudio,
-                );
-          }
+      //       ref.read(configScreenConfig.notifier).setAudioConfig(
+      //             audioFormat: audioFormat,
+      //             audioBitrate: audioOptions.audioBitrate,
+      //             audioCodec: audioOptions.audioCodec,
+      //             audioEncoder: audioOptions.audioEncoder,
+      //             audioSource: audioOptions.audioSource,
+      //             duplicateAudio: audioOptions.duplicateAudio,
+      //           );
+      //     }
 
-          if (value.$1 == ScrcpyMode.videoOnly) {
-            ref
-                .read(configScreenConfig.notifier)
-                .setAudioConfig(setToDefault: true);
+      //     if (value.$1 == ScrcpyMode.videoOnly) {
+      //       ref
+      //           .read(configScreenConfig.notifier)
+      //           .setAudioConfig(setToDefault: true);
 
-            ref.read(configScreenConfig.notifier).setVideoConfig(
-                  displayId: videoOptions.displayId,
-                  maxFPS: videoOptions.maxFPS,
-                  resolutionScale: videoOptions.resolutionScale,
-                  videoBitrate: videoOptions.videoBitrate,
-                  videoCodec: videoOptions.videoCodec,
-                  videoEncoder: videoOptions.videoEncoder,
-                  videoFormat: videoOptions.videoFormat,
-                );
-          }
-        },
-        itemBuilder: (context, value) => Text(value.$2),
-        filled: true,
-        popup: SelectPopup(
-          items: SelectItemList(
-            children: scrcpyModeDD(context)
-                .map((mode) =>
-                    SelectItemButton(value: mode, child: Text(mode.$2)))
-                .toList(),
-          ),
-        ).call,
-      ),
+      //       ref.read(configScreenConfig.notifier).setVideoConfig(
+      //             displayId: videoOptions.displayId,
+      //             maxFPS: videoOptions.maxFPS,
+      //             resolutionScale: videoOptions.resolutionScale,
+      //             videoBitrate: videoOptions.videoBitrate,
+      //             videoCodec: videoOptions.videoCodec,
+      //             videoEncoder: videoOptions.videoEncoder,
+      //             videoFormat: videoOptions.videoFormat,
+      //           );
+      //     }
+      //   },
+      //   itemBuilder: (context, value) => Text(value.$2),
+      //   filled: true,
+      //   popup: SelectPopup(
+      //     items: SelectItemList(
+      //       children: scrcpyModeDD(context)
+      //           .map((mode) =>
+      //               SelectItemButton(value: mode, child: Text(mode.$2)))
+      //           .toList(),
+      //     ),
+      //   ).call,
+      // ),
     );
   }
 }

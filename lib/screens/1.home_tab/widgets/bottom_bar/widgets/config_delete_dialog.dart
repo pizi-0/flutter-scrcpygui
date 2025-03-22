@@ -1,8 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../db/db.dart';
 import '../../../../../models/scrcpy_related/scrcpy_config.dart';
@@ -32,9 +33,10 @@ class _ConfigDeleteDialogState extends ConsumerState<ConfigDeleteDialog> {
           mainAxisAlignment: MainAxisAlignment.end,
           spacing: 8,
           children: [
-            DestructiveButton(
-              child: const Text('Delete'),
-              onPressed: () async {
+            FButton(
+              style: FButtonStyle.destructive,
+              label: const Text('Delete'),
+              onPress: () async {
                 if (ref.read(selectedConfigProvider) == widget.config) {
                   ref.read(selectedConfigProvider.notifier).state = ref
                       .read(configsProvider)
@@ -52,8 +54,10 @@ class _ConfigDeleteDialogState extends ConsumerState<ConfigDeleteDialog> {
                 context.pop(true);
               },
             ),
-            SecondaryButton(
-                child: const Text('Cancel'), onPressed: () => context.pop()),
+            FButton(
+                style: FButtonStyle.secondary,
+                label: const Text('Cancel'),
+                onPress: () => context.pop()),
           ],
         ),
       ],

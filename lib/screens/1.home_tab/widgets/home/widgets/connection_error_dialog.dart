@@ -1,8 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/utils/const.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class ErrorDialog extends ConsumerWidget {
   final String title;
@@ -23,9 +24,10 @@ class ErrorDialog extends ConsumerWidget {
         ),
       ),
       actions: [
-        SecondaryButton(
-          child: Text(el.buttonLabelLoc.close),
-          onPressed: () => context.pop(),
+        FButton(
+          style: FButtonStyle.secondary,
+          label: Text(el.buttonLabelLoc.close),
+          onPress: () => context.pop(),
         )
       ],
     );

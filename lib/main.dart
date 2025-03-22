@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_single_instance/flutter_single_instance.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:go_transitions/go_transitions.dart';
 import 'package:localization/localization.dart';
@@ -19,7 +21,6 @@ import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
 import 'package:scrcpygui/screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
 import 'package:scrcpygui/screens/4.settings_tab/settings_tab.dart';
 import 'package:scrcpygui/utils/const.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async {
@@ -104,29 +105,23 @@ class _MyAppState extends ConsumerState<MyApp> {
     final settings = ref.watch(settingsProvider);
     final looks = settings.looks;
     final behaviour = settings.behaviour;
-    ColorSchemes.blue(ThemeMode.dark).toMap();
 
-    return ShadcnApp.router(
+    return MaterialApp.router(
       supportedLocales: supportedLocales,
       locale: Locale(behaviour.languageCode, ''),
       localizationsDelegates: [
         ...localizationsDelegates,
-        const ShadcnLocalizationsDelegate()
+        FLocalizations.delegate,
       ],
       routeInformationParser: _router.routeInformationParser,
       routerDelegate: _router.routerDelegate,
       routeInformationProvider: _router.routeInformationProvider,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: looks.scheme.light,
-        radius: looks.widgetRadius,
-      ),
-      darkTheme: ThemeData(
-        colorScheme: looks.scheme.dark,
-        radius: looks.widgetRadius,
-      ),
-      themeMode: looks.themeMode,
-      // home: const SplashScreen(),
+      builder: (context, child) => FTheme(
+          data: looks.themeMode == ThemeMode.light
+              ? FThemes.blue.light
+              : FThemes.blue.dark,
+          child: child!),
     );
   }
 }

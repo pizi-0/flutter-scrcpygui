@@ -4,8 +4,10 @@ import 'dart:async';
 
 import 'package:awesome_extensions/awesome_extensions.dart'
     show StyledText, NumExtension;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:forui/forui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
@@ -15,7 +17,6 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../providers/config_provider.dart';
 import '../../../../../../utils/scrcpy_utils.dart';
@@ -66,8 +67,9 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
     final bool isTestRunning = runningInstance.contains(testInstance);
 
     return PgSectionCard(label: el.testConfigLoc.title, children: [
-      Basic(
-        title: Row(
+      FLabel(
+        axis: Axis.vertical,
+        label: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(el.testConfigLoc.preview),
@@ -78,21 +80,20 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
             ),
           ],
         ),
-        content: Card(
-          filled: true,
+        child: Card(
           child: Text(
             'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice!, customName: '[TEST] ${selectedConfig.configName}').join(' ')}',
-          ).muted().mono(),
+          ),
         ),
       ),
       Row(
         children: [
           Expanded(
-            child: Button(
+            child: FButton(
               style: !isTestRunning
-                  ? const ButtonStyle.primary()
-                  : const ButtonStyle.destructive(),
-              onPressed: () async {
+                  ? FButtonStyle.primary
+                  : FButtonStyle.destructive,
+              onPress: () async {
                 if (!isTestRunning) {
                   await ScrcpyUtils.newInstance(ref,
                       selectedConfig: selectedConfig, isTest: true);
@@ -124,7 +125,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                 }
                 setState(() {});
               },
-              child: !isTestRunning
+              label: !isTestRunning
                   ? Text(el.buttonLabelLoc.testConfig).bold()
                   : Text(el.buttonLabelLoc.stop).bold(),
             ),
@@ -174,27 +175,26 @@ class _CopyButtonState extends State<CopyButton> {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      variance: ButtonVariance.ghost,
-      icon: copied ? const Icon(Icons.check) : const Icon(Icons.copy),
-      onPressed: () async {
+    return FButton.icon(
+      child: copied ? const Icon(Icons.check) : const Icon(Icons.copy),
+      onPress: () async {
         ClipboardData data = ClipboardData(
             text:
                 'scrcpy ${ScrcpyCommand.buildCommand(widget.ref, widget.selectedConfig, widget.selectedDevice!, customName: '[TEST] ${widget.selectedConfig.configName}').join(' ')}');
 
         await Clipboard.setData(data);
         _startTimer();
-        showToast(
-          showDuration: 1.5.seconds,
-          context: context,
-          location: ToastLocation.bottomCenter,
-          builder: (context, close) => SurfaceCard(
-            child: Basic(
-              title: Text(el.statusLoc.copied),
-              trailing: const Icon(Icons.check),
-            ),
-          ),
-        );
+        // showToast(
+        //   showDuration: 1.5.seconds,
+        //   context: context,
+        //   location: ToastLocation.bottomCenter,
+        //   builder: (context, close) => SurfaceCard(
+        //     child: Basic(
+        //       title: Text(el.statusLoc.copied),
+        //       trailing: const Icon(Icons.check),
+        //     ),
+        //   ),
+        // );
       },
     );
   }

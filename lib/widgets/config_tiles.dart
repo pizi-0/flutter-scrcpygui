@@ -1,7 +1,8 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:forui/forui.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
@@ -37,96 +38,96 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
       trailing: ConstrainedBox(
         constraints:
             const BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
-        child: Select(
-          filled: true,
-          itemBuilder: (context, value) => OverflowMarquee(
-              child: Text(toTitleCase ? value.value.toTitleCase : value.value)),
-          value: initialValue,
-          onChanged: onSelected,
-          popup: SelectPopup(
-              items: SelectItemList(
-            children: items
-                .map((e) => SelectItemButton(
-                    value: e,
-                    child: OverflowMarquee(
-                      child: Text(toTitleCase
-                          ? e.value.toString().toTitleCase
-                          : e.value.toString()),
-                    )))
-                .toList(),
-          )).call,
-        ),
+        // child: Select(
+        //   filled: true,
+        //   itemBuilder: (context, value) => OverflowMarquee(
+        //       child: Text(toTitleCase ? value.value.toTitleCase : value.value)),
+        //   value: initialValue,
+        //   onChanged: onSelected,
+        //   popup: SelectPopup(
+        //       items: SelectItemList(
+        //     children: items
+        //         .map((e) => SelectItemButton(
+        //             value: e,
+        //             child: OverflowMarquee(
+        //               child: Text(toTitleCase
+        //                   ? e.value.toString().toTitleCase
+        //                   : e.value.toString()),
+        //             )))
+        //         .toList(),
+        //   )).call,
+        // ),
       ),
     );
   }
 }
 
-class ConfigDropdownOthers extends StatefulWidget {
-  final List<SelectItemButton> items;
-  final String label;
-  final String? subtitle;
-  final Widget? placeholder;
-  final Object? initialValue;
-  final PopoverConstraint? popupWidthConstraint;
-  final ValueChanged? onSelected;
-  final String? tooltipMessage;
-  final bool showinfo;
+// class ConfigDropdownOthers extends StatefulWidget {
+//   final List<SelectItemButton> items;
+//   final String label;
+//   final String? subtitle;
+//   final Widget? placeholder;
+//   final Object? initialValue;
+//   final PopoverConstraint? popupWidthConstraint;
+//   final ValueChanged? onSelected;
+//   final String? tooltipMessage;
+//   final bool showinfo;
 
-  const ConfigDropdownOthers({
-    super.key,
-    required this.items,
-    required this.label,
-    this.showinfo = false,
-    this.placeholder,
-    this.subtitle,
-    this.initialValue,
-    this.onSelected,
-    this.tooltipMessage,
-    this.popupWidthConstraint,
-  });
+//   const ConfigDropdownOthers({
+//     super.key,
+//     required this.items,
+//     required this.label,
+//     this.showinfo = false,
+//     this.placeholder,
+//     this.subtitle,
+//     this.initialValue,
+//     this.onSelected,
+//     this.tooltipMessage,
+//     this.popupWidthConstraint,
+//   });
 
-  @override
-  State<ConfigDropdownOthers> createState() => _ConfigDropdownOthersState();
-}
+//   @override
+//   State<ConfigDropdownOthers> createState() => _ConfigDropdownOthersState();
+// }
 
-class _ConfigDropdownOthersState extends State<ConfigDropdownOthers> {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        PgListTile(
-          title: widget.label,
-          subtitle: widget.subtitle,
-          showSubtitle: widget.subtitle != null && widget.showinfo,
-          trailing: ConstrainedBox(
-            constraints: const BoxConstraints(
-                minWidth: 180, maxWidth: 180, minHeight: 30),
-            child: Select(
-              filled: true,
-              itemBuilder: (context, value) => OverflowMarquee(
-                duration: 2.seconds,
-                delayDuration: 1.seconds,
-                child: Text(value.toString()),
-              ),
-              placeholder: widget.placeholder,
-              value: widget.initialValue,
-              onChanged: widget.onSelected,
-              popupWidthConstraint: widget.popupWidthConstraint ??
-                  PopoverConstraint.anchorFixedSize,
-              popupConstraints: const BoxConstraints(maxWidth: 300),
-              popup: SelectPopup.noVirtualization(
-                items: SelectItemList(
-                  children: widget.items,
-                ),
-              ).call,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
+// class _ConfigDropdownOthersState extends State<ConfigDropdownOthers> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       crossAxisAlignment: CrossAxisAlignment.start,
+//       children: [
+//         PgListTile(
+//           title: widget.label,
+//           subtitle: widget.subtitle,
+//           showSubtitle: widget.subtitle != null && widget.showinfo,
+//           trailing: ConstrainedBox(
+//             constraints: const BoxConstraints(
+//                 minWidth: 180, maxWidth: 180, minHeight: 30),
+//             child: Select(
+//               filled: true,
+//               itemBuilder: (context, value) => OverflowMarquee(
+//                 duration: 2.seconds,
+//                 delayDuration: 1.seconds,
+//                 child: Text(value.toString()),
+//               ),
+//               placeholder: widget.placeholder,
+//               value: widget.initialValue,
+//               onChanged: widget.onSelected,
+//               popupWidthConstraint: widget.popupWidthConstraint ??
+//                   PopoverConstraint.anchorFixedSize,
+//               popupConstraints: const BoxConstraints(maxWidth: 300),
+//               popup: SelectPopup.noVirtualization(
+//                 items: SelectItemList(
+//                   children: widget.items,
+//                 ),
+//               ).call,
+//             ),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
 class ConfigUserInput extends ConsumerWidget {
   final String label;
@@ -161,19 +162,20 @@ class ConfigUserInput extends ConsumerWidget {
       trailing: ConstrainedBox(
         constraints:
             const BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
-        child: TextField(
-          placeholder: placeholder,
-          filled: true,
+        child: FTextField(
+          // placeholder: placeholder,
+          // filled: true,
           inputFormatters: inputFormatters ??
               [
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
               ],
-          trailing: Text(unit != null ? '$unit ' : '').xSmall(),
+          suffixBuilder: (context, value, child) =>
+              Text(unit != null ? '$unit ' : ''),
           textAlign: TextAlign.center,
           controller: controller,
-          onChanged: onChanged,
+          onChange: onChanged,
           onTap: onTap,
-          style: const TextStyle(fontSize: 14),
+          // style:   TextStyle(fontSize: 14),
         ),
       ),
     );
