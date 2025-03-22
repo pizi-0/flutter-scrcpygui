@@ -6,8 +6,6 @@ A gui for [Scrcpy](https://github.com/Genymobile/scrcpy), made with Flutter.
 
 - Beginner dev / messy code - this project was made as an effort for me to learn flutter.
 
-- Some features may or may not work as intended on Mac/Windows as this project is developed and tested on Linux with my personal use in mind.
-
 
 ## Features
 
@@ -19,6 +17,9 @@ A gui for [Scrcpy](https://github.com/Genymobile/scrcpy), made with Flutter.
 - List of running scrcpy instances.
 - Theming - dark/light + accent color.
 - Tray support (start/stop scrcpy).
+
+## Supported platforms
+- Windows/Linux 64-bit
 
 ## Preview
 
@@ -38,6 +39,11 @@ A gui for [Scrcpy](https://github.com/Genymobile/scrcpy), made with Flutter.
   <img src="screenshot/dark/8.config-big.jpg" alt="config-big"/>
 </details>
 
+## Get app
+
+### [Releases](https://github.com/pizi-0/flutter-scrcpygui/releases)
+
+### [Build](doc/build.md)
 
 ## License
 
