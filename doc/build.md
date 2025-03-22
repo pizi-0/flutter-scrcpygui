@@ -2,7 +2,7 @@
 
 ## Requirements
 - flutter 3.29.0, use [fvm](https://fvm.app/documentation/getting-started/installation) to install specific version, and the associated flutter requirements for desktop development
-- dependencies for [tray_manager](https://pub.dev/packages/tray_manager#quick-start) plugin (linux)
+- requirements for [tray_manager](https://pub.dev/packages/tray_manager#quick-start) plugin (linux)
     - linux: 
     ayatana-appindicator3-0.1 or appindicator3-0.1
 
