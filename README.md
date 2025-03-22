@@ -28,27 +28,16 @@ A gui for [Scrcpy](https://github.com/Genymobile/scrcpy), made with Flutter.
 
 <details>
   <summary>Dark</summary>
-  <img src="screenshot/dark/1.dev-list.png" alt="device list"/>
-  <img src="screenshot/dark/2.scan.png" alt="Wifi Adb discovery"/>
-  <img src="screenshot/dark/3.pair.png" alt="Wifi Qr pairing"/>
-  <img src="screenshot/dark/4.manager.png" alt="Scrcpy version manager"/>
-  <img src="screenshot/dark/5.config-small.png" alt="config"/>
-  <img src="screenshot/dark/6.config-big.png" alt="config-big"/>
-  <img src="screenshot/dark/7.config-big-info.png" alt="config-big-info"/>
+  <img src="screenshot/dark/1.dev-list.jpg" alt="device list"/>
+  <img src="screenshot/dark/2.dev-settings.jpg" alt="device settings"/>
+  <img src="screenshot/dark/3.connect.jpg" alt="Wifi ADB connection"/>
+  <img src="screenshot/dark/4.pair.jpg" alt="Wifi Qr pairing"/>
+  <img src="screenshot/dark/5.manager.jpg" alt="Scrcpy version manager"/>
+  <img src="screenshot/dark/6.settings.jpg" alt="settings"/>
+  <img src="screenshot/dark/7.config-small.jpg" alt="config-small"/>
+  <img src="screenshot/dark/8.config-big.jpg" alt="config-big"/>
 </details>
 
-<br>
-
-<details>
-  <summary>Light</summary>
-  <img src="screenshot/light/1.dev-list.png" alt="device list"/>
-  <img src="screenshot/light/2.scan.png" alt="Wifi Adb discovery"/>
-  <img src="screenshot/light/3.pair.png" alt="Wifi Qr pairing"/>
-  <img src="screenshot/light/4.manager.png" alt="Scrcpy version manager"/>
-  <img src="screenshot/light/5.config-small.png" alt="config"/>
-  <img src="screenshot/light/6.config-big.png" alt="config-big"/>
-  <img src="screenshot/light/7.config-big-info.png" alt="config-big-info"/>
-</details>
 
 ## License
 
