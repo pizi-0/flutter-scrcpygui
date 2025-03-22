@@ -60,7 +60,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
         leading: const Icon(Icons.close_rounded),
         subMenu: [
           MenuLabel(
-              child: Text(el.deviceTileLoc.context.instances).xSmall().muted()),
+              child: Text(el.deviceTileLoc.context.scrcpy).xSmall().muted()),
           ...deviceInstance.map(
             (inst) => MenuButton(
               child: Text(inst.instanceName),
@@ -71,7 +71,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
           MenuLabel(child: Text(el.deviceTileLoc.context.all).xSmall().muted()),
           MenuButton(
             onPressed: (context) => _killRunning(deviceInstance),
-            child: Text(el.deviceTileLoc.context.allInstances),
+            child: Text(el.deviceTileLoc.context.allScrcpy),
           )
         ],
         child: Text(el.deviceTileLoc.context.killRunning),

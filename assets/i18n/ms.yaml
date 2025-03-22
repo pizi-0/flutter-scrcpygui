@@ -10,9 +10,9 @@ device_tile_loc:
     disconnect: Putuskan Sambungan
     to_wireless: Ke Tanpa Wayar
     kill_running: Hentikan scrcpy
-    instances: Contoh
+    scrcpy: Scrcpy
     all: Semua
-    all_instances: Hentikan semua scrcpy
+    all_scrcpy: Hentikan semua scrcpy
     manage: Urus
 
 config_loc:
