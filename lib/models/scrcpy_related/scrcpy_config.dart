@@ -58,7 +58,7 @@ class ScrcpyConfig {
       isRecording: isRecording ?? this.isRecording,
       videoOptions: videoOptions ?? this.videoOptions,
       audioOptions: audioOptions ?? this.audioOptions,
-      appOptions: appOptions,
+      appOptions: appOptions ?? this.appOptions,
       deviceOptions: deviceOptions ?? this.deviceOptions,
       windowOptions: windowOptions ?? this.windowOptions,
       additionalFlags: additionalFlags ?? this.additionalFlags,
