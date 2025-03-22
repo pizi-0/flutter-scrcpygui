@@ -8,6 +8,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/poll_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
@@ -137,6 +138,15 @@ class _MainScreenState extends ConsumerState<MainScreen>
     );
 
     ref.read(adbProvider.notifier).listenSelf(
+      (a, b) async {
+        if (!listEquals(a, b)) {
+          await trayManager.destroy();
+          await TrayUtils.initTray(ref, context);
+        }
+      },
+    );
+
+    ref.read(configsProvider.notifier).listenSelf(
       (a, b) async {
         if (!listEquals(a, b)) {
           await trayManager.destroy();
