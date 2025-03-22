@@ -112,10 +112,8 @@ class _IPConnectState extends ConsumerState<IPConnect>
         ref.read(ipHistoryProvider.notifier).update((state) {
           if (state.length == 10) {
             state.removeLast();
-            return [ipport, ...state];
-          } else {
-            return [ipport, ...state];
           }
+          return [ipport, ...state.where((ip) => ip != ipport)];
         });
 
         await Db.saveWirelessHistory(ref.read(ipHistoryProvider));

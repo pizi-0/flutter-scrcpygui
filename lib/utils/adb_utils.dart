@@ -113,7 +113,8 @@ class AdbUtils {
       success: !res.stdout.toString().contains('empty address') &&
           !res.stdout.toString().contains('failed') &&
           !res.stdout.toString().contains('timed-out') &&
-          !res.stdout.toString().contains('cannot connect'),
+          !res.stdout.toString().contains('cannot connect') &&
+          !res.stdout.toString().contains('Connection refused'),
       errorMessage: res.stdout,
     );
   }
