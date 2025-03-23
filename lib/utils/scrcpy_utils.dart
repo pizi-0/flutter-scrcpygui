@@ -265,26 +265,25 @@ class ScrcpyUtils {
         .isEmpty;
 
     bool videoEncoder = selectedConfig.videoOptions.videoEncoder == 'default'
-        ? true
+        ? false
         : selectedDevice.info!.videoEncoders
             .where((ve) =>
                 ve.encoder.contains(selectedConfig.videoOptions.videoEncoder))
             .isEmpty;
 
-    bool duplicateAudio = selectedConfig.audioOptions.duplicateAudio
-        ? int.parse(selectedDevice.info!.buildVersion) >= 13
-        : true;
+    bool duplicateAudio = selectedConfig.audioOptions.duplicateAudio &&
+        int.parse(selectedDevice.info!.buildVersion) < 13;
 
     bool audioCodec = selectedDevice.info!.audioEncoder
         .where((enc) => enc.codec == selectedConfig.audioOptions.audioCodec)
-        .isNotEmpty;
+        .isEmpty;
 
     bool audioEncoder = selectedConfig.audioOptions.audioEncoder == 'default'
-        ? true
+        ? false
         : selectedDevice.info!.audioEncoder
             .where((ae) =>
                 ae.encoder.contains(selectedConfig.audioOptions.audioEncoder))
-            .isNotEmpty;
+            .isEmpty;
 
     if (display || videoCodec || videoEncoder) {
       overrideWidget.add(VideoOptionsOverride(
