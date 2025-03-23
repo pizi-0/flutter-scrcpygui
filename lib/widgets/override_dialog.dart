@@ -1,24 +1,19 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import '../models/scrcpy_related/scrcpy_flag_check_result.dart';
-import '../providers/settings_provider.dart';
 import '../utils/const.dart';
 
 class OverrideDialog extends ConsumerWidget {
   final bool isEdit;
-  final List<FlagCheckResult> offendingFlags;
+  final List<Widget> overrideWidget;
   const OverrideDialog(
-      {super.key, required this.offendingFlags, this.isEdit = false});
+      {super.key, required this.overrideWidget, this.isEdit = false});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appTheme = ref.watch(settingsProvider.select((s) => s.looks));
-
     return AlertDialog(
-      insetPadding: const EdgeInsets.all(16),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(appTheme.widgetRadius)),
       title: isEdit
           ? const Text('Edit disabled:')
           : const Text('Incompatible flags:'),
@@ -28,14 +23,15 @@ class OverrideDialog extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
-          children: [
-            ...offendingFlags.map((f) => Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Text(f.errorMessage!),
-                ))
-          ],
+          children: overrideWidget,
         ),
       ),
+      actions: [
+        SecondaryButton(
+          onPressed: context.pop,
+          child: Text(el.buttonLabelLoc.close),
+        ),
+      ],
     );
   }
 }
