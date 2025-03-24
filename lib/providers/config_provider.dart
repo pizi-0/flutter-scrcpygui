@@ -138,7 +138,7 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
     final current = state!.appOptions ?? SAppOptions(forceClose: false);
     state = state!.copyWith(
       appOptions: reset
-          ? null
+          ? SAppOptions(forceClose: false)
           : current.copyWith(
               forceClose: forceClose ?? current.forceClose,
               selectedApp: selectedApp ?? current.selectedApp,
