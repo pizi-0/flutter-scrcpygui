@@ -5,6 +5,7 @@ import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/device_control_dialog.dart';
 import 'package:scrcpygui/widgets/disconnect_dialog.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -121,6 +122,14 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                           ),
                           Text('( ${deviceInstance.length} )').xSmall()
                         ],
+                      ),
+                    if (widget.device.info != null)
+                      IconButton.ghost(
+                        icon: Icon(Icons.apps),
+                        onPressed: () => showDialog(
+                          context: context,
+                          builder: (context) => ControlDialog(widget.device),
+                        ),
                       ),
                     IconButton.ghost(
                       icon: const Icon(Icons.settings),

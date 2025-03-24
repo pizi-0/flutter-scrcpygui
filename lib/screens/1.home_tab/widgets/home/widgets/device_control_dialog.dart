@@ -1,15 +1,20 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/device_key.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_app_list.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
+import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:string_extensions/string_extensions.dart';
 
 class ControlDialog extends ConsumerStatefulWidget {
   final AdbDevices device;
@@ -21,7 +26,8 @@ class ControlDialog extends ConsumerStatefulWidget {
 
 class _ControlDialogState extends ConsumerState<ControlDialog> {
   bool loading = false;
-  String? selectedApp;
+  bool gettingInfo = false;
+  ScrcpyApp? selectedApp;
   ScrcpyConfig? selectedConfig;
 
   @override
@@ -30,7 +36,7 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
     WidgetsBinding.instance.addPostFrameCallback((a) async {
       final workDir = ref.read(execDirProvider);
       if (widget.device.info == null) {
-        loading = true;
+        gettingInfo = true;
         setState(() {});
         final info = await AdbUtils.getScrcpyDetailsFor(workDir, widget.device);
         ref
@@ -40,7 +46,7 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
         await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
 
         if (mounted) {
-          loading = false;
+          gettingInfo = false;
           setState(() {});
         }
       }
@@ -51,78 +57,104 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
   Widget build(BuildContext context) {
     final allconfigs = ref.read(configsProvider);
 
+    final appslist = widget.device.info?.appList ?? [];
+
+    appslist
+        .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
     return AlertDialog(
       title: Text(widget.device.name ?? widget.device.modelName),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        spacing: 8,
-        children: [
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 4,
-            children: _buttonList(),
-          ),
-          if (widget.device.info != null)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      content: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: appWidth),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          spacing: 8,
+          children: [
+            PgSectionCard(
               children: [
-                const Divider(),
-                const Text('Launch:'),
-                Select(
-                  itemBuilder: (context, value) => Text(value),
-                  onChanged: (value) {
-                    selectedApp = value!;
-                    setState(() {});
-                  },
-                  placeholder: const Text('Select app'),
-                  value: selectedApp,
-                  popup: SelectPopup(
-                    items: SelectItemList(
-                      children: widget.device.info!.appList!
-                          .map((app) => SelectItemButton(
-                                value: app.packageName,
-                                child: Text(app.name),
-                              ))
-                          .toList(),
-                    ),
-                  ).call,
-                ),
-                const Text('On config:'),
-                Select(
-                  itemBuilder: (context, value) => Text(value.configName),
-                  onChanged: selectedApp == null
-                      ? null
-                      : (config) {
-                          selectedConfig = config as ScrcpyConfig?;
-
-                          setState(() {});
-                        },
-                  placeholder: const Text('Select config to launch the app on'),
-                  value: selectedConfig,
-                  popup: SelectPopup(
-                    items: SelectItemList(
-                      children: allconfigs
-                          .where((e) => !e.windowOptions.noWindow)
-                          .map((config) => SelectItemButton(
-                                value: config,
-                                child: Text(config.configName),
-                              ))
-                          .toList(),
-                    ),
-                  ).call,
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  runSpacing: 4,
+                  spacing: 4,
+                  children: _buttonList(),
                 ),
               ],
             ),
-        ],
+            if (widget.device.info != null)
+              PgSectionCard(
+                label: el.appSection.title,
+                children: [
+                  const Text('Launch:'),
+                  Select(
+                    filled: true,
+                    value: selectedApp,
+                    placeholder: Text('Select an app'),
+                    popupConstraints: BoxConstraints(maxHeight: appWidth - 100),
+                    onChanged: (app) {
+                      selectedApp = app!;
+                      setState(() {});
+                    },
+                    popup: SelectPopup.builder(
+                      searchPlaceholder: Text('Search'),
+                      builder: (context, searchQuery) {
+                        return SelectItemList(
+                          children: appslist
+                              .where((app) => app.name
+                                  .toLowerCase()
+                                  .contains(searchQuery?.toLowerCase() ?? ''))
+                              .map((e) => SelectItemButton(
+                                  value: e, child: Text(e.name)))
+                              .toList(),
+                        );
+                      },
+                    ).call,
+                    itemBuilder: (context, value) => Text(value.name),
+                  ),
+                  const Text('On config:'),
+                  Select(
+                    filled: true,
+                    itemBuilder: (context, value) => Text(value.configName),
+                    onChanged: selectedApp == null
+                        ? null
+                        : (config) {
+                            selectedConfig = config as ScrcpyConfig?;
+
+                            setState(() {});
+                          },
+                    placeholder:
+                        const Text('Select config to launch the app on'),
+                    value: selectedConfig,
+                    popup: SelectPopup(
+                      items: SelectItemList(
+                        children: allconfigs
+                            .where((e) => !e.windowOptions.noWindow)
+                            .map((config) => SelectItemButton(
+                                  value: config,
+                                  child: Text(config.configName),
+                                ))
+                            .toList(),
+                      ),
+                    ).call,
+                  ),
+                ],
+              ),
+          ],
+        ),
       ),
       actions: [
+        if (selectedApp != null && selectedConfig != null)
+          PrimaryButton(
+            density: ButtonDensity.normal,
+            child: Text(el.configLoc.start),
+            onPressed: () => ScrcpyUtils.newInstance(ref,
+                selectedDevice: widget.device,
+                selectedConfig: selectedConfig!.copyWith(
+                    additionalFlags: selectedConfig!.additionalFlags
+                        .append(' --start-app=${selectedApp!.packageName}'))),
+          ),
         SecondaryButton(
-          child: const Text('Close'),
-          onPressed: () => ScrcpyUtils.newInstance(ref,
-              selectedDevice: widget.device,
-              selectedConfig: selectedConfig!.copyWith(
-                  additionalFlags: '--new-display --start-app=$selectedApp')),
+          child: Text(el.buttonLabelLoc.close),
+          onPressed: () => context.pop(),
         )
       ],
     );
@@ -132,35 +164,40 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
     final workDir = ref.read(execDirProvider);
     return [
       SecondaryButton(
-        child: const Icon(Icons.power).paddingAll(2),
+        density: ButtonDensity.icon,
+        child: const Icon(Icons.power_settings_new_rounded),
         onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.power),
       ),
-      const VerticalDivider(),
       SecondaryButton(
-        child: const Icon(Icons.arrow_back).paddingAll(2),
+        density: ButtonDensity.icon,
         onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.back),
+        child: const Icon(Icons.arrow_back),
       ),
       SecondaryButton(
-        child: const Icon(Icons.home).paddingAll(2),
+        density: ButtonDensity.icon,
+        child: const Icon(Icons.home),
         onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.home),
       ),
       SecondaryButton(
-        child: const Icon(Icons.history).paddingAll(2),
+        density: ButtonDensity.icon,
+        child: const Icon(Icons.history),
         onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.recent),
       ),
-      const VerticalDivider(),
       SecondaryButton(
-        child: const Icon(Icons.skip_previous).paddingAll(2),
+        density: ButtonDensity.icon,
+        child: const Icon(Icons.skip_previous),
         onPressed: () =>
             widget.device.sendKeyEvent(workDir, DeviceKey.mediaPrevious),
       ),
       SecondaryButton(
-        child: const Icon(Icons.play_arrow).paddingAll(2),
+        density: ButtonDensity.icon,
+        child: const Icon(Icons.play_arrow),
         onPressed: () =>
             widget.device.sendKeyEvent(workDir, DeviceKey.playPause),
       ),
       SecondaryButton(
-        child: const Icon(Icons.skip_next).paddingAll(2),
+        density: ButtonDensity.icon,
+        child: const Icon(Icons.skip_next),
         onPressed: () =>
             widget.device.sendKeyEvent(workDir, DeviceKey.mediaNext),
       ),
