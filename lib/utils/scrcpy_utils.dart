@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/adb_devices.dart';
@@ -17,6 +18,7 @@ import 'package:scrcpygui/utils/command_runner.dart';
 import 'package:scrcpygui/widgets/override_dialog.dart';
 import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 
+import '../db/db.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
 import '../widgets/config_override.dart';
 import 'adb_utils.dart';
