@@ -24,15 +24,16 @@ class SAppOptions {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'selectedApp': selectedApp!.toMap(),
+      'selectedApp': selectedApp?.toMap(),
       'forceClose': forceClose,
     };
   }
 
   factory SAppOptions.fromMap(Map<String, dynamic> map) {
     return SAppOptions(
-      selectedApp:
-          ScrcpyApp.fromMap(map['selectedApp'] as Map<String, dynamic>),
+      selectedApp: map['selectedApp'] != null
+          ? ScrcpyApp.fromMap(map['selectedApp'] as Map<String, dynamic>)
+          : null,
       forceClose: map['forceClose'] as bool,
     );
   }
