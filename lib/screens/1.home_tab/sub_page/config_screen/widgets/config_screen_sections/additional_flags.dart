@@ -1,10 +1,8 @@
 // ignore_for_file: avoid_unnecessary_containers
 
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
-import 'package:scrcpygui/models/scrcpy_related/available_flags.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -46,9 +44,6 @@ class _AdditionalFlagsConfigState extends ConsumerState<AdditionalFlagsConfig> {
             controller: add,
             placeholder: const Text('--flag1 --flag-2 --flag-3=\'3 oh 3\''),
             maxLines: 5,
-            inputFormatters: [
-              ...availableFlags.map((e) => FilteringTextInputFormatter.deny(e))
-            ],
             onChanged: (val) {
               ref
                   .read(configScreenConfig.notifier)
