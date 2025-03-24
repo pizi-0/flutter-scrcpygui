@@ -4,9 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/db/db.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/adb_devices.dart';
@@ -19,7 +17,6 @@ import 'package:scrcpygui/utils/command_runner.dart';
 import 'package:scrcpygui/widgets/override_dialog.dart';
 import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 
-import '../models/scrcpy_related/scrcpy_flag_check_result.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
 import '../widgets/config_override.dart';
 import 'adb_utils.dart';
@@ -199,14 +196,12 @@ class ScrcpyUtils {
     final checkResult =
         await checkForIncompatibleFlags(ref, selectedConfig, device);
 
-    bool proceed = checkResult.where((e) => !e.ok).isEmpty;
+    bool proceed = checkResult.isEmpty;
 
     if (!proceed) {
       proceed = (await showDialog(
             context: ref.context,
-            builder: (context) => OverrideDialog(
-              offendingFlags: checkResult.where((r) => !r.ok).toList(),
-            ),
+            builder: (context) => OverrideDialog(overrideWidget: checkResult),
           )) ??
           false;
     }
@@ -256,124 +251,144 @@ class ScrcpyUtils {
     return res;
   }
 
-  static Future<List<FlagCheckResult>> checkForIncompatibleFlags(WidgetRef ref,
+  static Future<List<Widget>> checkForIncompatibleFlags(WidgetRef ref,
       ScrcpyConfig selectedConfig, AdbDevices selectedDevice) async {
-    List<FlagCheckResult> result = [];
+    // List<FlagCheckResult> result = [];
+    List<Widget> overrideWidget = [];
 
     bool display = selectedDevice.info!.displays
-            .where(
-                (d) => d.id == selectedConfig.videoOptions.displayId.toString())
-            .isNotEmpty ||
-        selectedConfig.videoOptions.displayId == 'new';
+        .where((d) => d.id == selectedConfig.videoOptions.displayId.toString())
+        .isEmpty;
 
     bool videoCodec = selectedDevice.info!.videoEncoders
         .where((enc) => enc.codec == selectedConfig.videoOptions.videoCodec)
-        .isNotEmpty;
+        .isEmpty;
 
     bool videoEncoder = selectedConfig.videoOptions.videoEncoder == 'default'
-        ? true
+        ? false
         : selectedDevice.info!.videoEncoders
             .where((ve) =>
                 ve.encoder.contains(selectedConfig.videoOptions.videoEncoder))
-            .isNotEmpty;
+            .isEmpty;
 
-    bool duplicateAudio = selectedConfig.audioOptions.duplicateAudio
-        ? int.parse(selectedDevice.info!.buildVersion) >= 13
-        : true;
+    bool duplicateAudio = selectedConfig.audioOptions.duplicateAudio &&
+        int.parse(selectedDevice.info!.buildVersion) < 13;
 
     bool audioCodec = selectedDevice.info!.audioEncoder
         .where((enc) => enc.codec == selectedConfig.audioOptions.audioCodec)
-        .isNotEmpty;
+        .isEmpty;
 
     bool audioEncoder = selectedConfig.audioOptions.audioEncoder == 'default'
-        ? true
+        ? false
         : selectedDevice.info!.audioEncoder
             .where((ae) =>
                 ae.encoder.contains(selectedConfig.audioOptions.audioEncoder))
-            .isNotEmpty;
+            .isEmpty;
 
-    if (display == true) {
-      FlagCheckResult dis = FlagCheckResult(ok: true);
-      result.add(dis);
-    } else if (display == false) {
-      FlagCheckResult dis = FlagCheckResult(
-        ok: false,
-        errorMessage:
-            "Display with ID: '${selectedConfig.videoOptions.displayId}' is not available for this device.",
-        overrideFlag: const DisplayIdOverride(),
-      );
-
-      result.add(dis);
+    if (display || videoCodec || videoEncoder) {
+      overrideWidget.add(VideoOptionsOverride(
+        display: display,
+        codec: videoCodec,
+        encoder: videoEncoder,
+      ));
     }
 
-    if (videoCodec == true) {
-      FlagCheckResult vidCodec = FlagCheckResult(ok: true);
-      result.add(vidCodec);
-    } else if (videoCodec == false) {
-      FlagCheckResult vidCodec = FlagCheckResult(
-        ok: false,
-        errorMessage:
-            "Codec: '${selectedConfig.videoOptions.videoCodec}' is not available for this device.",
-        overrideFlag: const VideoCodecOverride(),
-      );
-
-      result.add(vidCodec);
+    if (duplicateAudio || audioEncoder || audioCodec) {
+      overrideWidget.add(AudioOptionsOverride(
+        duplicateAudio: duplicateAudio,
+        audioCodec: audioCodec,
+        audioEncoder: audioEncoder,
+      ));
     }
 
-    if (videoEncoder == true) {
-      FlagCheckResult vidEncoder = FlagCheckResult(ok: true);
-      result.add(vidEncoder);
-    } else if (videoEncoder == false) {
-      FlagCheckResult vidEncoder = FlagCheckResult(
-        ok: false,
-        errorMessage:
-            "Encoder: '${selectedConfig.videoOptions.videoEncoder}' is not available for this device.",
-        overrideFlag: const VideoCodecOverride(),
-      );
+    //)
 
-      result.add(vidEncoder);
+    // if (display == true) {
+    //   FlagCheckResult dis = FlagCheckResult(ok: true);
+    //   result.add(dis);
+    // } else if (display == false) {
+    //   FlagCheckResult dis = FlagCheckResult(
+    //     ok: false,
+    //     errorMessage:
+    //         "Display with ID: '${selectedConfig.videoOptions.displayId}' is not available for this device.",
+    //     overrideFlag: const DisplayIdOverride(),
+    //   );
+
+    //   result.add(dis);
+    // }
+
+    // if (videoCodec == true) {
+    //   FlagCheckResult vidCodec = FlagCheckResult(ok: true);
+    //   result.add(vidCodec);
+    // } else if (videoCodec == false) {
+    //   FlagCheckResult vidCodec = FlagCheckResult(
+    //     ok: false,
+    //     errorMessage:
+    //         "Codec: '${selectedConfig.videoOptions.videoCodec}' is not available for this device.",
+    //     overrideFlag: const VideoCodecOverride(),
+    //   );
+
+    //   result.add(vidCodec);
+    // }
+
+    // if (videoEncoder == true) {
+    //   FlagCheckResult vidEncoder = FlagCheckResult(ok: true);
+    //   result.add(vidEncoder);
+    // } else if (videoEncoder == false) {
+    //   FlagCheckResult vidEncoder = FlagCheckResult(
+    //     ok: false,
+    //     errorMessage:
+    //         "Encoder: '${selectedConfig.videoOptions.videoEncoder}' is not available for this device.",
+    //     overrideFlag: const VideoEncoderOverride(),
+    //   );
+
+    //   result.add(vidEncoder);
+    // }
+
+    // if (duplicateAudio == true) {
+    //   FlagCheckResult dup = FlagCheckResult(ok: true);
+    //   result.add(dup);
+    // } else if (duplicateAudio == false) {
+    //   FlagCheckResult dup = FlagCheckResult(
+    //     ok: false,
+    //     errorMessage: 'Audio duplicate only available for Android 13 and up.',
+    //   );
+
+    //   result.add(dup);
+    // }
+
+    // if (audioCodec == true) {
+    //   FlagCheckResult audCodec = FlagCheckResult(ok: true);
+    //   result.add(audCodec);
+    // } else if (audioCodec == false) {
+    //   FlagCheckResult audCodec = FlagCheckResult(
+    //     ok: false,
+    //     errorMessage:
+    //         "Codec: '${selectedConfig.audioOptions.audioCodec}' is not available for this device.",
+    //     overrideFlag: const VideoCodecOverride(),
+    //   );
+
+    //   result.add(audCodec);
+    // }
+
+    // if (audioEncoder == true) {
+    //   FlagCheckResult audEncoder = FlagCheckResult(ok: true);
+    //   result.add(audEncoder);
+    // } else if (audioEncoder == false) {
+    //   FlagCheckResult audEncoder = FlagCheckResult(
+    //     ok: false,
+    //     errorMessage:
+    //         "Encoder: '${selectedConfig.audioOptions.audioEncoder}' is not available for this device.",
+    //     overrideFlag: const VideoCodecOverride(),
+    //   );
+
+    //   result.add(audEncoder);
+    // }
+
+    if (overrideWidget.isNotEmpty) {
+      ref.read(configOverrideProvider.notifier).state = selectedConfig;
     }
 
-    if (duplicateAudio == true) {
-      FlagCheckResult dup = FlagCheckResult(ok: true);
-      result.add(dup);
-    } else if (duplicateAudio == false) {
-      FlagCheckResult dup = FlagCheckResult(
-        ok: false,
-        errorMessage: 'Audio duplicate only available for Android 13 and up.',
-      );
-
-      result.add(dup);
-    }
-
-    if (audioCodec == true) {
-      FlagCheckResult audCodec = FlagCheckResult(ok: true);
-      result.add(audCodec);
-    } else if (audioCodec == false) {
-      FlagCheckResult audCodec = FlagCheckResult(
-        ok: false,
-        errorMessage:
-            "Codec: '${selectedConfig.audioOptions.audioCodec}' is not available for this device.",
-        overrideFlag: const VideoCodecOverride(),
-      );
-
-      result.add(audCodec);
-    }
-
-    if (audioEncoder == true) {
-      FlagCheckResult audEncoder = FlagCheckResult(ok: true);
-      result.add(audEncoder);
-    } else if (audioEncoder == false) {
-      FlagCheckResult audEncoder = FlagCheckResult(
-        ok: false,
-        errorMessage:
-            "Encoder: '${selectedConfig.audioOptions.audioEncoder}' is not available for this device.",
-        overrideFlag: const VideoCodecOverride(),
-      );
-
-      result.add(audEncoder);
-    }
-
-    return result;
+    return overrideWidget;
   }
 }
