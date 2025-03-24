@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/db/db.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/adb_devices.dart';
@@ -192,6 +193,7 @@ class ScrcpyUtils {
 
       ref.read(savedAdbDevicesProvider.notifier).addEditDevices(device);
       ref.read(selectedDeviceProvider.notifier).state = device;
+      await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
     }
 
     final checkResult =
