@@ -259,8 +259,10 @@ class ScrcpyUtils {
     List<Widget> overrideWidget = [];
 
     bool display = selectedDevice.info!.displays
-        .where((d) => d.id == selectedConfig.videoOptions.displayId.toString())
-        .isEmpty;
+            .where(
+                (d) => d.id == selectedConfig.videoOptions.displayId.toString())
+            .isEmpty &&
+        selectedConfig.videoOptions.displayId != 'new';
 
     bool videoCodec = selectedDevice.info!.videoEncoders
         .where((enc) => enc.codec == selectedConfig.videoOptions.videoCodec)
