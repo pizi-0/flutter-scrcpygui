@@ -77,8 +77,8 @@ class _ConfigDetailDialogState extends ConsumerState<ConfigDetailDialog> {
                       Divider(),
                       Text('Virtual display options: '),
                       Text(
-                          ' - resolution: ${virtualDisplayOptions.resolution}'),
-                      Text(' - dpi: ${virtualDisplayOptions.dpi}'),
+                          '  - resolution: ${virtualDisplayOptions.resolution}'),
+                      Text('  - dpi: ${virtualDisplayOptions.dpi}'),
                       if (virtualDisplayOptions.disableDecorations)
                         Text(
                             '  - disable decorations: ${virtualDisplayOptions.disableDecorations}'),
