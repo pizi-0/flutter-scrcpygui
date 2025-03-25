@@ -15,6 +15,13 @@ device_tile_loc:
     all_scrcpy: Hentikan semua scrcpy
     manage: Urus
 
+device_control_dialog_loc:
+  controls: Kawalan
+  on_config:
+    label: Pada konfigurasi
+    dd_placeholder: Pilih konfigurasi untuk melancarkan aplikasi
+
+
 config_loc:
   label: Konfigurasi (${count})
   new: Cipta

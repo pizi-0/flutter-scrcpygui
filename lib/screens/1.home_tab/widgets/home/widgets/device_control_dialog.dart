@@ -84,11 +84,11 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
               PgSectionCard(
                 label: el.appSection.title,
                 children: [
-                  const Text('Launch:'),
+                  Text('${el.configLoc.start}:'),
                   Select(
                     filled: true,
                     value: selectedApp,
-                    placeholder: Text('Select an app'),
+                    placeholder: Text(el.appSection.select.label),
                     popupConstraints: BoxConstraints(maxHeight: appWidth - 100),
                     onChanged: (app) {
                       selectedApp = app!;
@@ -110,7 +110,7 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
                     ).call,
                     itemBuilder: (context, value) => Text(value.name),
                   ),
-                  const Text('On config:'),
+                  Text('${el.deviceControlDialogLoc.onConfig.label}:'),
                   Select(
                     filled: true,
                     itemBuilder: (context, value) => Text(value.configName),
@@ -122,7 +122,7 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
                             setState(() {});
                           },
                     placeholder:
-                        const Text('Select config to launch the app on'),
+                        Text(el.deviceControlDialogLoc.onConfig.ddPlaceholder),
                     value: selectedConfig,
                     popup: SelectPopup(
                       items: SelectItemList(

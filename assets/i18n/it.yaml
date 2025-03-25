@@ -15,6 +15,13 @@ device_tile_loc:
     all_scrcpy: Termina tutti gli scrcpy
     manage: Gestisci
 
+device_control_dialog_loc:
+  controls: Controlli
+  on_config:
+    label: Su configurazione
+    dd_placeholder: Seleziona configurazione per avviare l'app
+
+
 config_loc:
   label: Config (${count})
   new: Crea

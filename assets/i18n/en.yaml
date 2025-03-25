@@ -15,6 +15,12 @@ device_tile_loc:
     all: All
     all_scrcpy: Kill all scrcpy
     manage: Manage
+
+device_control_dialog_loc:
+  controls: Controls
+  on_config:
+    label: On config
+    dd_placeholder: Select config to launch the app on
     
 
 config_loc:
