@@ -71,9 +71,11 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
           spacing: 8,
           children: [
             PgSectionCard(
+              label: el.deviceControlDialogLoc.controls,
               children: [
                 Wrap(
                   alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   runSpacing: 4,
                   spacing: 4,
                   children: _buttonList(),
@@ -177,43 +179,58 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
   _buttonList() {
     final workDir = ref.read(execDirProvider);
     return [
-      SecondaryButton(
+      DestructiveButton(
         density: ButtonDensity.icon,
         child: const Icon(Icons.power_settings_new_rounded),
         onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.power),
       ),
+      VerticalDivider().sized(height: 20),
       SecondaryButton(
         density: ButtonDensity.icon,
         onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.back),
-        child: const Icon(Icons.arrow_back),
+        child: const Icon(Icons.arrow_back_rounded),
       ),
       SecondaryButton(
         density: ButtonDensity.icon,
-        child: const Icon(Icons.home),
+        child: const Icon(Icons.home_rounded),
         onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.home),
       ),
       SecondaryButton(
         density: ButtonDensity.icon,
-        child: const Icon(Icons.history),
+        child: const Icon(Icons.history_rounded),
         onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.recent),
       ),
+      VerticalDivider().sized(height: 20),
       SecondaryButton(
         density: ButtonDensity.icon,
-        child: const Icon(Icons.skip_previous),
+        child: const Icon(Icons.skip_previous_rounded),
         onPressed: () =>
             widget.device.sendKeyEvent(workDir, DeviceKey.mediaPrevious),
       ),
       SecondaryButton(
         density: ButtonDensity.icon,
-        child: const Icon(Icons.play_arrow),
+        child: const Icon(Icons.play_arrow_rounded),
         onPressed: () =>
             widget.device.sendKeyEvent(workDir, DeviceKey.playPause),
       ),
       SecondaryButton(
         density: ButtonDensity.icon,
-        child: const Icon(Icons.skip_next),
+        child: const Icon(Icons.skip_next_rounded),
         onPressed: () =>
             widget.device.sendKeyEvent(workDir, DeviceKey.mediaNext),
+      ),
+      VerticalDivider().sized(height: 20),
+      SecondaryButton(
+        density: ButtonDensity.icon,
+        child: const Icon(Icons.volume_down_rounded),
+        onPressed: () =>
+            widget.device.sendKeyEvent(workDir, DeviceKey.volumeDown),
+      ),
+      SecondaryButton(
+        density: ButtonDensity.icon,
+        child: const Icon(Icons.volume_up_rounded),
+        onPressed: () =>
+            widget.device.sendKeyEvent(workDir, DeviceKey.volumeUp),
       ),
     ];
   }
