@@ -43,6 +43,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     await SetupUtils.initScrcpy(ref);
 
+    ref.read(appVersionProvider.notifier).state =
+        await AppUtils.getAppVersion();
+
     final workDir = ref.read(execDirProvider);
     final savedDevices = await Db.getSavedAdbDevice();
 

@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -18,6 +19,12 @@ import '../widgets/quit_dialog.dart';
 import 'const.dart';
 
 class AppUtils {
+  static Future<String> getAppVersion() async {
+    final info = await PackageInfo.fromPlatform();
+
+    return info.version;
+  }
+
   static Future<Color> getPrimaryColor() async {
     File file = File('/home/pizi/.cache/wal/colors.css');
     Color color = Colors.blue;
