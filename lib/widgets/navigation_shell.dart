@@ -8,6 +8,7 @@ import 'package:localization/localization.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:scrcpygui/main_screen.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
 import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
 import 'package:scrcpygui/screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
@@ -73,14 +74,15 @@ class NavigationShellState extends ConsumerState<NavigationShell> {
   }
 }
 
-class TitleBar extends StatelessWidget {
+class TitleBar extends ConsumerWidget {
   const TitleBar({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final appversion = ref.watch(appVersionProvider);
 
     return OutlinedContainer(
       borderRadius: theme.borderRadiusXs,
@@ -98,8 +100,8 @@ class TitleBar extends StatelessWidget {
                       'assets/logo.png',
                       height: 20,
                       width: 20,
-                    ),
-                    const Text('Scrcpy GUI').small(),
+                    ).paddingOnly(left: 3),
+                    Text('Scrcpy GUI ($appversion)').small(),
                     const Text('by pizi-0')
                         .fontSize(8)
                         .underline()
