@@ -23,6 +23,9 @@ class ConfigDropDownItem extends ConsumerStatefulWidget {
 class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
   @override
   Widget build(BuildContext context) {
+    final isRecording = widget.config.isRecording;
+    final isDefaultConfig = defaultConfigs.contains(widget.config);
+
     return Row(
       children: [
         IconButton(
@@ -38,34 +41,39 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
             textAlign: TextAlign.start,
           ),
         ),
-        if (widget.config.isRecording)
-          IconButton(
-            size: ButtonSize.small,
-            variance: ButtonVariance.ghost,
-            icon: const Icon(Icons.folder),
-            onPressed: () => {
-              configDropdownKey.currentState?.closePopup(),
-              DirectoryUtils.openFolder(widget.config.savePath!)
-            },
+        IconButton(
+          size: ButtonSize.small,
+          variance: ButtonVariance.ghost,
+          icon: Icon(Icons.folder,
+              color: !isRecording ? Colors.transparent : null),
+          onPressed: !isRecording
+              ? null
+              : () => {
+                    configDropdownKey.currentState?.closePopup(),
+                    DirectoryUtils.openFolder(widget.config.savePath!)
+                  },
+        ),
+        VerticalDivider(),
+        IconButton(
+          size: ButtonSize.small,
+          variance: ButtonVariance.ghost,
+          icon: Icon(
+            Icons.edit,
+            color: isDefaultConfig ? Colors.transparent : null,
           ),
-        if (widget.config.isRecording &&
-            !defaultConfigs.contains(widget.config))
-          const VerticalDivider(),
-        if (!defaultConfigs.contains(widget.config))
-          IconButton(
-            size: ButtonSize.small,
-            variance: ButtonVariance.ghost,
-            icon: const Icon(Icons.edit),
-            onPressed: () => _onEditPressed(widget.config),
+          onPressed:
+              isDefaultConfig ? null : () => _onEditPressed(widget.config),
+        ),
+        VerticalDivider(),
+        IconButton(
+          size: ButtonSize.small,
+          variance: ButtonVariance.ghost,
+          icon: Icon(
+            Icons.delete,
+            color: isDefaultConfig ? Colors.transparent : null,
           ),
-        if (!defaultConfigs.contains(widget.config)) const VerticalDivider(),
-        if (!defaultConfigs.contains(widget.config))
-          IconButton(
-            size: ButtonSize.small,
-            variance: ButtonVariance.ghost,
-            icon: const Icon(Icons.delete),
-            onPressed: _onRemoveConfigPressed,
-          ),
+          onPressed: isDefaultConfig ? null : _onRemoveConfigPressed,
+        ),
       ],
     );
   }
