@@ -1,6 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
@@ -15,7 +16,7 @@ class AboutTab extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appversion = ref.watch(appVersionProvider);
     return PgScaffold(
-      title: 'About',
+      title: el.aboutLoc.title,
       children: [
         PgSectionCard(
           label: 'Scrcpy GUI',
@@ -26,8 +27,8 @@ class AboutTab extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 spacing: 4,
                 children: [
-                  Text('Version: $appversion'),
-                  Text('Author: pizi-0'),
+                  Text('${el.aboutLoc.version}: $appversion'),
+                  Text('${el.aboutLoc.author}: pizi-0'),
                 ],
               ),
               content: Row(
@@ -59,7 +60,7 @@ class AboutTab extends ConsumerWidget {
           ],
         ),
         PgSectionCard(
-          label: 'Credits',
+          label: el.aboutLoc.credits,
           children: [
             Basic(
               title: Text('scrcpy'),

@@ -5631,6 +5631,59 @@ class SettingsLocBehaviorMinimizeValue {
   }
 }
 
+class AboutLoc {
+  const AboutLoc({
+    required this.title,
+    required this.version,
+    required this.author,
+    required this.credits,
+  });
+  factory AboutLoc.fromJson(Map<String, dynamic> json) {
+    return AboutLoc(
+      title: (json['title'] ?? '').toString(),
+      version: (json['version'] ?? '').toString(),
+      author: (json['author'] ?? '').toString(),
+      credits: (json['credits'] ?? '').toString(),
+    );
+  }
+  final String title;
+  final String version;
+  final String author;
+  final String credits;
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''version''': version,
+        r'''author''': author,
+        r'''credits''': credits,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class QuitDialogLoc {
   const QuitDialogLoc({
     required this.title,
@@ -6286,6 +6339,7 @@ class LocalizationMessages {
     required this.testConfigLoc,
     required this.scrcpyManagerLoc,
     required this.settingsLoc,
+    required this.aboutLoc,
     required this.quitDialogLoc,
     required this.disconnectDialogLoc,
     required this.closeDialogLoc,
@@ -6318,6 +6372,7 @@ class LocalizationMessages {
       testConfigLoc: TestConfigLoc.fromJson((json['test_config_loc'] as Map).cast<String, dynamic>()),
       scrcpyManagerLoc: ScrcpyManagerLoc.fromJson((json['scrcpy_manager_loc'] as Map).cast<String, dynamic>()),
       settingsLoc: SettingsLoc.fromJson((json['settings_loc'] as Map).cast<String, dynamic>()),
+      aboutLoc: AboutLoc.fromJson((json['about_loc'] as Map).cast<String, dynamic>()),
       quitDialogLoc: QuitDialogLoc.fromJson((json['quit_dialog_loc'] as Map).cast<String, dynamic>()),
       disconnectDialogLoc: DisconnectDialogLoc.fromJson((json['disconnect_dialog_loc'] as Map).cast<String, dynamic>()),
       closeDialogLoc: CloseDialogLoc.fromJson((json['close_dialog_loc'] as Map).cast<String, dynamic>()),
@@ -6368,6 +6423,8 @@ class LocalizationMessages {
 
   final SettingsLoc settingsLoc;
 
+  final AboutLoc aboutLoc;
+
   final QuitDialogLoc quitDialogLoc;
 
   final DisconnectDialogLoc disconnectDialogLoc;
@@ -6405,6 +6462,7 @@ class LocalizationMessages {
         r'''test_config_loc''': testConfigLoc,
         r'''scrcpy_manager_loc''': scrcpyManagerLoc,
         r'''settings_loc''': settingsLoc,
+        r'''about_loc''': aboutLoc,
         r'''quit_dialog_loc''': quitDialogLoc,
         r'''disconnect_dialog_loc''': disconnectDialogLoc,
         r'''close_dialog_loc''': closeDialogLoc,
@@ -6876,6 +6934,12 @@ final LocalizationMessages en = LocalizationMessages(
         ),
       ),
     ),
+  ),
+  aboutLoc: AboutLoc(
+    title: 'About',
+    version: 'Version',
+    author: 'Author',
+    credits: 'Credits',
   ),
   quitDialogLoc: QuitDialogLoc(
     title: 'Quit Scrcpy GUI?',
@@ -7387,6 +7451,12 @@ final LocalizationMessages es = LocalizationMessages(
         ),
       ),
     ),
+  ),
+  aboutLoc: AboutLoc(
+    title: 'Acerca de',
+    version: 'Versión',
+    author: 'Autor',
+    credits: 'Créditos',
   ),
   quitDialogLoc: QuitDialogLoc(
     title: '¿Salir de la GUI de scrcpy?',
@@ -7902,6 +7972,12 @@ final LocalizationMessages it = LocalizationMessages(
       ),
     ),
   ),
+  aboutLoc: AboutLoc(
+    title: 'Informazioni',
+    version: 'Versione',
+    author: 'Autore',
+    credits: 'Crediti',
+  ),
   quitDialogLoc: QuitDialogLoc(
     title: 'Uscire da Scrcpy GUI?',
     killRunning: QuitDialogLocKillRunning(
@@ -8411,6 +8487,12 @@ final LocalizationMessages ms = LocalizationMessages(
         ),
       ),
     ),
+  ),
+  aboutLoc: AboutLoc(
+    title: 'Perihal',
+    version: 'Versi',
+    author: 'Penulis',
+    credits: 'Penghargaan',
   ),
   quitDialogLoc: QuitDialogLoc(
     title: 'Keluar dari GUI scrcpy?',

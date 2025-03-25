@@ -377,6 +377,13 @@ settings_loc:
         tray: a la bandeja
         taskbar: a la barra de tareas
 
+# about tab
+about_loc:
+  title: Acerca de
+  version: Versión
+  author: Autor
+  credits: Créditos
+
 # quit dialog
 quit_dialog_loc:
   title: ¿Salir de la GUI de scrcpy?

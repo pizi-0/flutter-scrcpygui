@@ -377,6 +377,14 @@ settings_loc:
         tray: ke dulang
         taskbar: ke bar tugas
 
+# about tab
+about_loc:
+  title: Perihal
+  version: Versi
+  author: Penulis
+  credits: Penghargaan
+
+
 # quit dialog
 quit_dialog_loc:
   title: Keluar dari GUI scrcpy?

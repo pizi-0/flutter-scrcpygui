@@ -377,6 +377,13 @@ settings_loc:
         tray: a icona
         taskbar: a barra delle applicazioni
 
+# about tab
+about_loc:
+  title: Informazioni
+  version: Versione
+  author: Autore
+  credits: Crediti
+
 # quit dialog
 quit_dialog_loc:
   title: Uscire da Scrcpy GUI?

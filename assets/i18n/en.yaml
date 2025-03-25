@@ -393,6 +393,13 @@ settings_loc:
         tray: to tray
         taskbar: to taskbar
 
+## about tab
+about_loc:
+  title: About
+  version: Version
+  author: Author
+  credits: Credits
+
 
 # quit dialog
 quit_dialog_loc:
