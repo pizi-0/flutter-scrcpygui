@@ -145,12 +145,26 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
         if (selectedApp != null && selectedConfig != null)
           PrimaryButton(
             density: ButtonDensity.normal,
-            child: Text(el.configLoc.start),
-            onPressed: () => ScrcpyUtils.newInstance(ref,
-                selectedDevice: widget.device,
-                selectedConfig: selectedConfig!.copyWith(
-                    additionalFlags: selectedConfig!.additionalFlags
-                        .append(' --start-app=${selectedApp!.packageName}'))),
+            onPressed: loading
+                ? null
+                : () async {
+                    loading = true;
+                    setState(() {});
+                    await ScrcpyUtils.newInstance(ref,
+                        selectedDevice: widget.device,
+                        selectedConfig: selectedConfig!.copyWith(
+                            additionalFlags: selectedConfig!.additionalFlags
+                                .append(
+                                    ' --start-app=${selectedApp!.packageName}')));
+
+                    if (mounted) {
+                      loading = false;
+                      setState(() {});
+                    }
+                  },
+            child: loading
+                ? CircularProgressIndicator()
+                : Text(el.configLoc.start),
           ),
         SecondaryButton(
           child: Text(el.buttonLabelLoc.close),
