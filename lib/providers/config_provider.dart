@@ -4,7 +4,6 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/app_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_app_list.dart';
 import 'package:scrcpygui/utils/const.dart';
-import 'package:scrcpygui/utils/extension.dart';
 
 class ConfigsNotifier extends Notifier<List<ScrcpyConfig>> {
   @override
@@ -87,14 +86,7 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
       String? dpi,
       bool? preseveContent,
       String? resolution}) {
-    final current =
-        state!.videoOptions.virtualDisplayOptions ?? defaultVdOptions;
-
-    final res = resolution != null
-        ? resolution.isValidResolution
-            ? resolution
-            : null
-        : null;
+    final current = state!.videoOptions.virtualDisplayOptions;
 
     state = state!.copyWith(
       videoOptions: state!.videoOptions.copyWith(
@@ -102,7 +94,7 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
           disableDecorations: disableDecorations ?? current.disableDecorations,
           dpi: dpi ?? current.dpi,
           preseveContent: preseveContent ?? current.preseveContent,
-          resolution: res ?? current.resolution,
+          resolution: resolution ?? current.resolution,
         ),
       ),
     );

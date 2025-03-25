@@ -42,11 +42,16 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
             : selectedConfig.videoOptions.maxFPS.toString());
 
     vdResolutionController = TextEditingController(
-      text: selectedConfig.videoOptions.virtualDisplayOptions?.resolution ?? '',
+      text: selectedConfig.videoOptions.virtualDisplayOptions.resolution ==
+              DEFAULT
+          ? ''
+          : selectedConfig.videoOptions.virtualDisplayOptions.resolution,
     );
 
     vdDPIController = TextEditingController(
-      text: selectedConfig.videoOptions.virtualDisplayOptions?.dpi ?? '',
+      text: selectedConfig.videoOptions.virtualDisplayOptions.dpi == DEFAULT
+          ? ''
+          : selectedConfig.videoOptions.virtualDisplayOptions.dpi,
     );
     super.initState();
   }
@@ -178,14 +183,11 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                       showinfo: showInfo,
                       label: el.videoSection.displays.virtual.resolution.label,
                       subtitle: selectedConfig.videoOptions
-                                      .virtualDisplayOptions?.resolution ==
-                                  null ||
+                                      .virtualDisplayOptions.resolution ==
+                                  DEFAULT ||
                               vdResolutionController.text.isEmpty ||
-                              !selectedConfig
-                                  .videoOptions
-                                  .virtualDisplayOptions!
-                                  .resolution!
-                                  .isValidResolution
+                              !selectedConfig.videoOptions.virtualDisplayOptions
+                                  .resolution.isValidResolution
                           ? el.videoSection.displays.virtual.resolution.info
                               .default$
                           : el.videoSection.displays.virtual.resolution.info
@@ -198,9 +200,9 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                       placeholder: Text('eg: 420'),
                       showinfo: showInfo,
                       label: el.videoSection.displays.virtual.dpi.label,
-                      subtitle: selectedConfig.videoOptions
-                                      .virtualDisplayOptions?.dpi ==
-                                  null ||
+                      subtitle: selectedConfig
+                                      .videoOptions.virtualDisplayOptions.dpi ==
+                                  DEFAULT ||
                               vdDPIController.text.isEmpty
                           ? el.videoSection.displays.virtual.dpi.info.default$
                           : el.videoSection.displays.virtual.dpi.info.alt(
@@ -213,17 +215,14 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                     ConfigCustom(
                       title: el.videoSection.displays.virtual.deco.label,
                       subtitle: selectedConfig.videoOptions
-                                  .virtualDisplayOptions?.disableDecorations ??
-                              false
+                              .virtualDisplayOptions.disableDecorations
                           ? el.videoSection.displays.virtual.deco.info.alt
                           : el.videoSection.displays.virtual.deco.info.default$,
                       showinfo: showInfo,
                       childExpand: false,
                       onPressed: _onVdDisableDecoChanged,
                       child: Checkbox(
-                        state: (selectedConfig
-                                        .videoOptions.virtualDisplayOptions ??
-                                    defaultVdOptions)
+                        state: selectedConfig.videoOptions.virtualDisplayOptions
                                 .disableDecorations
                             ? CheckboxState.checked
                             : CheckboxState.unchecked,
@@ -233,9 +232,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                     Divider(),
                     ConfigCustom(
                       title: el.videoSection.displays.virtual.preserve.label,
-                      subtitle: selectedConfig.videoOptions
-                                  .virtualDisplayOptions?.preseveContent ??
-                              false
+                      subtitle: selectedConfig
+                              .videoOptions.virtualDisplayOptions.preseveContent
                           ? el.videoSection.displays.virtual.preserve.info.alt
                           : el.videoSection.displays.virtual.preserve.info
                               .default$,
@@ -243,9 +241,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
                       childExpand: false,
                       onPressed: _onVdDestroyContentChanged,
                       child: Checkbox(
-                        state: (selectedConfig
-                                        .videoOptions.virtualDisplayOptions ??
-                                    defaultVdOptions)
+                        state: selectedConfig.videoOptions.virtualDisplayOptions
                                 .preseveContent
                             ? CheckboxState.checked
                             : CheckboxState.unchecked,
@@ -305,18 +301,19 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   _onVdResolutionChanged(value) {
     ref
         .read(configScreenConfig.notifier)
-        .setVirtDisplayConfig(resolution: value);
+        .setVirtDisplayConfig(resolution: value.isEmpty ? DEFAULT : value);
   }
 
   _onVdDpiChanged(value) {
-    ref.read(configScreenConfig.notifier).setVirtDisplayConfig(dpi: value);
+    ref
+        .read(configScreenConfig.notifier)
+        .setVirtDisplayConfig(dpi: value.isEmpty ? DEFAULT : value);
   }
 
   _onVdDisableDecoChanged() {
     final selectedConfig = ref.read(configScreenConfig)!;
 
-    var currentVdOptions =
-        selectedConfig.videoOptions.virtualDisplayOptions ?? defaultVdOptions;
+    var currentVdOptions = selectedConfig.videoOptions.virtualDisplayOptions;
 
     ref.read(configScreenConfig.notifier).setVirtDisplayConfig(
         disableDecorations: !currentVdOptions.disableDecorations);
@@ -325,8 +322,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   _onVdDestroyContentChanged() {
     final selectedConfig = ref.read(configScreenConfig)!;
 
-    var currentVdOptions =
-        selectedConfig.videoOptions.virtualDisplayOptions ?? defaultVdOptions;
+    var currentVdOptions = selectedConfig.videoOptions.virtualDisplayOptions;
 
     ref
         .read(configScreenConfig.notifier)

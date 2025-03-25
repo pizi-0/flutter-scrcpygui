@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'dart:io';
 
 import 'package:logger/logger.dart';
@@ -35,8 +37,8 @@ const double appWidth = 450;
 // ];
 
 final defaultVdOptions = SVirtualDisplayOptions(
-  resolution: null,
-  dpi: null,
+  resolution: DEFAULT,
+  dpi: DEFAULT,
   disableDecorations: false,
   preseveContent: false,
 );
@@ -54,6 +56,7 @@ final ScrcpyConfig defaultMirror = ScrcpyConfig(
     videoBitrate: 8,
     maxFPS: 0,
     displayId: '0',
+    virtualDisplayOptions: defaultVdOptions,
   ),
   audioOptions: SAudioOptions(
     audioFormat: AudioFormat.opus,
@@ -92,6 +95,7 @@ final ScrcpyConfig newConfig = ScrcpyConfig(
     videoBitrate: 8,
     maxFPS: 0,
     displayId: '0',
+    virtualDisplayOptions: defaultVdOptions,
   ),
   audioOptions: SAudioOptions(
     audioFormat: AudioFormat.opus,
@@ -136,6 +140,7 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
     videoBitrate: 8,
     maxFPS: 0,
     displayId: '0',
+    virtualDisplayOptions: defaultVdOptions,
   ),
   audioOptions: SAudioOptions(
     audioFormat: AudioFormat.opus,
@@ -207,3 +212,5 @@ final shellEnv = {
 
 const String adbMdns = '_adb-tls-connect._tcp';
 const String adbPairMdns = '_adb-tls-pairing._tcp';
+
+const String DEFAULT = 'default';

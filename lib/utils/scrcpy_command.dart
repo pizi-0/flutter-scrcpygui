@@ -112,18 +112,15 @@ class ScrcpyCommand {
     if (config.videoOptions.displayId == 'new') {
       final newVd = ' --new-display';
 
-      final vdOptions =
-          config.videoOptions.virtualDisplayOptions ?? defaultVdOptions;
+      final vdOptions = config.videoOptions.virtualDisplayOptions;
 
-      final res = vdOptions.resolution != null
-          ? vdOptions.resolution!.isValidResolution
+      final res = vdOptions.resolution != DEFAULT
+          ? vdOptions.resolution.isValidResolution
               ? vdOptions.resolution
               : ''
           : '';
 
-      final dpi = vdOptions.dpi != null && vdOptions.dpi != ''
-          ? '/${vdOptions.dpi}'
-          : '';
+      final dpi = vdOptions.dpi != DEFAULT ? '/${vdOptions.dpi}' : '';
 
       final deco =
           vdOptions.disableDecorations ? ' --no-vd-system-decorations' : '';
@@ -131,7 +128,7 @@ class ScrcpyCommand {
       final preseve =
           vdOptions.preseveContent ? ' --no-vd-destroy-content' : '';
 
-      return '$newVd${res!.isNotEmpty || dpi.isNotEmpty ? '=' : ''}$res$dpi$deco$preseve';
+      return '$newVd${res.isNotEmpty || dpi.isNotEmpty ? '=' : ''}$res$dpi$deco$preseve';
     }
 
     if (config.videoOptions.displayId != '0') {

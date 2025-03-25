@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:scrcpygui/utils/const.dart';
+
 import '../scrcpy_enum.dart';
 
 class SVideoOptions {
@@ -11,7 +13,7 @@ class SVideoOptions {
   final int videoBitrate;
   final double maxFPS;
   final String displayId;
-  final SVirtualDisplayOptions? virtualDisplayOptions;
+  final SVirtualDisplayOptions virtualDisplayOptions;
 
   SVideoOptions({
     required this.videoFormat,
@@ -21,7 +23,7 @@ class SVideoOptions {
     required this.videoBitrate,
     required this.maxFPS,
     required this.displayId,
-    this.virtualDisplayOptions,
+    required this.virtualDisplayOptions,
   });
 
   SVideoOptions copyWith({
@@ -56,7 +58,7 @@ class SVideoOptions {
       'videoBitrate': videoBitrate,
       'maxFPS': maxFPS,
       'displayId': displayId,
-      'virtualDisplayOptions': virtualDisplayOptions?.toMap()
+      'virtualDisplayOptions': virtualDisplayOptions.toMap()
     };
   }
 
@@ -72,7 +74,7 @@ class SVideoOptions {
       virtualDisplayOptions: map['virtualDisplayOptions'] != null
           ? SVirtualDisplayOptions.fromMap(
               map['virtualDisplayOptions'] as Map<String, dynamic>)
-          : null,
+          : defaultVdOptions,
     );
   }
 
@@ -114,8 +116,8 @@ class SVideoOptions {
 }
 
 class SVirtualDisplayOptions {
-  final String? resolution;
-  final String? dpi;
+  final String resolution;
+  final String dpi;
   final bool disableDecorations;
   final bool preseveContent;
 
@@ -152,8 +154,8 @@ class SVirtualDisplayOptions {
   factory SVirtualDisplayOptions.fromMap(Map<String, dynamic> map) {
     return SVirtualDisplayOptions(
       resolution:
-          map['resolution'] != null ? map['resolution'] as String : null,
-      dpi: map['dpi'] != null ? map['dpi'] as String : null,
+          map['resolution'] != null ? map['resolution'] as String : DEFAULT,
+      dpi: map['dpi'] != null ? map['dpi'] as String : DEFAULT,
       disableDecorations: map['disableDecorations'] as bool,
       preseveContent: map['preseveContent'] as bool,
     );
