@@ -18,6 +18,7 @@ import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/dev
 import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
 import 'package:scrcpygui/screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
 import 'package:scrcpygui/screens/4.settings_tab/settings_tab.dart';
+import 'package:scrcpygui/screens/about_tab/about_tab.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:window_manager/window_manager.dart';
@@ -197,6 +198,14 @@ final _router = GoRouter(
             GoRoute(
               path: SettingsTab.route,
               builder: (context, state) => const SettingsTab(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: AboutTab.route,
+              builder: (context, state) => const AboutTab(),
             ),
           ],
         ),
