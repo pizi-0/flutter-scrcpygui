@@ -226,7 +226,7 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
                 NavigationItem(
                   alignment: Alignment.centerLeft,
                   onChanged: (value) => context.go(AboutTab.route),
-                  label: Text(el.settingsLoc.title),
+                  label: Text('About'),
                   child: const Icon(Icons.info_rounded),
                 ),
               ],
