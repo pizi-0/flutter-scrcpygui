@@ -73,12 +73,12 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
             PgSectionCard(
               label: el.deviceControlDialogLoc.controls,
               children: [
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  runSpacing: 4,
-                  spacing: 4,
-                  children: _buttonList(),
+                FittedBox(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 4,
+                    children: _buttonList(),
+                  ),
                 ),
               ],
             ),
