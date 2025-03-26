@@ -1,8 +1,10 @@
 # Scrcpy GUI
 
-[![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev/)
+[![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)](https://flutter.dev/)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
-[![GitHub Releases](https://img.shields.io/github/v/release/pizi-0/flutter-scrcpygui?include_prereleases&style=flat-square)](https://github.com/pizi-0/flutter-scrcpygui/releases)
+[![GitHub Releases](https://img.shields.io/github/v/release/pizi-0/flutter-scrcpygui?include_prereleases&style=flat)](https://github.com/pizi-0/flutter-scrcpygui/releases)
+[![Discord](https://img.shields.io/badge/scrcpygui-white?logo=discord&style=flat)](https://discord.gg/ZdV5DAxd8Y)
+
 
 > A user-friendly graphical interface for [Scrcpy](https://github.com/Genymobile/scrcpy), built with Flutter.
 
