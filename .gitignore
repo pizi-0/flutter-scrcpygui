@@ -32,6 +32,7 @@ migrate_working_dir/
 /build/
 /installer/
 /dist/
+/screenshot/
 
 # Symbolication related
 app.*.symbols
