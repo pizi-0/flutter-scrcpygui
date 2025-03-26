@@ -87,9 +87,8 @@ class AdbUtils {
   }
 
   //using ip
-  static Future<WiFiResult> connectWithIp(WidgetRef ref,
+  static Future<WiFiResult> connectWithIp(String workDir,
       {required String ipport}) async {
-    final workDir = ref.read(execDirProvider);
     ProcessResult? res;
 
     res = await CommandRunner.runAdbCommand(workDir, args: ['connect', ipport])
@@ -157,8 +156,10 @@ class AdbUtils {
     logger.i('Setting tcp 5555 for $id');
 
     try {
-      await CommandRunner.runAdbCommand(workDir,
+      final res = await CommandRunner.runAdbCommand(workDir,
           args: ['-s', id, 'tcpip', '5555']);
+
+      logger.i(res.stdout);
     } on Exception catch (e) {
       logger.e('Error setting tcp 5555 for $id', error: e);
     }

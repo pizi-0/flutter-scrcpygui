@@ -5,6 +5,7 @@ import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/device_control_dialog.dart';
 import 'package:scrcpygui/widgets/disconnect_dialog.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -181,7 +182,17 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
 
       await AdbUtils.tcpip5555(workDir, widget.device.id);
 
-      await AdbUtils.connectWithIp(ref, ipport: '$ip:5555');
+      final result = await AdbUtils.connectWithIp(workDir, ipport: '$ip:5555');
+
+      if (!result.success) {
+        showDialog(
+          context: context,
+          builder: (context) => ErrorDialog(
+            title: el.statusLoc.error,
+            content: [Text(result.errorMessage)],
+          ),
+        );
+      }
     } on Exception catch (e) {
       debugPrint(e.toString());
       showToast(

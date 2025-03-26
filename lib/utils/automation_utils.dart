@@ -5,6 +5,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/bonsoir_devices.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
@@ -14,6 +15,7 @@ class AutomationUtils {
   static autoconnectRunner(WidgetRef ref) async {
     final connected = ref.read(adbProvider);
     final bonsoirDevices = ref.read(bonsoirDeviceProvider);
+    final workDir = ref.read(execDirProvider);
     final task = ref
         .read(savedAdbDevicesProvider)
         .where((e) =>
@@ -36,7 +38,7 @@ class AutomationUtils {
 
       if (t.id.isIpv4 || t.id.isIpv6) {
         if (!connected.contains(t)) {
-          AdbUtils.connectWithIp(ref, ipport: t.id);
+          AdbUtils.connectWithIp(workDir, ipport: t.id);
         }
       }
     }

@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -106,7 +107,8 @@ class _IPConnectState extends ConsumerState<IPConnect>
     setState(() {});
 
     try {
-      final res = await AdbUtils.connectWithIp(ref, ipport: ipport);
+      final workDir = ref.read(execDirProvider);
+      final res = await AdbUtils.connectWithIp(workDir, ipport: ipport);
 
       if (res.success) {
         ref.read(ipHistoryProvider.notifier).update((state) {
