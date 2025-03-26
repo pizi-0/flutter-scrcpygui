@@ -68,6 +68,7 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Text('ID: ${widget.device.id}'),
                   if (runningInstance.isNotEmpty)
                     OutlinedContainer(
                       padding: EdgeInsets.all(16),
