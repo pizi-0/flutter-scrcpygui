@@ -14,6 +14,7 @@ import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/setup.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../providers/app_config_pair_provider.dart';
 import '../../utils/app_utils.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -68,6 +69,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     final wirelessHistory = await Db.getWirelessHistory();
     ref.read(ipHistoryProvider.notifier).update((state) => wirelessHistory);
+
+    final appConfigPairs = await Db.getAppConfigPairs();
+    ref.read(appConfigPairProvider.notifier).setPairs(appConfigPairs);
 
     final pid = await AppUtils.getAppPid();
 

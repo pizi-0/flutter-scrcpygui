@@ -17,3 +17,5 @@ const PKEY_LASTUSED_CONFIG = 'last-used-config';
 const PKEY_NOTI = 'noti-settings';
 
 const PKEY_SCRCPYVERSION = 'scrcpy-version';
+
+const PKEY_APP_CONFIG_PAIR = 'app-config-pair';

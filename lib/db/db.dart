@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/models/app_config_pair.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -119,5 +120,24 @@ class Db {
     }
 
     prefs.setStringList(PKEY_SAVED_CONFIG, savedJson);
+  }
+
+  /*
+  Device control dialog DB
+  */
+
+  static Future<List<AppConfigPair>> getAppConfigPairs() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final list = prefs.getStringList(PKEY_APP_CONFIG_PAIR) ?? [];
+
+    return list.map((e) => AppConfigPair.fromJson(e)).toList();
+  }
+
+  static Future<void> saveAppConfigPairs(List<AppConfigPair> pairList) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setStringList(
+        PKEY_APP_CONFIG_PAIR, pairList.map((pair) => pair.toJson()).toList());
   }
 }
