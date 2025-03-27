@@ -48,14 +48,15 @@ class AboutTab extends ConsumerWidget {
                       child: Text('Github'),
                     ),
                   ),
-                  // Tooltip(
-                  //   tooltip: (context) => TooltipContainer(child: Text('wip')),
-                  //   child: Button.outline(
-                  //     onPressed: null,
-                  //     leading: Icon(FontAwesomeIcons.discord).iconXSmall(),
-                  //     child: Text('Discord'),
-                  //   ),
-                  // ),
+                  Tooltip(
+                    tooltip: (context) =>
+                        TooltipContainer(child: Text(guiDiscord)),
+                    child: Button.outline(
+                      onPressed: () => launchUrl(Uri.parse(guiDiscord)),
+                      leading: Icon(FontAwesomeIcons.discord).iconXSmall(),
+                      child: Text('Discord'),
+                    ),
+                  ),
                 ],
               ).paddingOnly(top: 8),
             )
@@ -85,4 +86,5 @@ class AboutTab extends ConsumerWidget {
 }
 
 const String guiGit = 'https://github.com/pizi-0/flutter-scrcpygui';
+const String guiDiscord = 'https://discord.gg/ZdV5DAxd8Y';
 const String scrcpyGit = 'https://github.com/Genymobile/scrcpy';
