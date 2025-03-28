@@ -53,7 +53,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
                     DirectoryUtils.openFolder(widget.config.savePath!)
                   },
         ),
-        VerticalDivider(),
+        VerticalDivider(indent: 8, endIndent: 8),
         IconButton(
           size: ButtonSize.small,
           variance: ButtonVariance.ghost,
@@ -64,7 +64,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
           onPressed:
               isDefaultConfig ? null : () => _onEditPressed(widget.config),
         ),
-        VerticalDivider(),
+        VerticalDivider(indent: 8, endIndent: 8),
         IconButton(
           size: ButtonSize.small,
           variance: ButtonVariance.ghost,
