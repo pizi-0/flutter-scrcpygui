@@ -81,7 +81,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
         content: Card(
           filled: true,
           child: Text(
-            'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice!, customName: '[TEST] ${selectedConfig.configName}').join(' ')}',
+            'scrcpy ${ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice!, customName: '[TEST] ${selectedConfig.appOptions?.selectedApp != null ? '${selectedConfig.appOptions!.selectedApp!.name} (${selectedConfig.configName})' : selectedConfig.configName}').join(' ')}',
           ).muted().mono(),
         ),
       ),
@@ -94,8 +94,16 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
                   : const ButtonStyle.destructive(),
               onPressed: () async {
                 if (!isTestRunning) {
-                  await ScrcpyUtils.newInstance(ref,
-                      selectedConfig: selectedConfig, isTest: true);
+                  await ScrcpyUtils.newInstance(
+                    ref,
+                    selectedConfig: selectedConfig,
+                    isTest: true,
+                    customInstanceName: selectedConfig
+                                .appOptions?.selectedApp !=
+                            null
+                        ? '${selectedConfig.appOptions!.selectedApp!.name} (${selectedConfig.configName})'
+                        : '',
+                  );
 
                   timer = Timer.periodic(1.seconds, (a) async {
                     await _isStillRunning();

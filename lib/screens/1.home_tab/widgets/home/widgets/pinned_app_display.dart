@@ -100,6 +100,7 @@ class _PinnedAppChipState extends ConsumerState<PinnedAppChip> {
           appOptions: (config.appOptions ?? SAppOptions(forceClose: false))
               .copyWith(selectedApp: widget.pair.app)),
       selectedDevice: device,
+      customInstanceName: '${widget.pair.app.name} (${config.configName})',
     );
 
     if (mounted) {

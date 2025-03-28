@@ -142,7 +142,13 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
       } else {
         loading = true;
         setState(() {});
-        await ScrcpyUtils.newInstance(ref, selectedConfig: selectedConfig);
+        await ScrcpyUtils.newInstance(
+          ref,
+          selectedConfig: selectedConfig,
+          customInstanceName: selectedConfig.appOptions?.selectedApp != null
+              ? '${selectedConfig.appOptions!.selectedApp!.name} (${selectedConfig.configName})'
+              : '',
+        );
         await Db.saveLastUsedConfig(selectedConfig);
 
         if (mounted) {

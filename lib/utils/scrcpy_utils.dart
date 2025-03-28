@@ -102,9 +102,8 @@ class ScrcpyUtils {
 
   static Future<ScrcpyRunningInstance> _startServer(
       WidgetRef ref, AdbDevices selectedDevice, ScrcpyConfig selectedConfig,
-      {bool isTest = true}) async {
+      {bool isTest = true, String customInstanceName = ''}) async {
     final workDir = ref.read(execDirProvider);
-    final customInstanceName = ref.read(customNameProvider);
     final runningInstance = ref.read(scrcpyInstanceProvider);
 
     final d = ref.watch(savedAdbDevicesProvider).firstWhere(
@@ -113,7 +112,7 @@ class ScrcpyUtils {
 
     List<String> comm = [];
     String customName =
-        '[${d.name?.toUpperCase() ?? d.id}] ${customInstanceName == '' ? selectedConfig.configName : customInstanceName}';
+        '[${d.name?.toUpperCase() ?? d.modelName}] ${customInstanceName == '' ? selectedConfig.configName : customInstanceName}';
 
     if (runningInstance.where((r) => r.instanceName == customName).isNotEmpty) {
       for (int i = 1; i < 100; i++) {
@@ -182,7 +181,8 @@ class ScrcpyUtils {
   static Future newInstance(WidgetRef ref,
       {AdbDevices? selectedDevice,
       required ScrcpyConfig selectedConfig,
-      bool isTest = false}) async {
+      bool isTest = false,
+      String customInstanceName = ''}) async {
     AdbDevices device = selectedDevice ?? ref.read(selectedDeviceProvider)!;
 
     if (device.info == null) {
@@ -209,8 +209,8 @@ class ScrcpyUtils {
     }
 
     if (proceed) {
-      final inst =
-          await _startServer(ref, device, selectedConfig, isTest: isTest);
+      final inst = await _startServer(ref, device, selectedConfig,
+          isTest: isTest, customInstanceName: customInstanceName);
 
       ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
     }
