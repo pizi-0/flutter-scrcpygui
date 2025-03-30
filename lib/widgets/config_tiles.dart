@@ -62,7 +62,7 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
 }
 
 class ConfigDropdownOthers extends StatefulWidget {
-  final List<SelectItemButton> items;
+  final List<Widget> items;
   final String label;
   final String? subtitle;
   final Widget? placeholder;
@@ -71,6 +71,7 @@ class ConfigDropdownOthers extends StatefulWidget {
   final ValueChanged? onSelected;
   final String? tooltipMessage;
   final bool showinfo;
+  final SelectValueBuilder? itemBuilder;
 
   const ConfigDropdownOthers({
     super.key,
@@ -83,6 +84,7 @@ class ConfigDropdownOthers extends StatefulWidget {
     this.onSelected,
     this.tooltipMessage,
     this.popupWidthConstraint,
+    this.itemBuilder,
   });
 
   @override
@@ -104,11 +106,12 @@ class _ConfigDropdownOthersState extends State<ConfigDropdownOthers> {
                 minWidth: 180, maxWidth: 180, minHeight: 30),
             child: Select(
               filled: true,
-              itemBuilder: (context, value) => OverflowMarquee(
-                duration: 2.seconds,
-                delayDuration: 1.seconds,
-                child: Text(value.toString()),
-              ),
+              itemBuilder: widget.itemBuilder ??
+                  (context, value) => OverflowMarquee(
+                        duration: 2.seconds,
+                        delayDuration: 1.seconds,
+                        child: Text(value.toString()),
+                      ),
               placeholder: widget.placeholder,
               value: widget.initialValue,
               onChanged: widget.onSelected,
@@ -165,9 +168,7 @@ class ConfigUserInput extends ConsumerWidget {
           placeholder: placeholder,
           filled: true,
           inputFormatters: inputFormatters ??
-              [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-              ],
+              [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
           trailing: Text(unit != null ? '$unit ' : '').xSmall(),
           textAlign: TextAlign.center,
           controller: controller,
