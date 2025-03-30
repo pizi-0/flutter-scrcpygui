@@ -1,5 +1,8 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/providers/version_provider.dart';
+import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -106,14 +109,25 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
   Widget _buildAudioSourceSelector(
       BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
     final showInfo = ref.watch(configScreenShowInfo);
+    final scrcpyVersion = ref.watch(scrcpyVersionProvider);
 
-    return ConfigDropdownEnum<AudioSource>(
-      items: AudioSource.values
-          .where((s) => (info.buildVersion.toInt() ?? 0) < 13
-              ? s.value != 'playback'
-              : true)
-          .toList(),
-      title: el.audioSection.source.label,
+    final defaultSource = AudioSource.values
+        .sublist(0, 3)
+        .where((s) => (info.buildVersion.toInt() ?? 0) < 13
+            ? s.value != 'playback'
+            : true)
+        .map((e) =>
+            SelectItemButton(value: e, child: Text(e.value.toTitleCase)));
+
+    final extraSource = AudioSource.values.sublist(3).map(
+          (e) => SelectItemButton(value: e, child: Text(e.value.toTitleCase)),
+        );
+
+    final showExtraSource =
+        scrcpyVersion.parseVersionToInt()! >= '3.2'.parseVersionToInt()!;
+
+    return ConfigDropdownOthers(
+      label: el.audioSection.source.label,
       showinfo: showInfo || selectedConfig.audioOptions.duplicateAudio,
       subtitle: selectedConfig.audioOptions.audioSource == AudioSource.output
           ? el.audioSection.source.info.default$
@@ -122,13 +136,24 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
               : el.audioSection.source.info.alt(
                   source:
                       selectedConfig.audioOptions.audioSource.command.trimAll),
+      items: [
+        ...defaultSource,
+        if (showExtraSource) Divider(child: Text('Extra').xSmall()),
+        if (showExtraSource) ...extraSource
+      ],
+      popupWidthConstraint:
+          showExtraSource ? PopoverConstraint.intrinsic : null,
       initialValue: selectedConfig.audioOptions.audioSource,
+      itemBuilder: (context, value) => OverflowMarquee(
+          duration: 3.seconds,
+          delayDuration: 1.5.seconds,
+          child: Text(value.value.toString().toTitleCase)),
       onSelected: selectedConfig.audioOptions.duplicateAudio
           ? null
           : (value) {
               ref
                   .read(configScreenConfig.notifier)
-                  .setAudioConfig(audioSource: value);
+                  .setAudioConfig(audioSource: value!);
             },
     );
   }

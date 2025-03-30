@@ -50,7 +50,19 @@ enum AudioFormat implements StringEnum {
 enum AudioSource implements StringEnum {
   output('output', ''),
   playback('playback', ' --audio-source=playback'),
-  mic('mic', ' --audio-source=mic');
+  mic('mic', ' --audio-source=mic'),
+  //extra
+  micUnprocessed('mic (unprocessed)', ' --audio-source=mic-unprocessed'),
+  micCamcorder('mic (camcorder)', ' --audio-source=mic-camcorder'),
+  micVoiceRecog(
+      'mic (voice recognition)', ' --audio-source=mic-voice-recognition'),
+  micVoiceComm(
+      'mic (voice communication)', ' --audio-source=mic-voice-communication'),
+  voiceCall('voice call', ' --audio-source=voice-call'),
+  voiceCallUplink('voice call (uplink)', ' --audio-source=voice-call-uplink'),
+  voiceCallDownlink(
+      'voice call (downlink)', ' --audio-source=voice-call-downlink'),
+  voicePerf('voice (performance)', ' --audio-source=voice-performance');
 
   @override
   final String value, command;
