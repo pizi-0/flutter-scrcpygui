@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/providers/version_provider.dart';
+import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -18,13 +20,16 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig)!;
     final showInfo = ref.watch(configScreenShowInfo);
+    final scrcpyVersion = ref.watch(scrcpyVersionProvider);
+
+    final bool disabled = selectedConfig.windowOptions.noWindow &&
+        scrcpyVersion.parseVersionToInt()! < '3.2'.parseVersionToInt()!;
 
     return PgSectionCard(
       label: el.deviceSection.title,
       children: [
         ConfigCustom(
-          onPressed:
-              selectedConfig.windowOptions.noWindow ? null : _toggleStayAwake,
+          onPressed: disabled ? null : _toggleStayAwake,
           childBackgroundColor: Colors.transparent,
           title: el.deviceSection.stayAwake.label,
           showinfo: showInfo,
@@ -36,15 +41,12 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
             state: selectedConfig.deviceOptions.stayAwake
                 ? CheckboxState.checked
                 : CheckboxState.unchecked,
-            onChanged: selectedConfig.windowOptions.noWindow
-                ? null
-                : (value) => _toggleStayAwake(),
+            onChanged: disabled ? null : (value) => _toggleStayAwake(),
           ),
         ),
         const Divider(),
         ConfigCustom(
-          onPressed:
-              selectedConfig.windowOptions.noWindow ? null : _toggleShowTouches,
+          onPressed: disabled ? null : _toggleShowTouches,
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
@@ -58,17 +60,13 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
               state: selectedConfig.deviceOptions.showTouches
                   ? CheckboxState.checked
                   : CheckboxState.unchecked,
-              onChanged: selectedConfig.windowOptions.noWindow
-                  ? null
-                  : (value) => _toggleShowTouches(),
+              onChanged: disabled ? null : (value) => _toggleShowTouches(),
             ),
           ),
         ),
         const Divider(),
         ConfigCustom(
-          onPressed: selectedConfig.windowOptions.noWindow
-              ? null
-              : _toggleTurnOffDisplay,
+          onPressed: disabled ? null : _toggleTurnOffDisplay,
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
@@ -82,17 +80,13 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
               state: selectedConfig.deviceOptions.turnOffDisplay
                   ? CheckboxState.checked
                   : CheckboxState.unchecked,
-              onChanged: selectedConfig.windowOptions.noWindow
-                  ? null
-                  : (value) => _toggleTurnOffDisplay(),
+              onChanged: disabled ? null : (value) => _toggleTurnOffDisplay(),
             ),
           ),
         ),
         const Divider(),
         ConfigCustom(
-          onPressed: selectedConfig.windowOptions.noWindow
-              ? null
-              : _toggleOffScreenOnClose,
+          onPressed: disabled ? null : _toggleOffScreenOnClose,
           childExpand: false,
           showinfo: showInfo,
           childBackgroundColor: Colors.transparent,
@@ -106,9 +100,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
               state: selectedConfig.deviceOptions.offScreenOnClose
                   ? CheckboxState.checked
                   : CheckboxState.unchecked,
-              onChanged: selectedConfig.windowOptions.noWindow
-                  ? null
-                  : (value) => _toggleOffScreenOnClose(),
+              onChanged: disabled ? null : (value) => _toggleOffScreenOnClose(),
             ),
           ),
         ),
