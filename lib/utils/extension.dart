@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
   static Color fromHex(String hexString) {
@@ -64,5 +66,41 @@ extension ResolutionStringExtension on String {
       return null;
     }
     return int.tryParse(split('x').last);
+  }
+}
+
+extension AppVersionParsing on String {
+  /// Parses a version string (e.g., "1.2.3") into an integer representation.
+  ///
+  /// This extension method splits the version string into its major, minor,
+  /// and patch components, parses each component as an integer, and then
+  /// combines them into a single integer.
+  ///
+  /// Example:
+  ///   "1.2.3" becomes 1002003
+  ///   "2.10.5" becomes 2010005
+  ///   "1.2" becomes 1002000
+  ///   "1" becomes 1000000
+  ///   "1.a.3" becomes 1000003
+  ///   "1.2.3.4" becomes 1002003 (with a warning)
+  ///
+  /// Returns:
+  ///   An integer representing the version, or null if parsing fails.
+  int? parseVersionToInt() {
+    try {
+      final parts = split('.');
+      if (parts.length > 3) {
+        debugPrint('Warning: Version string has more than 3 parts: $this');
+      }
+      int major = int.tryParse(parts[0]) ?? 0;
+      int minor = parts.length > 1 ? int.tryParse(parts[1]) ?? 0 : 0;
+      int patch = parts.length > 2 ? int.tryParse(parts[2]) ?? 0 : 0;
+
+      // Combine into a single integer (e.g., 1.2.3 becomes 1002003)
+      return major * 1000000 + minor * 1000 + patch;
+    } catch (e) {
+      debugPrint('Error parsing version string: $this, Error: $e');
+      return null;
+    }
   }
 }
