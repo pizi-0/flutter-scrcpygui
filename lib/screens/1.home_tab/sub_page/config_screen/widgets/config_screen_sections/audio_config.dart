@@ -117,10 +117,11 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
             ? s.value != 'playback'
             : true)
         .map((e) =>
-            SelectItemButton(value: e, child: Text(e.value.toTitleCase)));
+            SelectItemButton(value: e, child: Text(e.value.capitalizeFirst)));
 
     final extraSource = AudioSource.values.sublist(3).map(
-          (e) => SelectItemButton(value: e, child: Text(e.value.toTitleCase)),
+          (e) =>
+              SelectItemButton(value: e, child: Text(e.value.capitalizeFirst)),
         );
 
     final showExtraSource =
@@ -147,7 +148,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
       itemBuilder: (context, value) => OverflowMarquee(
           duration: 3.seconds,
           delayDuration: 1.5.seconds,
-          child: Text(value.value.toString().toTitleCase)),
+          child: Text(value.value.toString().capitalizeFirst)),
       onSelected: selectedConfig.audioOptions.duplicateAudio
           ? null
           : (value) {
