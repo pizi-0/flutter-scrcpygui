@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -105,6 +106,17 @@ class AppUtils {
     }
     if (!isMaximized) {
       await windowManager.maximize();
+    }
+  }
+
+  static Future<String> getLatestAppVersion() async {
+    try {
+      final res = await Dio().get(
+          'https://api.github.com/repos/pizi-0/flutter-scrcpygui/releases');
+
+      return res.data.first['tag_name'];
+    } on DioException catch (_) {
+      rethrow;
     }
   }
 }
