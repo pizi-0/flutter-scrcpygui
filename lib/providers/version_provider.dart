@@ -2,7 +2,7 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const BUNDLED_VERSION = '3.1';
+const BUNDLED_VERSION = '3.2';
 
 final appVersionProvider = StateProvider((ref) => "");
 

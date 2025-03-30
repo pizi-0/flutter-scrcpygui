@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,18 +24,18 @@ class SetupUtils {
 
   static initScrcpy(WidgetRef ref) async {
     try {
-      final scrcpyVersion = await getCurrentScrcpyVersion();
+      String scrcpyVersion = await getCurrentScrcpyVersion();
 
       final execDir = await DirectoryUtils.getExecDir();
 
-      final bundledVersionDir = await DirectoryUtils.getScrcpyVersionDir(
-        BUNDLED_VERSION,
-        createIfNot: true,
-      );
+      final bundledVersionDir =
+          await DirectoryUtils.getScrcpyVersionDir(BUNDLED_VERSION);
+
+      if (!bundledVersionDir.existsSync()) {
+        await _setupBundledScrcpy();
+      }
 
       if (scrcpyVersion == BUNDLED_VERSION) {
-        await _setupBundledScrcpy();
-
         logger.i('Using bundled scrcpy version $scrcpyVersion');
 
         ref.read(scrcpyVersionProvider.notifier).state = scrcpyVersion;
@@ -80,8 +82,9 @@ class SetupUtils {
   }
 
   static Future<void> _setupBundledScrcpy() async {
-    final bundledVersionDir =
-        await DirectoryUtils.getScrcpyVersionDir(BUNDLED_VERSION);
+    final bundledVersionDir = await DirectoryUtils.getScrcpyVersionDir(
+        BUNDLED_VERSION,
+        createIfNot: true);
     final bundledDirContent = bundledVersionDir.listSync();
 
     final execPath = _getExecPath();
