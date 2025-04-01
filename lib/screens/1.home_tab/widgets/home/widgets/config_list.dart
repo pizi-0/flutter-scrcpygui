@@ -282,7 +282,7 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
               if (!defaultConfigs.contains(widget.conf))
                 IconButton.ghost(
                   size: ButtonSize.small,
-                  onPressed: _onRemoveConfigPressed,
+                  onPressed: () => _onRemoveConfigPressed(widget.conf),
                   icon: const Icon(Icons.delete_rounded),
                 ),
             ],
@@ -352,8 +352,7 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
     );
   }
 
-  _onRemoveConfigPressed() async {
-    final config = ref.read(selectedConfigProvider)!;
+  _onRemoveConfigPressed(ScrcpyConfig config) async {
     configDropdownKey.currentState?.closePopup();
     await showDialog(
       context: context,
