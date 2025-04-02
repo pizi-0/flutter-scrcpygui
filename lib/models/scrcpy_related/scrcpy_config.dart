@@ -18,7 +18,7 @@ class ScrcpyConfig {
 
   final SVideoOptions videoOptions;
   final SAudioOptions audioOptions;
-  final SAppOptions? appOptions;
+  final SAppOptions appOptions;
   final SDeviceOptions deviceOptions;
   final SWindowOptions windowOptions;
   final String additionalFlags;
@@ -31,7 +31,7 @@ class ScrcpyConfig {
     required this.isRecording,
     required this.videoOptions,
     required this.audioOptions,
-    this.appOptions,
+    required this.appOptions,
     required this.deviceOptions,
     required this.windowOptions,
     required this.additionalFlags,
@@ -74,7 +74,7 @@ class ScrcpyConfig {
       'isRecording': isRecording,
       'videoOptions': videoOptions.toMap(),
       'audioOptions': audioOptions.toMap(),
-      'appOptions': appOptions?.toMap(),
+      'appOptions': appOptions.toMap(),
       'deviceOptions': deviceOptions.toMap(),
       'windowOptions': windowOptions.toMap(),
       'additionalFlags': additionalFlags,
@@ -94,7 +94,7 @@ class ScrcpyConfig {
           SAudioOptions.fromMap(map['audioOptions'] as Map<String, dynamic>),
       appOptions: map['appOptions'] != null
           ? SAppOptions.fromMap(map['appOptions'] as Map<String, dynamic>)
-          : null,
+          : SAppOptions(forceClose: false),
       deviceOptions:
           SDeviceOptions.fromMap(map['deviceOptions'] as Map<String, dynamic>),
       windowOptions:
@@ -118,7 +118,8 @@ class ScrcpyConfig {
   bool operator ==(covariant ScrcpyConfig other) {
     if (identical(this, other)) return true;
 
-    return other.scrcpyMode == scrcpyMode &&
+    return other.configName == configName &&
+        other.scrcpyMode == scrcpyMode &&
         other.isRecording == isRecording &&
         other.videoOptions == videoOptions &&
         other.audioOptions == audioOptions &&
