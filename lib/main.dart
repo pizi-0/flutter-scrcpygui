@@ -12,6 +12,7 @@ import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/0.splash_screen/splash_screen.dart';
 import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_manager/config_manager.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/config_screen.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/sub_page/log_screen/log_screen.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/device_settings_screen.dart';
@@ -171,6 +172,11 @@ final _router = GoRouter(
                   builder: (context, state) => LogScreen(
                     instance: state.extra as ScrcpyRunningInstance,
                   ),
+                  pageBuilder: GoTransitions.cupertino.call,
+                ),
+                GoRoute(
+                  path: ConfigManager.route,
+                  builder: (context, state) => ConfigManager(),
                   pageBuilder: GoTransitions.cupertino.call,
                 ),
               ],
