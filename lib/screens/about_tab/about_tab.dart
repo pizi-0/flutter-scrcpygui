@@ -2,7 +2,6 @@
 
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
@@ -145,7 +144,7 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                       onPressed: () {
                         launchUrl(Uri.parse(guiGit));
                       },
-                      leading: Icon(FontAwesomeIcons.github).iconXSmall(),
+                      leading: Icon(BootstrapIcons.github).iconXSmall(),
                       child: Text('Github'),
                     ),
                   ),
@@ -154,7 +153,7 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                         TooltipContainer(child: Text(guiDiscord)),
                     child: Button.outline(
                       onPressed: () => launchUrl(Uri.parse(guiDiscord)),
-                      leading: Icon(FontAwesomeIcons.discord).iconXSmall(),
+                      leading: Icon(BootstrapIcons.discord).iconXSmall(),
                       child: Text('Discord'),
                     ),
                   ),
@@ -174,7 +173,7 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                   onPressed: () {
                     launchUrl(Uri.parse(scrcpyGit));
                   },
-                  leading: Icon(FontAwesomeIcons.github).iconXSmall(),
+                  leading: Icon(BootstrapIcons.github).iconXSmall(),
                   child: Text('Github'),
                 ),
               ),
