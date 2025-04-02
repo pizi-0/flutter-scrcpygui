@@ -82,6 +82,9 @@ final ScrcpyConfig defaultMirror = ScrcpyConfig(
     timeLimit: 0,
   ),
   additionalFlags: '',
+  savePath: Platform.isLinux
+      ? Platform.environment['HOME']
+      : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}',
 );
 
 final ScrcpyConfig newConfig = ScrcpyConfig(
