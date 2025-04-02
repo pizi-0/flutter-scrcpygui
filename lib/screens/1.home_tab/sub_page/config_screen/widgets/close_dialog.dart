@@ -120,7 +120,7 @@ class _ConfigScreenCloseDialogState
           actions: [
             DestructiveButton(
               onPressed: () {
-                context.pop(true);
+                context.pop(CloseDialogResult.discard);
               },
               child: Text(el.buttonLabelLoc.discard),
             ),
@@ -134,7 +134,7 @@ class _ConfigScreenCloseDialogState
             ),
             SecondaryButton(
               onPressed: () {
-                context.pop(false);
+                context.pop(CloseDialogResult.cancel);
               },
               child: Text(el.buttonLabelLoc.cancel),
             )
@@ -173,6 +173,12 @@ class _ConfigScreenCloseDialogState
 
     await Db.saveConfigs(ref, context, toSave);
 
-    context.pop(true);
+    context.pop(CloseDialogResult.save);
   }
+}
+
+enum CloseDialogResult {
+  save,
+  discard,
+  cancel,
 }
