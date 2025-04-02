@@ -126,8 +126,8 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
 
     ref.read(configScreenConfig.notifier).setWindowConfig(noWindow: !noWindow);
 
-    if (!noWindow) {
-      if (scrcpyVersion.parseVersionToInt()! < '3.2'.parseVersionToInt()!) {
+    if (scrcpyVersion.parseVersionToInt()! < '3.2'.parseVersionToInt()!) {
+      if (!noWindow) {
         ref.read(configScreenConfig.notifier).setDeviceConfig(
               stayAwake: false,
               showTouches: false,
