@@ -143,4 +143,16 @@ class ScrcpyConfig {
         additionalFlags.hashCode ^
         savePath.hashCode;
   }
+
+  bool isSimilarTo(ScrcpyConfig other) {
+    return other.scrcpyMode == scrcpyMode &&
+        other.isRecording == isRecording &&
+        other.videoOptions == videoOptions &&
+        other.audioOptions == audioOptions &&
+        other.appOptions == appOptions &&
+        other.deviceOptions == deviceOptions &&
+        other.windowOptions == windowOptions &&
+        other.additionalFlags == additionalFlags &&
+        other.savePath == savePath;
+  }
 }
