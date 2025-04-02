@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
@@ -26,6 +27,7 @@ import '../../../../providers/adb_provider.dart';
 import '../../../../utils/const.dart';
 import '../../../../utils/scrcpy_utils.dart';
 import 'widgets/close_dialog.dart';
+import 'widgets/config_screen_sections/config_rename.dart';
 
 class ConfigScreen extends ConsumerStatefulWidget {
   static const route = 'config-settings';
@@ -37,6 +39,7 @@ class ConfigScreen extends ConsumerStatefulWidget {
 
 class _ConfigScreenState extends ConsumerState<ConfigScreen> {
   TextEditingController namecontroller = TextEditingController();
+  late ScrcpyConfig oldConfig;
   late AdbDevices dev;
   FocusNode nameBox = FocusNode();
 
@@ -44,6 +47,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
 
   @override
   void initState() {
+    oldConfig = ref.read(configScreenConfig)!;
     final selectedDevice = ref.read(selectedDeviceProvider)!;
     final config = ref.read(configScreenConfig);
     final workDir = ref.read(execDirProvider);
@@ -101,7 +105,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
         barrierColor: Colors.black.withValues(alpha: 0.9),
         context: context,
         builder: (context) {
-          return const Center(child: ConfigScreenCloseDialog());
+          return Center(child: ConfigScreenCloseDialog(oldConfig: oldConfig));
         },
       ).then((v) {
         if ((v as bool?) ?? false) {
@@ -113,9 +117,15 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final allConfigs = ref.watch(configsProvider);
     final selectedConfig = ref.watch(configScreenConfig)!;
     final showInfo = ref.watch(configScreenShowInfo);
     final selectedDevice = ref.watch(selectedDeviceProvider);
+
+    final isEditing =
+        allConfigs.where((c) => c.id == selectedConfig.id).isNotEmpty;
+
+    final hasChanges = oldConfig != selectedConfig;
 
     return PopScope(
       canPop: false,
@@ -133,7 +143,9 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
         onBack: selectedDevice == null
             ? () => context.pop()
             : () => _handleOnClose(),
-        title: el.configScreenLoc.title,
+        title: hasChanges
+            ? '${el.configScreenLoc.title}*'
+            : el.configScreenLoc.title,
         children: selectedDevice == null
             ? [
                 Center(
@@ -141,6 +153,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
                 )
               ]
             : [
+                if (isEditing) RenameConfig(oldConfig: oldConfig),
                 const SizedBox(width: appWidth, child: ModeConfig()),
                 if (selectedConfig.scrcpyMode != ScrcpyMode.audioOnly)
                   const SizedBox(width: appWidth, child: VideoConfig()),
