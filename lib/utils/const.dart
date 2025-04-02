@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:logger/logger.dart';
 import 'package:scrcpygui/models/automation.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/app_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/device_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/video_options.dart';
@@ -66,6 +67,7 @@ final ScrcpyConfig defaultMirror = ScrcpyConfig(
     audioBitrate: 128,
     duplicateAudio: false,
   ),
+  appOptions: SAppOptions(forceClose: false),
   deviceOptions: SDeviceOptions(
     turnOffDisplay: false,
     stayAwake: false,
@@ -105,6 +107,7 @@ final ScrcpyConfig newConfig = ScrcpyConfig(
     audioBitrate: 128,
     duplicateAudio: false,
   ),
+  appOptions: SAppOptions(forceClose: false),
   deviceOptions: SDeviceOptions(
     turnOffDisplay: false,
     stayAwake: false,
@@ -150,6 +153,7 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
     audioBitrate: 128,
     duplicateAudio: false,
   ),
+  appOptions: SAppOptions(forceClose: false),
   deviceOptions: SDeviceOptions(
     turnOffDisplay: false,
     stayAwake: false,

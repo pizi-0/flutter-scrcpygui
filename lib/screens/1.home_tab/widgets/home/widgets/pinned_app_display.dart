@@ -7,7 +7,6 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../models/adb_devices.dart';
 import '../../../../../models/app_config_pair.dart';
-import '../../../../../models/scrcpy_related/scrcpy_config/app_options.dart';
 import '../../../../../providers/adb_provider.dart';
 import '../../../../../providers/app_config_pair_provider.dart';
 import '../../../../../providers/config_provider.dart';
@@ -97,8 +96,8 @@ class _PinnedAppChipState extends ConsumerState<PinnedAppChip> {
     await ScrcpyUtils.newInstance(
       ref,
       selectedConfig: config.copyWith(
-          appOptions: (config.appOptions ?? SAppOptions(forceClose: false))
-              .copyWith(selectedApp: widget.pair.app)),
+          appOptions:
+              (config.appOptions).copyWith(selectedApp: widget.pair.app)),
       selectedDevice: device,
       customInstanceName: '${widget.pair.app.name} (${config.configName})',
     );

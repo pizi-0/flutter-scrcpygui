@@ -102,14 +102,14 @@ class _ConfigDetailDialogState extends ConsumerState<ConfigDetailDialog> {
                       Text('  - bitrate: ${audioOptions.audioBitrate}K'),
                     ],
                   ),
-                if (appOptions?.selectedApp != null)
+                if (appOptions.selectedApp != null)
                   Column(
                     spacing: 2,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Divider(),
                       const Text('App options:'),
-                      Text('  - app: ${appOptions!.selectedApp!.name}'),
+                      Text('  - app: ${appOptions.selectedApp!.name}'),
                       Text('  - force close app: ${appOptions.forceClose}')
                     ],
                   ),

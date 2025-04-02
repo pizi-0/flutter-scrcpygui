@@ -76,14 +76,14 @@ class TrayUtils {
                         key: c.configName,
                         label: c.configName,
                         onClick: (menuItem) async {
-                          final hasApp = c.appOptions?.selectedApp != null;
+                          final hasApp = c.appOptions.selectedApp != null;
 
                           await ScrcpyUtils.newInstance(
                             ref,
                             selectedDevice: device,
                             selectedConfig: c,
                             customInstanceName: hasApp
-                                ? '${c.appOptions!.selectedApp!.name} (${c.configName})'
+                                ? '${c.appOptions.selectedApp!.name} (${c.configName})'
                                 : '',
                           );
                         },

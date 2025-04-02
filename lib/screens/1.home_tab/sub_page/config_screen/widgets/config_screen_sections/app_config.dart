@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
-import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/app_options.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
@@ -47,12 +46,12 @@ class AppConfigState extends ConsumerState<AppConfig> {
       ),
       children: [
         PgSubtitle(
-          subtitle: selectedConfig.appOptions?.selectedApp != null
-              ? selectedConfig.appOptions?.forceClose ?? false
+          subtitle: selectedConfig.appOptions.selectedApp != null
+              ? selectedConfig.appOptions.forceClose
                   ? el.appSection.select.info.fc(
-                      app: selectedConfig.appOptions!.selectedApp!.packageName)
+                      app: selectedConfig.appOptions.selectedApp!.packageName)
                   : el.appSection.select.info.alt(
-                      app: selectedConfig.appOptions!.selectedApp!.packageName)
+                      app: selectedConfig.appOptions.selectedApp!.packageName)
               : el.appSection.select.label.toLowerCase(),
           showSubtitle: showInfo,
           child: Row(
@@ -61,7 +60,7 @@ class AppConfigState extends ConsumerState<AppConfig> {
               Expanded(
                 child: Select(
                   filled: true,
-                  value: selectedConfig.appOptions?.selectedApp,
+                  value: selectedConfig.appOptions.selectedApp,
                   placeholder: Text('Select an app'),
                   popupConstraints: BoxConstraints(maxHeight: appWidth - 100),
                   onChanged: (app) {
@@ -86,7 +85,7 @@ class AppConfigState extends ConsumerState<AppConfig> {
                   itemBuilder: (context, value) => Text(value.name),
                 ),
               ),
-              if (selectedConfig.appOptions?.selectedApp != null)
+              if (selectedConfig.appOptions.selectedApp != null)
                 SizedBox.square(
                   dimension: 33,
                   child: IconButton.ghost(
@@ -102,20 +101,20 @@ class AppConfigState extends ConsumerState<AppConfig> {
         ),
         Divider(),
         ConfigCustom(
-          onPressed: selectedConfig.appOptions?.selectedApp != null
+          onPressed: selectedConfig.appOptions.selectedApp != null
               ? () => _onForceCloseCheck()
               : null,
           title: el.appSection.forceClose.label,
           childExpand: false,
-          subtitle: selectedConfig.appOptions?.forceClose ?? false
+          subtitle: selectedConfig.appOptions.forceClose
               ? el.appSection.forceClose.info.alt
               : el.appSection.forceClose.label.toLowerCase(),
           showinfo: showInfo,
           child: Checkbox(
-            state: selectedConfig.appOptions?.forceClose ?? false
+            state: selectedConfig.appOptions.forceClose
                 ? CheckboxState.checked
                 : CheckboxState.unchecked,
-            onChanged: selectedConfig.appOptions?.selectedApp != null
+            onChanged: selectedConfig.appOptions.selectedApp != null
                 ? (val) => _onForceCloseCheck()
                 : null,
           ),
@@ -127,10 +126,6 @@ class AppConfigState extends ConsumerState<AppConfig> {
   _onForceCloseCheck() {
     final config = ref.read(configScreenConfig);
     var currentAppOption = config!.appOptions;
-    currentAppOption ??= SAppOptions(
-      forceClose: false,
-      selectedApp: null,
-    );
 
     ref
         .read(configScreenConfig.notifier)

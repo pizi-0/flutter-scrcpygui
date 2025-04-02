@@ -243,9 +243,9 @@ class ScrcpyCommand {
   }
 
   static String _startApp(ScrcpyConfig config) {
-    if (config.appOptions?.selectedApp != null) {
-      final forceClose = config.appOptions?.forceClose ?? false;
-      final packageName = config.appOptions?.selectedApp?.packageName;
+    if (config.appOptions.selectedApp != null) {
+      final forceClose = config.appOptions.forceClose;
+      final packageName = config.appOptions.selectedApp?.packageName;
       return ' --start-app=${forceClose ? '+' : ''}$packageName';
     }
 

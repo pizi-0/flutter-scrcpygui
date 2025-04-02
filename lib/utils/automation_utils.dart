@@ -68,14 +68,14 @@ class AutomationUtils {
               .read(configsProvider)
               .firstWhere((conf) => conf.id == configIdtoLaunch);
 
-          final hasApp = config.appOptions?.selectedApp != null;
+          final hasApp = config.appOptions.selectedApp != null;
 
           ScrcpyUtils.newInstance(
             ref,
             selectedDevice: t,
             selectedConfig: config,
             customInstanceName: hasApp
-                ? '${config.appOptions!.selectedApp!.name} (${config.configName})'
+                ? '${config.appOptions.selectedApp!.name} (${config.configName})'
                 : '',
           );
         }

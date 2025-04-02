@@ -7,7 +7,6 @@ import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/app_config_pair.dart';
 import 'package:scrcpygui/models/device_key.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
-import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/app_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_app_list.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/app_config_pair_provider.dart';
@@ -212,8 +211,7 @@ class _ControlDialogState extends ConsumerState<ControlDialog> {
                         ref,
                         selectedDevice: widget.device,
                         selectedConfig: selectedConfig!.copyWith(
-                          appOptions: (selectedConfig!.appOptions ??
-                                  SAppOptions(forceClose: false))
+                          appOptions: (selectedConfig!.appOptions)
                               .copyWith(selectedApp: selectedApp),
                         ),
                         customInstanceName:
