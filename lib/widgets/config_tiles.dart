@@ -174,7 +174,9 @@ class ConfigUserInput extends ConsumerWidget {
           filled: true,
           inputFormatters: inputFormatters ??
               [FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))],
-          trailing: Text(unit != null ? '$unit ' : '').xSmall(),
+          features: [
+            InputFeature.trailing(Text(unit != null ? '$unit ' : '').xSmall())
+          ],
           textAlign: TextAlign.center,
           controller: controller,
           onChanged: onChanged,

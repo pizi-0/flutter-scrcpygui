@@ -6,6 +6,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 class PgSectionCard extends ConsumerWidget {
   final String? label;
   final Widget? labelTrail;
+  final Widget? labelButton;
   final EdgeInsetsGeometry? cardPadding;
   final Color? borderColor;
   final List<Widget> children;
@@ -14,6 +15,7 @@ class PgSectionCard extends ConsumerWidget {
   const PgSectionCard(
       {super.key,
       this.label,
+      this.labelButton,
       this.labelTrail,
       this.cardPadding,
       this.borderColor,
@@ -33,7 +35,12 @@ class PgSectionCard extends ConsumerWidget {
           if (label != null)
             Label(
                 trailing: labelTrail,
-                child: Text(label!).paddingSymmetric(vertical: 8)),
+                child: Row(
+                  children: [
+                    Text(label!).paddingSymmetric(vertical: 8),
+                    if (labelButton != null) labelButton!,
+                  ],
+                )),
           if (constraints!.maxHeight == double.infinity)
             Card(
               padding: cardPadding,
