@@ -72,6 +72,7 @@ device_settings_loc:
 config_screen_loc:
   title: Ajustes de configuración
   connection_lost: Conexión del dispositivo perdida
+  similar_exist: Existe una configuración similar (${count})
 
 ## home_tab > config screen > test config
 log_screen_loc:

@@ -812,18 +812,26 @@ class ConfigScreenLoc {
   const ConfigScreenLoc({
     required this.title,
     required this.connectionLost,
+    required this.similarExist,
   });
   factory ConfigScreenLoc.fromJson(Map<String, dynamic> json) {
     return ConfigScreenLoc(
       title: (json['title'] ?? '').toString(),
       connectionLost: (json['connection_lost'] ?? '').toString(),
+      similarExist: ({required String count}) => (json['similar_exist'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String title;
   final String connectionLost;
+  final String Function({required String count}) similarExist;
+
   Map<String, Object> get _content => {
         r'''title''': title,
         r'''connection_lost''': connectionLost,
+        r'''similar_exist''': similarExist,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -6833,6 +6841,8 @@ final LocalizationMessages en = LocalizationMessages(
   configScreenLoc: ConfigScreenLoc(
     title: 'Config settings',
     connectionLost: 'Lost connection to device',
+    similarExist: ({required String count}) =>
+        '''Similar config exists (${count})''',
   ),
   logScreenLoc: LogScreenLoc(
     title: 'Test log',
@@ -7378,6 +7388,8 @@ final LocalizationMessages es = LocalizationMessages(
   configScreenLoc: ConfigScreenLoc(
     title: 'Ajustes de configuración',
     connectionLost: 'Conexión del dispositivo perdida',
+    similarExist: ({required String count}) =>
+        '''Existe una configuración similar (${count})''',
   ),
   logScreenLoc: LogScreenLoc(
     title: 'Registro de prueba',
@@ -7927,6 +7939,8 @@ final LocalizationMessages it = LocalizationMessages(
   configScreenLoc: ConfigScreenLoc(
     title: 'Impostazioni configurazione',
     connectionLost: 'Connessione al dispositivo persa',
+    similarExist: ({required String count}) =>
+        '''Esiste una configurazione simile (${count})''',
   ),
   logScreenLoc: LogScreenLoc(
     title: 'Log di test',
@@ -8472,6 +8486,8 @@ final LocalizationMessages ms = LocalizationMessages(
   configScreenLoc: ConfigScreenLoc(
     title: 'Tetapan konfigurasi',
     connectionLost: 'Sambungan ke peranti terputus',
+    similarExist: ({required String count}) =>
+        '''Konfigurasi serupa wujud (${count})''',
   ),
   logScreenLoc: LogScreenLoc(
     title: 'Log Ujian',
