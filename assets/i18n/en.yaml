@@ -83,6 +83,12 @@ log_screen_loc:
   dialog:
     title: Command
 
+
+### config screen > rename section
+rename_section: 
+  title: Rename
+  
+
 ### config screen > mode section
 mode_section: 
   title: Mode
@@ -423,6 +429,7 @@ disconnect_dialog_loc:
 close_dialog_loc:
   not_allowed: Not allowed!
   overwrite: Overwrite?
+  name_exist: Name already exists!
   save: Save config?
   command_preview: 'Command preview:'
   name: 'Name:'

@@ -79,6 +79,10 @@ log_screen_loc:
   dialog:
     title: Comando
 
+### config screen > rename section
+rename_section:
+  title: Rinomina
+
 ### config screen > mode section
 mode_section:
   title: Modalità
@@ -406,6 +410,7 @@ close_dialog_loc:
   not_allowed: Non consentito!
   overwrite: Sovrascrivere?
   save: Salvare configurazione?
+  name_exist: Nome già esistente!
   command_preview: 'Anteprima comando:'
   name: 'Nome:'
 

@@ -79,6 +79,10 @@ log_screen_loc:
   dialog:
     title: Perintah
 
+### config screen > rename section
+rename_section:
+  title: Namakan Semula
+
 ### config screen > mode section
 mode_section:
   title: Mod
@@ -407,6 +411,7 @@ close_dialog_loc:
   not_allowed: Tidak Dibenarkan!
   overwrite: Timpa?
   save: Simpan Konfigurasi?
+  name_exist: Nama sudah wujud!
   command_preview: 'Pratonton Perintah:'
   name: 'Nama:'
 
