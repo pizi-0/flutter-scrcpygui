@@ -136,7 +136,9 @@ class ConfigUserInput extends ConsumerWidget {
   final String? subtitle;
   final TextEditingController controller;
   final String? unit;
-  final ValueChanged<String> onChanged;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
+  final FocusNode? focusNode;
   final Function()? onTap;
   final bool showinfo;
   final Widget? placeholder;
@@ -149,10 +151,12 @@ class ConfigUserInput extends ConsumerWidget {
     required this.controller,
     this.subtitle,
     this.unit,
-    required this.onChanged,
+    this.onChanged,
+    this.onSubmitted,
     this.onTap,
     this.placeholder,
     this.inputFormatters,
+    this.focusNode,
   });
 
   @override
@@ -165,6 +169,7 @@ class ConfigUserInput extends ConsumerWidget {
         constraints:
             const BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
         child: TextField(
+          focusNode: focusNode,
           placeholder: placeholder,
           filled: true,
           inputFormatters: inputFormatters ??
@@ -173,6 +178,7 @@ class ConfigUserInput extends ConsumerWidget {
           textAlign: TextAlign.center,
           controller: controller,
           onChanged: onChanged,
+          onSubmitted: onSubmitted,
           onTap: onTap,
           style: const TextStyle(fontSize: 14),
         ),
