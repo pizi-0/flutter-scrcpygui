@@ -4,10 +4,13 @@
 
 import 'dart:developer' show log;
 
-import 'package:easiest_localization/easiest_localization.dart' show LocalizationProvider;
+import 'package:easiest_localization/easiest_localization.dart'
+    show LocalizationProvider;
 import 'package:flutter/foundation.dart' show kDebugMode;
-import 'package:flutter/widgets.dart' show BuildContext, Locale, Localizations, LocalizationsDelegate;
-import 'package:flutter_localizations/flutter_localizations.dart' show GlobalMaterialLocalizations;
+import 'package:flutter/widgets.dart'
+    show BuildContext, Locale, Localizations, LocalizationsDelegate;
+import 'package:flutter_localizations/flutter_localizations.dart'
+    show GlobalMaterialLocalizations;
 import 'package:intl/intl.dart' show Intl;
 
 final RegExp _variableRegExp = RegExp(r'\$\{[^}]+\} ?');
@@ -32,7 +35,8 @@ class HomeLoc {
   factory HomeLoc.fromJson(Map<String, dynamic> json) {
     return HomeLoc(
       title: (json['title'] ?? '').toString(),
-      devices: HomeLocDevices.fromJson((json['devices'] as Map).cast<String, dynamic>()),
+      devices: HomeLocDevices.fromJson(
+          (json['devices'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
@@ -76,8 +80,10 @@ class HomeLocDevices {
   });
   factory HomeLocDevices.fromJson(Map<String, dynamic> json) {
     return HomeLocDevices(
-      label: ({required String count}) =>
-          (json['label'] ?? '').toString().replaceAll(r'${count}', count).replaceAll(_variableRegExp, ''),
+      label: ({required String count}) => (json['label'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String Function({required String count}) label;
@@ -121,8 +127,12 @@ class DeviceTileLoc {
   factory DeviceTileLoc.fromJson(Map<String, dynamic> json) {
     return DeviceTileLoc(
       runningInstances: ({required String count}) =>
-          (json['running_instances'] ?? '').toString().replaceAll(r'${count}', count).replaceAll(_variableRegExp, ''),
-      context: DeviceTileLocContext.fromJson((json['context'] as Map).cast<String, dynamic>()),
+          (json['running_instances'] ?? '')
+              .toString()
+              .replaceAll(r'${count}', count)
+              .replaceAll(_variableRegExp, ''),
+      context: DeviceTileLocContext.fromJson(
+          (json['context'] as Map).cast<String, dynamic>()),
     );
   }
   final String Function({required String count}) runningInstances;
@@ -234,7 +244,8 @@ class DeviceControlDialogLoc {
   factory DeviceControlDialogLoc.fromJson(Map<String, dynamic> json) {
     return DeviceControlDialogLoc(
       controls: (json['controls'] ?? '').toString(),
-      onConfig: DeviceControlDialogLocOnConfig.fromJson((json['on_config'] as Map).cast<String, dynamic>()),
+      onConfig: DeviceControlDialogLocOnConfig.fromJson(
+          (json['on_config'] as Map).cast<String, dynamic>()),
     );
   }
   final String controls;
@@ -327,8 +338,10 @@ class ConfigLoc {
   });
   factory ConfigLoc.fromJson(Map<String, dynamic> json) {
     return ConfigLoc(
-      label: ({required String count}) =>
-          (json['label'] ?? '').toString().replaceAll(r'${count}', count).replaceAll(_variableRegExp, ''),
+      label: ({required String count}) => (json['label'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
       new$: (json['new'] ?? '').toString(),
       select: (json['select'] ?? '').toString(),
       details: (json['details'] ?? '').toString(),
@@ -490,11 +503,15 @@ class DeviceSettingsLoc {
       title: (json['title'] ?? '').toString(),
       info: (json['info'] ?? '').toString(),
       refresh: (json['refresh'] ?? '').toString(),
-      rename: DeviceSettingsLocRename.fromJson((json['rename'] as Map).cast<String, dynamic>()),
-      autoConnect: DeviceSettingsLocAutoConnect.fromJson((json['auto_connect'] as Map).cast<String, dynamic>()),
-      onConnected: DeviceSettingsLocOnConnected.fromJson((json['on_connected'] as Map).cast<String, dynamic>()),
+      rename: DeviceSettingsLocRename.fromJson(
+          (json['rename'] as Map).cast<String, dynamic>()),
+      autoConnect: DeviceSettingsLocAutoConnect.fromJson(
+          (json['auto_connect'] as Map).cast<String, dynamic>()),
+      onConnected: DeviceSettingsLocOnConnected.fromJson(
+          (json['on_connected'] as Map).cast<String, dynamic>()),
       doNothing: (json['do_nothing'] ?? '').toString(),
-      scrcpyInfo: DeviceSettingsLocScrcpyInfo.fromJson((json['scrcpy_info'] as Map).cast<String, dynamic>()),
+      scrcpyInfo: DeviceSettingsLocScrcpyInfo.fromJson(
+          (json['scrcpy_info'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
@@ -699,22 +716,38 @@ class DeviceSettingsLocScrcpyInfo {
     return DeviceSettingsLocScrcpyInfo(
       fetching: (json['fetching'] ?? '').toString(),
       label: (json['label'] ?? '').toString(),
-      name: ({required String name}) =>
-          (json['name'] ?? '').toString().replaceAll(r'${name}', name).replaceAll(_variableRegExp, ''),
-      id: ({required String id}) =>
-          (json['id'] ?? '').toString().replaceAll(r'${id}', id).replaceAll(_variableRegExp, ''),
-      model: ({required String model}) =>
-          (json['model'] ?? '').toString().replaceAll(r'${model}', model).replaceAll(_variableRegExp, ''),
-      version: ({required String version}) =>
-          (json['version'] ?? '').toString().replaceAll(r'${version}', version).replaceAll(_variableRegExp, ''),
-      displays: ({required String count}) =>
-          (json['displays'] ?? '').toString().replaceAll(r'${count}', count).replaceAll(_variableRegExp, ''),
-      cameras: ({required String count}) =>
-          (json['cameras'] ?? '').toString().replaceAll(r'${count}', count).replaceAll(_variableRegExp, ''),
-      videoEnc: ({required String count}) =>
-          (json['video_enc'] ?? '').toString().replaceAll(r'${count}', count).replaceAll(_variableRegExp, ''),
-      audioEnc: ({required String count}) =>
-          (json['audio_enc'] ?? '').toString().replaceAll(r'${count}', count).replaceAll(_variableRegExp, ''),
+      name: ({required String name}) => (json['name'] ?? '')
+          .toString()
+          .replaceAll(r'${name}', name)
+          .replaceAll(_variableRegExp, ''),
+      id: ({required String id}) => (json['id'] ?? '')
+          .toString()
+          .replaceAll(r'${id}', id)
+          .replaceAll(_variableRegExp, ''),
+      model: ({required String model}) => (json['model'] ?? '')
+          .toString()
+          .replaceAll(r'${model}', model)
+          .replaceAll(_variableRegExp, ''),
+      version: ({required String version}) => (json['version'] ?? '')
+          .toString()
+          .replaceAll(r'${version}', version)
+          .replaceAll(_variableRegExp, ''),
+      displays: ({required String count}) => (json['displays'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
+      cameras: ({required String count}) => (json['cameras'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
+      videoEnc: ({required String count}) => (json['video_enc'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
+      audioEnc: ({required String count}) => (json['audio_enc'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String fetching;
@@ -828,7 +861,8 @@ class LogScreenLoc {
   factory LogScreenLoc.fromJson(Map<String, dynamic> json) {
     return LogScreenLoc(
       title: (json['title'] ?? '').toString(),
-      dialog: LogScreenLocDialog.fromJson((json['dialog'] as Map).cast<String, dynamic>()),
+      dialog: LogScreenLocDialog.fromJson(
+          (json['dialog'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
@@ -907,6 +941,47 @@ class LogScreenLocDialog {
   }
 }
 
+class RenameSection {
+  const RenameSection({
+    required this.title,
+  });
+  factory RenameSection.fromJson(Map<String, dynamic> json) {
+    return RenameSection(
+      title: (json['title'] ?? '').toString(),
+    );
+  }
+  final String title;
+  Map<String, Object> get _content => {
+        r'''title''': title,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class ModeSection {
   const ModeSection({
     required this.title,
@@ -917,9 +992,12 @@ class ModeSection {
   factory ModeSection.fromJson(Map<String, dynamic> json) {
     return ModeSection(
       title: (json['title'] ?? '').toString(),
-      saveFolder: ModeSectionSaveFolder.fromJson((json['save_folder'] as Map).cast<String, dynamic>()),
-      mainMode: ModeSectionMainMode.fromJson((json['main_mode'] as Map).cast<String, dynamic>()),
-      scrcpyMode: ModeSectionScrcpyMode.fromJson((json['scrcpy_mode'] as Map).cast<String, dynamic>()),
+      saveFolder: ModeSectionSaveFolder.fromJson(
+          (json['save_folder'] as Map).cast<String, dynamic>()),
+      mainMode: ModeSectionMainMode.fromJson(
+          (json['main_mode'] as Map).cast<String, dynamic>()),
+      scrcpyMode: ModeSectionScrcpyMode.fromJson(
+          (json['scrcpy_mode'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
@@ -1020,7 +1098,8 @@ class ModeSectionMainMode {
       label: (json['label'] ?? '').toString(),
       mirror: (json['mirror'] ?? '').toString(),
       record: (json['record'] ?? '').toString(),
-      info: ModeSectionMainModeInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: ModeSectionMainModeInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -1119,7 +1198,8 @@ class ModeSectionScrcpyMode {
       both: (json['both'] ?? '').toString(),
       audioOnly: (json['audio_only'] ?? '').toString(),
       videoOnly: (json['video_only'] ?? '').toString(),
-      info: ModeSectionScrcpyModeInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: ModeSectionScrcpyModeInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String both;
@@ -1169,8 +1249,10 @@ class ModeSectionScrcpyModeInfo {
   factory ModeSectionScrcpyModeInfo.fromJson(Map<String, dynamic> json) {
     return ModeSectionScrcpyModeInfo(
       default$: (json['default'] ?? '').toString(),
-      alt: ({required String command}) =>
-          (json['alt'] ?? '').toString().replaceAll(r'${command}', command).replaceAll(_variableRegExp, ''),
+      alt: ({required String command}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${command}', command)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String default$;
@@ -1222,13 +1304,20 @@ class VideoSection {
   factory VideoSection.fromJson(Map<String, dynamic> json) {
     return VideoSection(
       title: (json['title'] ?? '').toString(),
-      displays: VideoSectionDisplays.fromJson((json['displays'] as Map).cast<String, dynamic>()),
-      codec: VideoSectionCodec.fromJson((json['codec'] as Map).cast<String, dynamic>()),
-      encoder: VideoSectionEncoder.fromJson((json['encoder'] as Map).cast<String, dynamic>()),
-      format: VideoSectionFormat.fromJson((json['format'] as Map).cast<String, dynamic>()),
-      bitrate: VideoSectionBitrate.fromJson((json['bitrate'] as Map).cast<String, dynamic>()),
-      fpsLimit: VideoSectionFpsLimit.fromJson((json['fps_limit'] as Map).cast<String, dynamic>()),
-      resolutionScale: VideoSectionResolutionScale.fromJson((json['resolution_scale'] as Map).cast<String, dynamic>()),
+      displays: VideoSectionDisplays.fromJson(
+          (json['displays'] as Map).cast<String, dynamic>()),
+      codec: VideoSectionCodec.fromJson(
+          (json['codec'] as Map).cast<String, dynamic>()),
+      encoder: VideoSectionEncoder.fromJson(
+          (json['encoder'] as Map).cast<String, dynamic>()),
+      format: VideoSectionFormat.fromJson(
+          (json['format'] as Map).cast<String, dynamic>()),
+      bitrate: VideoSectionBitrate.fromJson(
+          (json['bitrate'] as Map).cast<String, dynamic>()),
+      fpsLimit: VideoSectionFpsLimit.fromJson(
+          (json['fps_limit'] as Map).cast<String, dynamic>()),
+      resolutionScale: VideoSectionResolutionScale.fromJson(
+          (json['resolution_scale'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
@@ -1293,8 +1382,10 @@ class VideoSectionDisplays {
   factory VideoSectionDisplays.fromJson(Map<String, dynamic> json) {
     return VideoSectionDisplays(
       label: (json['label'] ?? '').toString(),
-      info: VideoSectionDisplaysInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
-      virtual: VideoSectionDisplaysVirtual.fromJson((json['virtual'] as Map).cast<String, dynamic>()),
+      info: VideoSectionDisplaysInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+      virtual: VideoSectionDisplaysVirtual.fromJson(
+          (json['virtual'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -1392,11 +1483,16 @@ class VideoSectionDisplaysVirtual {
   factory VideoSectionDisplaysVirtual.fromJson(Map<String, dynamic> json) {
     return VideoSectionDisplaysVirtual(
       label: (json['label'] ?? '').toString(),
-      newDisplay: VideoSectionDisplaysVirtualNewDisplay.fromJson((json['new_display'] as Map).cast<String, dynamic>()),
-      resolution: VideoSectionDisplaysVirtualResolution.fromJson((json['resolution'] as Map).cast<String, dynamic>()),
-      dpi: VideoSectionDisplaysVirtualDpi.fromJson((json['dpi'] as Map).cast<String, dynamic>()),
-      deco: VideoSectionDisplaysVirtualDeco.fromJson((json['deco'] as Map).cast<String, dynamic>()),
-      preserve: VideoSectionDisplaysVirtualPreserve.fromJson((json['preserve'] as Map).cast<String, dynamic>()),
+      newDisplay: VideoSectionDisplaysVirtualNewDisplay.fromJson(
+          (json['new_display'] as Map).cast<String, dynamic>()),
+      resolution: VideoSectionDisplaysVirtualResolution.fromJson(
+          (json['resolution'] as Map).cast<String, dynamic>()),
+      dpi: VideoSectionDisplaysVirtualDpi.fromJson(
+          (json['dpi'] as Map).cast<String, dynamic>()),
+      deco: VideoSectionDisplaysVirtualDeco.fromJson(
+          (json['deco'] as Map).cast<String, dynamic>()),
+      preserve: VideoSectionDisplaysVirtualPreserve.fromJson(
+          (json['preserve'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -1451,10 +1547,12 @@ class VideoSectionDisplaysVirtualNewDisplay {
     required this.label,
     required this.info,
   });
-  factory VideoSectionDisplaysVirtualNewDisplay.fromJson(Map<String, dynamic> json) {
+  factory VideoSectionDisplaysVirtualNewDisplay.fromJson(
+      Map<String, dynamic> json) {
     return VideoSectionDisplaysVirtualNewDisplay(
       label: (json['label'] ?? '').toString(),
-      info: VideoSectionDisplaysVirtualNewDisplayInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: VideoSectionDisplaysVirtualNewDisplayInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -1496,7 +1594,8 @@ class VideoSectionDisplaysVirtualNewDisplayInfo {
   const VideoSectionDisplaysVirtualNewDisplayInfo({
     required this.alt,
   });
-  factory VideoSectionDisplaysVirtualNewDisplayInfo.fromJson(Map<String, dynamic> json) {
+  factory VideoSectionDisplaysVirtualNewDisplayInfo.fromJson(
+      Map<String, dynamic> json) {
     return VideoSectionDisplaysVirtualNewDisplayInfo(
       alt: (json['alt'] ?? '').toString(),
     );
@@ -1538,10 +1637,12 @@ class VideoSectionDisplaysVirtualResolution {
     required this.label,
     required this.info,
   });
-  factory VideoSectionDisplaysVirtualResolution.fromJson(Map<String, dynamic> json) {
+  factory VideoSectionDisplaysVirtualResolution.fromJson(
+      Map<String, dynamic> json) {
     return VideoSectionDisplaysVirtualResolution(
       label: (json['label'] ?? '').toString(),
-      info: VideoSectionDisplaysVirtualResolutionInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: VideoSectionDisplaysVirtualResolutionInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -1584,11 +1685,14 @@ class VideoSectionDisplaysVirtualResolutionInfo {
     required this.default$,
     required this.alt,
   });
-  factory VideoSectionDisplaysVirtualResolutionInfo.fromJson(Map<String, dynamic> json) {
+  factory VideoSectionDisplaysVirtualResolutionInfo.fromJson(
+      Map<String, dynamic> json) {
     return VideoSectionDisplaysVirtualResolutionInfo(
       default$: (json['default'] ?? '').toString(),
-      alt: ({required String res}) =>
-          (json['alt'] ?? '').toString().replaceAll(r'${res}', res).replaceAll(_variableRegExp, ''),
+      alt: ({required String res}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${res}', res)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String default$;
@@ -1634,7 +1738,8 @@ class VideoSectionDisplaysVirtualDpi {
   factory VideoSectionDisplaysVirtualDpi.fromJson(Map<String, dynamic> json) {
     return VideoSectionDisplaysVirtualDpi(
       label: (json['label'] ?? '').toString(),
-      info: VideoSectionDisplaysVirtualDpiInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: VideoSectionDisplaysVirtualDpiInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -1677,7 +1782,8 @@ class VideoSectionDisplaysVirtualDpiInfo {
     required this.default$,
     required this.alt,
   });
-  factory VideoSectionDisplaysVirtualDpiInfo.fromJson(Map<String, dynamic> json) {
+  factory VideoSectionDisplaysVirtualDpiInfo.fromJson(
+      Map<String, dynamic> json) {
     return VideoSectionDisplaysVirtualDpiInfo(
       default$: (json['default'] ?? '').toString(),
       alt: ({required String res, required String dpi}) => (json['alt'] ?? '')
@@ -1730,7 +1836,8 @@ class VideoSectionDisplaysVirtualDeco {
   factory VideoSectionDisplaysVirtualDeco.fromJson(Map<String, dynamic> json) {
     return VideoSectionDisplaysVirtualDeco(
       label: (json['label'] ?? '').toString(),
-      info: VideoSectionDisplaysVirtualDecoInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: VideoSectionDisplaysVirtualDecoInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -1773,7 +1880,8 @@ class VideoSectionDisplaysVirtualDecoInfo {
     required this.default$,
     required this.alt,
   });
-  factory VideoSectionDisplaysVirtualDecoInfo.fromJson(Map<String, dynamic> json) {
+  factory VideoSectionDisplaysVirtualDecoInfo.fromJson(
+      Map<String, dynamic> json) {
     return VideoSectionDisplaysVirtualDecoInfo(
       default$: (json['default'] ?? '').toString(),
       alt: (json['alt'] ?? '').toString(),
@@ -1818,10 +1926,12 @@ class VideoSectionDisplaysVirtualPreserve {
     required this.label,
     required this.info,
   });
-  factory VideoSectionDisplaysVirtualPreserve.fromJson(Map<String, dynamic> json) {
+  factory VideoSectionDisplaysVirtualPreserve.fromJson(
+      Map<String, dynamic> json) {
     return VideoSectionDisplaysVirtualPreserve(
       label: (json['label'] ?? '').toString(),
-      info: VideoSectionDisplaysVirtualPreserveInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: VideoSectionDisplaysVirtualPreserveInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -1864,7 +1974,8 @@ class VideoSectionDisplaysVirtualPreserveInfo {
     required this.default$,
     required this.alt,
   });
-  factory VideoSectionDisplaysVirtualPreserveInfo.fromJson(Map<String, dynamic> json) {
+  factory VideoSectionDisplaysVirtualPreserveInfo.fromJson(
+      Map<String, dynamic> json) {
     return VideoSectionDisplaysVirtualPreserveInfo(
       default$: (json['default'] ?? '').toString(),
       alt: (json['alt'] ?? '').toString(),
@@ -1912,7 +2023,8 @@ class VideoSectionCodec {
   factory VideoSectionCodec.fromJson(Map<String, dynamic> json) {
     return VideoSectionCodec(
       label: (json['label'] ?? '').toString(),
-      info: VideoSectionCodecInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: VideoSectionCodecInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -1958,8 +2070,10 @@ class VideoSectionCodecInfo {
   factory VideoSectionCodecInfo.fromJson(Map<String, dynamic> json) {
     return VideoSectionCodecInfo(
       default$: (json['default'] ?? '').toString(),
-      alt: ({required String codec}) =>
-          (json['alt'] ?? '').toString().replaceAll(r'${codec}', codec).replaceAll(_variableRegExp, ''),
+      alt: ({required String codec}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${codec}', codec)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String default$;
@@ -2005,7 +2119,8 @@ class VideoSectionEncoder {
   factory VideoSectionEncoder.fromJson(Map<String, dynamic> json) {
     return VideoSectionEncoder(
       label: (json['label'] ?? '').toString(),
-      info: VideoSectionEncoderInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: VideoSectionEncoderInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -2051,8 +2166,10 @@ class VideoSectionEncoderInfo {
   factory VideoSectionEncoderInfo.fromJson(Map<String, dynamic> json) {
     return VideoSectionEncoderInfo(
       default$: (json['default'] ?? '').toString(),
-      alt: ({required String encoder}) =>
-          (json['alt'] ?? '').toString().replaceAll(r'${encoder}', encoder).replaceAll(_variableRegExp, ''),
+      alt: ({required String encoder}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${encoder}', encoder)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String default$;
@@ -2098,7 +2215,8 @@ class VideoSectionFormat {
   factory VideoSectionFormat.fromJson(Map<String, dynamic> json) {
     return VideoSectionFormat(
       label: (json['label'] ?? '').toString(),
-      info: VideoSectionFormatInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: VideoSectionFormatInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -2142,8 +2260,10 @@ class VideoSectionFormatInfo {
   });
   factory VideoSectionFormatInfo.fromJson(Map<String, dynamic> json) {
     return VideoSectionFormatInfo(
-      default$: ({required String format}) =>
-          (json['default'] ?? '').toString().replaceAll(r'${format}', format).replaceAll(_variableRegExp, ''),
+      default$: ({required String format}) => (json['default'] ?? '')
+          .toString()
+          .replaceAll(r'${format}', format)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String Function({required String format}) default$;
@@ -2187,7 +2307,8 @@ class VideoSectionBitrate {
   factory VideoSectionBitrate.fromJson(Map<String, dynamic> json) {
     return VideoSectionBitrate(
       label: (json['label'] ?? '').toString(),
-      info: VideoSectionBitrateInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: VideoSectionBitrateInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -2233,8 +2354,10 @@ class VideoSectionBitrateInfo {
   factory VideoSectionBitrateInfo.fromJson(Map<String, dynamic> json) {
     return VideoSectionBitrateInfo(
       default$: (json['default'] ?? '').toString(),
-      alt: ({required String bitrate}) =>
-          (json['alt'] ?? '').toString().replaceAll(r'${bitrate}', bitrate).replaceAll(_variableRegExp, ''),
+      alt: ({required String bitrate}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${bitrate}', bitrate)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String default$;
@@ -2280,7 +2403,8 @@ class VideoSectionFpsLimit {
   factory VideoSectionFpsLimit.fromJson(Map<String, dynamic> json) {
     return VideoSectionFpsLimit(
       label: (json['label'] ?? '').toString(),
-      info: VideoSectionFpsLimitInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: VideoSectionFpsLimitInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -2326,8 +2450,10 @@ class VideoSectionFpsLimitInfo {
   factory VideoSectionFpsLimitInfo.fromJson(Map<String, dynamic> json) {
     return VideoSectionFpsLimitInfo(
       default$: (json['default'] ?? '').toString(),
-      alt: ({required String fps}) =>
-          (json['alt'] ?? '').toString().replaceAll(r'${fps}', fps).replaceAll(_variableRegExp, ''),
+      alt: ({required String fps}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${fps}', fps)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String default$;
@@ -2373,7 +2499,8 @@ class VideoSectionResolutionScale {
   factory VideoSectionResolutionScale.fromJson(Map<String, dynamic> json) {
     return VideoSectionResolutionScale(
       label: (json['label'] ?? '').toString(),
-      info: VideoSectionResolutionScaleInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: VideoSectionResolutionScaleInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -2419,8 +2546,10 @@ class VideoSectionResolutionScaleInfo {
   factory VideoSectionResolutionScaleInfo.fromJson(Map<String, dynamic> json) {
     return VideoSectionResolutionScaleInfo(
       default$: (json['default'] ?? '').toString(),
-      alt: ({required String size}) =>
-          (json['alt'] ?? '').toString().replaceAll(r'${size}', size).replaceAll(_variableRegExp, ''),
+      alt: ({required String size}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${size}', size)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String default$;
@@ -2471,12 +2600,18 @@ class AudioSection {
   factory AudioSection.fromJson(Map<String, dynamic> json) {
     return AudioSection(
       title: (json['title'] ?? '').toString(),
-      duplicate: AudioSectionDuplicate.fromJson((json['duplicate'] as Map).cast<String, dynamic>()),
-      source: AudioSectionSource.fromJson((json['source'] as Map).cast<String, dynamic>()),
-      codec: AudioSectionCodec.fromJson((json['codec'] as Map).cast<String, dynamic>()),
-      encoder: AudioSectionEncoder.fromJson((json['encoder'] as Map).cast<String, dynamic>()),
-      format: AudioSectionFormat.fromJson((json['format'] as Map).cast<String, dynamic>()),
-      bitrate: AudioSectionBitrate.fromJson((json['bitrate'] as Map).cast<String, dynamic>()),
+      duplicate: AudioSectionDuplicate.fromJson(
+          (json['duplicate'] as Map).cast<String, dynamic>()),
+      source: AudioSectionSource.fromJson(
+          (json['source'] as Map).cast<String, dynamic>()),
+      codec: AudioSectionCodec.fromJson(
+          (json['codec'] as Map).cast<String, dynamic>()),
+      encoder: AudioSectionEncoder.fromJson(
+          (json['encoder'] as Map).cast<String, dynamic>()),
+      format: AudioSectionFormat.fromJson(
+          (json['format'] as Map).cast<String, dynamic>()),
+      bitrate: AudioSectionBitrate.fromJson(
+          (json['bitrate'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
@@ -2537,7 +2672,8 @@ class AudioSectionDuplicate {
   factory AudioSectionDuplicate.fromJson(Map<String, dynamic> json) {
     return AudioSectionDuplicate(
       label: (json['label'] ?? '').toString(),
-      info: AudioSectionDuplicateInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: AudioSectionDuplicateInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -2628,7 +2764,8 @@ class AudioSectionSource {
   factory AudioSectionSource.fromJson(Map<String, dynamic> json) {
     return AudioSectionSource(
       label: (json['label'] ?? '').toString(),
-      info: AudioSectionSourceInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: AudioSectionSourceInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -2675,8 +2812,10 @@ class AudioSectionSourceInfo {
   factory AudioSectionSourceInfo.fromJson(Map<String, dynamic> json) {
     return AudioSectionSourceInfo(
       default$: (json['default'] ?? '').toString(),
-      alt: ({required String source}) =>
-          (json['alt'] ?? '').toString().replaceAll(r'${source}', source).replaceAll(_variableRegExp, ''),
+      alt: ({required String source}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${source}', source)
+          .replaceAll(_variableRegExp, ''),
       inCaseOfDup: (json['inCaseOfDup'] ?? '').toString(),
     );
   }
@@ -2725,7 +2864,8 @@ class AudioSectionCodec {
   factory AudioSectionCodec.fromJson(Map<String, dynamic> json) {
     return AudioSectionCodec(
       label: (json['label'] ?? '').toString(),
-      info: AudioSectionCodecInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: AudioSectionCodecInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -2772,19 +2912,23 @@ class AudioSectionCodecInfo {
   factory AudioSectionCodecInfo.fromJson(Map<String, dynamic> json) {
     return AudioSectionCodecInfo(
       default$: (json['default'] ?? '').toString(),
-      alt: ({required String codec}) =>
-          (json['alt'] ?? '').toString().replaceAll(r'${codec}', codec).replaceAll(_variableRegExp, ''),
-      isAudioOnly: ({required String format, required String codec}) => (json['isAudioOnly'] ?? '')
+      alt: ({required String codec}) => (json['alt'] ?? '')
           .toString()
-          .replaceAll(r'${format}', format)
           .replaceAll(r'${codec}', codec)
           .replaceAll(_variableRegExp, ''),
+      isAudioOnly: ({required String format, required String codec}) =>
+          (json['isAudioOnly'] ?? '')
+              .toString()
+              .replaceAll(r'${format}', format)
+              .replaceAll(r'${codec}', codec)
+              .replaceAll(_variableRegExp, ''),
     );
   }
   final String default$;
   final String Function({required String codec}) alt;
 
-  final String Function({required String format, required String codec}) isAudioOnly;
+  final String Function({required String format, required String codec})
+      isAudioOnly;
 
   Map<String, Object> get _content => {
         r'''default''': default$,
@@ -2827,7 +2971,8 @@ class AudioSectionEncoder {
   factory AudioSectionEncoder.fromJson(Map<String, dynamic> json) {
     return AudioSectionEncoder(
       label: (json['label'] ?? '').toString(),
-      info: AudioSectionEncoderInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: AudioSectionEncoderInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -2873,8 +3018,10 @@ class AudioSectionEncoderInfo {
   factory AudioSectionEncoderInfo.fromJson(Map<String, dynamic> json) {
     return AudioSectionEncoderInfo(
       default$: (json['default'] ?? '').toString(),
-      alt: ({required String encoder}) =>
-          (json['alt'] ?? '').toString().replaceAll(r'${encoder}', encoder).replaceAll(_variableRegExp, ''),
+      alt: ({required String encoder}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${encoder}', encoder)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String default$;
@@ -2920,7 +3067,8 @@ class AudioSectionFormat {
   factory AudioSectionFormat.fromJson(Map<String, dynamic> json) {
     return AudioSectionFormat(
       label: (json['label'] ?? '').toString(),
-      info: AudioSectionFormatInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: AudioSectionFormatInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -2964,8 +3112,10 @@ class AudioSectionFormatInfo {
   });
   factory AudioSectionFormatInfo.fromJson(Map<String, dynamic> json) {
     return AudioSectionFormatInfo(
-      default$: ({required String format}) =>
-          (json['default'] ?? '').toString().replaceAll(r'${format}', format).replaceAll(_variableRegExp, ''),
+      default$: ({required String format}) => (json['default'] ?? '')
+          .toString()
+          .replaceAll(r'${format}', format)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String Function({required String format}) default$;
@@ -3009,7 +3159,8 @@ class AudioSectionBitrate {
   factory AudioSectionBitrate.fromJson(Map<String, dynamic> json) {
     return AudioSectionBitrate(
       label: (json['label'] ?? '').toString(),
-      info: AudioSectionBitrateInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: AudioSectionBitrateInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -3055,8 +3206,10 @@ class AudioSectionBitrateInfo {
   factory AudioSectionBitrateInfo.fromJson(Map<String, dynamic> json) {
     return AudioSectionBitrateInfo(
       default$: (json['default'] ?? '').toString(),
-      alt: ({required String bitrate}) =>
-          (json['alt'] ?? '').toString().replaceAll(r'${bitrate}', bitrate).replaceAll(_variableRegExp, ''),
+      alt: ({required String bitrate}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${bitrate}', bitrate)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String default$;
@@ -3103,8 +3256,10 @@ class AppSection {
   factory AppSection.fromJson(Map<String, dynamic> json) {
     return AppSection(
       title: (json['title'] ?? '').toString(),
-      select: AppSectionSelect.fromJson((json['select'] as Map).cast<String, dynamic>()),
-      forceClose: AppSectionForceClose.fromJson((json['force_close'] as Map).cast<String, dynamic>()),
+      select: AppSectionSelect.fromJson(
+          (json['select'] as Map).cast<String, dynamic>()),
+      forceClose: AppSectionForceClose.fromJson(
+          (json['force_close'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
@@ -3153,7 +3308,8 @@ class AppSectionSelect {
   factory AppSectionSelect.fromJson(Map<String, dynamic> json) {
     return AppSectionSelect(
       label: (json['label'] ?? '').toString(),
-      info: AppSectionSelectInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: AppSectionSelectInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -3198,10 +3354,14 @@ class AppSectionSelectInfo {
   });
   factory AppSectionSelectInfo.fromJson(Map<String, dynamic> json) {
     return AppSectionSelectInfo(
-      alt: ({required String app}) =>
-          (json['alt'] ?? '').toString().replaceAll(r'${app}', app).replaceAll(_variableRegExp, ''),
-      fc: ({required String app}) =>
-          (json['fc'] ?? '').toString().replaceAll(r'${app}', app).replaceAll(_variableRegExp, ''),
+      alt: ({required String app}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${app}', app)
+          .replaceAll(_variableRegExp, ''),
+      fc: ({required String app}) => (json['fc'] ?? '')
+          .toString()
+          .replaceAll(r'${app}', app)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String Function({required String app}) alt;
@@ -3248,7 +3408,8 @@ class AppSectionForceClose {
   factory AppSectionForceClose.fromJson(Map<String, dynamic> json) {
     return AppSectionForceClose(
       label: (json['label'] ?? '').toString(),
-      info: AppSectionForceCloseInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: AppSectionForceCloseInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -3339,12 +3500,16 @@ class DeviceSection {
   factory DeviceSection.fromJson(Map<String, dynamic> json) {
     return DeviceSection(
       title: (json['title'] ?? '').toString(),
-      stayAwake: DeviceSectionStayAwake.fromJson((json['stay_awake'] as Map).cast<String, dynamic>()),
-      showTouches: DeviceSectionShowTouches.fromJson((json['show_touches'] as Map).cast<String, dynamic>()),
-      offDisplayStart:
-          DeviceSectionOffDisplayStart.fromJson((json['off_display_start'] as Map).cast<String, dynamic>()),
-      offDisplayExit: DeviceSectionOffDisplayExit.fromJson((json['off_display_exit'] as Map).cast<String, dynamic>()),
-      screensaver: DeviceSectionScreensaver.fromJson((json['screensaver'] as Map).cast<String, dynamic>()),
+      stayAwake: DeviceSectionStayAwake.fromJson(
+          (json['stay_awake'] as Map).cast<String, dynamic>()),
+      showTouches: DeviceSectionShowTouches.fromJson(
+          (json['show_touches'] as Map).cast<String, dynamic>()),
+      offDisplayStart: DeviceSectionOffDisplayStart.fromJson(
+          (json['off_display_start'] as Map).cast<String, dynamic>()),
+      offDisplayExit: DeviceSectionOffDisplayExit.fromJson(
+          (json['off_display_exit'] as Map).cast<String, dynamic>()),
+      screensaver: DeviceSectionScreensaver.fromJson(
+          (json['screensaver'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
@@ -3402,7 +3567,8 @@ class DeviceSectionStayAwake {
   factory DeviceSectionStayAwake.fromJson(Map<String, dynamic> json) {
     return DeviceSectionStayAwake(
       label: (json['label'] ?? '').toString(),
-      info: DeviceSectionStayAwakeInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: DeviceSectionStayAwakeInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -3493,7 +3659,8 @@ class DeviceSectionShowTouches {
   factory DeviceSectionShowTouches.fromJson(Map<String, dynamic> json) {
     return DeviceSectionShowTouches(
       label: (json['label'] ?? '').toString(),
-      info: DeviceSectionShowTouchesInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: DeviceSectionShowTouchesInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -3584,7 +3751,8 @@ class DeviceSectionOffDisplayStart {
   factory DeviceSectionOffDisplayStart.fromJson(Map<String, dynamic> json) {
     return DeviceSectionOffDisplayStart(
       label: (json['label'] ?? '').toString(),
-      info: DeviceSectionOffDisplayStartInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: DeviceSectionOffDisplayStartInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -3675,7 +3843,8 @@ class DeviceSectionOffDisplayExit {
   factory DeviceSectionOffDisplayExit.fromJson(Map<String, dynamic> json) {
     return DeviceSectionOffDisplayExit(
       label: (json['label'] ?? '').toString(),
-      info: DeviceSectionOffDisplayExitInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: DeviceSectionOffDisplayExitInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -3766,7 +3935,8 @@ class DeviceSectionScreensaver {
   factory DeviceSectionScreensaver.fromJson(Map<String, dynamic> json) {
     return DeviceSectionScreensaver(
       label: (json['label'] ?? '').toString(),
-      info: DeviceSectionScreensaverInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: DeviceSectionScreensaverInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -3860,10 +4030,14 @@ class WindowSection {
   factory WindowSection.fromJson(Map<String, dynamic> json) {
     return WindowSection(
       title: (json['title'] ?? '').toString(),
-      hideWindow: WindowSectionHideWindow.fromJson((json['hide_window'] as Map).cast<String, dynamic>()),
-      borderless: WindowSectionBorderless.fromJson((json['borderless'] as Map).cast<String, dynamic>()),
-      alwaysOnTop: WindowSectionAlwaysOnTop.fromJson((json['always_on_top'] as Map).cast<String, dynamic>()),
-      timeLimit: WindowSectionTimeLimit.fromJson((json['time_limit'] as Map).cast<String, dynamic>()),
+      hideWindow: WindowSectionHideWindow.fromJson(
+          (json['hide_window'] as Map).cast<String, dynamic>()),
+      borderless: WindowSectionBorderless.fromJson(
+          (json['borderless'] as Map).cast<String, dynamic>()),
+      alwaysOnTop: WindowSectionAlwaysOnTop.fromJson(
+          (json['always_on_top'] as Map).cast<String, dynamic>()),
+      timeLimit: WindowSectionTimeLimit.fromJson(
+          (json['time_limit'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
@@ -3918,7 +4092,8 @@ class WindowSectionHideWindow {
   factory WindowSectionHideWindow.fromJson(Map<String, dynamic> json) {
     return WindowSectionHideWindow(
       label: (json['label'] ?? '').toString(),
-      info: WindowSectionHideWindowInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: WindowSectionHideWindowInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -4009,7 +4184,8 @@ class WindowSectionBorderless {
   factory WindowSectionBorderless.fromJson(Map<String, dynamic> json) {
     return WindowSectionBorderless(
       label: (json['label'] ?? '').toString(),
-      info: WindowSectionBorderlessInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: WindowSectionBorderlessInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -4100,7 +4276,8 @@ class WindowSectionAlwaysOnTop {
   factory WindowSectionAlwaysOnTop.fromJson(Map<String, dynamic> json) {
     return WindowSectionAlwaysOnTop(
       label: (json['label'] ?? '').toString(),
-      info: WindowSectionAlwaysOnTopInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: WindowSectionAlwaysOnTopInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -4191,7 +4368,8 @@ class WindowSectionTimeLimit {
   factory WindowSectionTimeLimit.fromJson(Map<String, dynamic> json) {
     return WindowSectionTimeLimit(
       label: (json['label'] ?? '').toString(),
-      info: WindowSectionTimeLimitInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: WindowSectionTimeLimitInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -4237,8 +4415,10 @@ class WindowSectionTimeLimitInfo {
   factory WindowSectionTimeLimitInfo.fromJson(Map<String, dynamic> json) {
     return WindowSectionTimeLimitInfo(
       default$: (json['default'] ?? '').toString(),
-      alt: ({required String time}) =>
-          (json['alt'] ?? '').toString().replaceAll(r'${time}', time).replaceAll(_variableRegExp, ''),
+      alt: ({required String time}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${time}', time)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String default$;
@@ -4337,11 +4517,16 @@ class ConnectLoc {
   factory ConnectLoc.fromJson(Map<String, dynamic> json) {
     return ConnectLoc(
       title: (json['title'] ?? '').toString(),
-      withIp: ConnectLocWithIp.fromJson((json['with_ip'] as Map).cast<String, dynamic>()),
-      withMdns: ConnectLocWithMdns.fromJson((json['with_mdns'] as Map).cast<String, dynamic>()),
-      qrPair: ConnectLocQrPair.fromJson((json['qr_pair'] as Map).cast<String, dynamic>()),
-      unauthenticated: ConnectLocUnauthenticated.fromJson((json['unauthenticated'] as Map).cast<String, dynamic>()),
-      failed: ConnectLocFailed.fromJson((json['failed'] as Map).cast<String, dynamic>()),
+      withIp: ConnectLocWithIp.fromJson(
+          (json['with_ip'] as Map).cast<String, dynamic>()),
+      withMdns: ConnectLocWithMdns.fromJson(
+          (json['with_mdns'] as Map).cast<String, dynamic>()),
+      qrPair: ConnectLocQrPair.fromJson(
+          (json['qr_pair'] as Map).cast<String, dynamic>()),
+      unauthenticated: ConnectLocUnauthenticated.fromJson(
+          (json['unauthenticated'] as Map).cast<String, dynamic>()),
+      failed: ConnectLocFailed.fromJson(
+          (json['failed'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
@@ -4401,8 +4586,10 @@ class ConnectLocWithIp {
     return ConnectLocWithIp(
       label: (json['label'] ?? '').toString(),
       connect: (json['connect'] ?? '').toString(),
-      connected: ({required String to}) =>
-          (json['connected'] ?? '').toString().replaceAll(r'${to}', to).replaceAll(_variableRegExp, ''),
+      connected: ({required String to}) => (json['connected'] ?? '')
+          .toString()
+          .replaceAll(r'${to}', to)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String label;
@@ -4449,9 +4636,12 @@ class ConnectLocWithMdns {
   });
   factory ConnectLocWithMdns.fromJson(Map<String, dynamic> json) {
     return ConnectLocWithMdns(
-      label: ({required String count}) =>
-          (json['label'] ?? '').toString().replaceAll(r'${count}', count).replaceAll(_variableRegExp, ''),
-      info: ConnectLocWithMdnsInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      label: ({required String count}) => (json['label'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
+      info: ConnectLocWithMdnsInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final String Function({required String count}) label;
@@ -4549,7 +4739,8 @@ class ConnectLocQrPair {
     return ConnectLocQrPair(
       label: (json['label'] ?? '').toString(),
       pair: (json['pair'] ?? '').toString(),
-      status: ConnectLocQrPairStatus.fromJson((json['status'] as Map).cast<String, dynamic>()),
+      status: ConnectLocQrPairStatus.fromJson(
+          (json['status'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -4644,7 +4835,8 @@ class ConnectLocUnauthenticated {
   });
   factory ConnectLocUnauthenticated.fromJson(Map<String, dynamic> json) {
     return ConnectLocUnauthenticated(
-      info: ConnectLocUnauthenticatedInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: ConnectLocUnauthenticatedInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final ConnectLocUnauthenticatedInfo info;
@@ -4731,7 +4923,8 @@ class ConnectLocFailed {
   });
   factory ConnectLocFailed.fromJson(Map<String, dynamic> json) {
     return ConnectLocFailed(
-      info: ConnectLocFailedInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
+      info: ConnectLocFailedInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
     );
   }
   final ConnectLocFailedInfo info;
@@ -4882,10 +5075,14 @@ class ScrcpyManagerLoc {
     return ScrcpyManagerLoc(
       title: (json['title'] ?? '').toString(),
       check: (json['check'] ?? '').toString(),
-      current: ScrcpyManagerLocCurrent.fromJson((json['current'] as Map).cast<String, dynamic>()),
-      exec: ScrcpyManagerLocExec.fromJson((json['exec'] as Map).cast<String, dynamic>()),
-      infoPopup: ScrcpyManagerLocInfoPopup.fromJson((json['info_popup'] as Map).cast<String, dynamic>()),
-      updater: ScrcpyManagerLocUpdater.fromJson((json['updater'] as Map).cast<String, dynamic>()),
+      current: ScrcpyManagerLocCurrent.fromJson(
+          (json['current'] as Map).cast<String, dynamic>()),
+      exec: ScrcpyManagerLocExec.fromJson(
+          (json['exec'] as Map).cast<String, dynamic>()),
+      infoPopup: ScrcpyManagerLocInfoPopup.fromJson(
+          (json['info_popup'] as Map).cast<String, dynamic>()),
+      updater: ScrcpyManagerLocUpdater.fromJson(
+          (json['updater'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
@@ -5123,8 +5320,10 @@ class SettingsLoc {
   factory SettingsLoc.fromJson(Map<String, dynamic> json) {
     return SettingsLoc(
       title: (json['title'] ?? '').toString(),
-      looks: SettingsLocLooks.fromJson((json['looks'] as Map).cast<String, dynamic>()),
-      behavior: SettingsLocBehavior.fromJson((json['behavior'] as Map).cast<String, dynamic>()),
+      looks: SettingsLocLooks.fromJson(
+          (json['looks'] as Map).cast<String, dynamic>()),
+      behavior: SettingsLocBehavior.fromJson(
+          (json['behavior'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
@@ -5176,10 +5375,14 @@ class SettingsLocLooks {
   factory SettingsLocLooks.fromJson(Map<String, dynamic> json) {
     return SettingsLocLooks(
       label: (json['label'] ?? '').toString(),
-      mode: SettingsLocLooksMode.fromJson((json['mode'] as Map).cast<String, dynamic>()),
-      cornerRadius: SettingsLocLooksCornerRadius.fromJson((json['corner_radius'] as Map).cast<String, dynamic>()),
-      accentColor: SettingsLocLooksAccentColor.fromJson((json['accent_color'] as Map).cast<String, dynamic>()),
-      tintLevel: SettingsLocLooksTintLevel.fromJson((json['tint_level'] as Map).cast<String, dynamic>()),
+      mode: SettingsLocLooksMode.fromJson(
+          (json['mode'] as Map).cast<String, dynamic>()),
+      cornerRadius: SettingsLocLooksCornerRadius.fromJson(
+          (json['corner_radius'] as Map).cast<String, dynamic>()),
+      accentColor: SettingsLocLooksAccentColor.fromJson(
+          (json['accent_color'] as Map).cast<String, dynamic>()),
+      tintLevel: SettingsLocLooksTintLevel.fromJson(
+          (json['tint_level'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -5234,7 +5437,8 @@ class SettingsLocLooksMode {
   factory SettingsLocLooksMode.fromJson(Map<String, dynamic> json) {
     return SettingsLocLooksMode(
       label: (json['label'] ?? '').toString(),
-      value: SettingsLocLooksModeValue.fromJson((json['value'] as Map).cast<String, dynamic>()),
+      value: SettingsLocLooksModeValue.fromJson(
+          (json['value'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -5453,8 +5657,10 @@ class SettingsLocBehavior {
   factory SettingsLocBehavior.fromJson(Map<String, dynamic> json) {
     return SettingsLocBehavior(
       label: (json['label'] ?? '').toString(),
-      language: SettingsLocBehaviorLanguage.fromJson((json['language'] as Map).cast<String, dynamic>()),
-      minimize: SettingsLocBehaviorMinimize.fromJson((json['minimize'] as Map).cast<String, dynamic>()),
+      language: SettingsLocBehaviorLanguage.fromJson(
+          (json['language'] as Map).cast<String, dynamic>()),
+      minimize: SettingsLocBehaviorMinimize.fromJson(
+          (json['minimize'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -5548,7 +5754,8 @@ class SettingsLocBehaviorMinimize {
   factory SettingsLocBehaviorMinimize.fromJson(Map<String, dynamic> json) {
     return SettingsLocBehaviorMinimize(
       label: (json['label'] ?? '').toString(),
-      value: SettingsLocBehaviorMinimizeValue.fromJson((json['value'] as Map).cast<String, dynamic>()),
+      value: SettingsLocBehaviorMinimizeValue.fromJson(
+          (json['value'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -5693,8 +5900,10 @@ class QuitDialogLoc {
   factory QuitDialogLoc.fromJson(Map<String, dynamic> json) {
     return QuitDialogLoc(
       title: (json['title'] ?? '').toString(),
-      killRunning: QuitDialogLocKillRunning.fromJson((json['kill_running'] as Map).cast<String, dynamic>()),
-      disconnect: QuitDialogLocDisconnect.fromJson((json['disconnect'] as Map).cast<String, dynamic>()),
+      killRunning: QuitDialogLocKillRunning.fromJson(
+          (json['kill_running'] as Map).cast<String, dynamic>()),
+      disconnect: QuitDialogLocDisconnect.fromJson(
+          (json['disconnect'] as Map).cast<String, dynamic>()),
     );
   }
   final String title;
@@ -5743,8 +5952,10 @@ class QuitDialogLocKillRunning {
   factory QuitDialogLocKillRunning.fromJson(Map<String, dynamic> json) {
     return QuitDialogLocKillRunning(
       label: (json['label'] ?? '').toString(),
-      info: ({required String count}) =>
-          (json['info'] ?? '').toString().replaceAll(r'${count}', count).replaceAll(_variableRegExp, ''),
+      info: ({required String count}) => (json['info'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String label;
@@ -5790,8 +6001,10 @@ class QuitDialogLocDisconnect {
   factory QuitDialogLocDisconnect.fromJson(Map<String, dynamic> json) {
     return QuitDialogLocDisconnect(
       label: (json['label'] ?? '').toString(),
-      info: ({required String count}) =>
-          (json['info'] ?? '').toString().replaceAll(r'${count}', count).replaceAll(_variableRegExp, ''),
+      info: ({required String count}) => (json['info'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
     );
   }
   final String label;
@@ -5836,9 +6049,12 @@ class DisconnectDialogLoc {
   });
   factory DisconnectDialogLoc.fromJson(Map<String, dynamic> json) {
     return DisconnectDialogLoc(
-      title: ({required String name}) =>
-          (json['title'] ?? '').toString().replaceAll(r'${name}', name).replaceAll(_variableRegExp, ''),
-      hasRunning: DisconnectDialogLocHasRunning.fromJson((json['has_running'] as Map).cast<String, dynamic>()),
+      title: ({required String name}) => (json['title'] ?? '')
+          .toString()
+          .replaceAll(r'${name}', name)
+          .replaceAll(_variableRegExp, ''),
+      hasRunning: DisconnectDialogLocHasRunning.fromJson(
+          (json['has_running'] as Map).cast<String, dynamic>()),
     );
   }
   final String Function({required String name}) title;
@@ -5884,11 +6100,12 @@ class DisconnectDialogLocHasRunning {
   });
   factory DisconnectDialogLocHasRunning.fromJson(Map<String, dynamic> json) {
     return DisconnectDialogLocHasRunning(
-      label: ({required String name, required String count}) => (json['label'] ?? '')
-          .toString()
-          .replaceAll(r'${name}', name)
-          .replaceAll(r'${count}', count)
-          .replaceAll(_variableRegExp, ''),
+      label: ({required String name, required String count}) =>
+          (json['label'] ?? '')
+              .toString()
+              .replaceAll(r'${name}', name)
+              .replaceAll(r'${count}', count)
+              .replaceAll(_variableRegExp, ''),
       info: (json['info'] ?? '').toString(),
     );
   }
@@ -5931,6 +6148,7 @@ class CloseDialogLoc {
   const CloseDialogLoc({
     required this.notAllowed,
     required this.overwrite,
+    required this.nameExist,
     required this.save,
     required this.commandPreview,
     required this.name,
@@ -5939,6 +6157,7 @@ class CloseDialogLoc {
     return CloseDialogLoc(
       notAllowed: (json['not_allowed'] ?? '').toString(),
       overwrite: (json['overwrite'] ?? '').toString(),
+      nameExist: (json['name_exist'] ?? '').toString(),
       save: (json['save'] ?? '').toString(),
       commandPreview: (json['command_preview'] ?? '').toString(),
       name: (json['name'] ?? '').toString(),
@@ -5946,12 +6165,14 @@ class CloseDialogLoc {
   }
   final String notAllowed;
   final String overwrite;
+  final String nameExist;
   final String save;
   final String commandPreview;
   final String name;
   Map<String, Object> get _content => {
         r'''not_allowed''': notAllowed,
         r'''overwrite''': overwrite,
+        r'''name_exist''': nameExist,
         r'''save''': save,
         r'''command_preview''': commandPreview,
         r'''name''': name,
@@ -6328,6 +6549,7 @@ class LocalizationMessages {
     required this.deviceSettingsLoc,
     required this.configScreenLoc,
     required this.logScreenLoc,
+    required this.renameSection,
     required this.modeSection,
     required this.videoSection,
     required this.audioSection,
@@ -6351,36 +6573,66 @@ class LocalizationMessages {
   });
   factory LocalizationMessages.fromJson(Map<String, dynamic> json) {
     return LocalizationMessages(
-      homeLoc: HomeLoc.fromJson((json['home_loc'] as Map).cast<String, dynamic>()),
-      deviceTileLoc: DeviceTileLoc.fromJson((json['device_tile_loc'] as Map).cast<String, dynamic>()),
-      deviceControlDialogLoc:
-          DeviceControlDialogLoc.fromJson((json['device_control_dialog_loc'] as Map).cast<String, dynamic>()),
-      configLoc: ConfigLoc.fromJson((json['config_loc'] as Map).cast<String, dynamic>()),
-      noDeviceDialogLoc: NoDeviceDialogLoc.fromJson((json['no_device_dialog_loc'] as Map).cast<String, dynamic>()),
-      noConfigDialogLoc: NoConfigDialogLoc.fromJson((json['no_config_dialog_loc'] as Map).cast<String, dynamic>()),
-      deviceSettingsLoc: DeviceSettingsLoc.fromJson((json['device_settings_loc'] as Map).cast<String, dynamic>()),
-      configScreenLoc: ConfigScreenLoc.fromJson((json['config_screen_loc'] as Map).cast<String, dynamic>()),
-      logScreenLoc: LogScreenLoc.fromJson((json['log_screen_loc'] as Map).cast<String, dynamic>()),
-      modeSection: ModeSection.fromJson((json['mode_section'] as Map).cast<String, dynamic>()),
-      videoSection: VideoSection.fromJson((json['video_section'] as Map).cast<String, dynamic>()),
-      audioSection: AudioSection.fromJson((json['audio_section'] as Map).cast<String, dynamic>()),
-      appSection: AppSection.fromJson((json['app_section'] as Map).cast<String, dynamic>()),
-      deviceSection: DeviceSection.fromJson((json['device_section'] as Map).cast<String, dynamic>()),
-      windowSection: WindowSection.fromJson((json['window_section'] as Map).cast<String, dynamic>()),
-      addFlags: AddFlags.fromJson((json['add_flags'] as Map).cast<String, dynamic>()),
-      connectLoc: ConnectLoc.fromJson((json['connect_loc'] as Map).cast<String, dynamic>()),
-      testConfigLoc: TestConfigLoc.fromJson((json['test_config_loc'] as Map).cast<String, dynamic>()),
-      scrcpyManagerLoc: ScrcpyManagerLoc.fromJson((json['scrcpy_manager_loc'] as Map).cast<String, dynamic>()),
-      settingsLoc: SettingsLoc.fromJson((json['settings_loc'] as Map).cast<String, dynamic>()),
-      aboutLoc: AboutLoc.fromJson((json['about_loc'] as Map).cast<String, dynamic>()),
-      quitDialogLoc: QuitDialogLoc.fromJson((json['quit_dialog_loc'] as Map).cast<String, dynamic>()),
-      disconnectDialogLoc: DisconnectDialogLoc.fromJson((json['disconnect_dialog_loc'] as Map).cast<String, dynamic>()),
-      closeDialogLoc: CloseDialogLoc.fromJson((json['close_dialog_loc'] as Map).cast<String, dynamic>()),
-      ipHistoryLoc: IpHistoryLoc.fromJson((json['ip_history_loc'] as Map).cast<String, dynamic>()),
-      buttonLabelLoc: ButtonLabelLoc.fromJson((json['button_label_loc'] as Map).cast<String, dynamic>()),
-      statusLoc: StatusLoc.fromJson((json['status_loc'] as Map).cast<String, dynamic>()),
-      commonLoc: CommonLoc.fromJson((json['common_loc'] as Map).cast<String, dynamic>()),
-      colorSchemeNameLoc: ColorSchemeNameLoc.fromJson((json['color_scheme_name_loc'] as Map).cast<String, dynamic>()),
+      homeLoc:
+          HomeLoc.fromJson((json['home_loc'] as Map).cast<String, dynamic>()),
+      deviceTileLoc: DeviceTileLoc.fromJson(
+          (json['device_tile_loc'] as Map).cast<String, dynamic>()),
+      deviceControlDialogLoc: DeviceControlDialogLoc.fromJson(
+          (json['device_control_dialog_loc'] as Map).cast<String, dynamic>()),
+      configLoc: ConfigLoc.fromJson(
+          (json['config_loc'] as Map).cast<String, dynamic>()),
+      noDeviceDialogLoc: NoDeviceDialogLoc.fromJson(
+          (json['no_device_dialog_loc'] as Map).cast<String, dynamic>()),
+      noConfigDialogLoc: NoConfigDialogLoc.fromJson(
+          (json['no_config_dialog_loc'] as Map).cast<String, dynamic>()),
+      deviceSettingsLoc: DeviceSettingsLoc.fromJson(
+          (json['device_settings_loc'] as Map).cast<String, dynamic>()),
+      configScreenLoc: ConfigScreenLoc.fromJson(
+          (json['config_screen_loc'] as Map).cast<String, dynamic>()),
+      logScreenLoc: LogScreenLoc.fromJson(
+          (json['log_screen_loc'] as Map).cast<String, dynamic>()),
+      renameSection: RenameSection.fromJson(
+          (json['rename_section'] as Map).cast<String, dynamic>()),
+      modeSection: ModeSection.fromJson(
+          (json['mode_section'] as Map).cast<String, dynamic>()),
+      videoSection: VideoSection.fromJson(
+          (json['video_section'] as Map).cast<String, dynamic>()),
+      audioSection: AudioSection.fromJson(
+          (json['audio_section'] as Map).cast<String, dynamic>()),
+      appSection: AppSection.fromJson(
+          (json['app_section'] as Map).cast<String, dynamic>()),
+      deviceSection: DeviceSection.fromJson(
+          (json['device_section'] as Map).cast<String, dynamic>()),
+      windowSection: WindowSection.fromJson(
+          (json['window_section'] as Map).cast<String, dynamic>()),
+      addFlags:
+          AddFlags.fromJson((json['add_flags'] as Map).cast<String, dynamic>()),
+      connectLoc: ConnectLoc.fromJson(
+          (json['connect_loc'] as Map).cast<String, dynamic>()),
+      testConfigLoc: TestConfigLoc.fromJson(
+          (json['test_config_loc'] as Map).cast<String, dynamic>()),
+      scrcpyManagerLoc: ScrcpyManagerLoc.fromJson(
+          (json['scrcpy_manager_loc'] as Map).cast<String, dynamic>()),
+      settingsLoc: SettingsLoc.fromJson(
+          (json['settings_loc'] as Map).cast<String, dynamic>()),
+      aboutLoc:
+          AboutLoc.fromJson((json['about_loc'] as Map).cast<String, dynamic>()),
+      quitDialogLoc: QuitDialogLoc.fromJson(
+          (json['quit_dialog_loc'] as Map).cast<String, dynamic>()),
+      disconnectDialogLoc: DisconnectDialogLoc.fromJson(
+          (json['disconnect_dialog_loc'] as Map).cast<String, dynamic>()),
+      closeDialogLoc: CloseDialogLoc.fromJson(
+          (json['close_dialog_loc'] as Map).cast<String, dynamic>()),
+      ipHistoryLoc: IpHistoryLoc.fromJson(
+          (json['ip_history_loc'] as Map).cast<String, dynamic>()),
+      buttonLabelLoc: ButtonLabelLoc.fromJson(
+          (json['button_label_loc'] as Map).cast<String, dynamic>()),
+      statusLoc: StatusLoc.fromJson(
+          (json['status_loc'] as Map).cast<String, dynamic>()),
+      commonLoc: CommonLoc.fromJson(
+          (json['common_loc'] as Map).cast<String, dynamic>()),
+      colorSchemeNameLoc: ColorSchemeNameLoc.fromJson(
+          (json['color_scheme_name_loc'] as Map).cast<String, dynamic>()),
     );
   }
   final HomeLoc homeLoc;
@@ -6400,6 +6652,8 @@ class LocalizationMessages {
   final ConfigScreenLoc configScreenLoc;
 
   final LogScreenLoc logScreenLoc;
+
+  final RenameSection renameSection;
 
   final ModeSection modeSection;
 
@@ -6451,6 +6705,7 @@ class LocalizationMessages {
         r'''device_settings_loc''': deviceSettingsLoc,
         r'''config_screen_loc''': configScreenLoc,
         r'''log_screen_loc''': logScreenLoc,
+        r'''rename_section''': renameSection,
         r'''mode_section''': modeSection,
         r'''video_section''': videoSection,
         r'''audio_section''': audioSection,
@@ -6535,9 +6790,11 @@ final LocalizationMessages en = LocalizationMessages(
   ),
   noDeviceDialogLoc: NoDeviceDialogLoc(
     title: 'Device',
-    contentsEdit: '''No device selected. \nSelect a device to edit scrcpy config.''',
+    contentsEdit:
+        '''No device selected. \nSelect a device to edit scrcpy config.''',
     contentsStart: '''No device selected. \nSelect a device to start scrcpy.''',
-    contentsNew: '''No device selected. \nSelect a device to create scrcpy config.''',
+    contentsNew:
+        '''No device selected. \nSelect a device to create scrcpy config.''',
   ),
   noConfigDialogLoc: NoConfigDialogLoc(
     title: 'Config',
@@ -6582,6 +6839,9 @@ final LocalizationMessages en = LocalizationMessages(
     dialog: LogScreenLocDialog(
       title: 'Command',
     ),
+  ),
+  renameSection: RenameSection(
+    title: 'Rename',
   ),
   modeSection: ModeSection(
     title: 'Mode',
@@ -6628,7 +6888,8 @@ final LocalizationMessages en = LocalizationMessages(
           label: 'Resolution',
           info: VideoSectionDisplaysVirtualResolutionInfo(
             default$: '''defaults to device's resolution''',
-            alt: ({required String res}) => '''appends resolution to '--new-display=${res}' flag''',
+            alt: ({required String res}) =>
+                '''appends resolution to '--new-display=${res}' flag''',
           ),
         ),
         dpi: VideoSectionDisplaysVirtualDpi(
@@ -6649,8 +6910,10 @@ final LocalizationMessages en = LocalizationMessages(
         preserve: VideoSectionDisplaysVirtualPreserve(
           label: 'Preserve app',
           info: VideoSectionDisplaysVirtualPreserveInfo(
-            default$: 'apps are destroyed by default when a scrcpy session ends',
-            alt: '''move app to main display when session ends; uses '--no-vd-destroy-content' flag''',
+            default$:
+                'apps are destroyed by default when a scrcpy session ends',
+            alt:
+                '''move app to main display when session ends; uses '--no-vd-destroy-content' flag''',
           ),
         ),
       ),
@@ -6659,27 +6922,31 @@ final LocalizationMessages en = LocalizationMessages(
       label: 'Codec',
       info: VideoSectionCodecInfo(
         default$: 'defaults to h264, no flag',
-        alt: ({required String codec}) => '''uses '--video-codec=${codec}' flag ''',
+        alt: ({required String codec}) =>
+            '''uses '--video-codec=${codec}' flag ''',
       ),
     ),
     encoder: VideoSectionEncoder(
       label: 'Encoder',
       info: VideoSectionEncoderInfo(
         default$: 'defaults to first available, no flag',
-        alt: ({required String encoder}) => '''uses '--video-encoder=${encoder}' flag ''',
+        alt: ({required String encoder}) =>
+            '''uses '--video-encoder=${encoder}' flag ''',
       ),
     ),
     format: VideoSectionFormat(
       label: 'Format',
       info: VideoSectionFormatInfo(
-        default$: ({required String format}) => '''appends format to '--record=savepath/file${format}' "''',
+        default$: ({required String format}) =>
+            '''appends format to '--record=savepath/file${format}' "''',
       ),
     ),
     bitrate: VideoSectionBitrate(
       label: 'Bitrate',
       info: VideoSectionBitrateInfo(
         default$: 'defaults to 8M, no flag',
-        alt: ({required String bitrate}) => '''uses '--video-bit-rate=${bitrate}M' flag ''',
+        alt: ({required String bitrate}) =>
+            '''uses '--video-bit-rate=${bitrate}M' flag ''',
       ),
     ),
     fpsLimit: VideoSectionFpsLimit(
@@ -6692,7 +6959,8 @@ final LocalizationMessages en = LocalizationMessages(
     resolutionScale: VideoSectionResolutionScale(
       label: 'Resolution scale',
       info: VideoSectionResolutionScaleInfo(
-        default$: '''calculated based on device's resolution, no flag unless set''',
+        default$:
+            '''calculated based on device's resolution, no flag unless set''',
         alt: ({required String size}) => '''uses '--max-size=${size}' flag ''',
       ),
     ),
@@ -6718,7 +6986,8 @@ final LocalizationMessages en = LocalizationMessages(
       label: 'Codec',
       info: AudioSectionCodecInfo(
         default$: 'defaults to opus, no flag',
-        alt: ({required String codec}) => '''uses '--audio-codec=${codec}' flag ''',
+        alt: ({required String codec}) =>
+            '''uses '--audio-codec=${codec}' flag ''',
         isAudioOnly: ({required String format, required String codec}) =>
             '''Format: ${format}, requires Codec: ${codec}''',
       ),
@@ -6727,20 +6996,23 @@ final LocalizationMessages en = LocalizationMessages(
       label: 'Encoder',
       info: AudioSectionEncoderInfo(
         default$: 'defaults to first available, no flag',
-        alt: ({required String encoder}) => '''uses '--audio-encoder=${encoder}' flag ''',
+        alt: ({required String encoder}) =>
+            '''uses '--audio-encoder=${encoder}' flag ''',
       ),
     ),
     format: AudioSectionFormat(
       label: 'Format',
       info: AudioSectionFormatInfo(
-        default$: ({required String format}) => '''appends format to '--record=savepath/file.${format}' "''',
+        default$: ({required String format}) =>
+            '''appends format to '--record=savepath/file.${format}' "''',
       ),
     ),
     bitrate: AudioSectionBitrate(
       label: 'Bitrate',
       info: AudioSectionBitrateInfo(
         default$: 'defaults to 128k, no flag',
-        alt: ({required String bitrate}) => '''uses '--audio-bit-rate=${bitrate}K' flag ''',
+        alt: ({required String bitrate}) =>
+            '''uses '--audio-bit-rate=${bitrate}K' flag ''',
       ),
     ),
   ),
@@ -6765,14 +7037,16 @@ final LocalizationMessages en = LocalizationMessages(
     stayAwake: DeviceSectionStayAwake(
       label: 'Stay awake',
       info: DeviceSectionStayAwakeInfo(
-        default$: 'prevent the device from sleeping, only works with usb connection',
+        default$:
+            'prevent the device from sleeping, only works with usb connection',
         alt: '''uses '--stay-awake' flag ''',
       ),
     ),
     showTouches: DeviceSectionShowTouches(
       label: 'Show touches',
       info: DeviceSectionShowTouchesInfo(
-        default$: 'show finger touches, only works with physical touches on the device',
+        default$:
+            'show finger touches, only works with physical touches on the device',
         alt: '''uses '--show-touches' flag ''',
       ),
     ),
@@ -6825,7 +7099,8 @@ final LocalizationMessages en = LocalizationMessages(
       label: 'Time limit',
       info: WindowSectionTimeLimitInfo(
         default$: 'limits scrcpy session, in seconds',
-        alt: ({required String time}) => '''uses '--time-limit=${time}' flag ''',
+        alt: ({required String time}) =>
+            '''uses '--time-limit=${time}' flag ''',
       ),
     ),
   ),
@@ -6945,7 +7220,8 @@ final LocalizationMessages en = LocalizationMessages(
     title: 'Quit Scrcpy GUI?',
     killRunning: QuitDialogLocKillRunning(
       label: 'Kill running?',
-      info: ({required String count}) => '''${count} scrcpy(s). Scrcpys with no window will be killed regardless''',
+      info: ({required String count}) =>
+          '''${count} scrcpy(s). Scrcpys with no window will be killed regardless''',
     ),
     disconnect: QuitDialogLocDisconnect(
       label: 'Disconnect wireless ADB?',
@@ -6955,13 +7231,15 @@ final LocalizationMessages en = LocalizationMessages(
   disconnectDialogLoc: DisconnectDialogLoc(
     title: ({required String name}) => '''Disconnect ${name}?''',
     hasRunning: DisconnectDialogLocHasRunning(
-      label: ({required String name, required String count}) => '''${name} has ${count} running scrcpy(s)''',
+      label: ({required String name, required String count}) =>
+          '''${name} has ${count} running scrcpy(s)''',
       info: 'Disconnecting will kill the scrcpy(s)',
     ),
   ),
   closeDialogLoc: CloseDialogLoc(
     notAllowed: 'Not allowed!',
     overwrite: 'Overwrite?',
+    nameExist: 'Name already exists!',
     save: 'Save config?',
     commandPreview: 'Command preview:',
     name: 'Name:',
@@ -7018,11 +7296,13 @@ final LocalizationMessages es = LocalizationMessages(
   homeLoc: HomeLoc(
     title: 'Inicio',
     devices: HomeLocDevices(
-      label: ({required String count}) => '''Dispositivos conectados (${count})''',
+      label: ({required String count}) =>
+          '''Dispositivos conectados (${count})''',
     ),
   ),
   deviceTileLoc: DeviceTileLoc(
-    runningInstances: ({required String count}) => '''En ejecución (${count})''',
+    runningInstances: ({required String count}) =>
+        '''En ejecución (${count})''',
     context: DeviceTileLocContext(
       disconnect: 'Desconectar',
       toWireless: 'A inalámbrico',
@@ -7051,13 +7331,15 @@ final LocalizationMessages es = LocalizationMessages(
     title: 'Dispositivo',
     contentsEdit:
         '''Ningún dispositivo seleccionado. \nSeleccione un dispositivo para editar la configuración de scrcpy.''',
-    contentsStart: '''Ningún dispositivo seleccionado. \nSeleccione un dispositivo para iniciar scrcpy.''',
+    contentsStart:
+        '''Ningún dispositivo seleccionado. \nSeleccione un dispositivo para iniciar scrcpy.''',
     contentsNew:
         '''Ningún dispositivo seleccionado. \nSeleccione un dispositivo para crear la configuración de scrcpy.''',
   ),
   noConfigDialogLoc: NoConfigDialogLoc(
     title: 'Configuración',
-    contents: '''Ninguna configuración seleccionada.\nSeleccione una configuración de scrcpy para iniciar.''',
+    contents:
+        '''Ninguna configuración seleccionada.\nSeleccione una configuración de scrcpy para iniciar.''',
   ),
   deviceSettingsLoc: DeviceSettingsLoc(
     title: 'Ajustes',
@@ -7073,7 +7355,8 @@ final LocalizationMessages es = LocalizationMessages(
     ),
     onConnected: DeviceSettingsLocOnConnected(
       label: 'Al conectar',
-      info: 'Iniciar (1) scrcpy con la configuración seleccionada al conectar el dispositivo',
+      info:
+          'Iniciar (1) scrcpy con la configuración seleccionada al conectar el dispositivo',
     ),
     doNothing: 'No hacer nada',
     scrcpyInfo: DeviceSettingsLocScrcpyInfo(
@@ -7082,11 +7365,14 @@ final LocalizationMessages es = LocalizationMessages(
       name: ({required String name}) => '''Nombre: ${name}''',
       id: ({required String id}) => '''ID: ${id}''',
       model: ({required String model}) => '''Modelo: ${model}''',
-      version: ({required String version}) => '''Versión de Android: ${version}''',
+      version: ({required String version}) =>
+          '''Versión de Android: ${version}''',
       displays: ({required String count}) => '''Pantallas (${count})''',
       cameras: ({required String count}) => '''Cámaras (${count})''',
-      videoEnc: ({required String count}) => '''Codificadores de vídeo (${count})''',
-      audioEnc: ({required String count}) => '''Codificadores de audio (${count})''',
+      videoEnc: ({required String count}) =>
+          '''Codificadores de vídeo (${count})''',
+      audioEnc: ({required String count}) =>
+          '''Codificadores de audio (${count})''',
     ),
   ),
   configScreenLoc: ConfigScreenLoc(
@@ -7099,11 +7385,15 @@ final LocalizationMessages es = LocalizationMessages(
       title: 'Comando',
     ),
   ),
+  renameSection: RenameSection(
+    title: 'Renombrar',
+  ),
   modeSection: ModeSection(
     title: 'Modo',
     saveFolder: ModeSectionSaveFolder(
       label: 'Carpeta de guardado',
-      info: '''agrega la ruta de guardado a '--record=rutadeguardado/archivo' ''',
+      info:
+          '''agrega la ruta de guardado a '--record=rutadeguardado/archivo' ''',
     ),
     mainMode: ModeSectionMainMode(
       label: 'Modo',
@@ -7120,7 +7410,8 @@ final LocalizationMessages es = LocalizationMessages(
       videoOnly: 'Solo vídeo',
       info: ModeSectionScrcpyModeInfo(
         default$: 'por defecto ambos, sin indicador',
-        alt: ({required String command}) => '''usa el indicador '${command}' ''',
+        alt: ({required String command}) =>
+            '''usa el indicador '${command}' ''',
       ),
     ),
   ),
@@ -7144,7 +7435,8 @@ final LocalizationMessages es = LocalizationMessages(
           label: 'Resolución',
           info: VideoSectionDisplaysVirtualResolutionInfo(
             default$: 'por defecto la resolución del dispositivo',
-            alt: ({required String res}) => '''agrega la resolución al indicador '--new-display=${res}' ''',
+            alt: ({required String res}) =>
+                '''agrega la resolución al indicador '--new-display=${res}' ''',
           ),
         ),
         dpi: VideoSectionDisplaysVirtualDpi(
@@ -7165,7 +7457,8 @@ final LocalizationMessages es = LocalizationMessages(
         preserve: VideoSectionDisplaysVirtualPreserve(
           label: 'Preservar aplicación',
           info: VideoSectionDisplaysVirtualPreserveInfo(
-            default$: 'las aplicaciones se destruyen por defecto cuando una sesión de scrcpy termina',
+            default$:
+                'las aplicaciones se destruyen por defecto cuando una sesión de scrcpy termina',
             alt:
                 '''mueve la aplicación a la pantalla principal cuando la sesión termina; usa el indicador '--no-vd-destroy-content' ''',
           ),
@@ -7176,41 +7469,48 @@ final LocalizationMessages es = LocalizationMessages(
       label: 'Códec',
       info: VideoSectionCodecInfo(
         default$: 'por defecto h264, sin indicador',
-        alt: ({required String codec}) => '''usa el indicador '--video-codec=${codec}' ''',
+        alt: ({required String codec}) =>
+            '''usa el indicador '--video-codec=${codec}' ''',
       ),
     ),
     encoder: VideoSectionEncoder(
       label: 'Codificador',
       info: VideoSectionEncoderInfo(
         default$: 'por defecto el primero disponible, sin indicador',
-        alt: ({required String encoder}) => '''usa el indicador '--video-encoder=${encoder}' ''',
+        alt: ({required String encoder}) =>
+            '''usa el indicador '--video-encoder=${encoder}' ''',
       ),
     ),
     format: VideoSectionFormat(
       label: 'Formato',
       info: VideoSectionFormatInfo(
-        default$: ({required String format}) => '''agrega el formato a '--record=rutadeguardado/archivo${format}' "''',
+        default$: ({required String format}) =>
+            '''agrega el formato a '--record=rutadeguardado/archivo${format}' "''',
       ),
     ),
     bitrate: VideoSectionBitrate(
       label: 'Tasa de bits',
       info: VideoSectionBitrateInfo(
         default$: 'por defecto 8M, sin indicador',
-        alt: ({required String bitrate}) => '''usa el indicador '--video-bit-rate=${bitrate}M' ''',
+        alt: ({required String bitrate}) =>
+            '''usa el indicador '--video-bit-rate=${bitrate}M' ''',
       ),
     ),
     fpsLimit: VideoSectionFpsLimit(
       label: 'Límite de FPS',
       info: VideoSectionFpsLimitInfo(
         default$: 'sin indicador a menos que se establezca',
-        alt: ({required String fps}) => '''usa el indicador '--max-fps=${fps}' ''',
+        alt: ({required String fps}) =>
+            '''usa el indicador '--max-fps=${fps}' ''',
       ),
     ),
     resolutionScale: VideoSectionResolutionScale(
       label: 'Escala de resolución',
       info: VideoSectionResolutionScaleInfo(
-        default$: 'calculada en base a la resolución del dispositivo, sin indicador a menos que se establezca',
-        alt: ({required String size}) => '''usa el indicador '--max-size=${size}' ''',
+        default$:
+            'calculada en base a la resolución del dispositivo, sin indicador a menos que se establezca',
+        alt: ({required String size}) =>
+            '''usa el indicador '--max-size=${size}' ''',
       ),
     ),
   ),
@@ -7228,14 +7528,16 @@ final LocalizationMessages es = LocalizationMessages(
       info: AudioSectionSourceInfo(
         default$: 'por defecto salida, sin indicador',
         alt: ({required String source}) => '''usa el indicador '${source}' ''',
-        inCaseOfDup: '''implicado a 'Reproducción' con '--audio-dup', sin indicador''',
+        inCaseOfDup:
+            '''implicado a 'Reproducción' con '--audio-dup', sin indicador''',
       ),
     ),
     codec: AudioSectionCodec(
       label: 'Códec',
       info: AudioSectionCodecInfo(
         default$: 'por defecto opus, sin indicador',
-        alt: ({required String codec}) => '''usa el indicador '--audio-codec=${codec}' ''',
+        alt: ({required String codec}) =>
+            '''usa el indicador '--audio-codec=${codec}' ''',
         isAudioOnly: ({required String format, required String codec}) =>
             '''Formato: ${format}, requiere Códec: ${codec}''',
       ),
@@ -7244,20 +7546,23 @@ final LocalizationMessages es = LocalizationMessages(
       label: 'Codificador',
       info: AudioSectionEncoderInfo(
         default$: 'por defecto el primero disponible, sin indicador',
-        alt: ({required String encoder}) => '''usa el indicador '--audio-encoder=${encoder}' ''',
+        alt: ({required String encoder}) =>
+            '''usa el indicador '--audio-encoder=${encoder}' ''',
       ),
     ),
     format: AudioSectionFormat(
       label: 'Formato',
       info: AudioSectionFormatInfo(
-        default$: ({required String format}) => '''agrega el formato a '--record=rutadeguardado/archivo.${format}' "''',
+        default$: ({required String format}) =>
+            '''agrega el formato a '--record=rutadeguardado/archivo.${format}' "''',
       ),
     ),
     bitrate: AudioSectionBitrate(
       label: 'Tasa de bits',
       info: AudioSectionBitrateInfo(
         default$: 'por defecto 128k, sin indicador',
-        alt: ({required String bitrate}) => '''usa el indicador '--audio-bit-rate=${bitrate}K' ''',
+        alt: ({required String bitrate}) =>
+            '''usa el indicador '--audio-bit-rate=${bitrate}K' ''',
       ),
     ),
   ),
@@ -7266,8 +7571,10 @@ final LocalizationMessages es = LocalizationMessages(
     select: AppSectionSelect(
       label: 'Seleccionar una aplicación',
       info: AppSectionSelectInfo(
-        alt: ({required String app}) => '''usa el indicador '--start-app=${app}' ''',
-        fc: ({required String app}) => '''usa el indicador '--start-app=+${app}' ''',
+        alt: ({required String app}) =>
+            '''usa el indicador '--start-app=${app}' ''',
+        fc: ({required String app}) =>
+            '''usa el indicador '--start-app=+${app}' ''',
       ),
     ),
     forceClose: AppSectionForceClose(
@@ -7282,14 +7589,16 @@ final LocalizationMessages es = LocalizationMessages(
     stayAwake: DeviceSectionStayAwake(
       label: 'Mantener despierto',
       info: DeviceSectionStayAwakeInfo(
-        default$: 'evita que el dispositivo entre en suspensión, solo funciona con conexión usb',
+        default$:
+            'evita que el dispositivo entre en suspensión, solo funciona con conexión usb',
         alt: '''usa el indicador '--stay-awake' ''',
       ),
     ),
     showTouches: DeviceSectionShowTouches(
       label: 'Mostrar toques',
       info: DeviceSectionShowTouchesInfo(
-        default$: 'muestra los toques de los dedos, solo funciona con toques físicos en el dispositivo',
+        default$:
+            'muestra los toques de los dedos, solo funciona con toques físicos en el dispositivo',
         alt: '''usa el indicador '--show-touches' ''',
       ),
     ),
@@ -7342,7 +7651,8 @@ final LocalizationMessages es = LocalizationMessages(
       label: 'Límite de tiempo',
       info: WindowSectionTimeLimitInfo(
         default$: 'limita la sesión de scrcpy, en segundos',
-        alt: ({required String time}) => '''usa el indicador '--time-limit=${time}' ''',
+        alt: ({required String time}) =>
+            '''usa el indicador '--time-limit=${time}' ''',
       ),
     ),
   ),
@@ -7473,13 +7783,15 @@ final LocalizationMessages es = LocalizationMessages(
   disconnectDialogLoc: DisconnectDialogLoc(
     title: ({required String name}) => '''¿Desconectar ${name}?''',
     hasRunning: DisconnectDialogLocHasRunning(
-      label: ({required String name, required String count}) => '''${name} tiene ${count} scrcpy(s) en ejecución''',
+      label: ({required String name, required String count}) =>
+          '''${name} tiene ${count} scrcpy(s) en ejecución''',
       info: 'La desconexión detendrá scrcpy(s)',
     ),
   ),
   closeDialogLoc: CloseDialogLoc(
     notAllowed: '¡No permitido!',
     overwrite: '¿Sobrescribir?',
+    nameExist: '¡El nombre ya existe!',
     save: '¿Guardar configuración?',
     commandPreview: 'Vista previa del comando:',
     name: 'Nombre:',
@@ -7540,7 +7852,8 @@ final LocalizationMessages it = LocalizationMessages(
     ),
   ),
   deviceTileLoc: DeviceTileLoc(
-    runningInstances: ({required String count}) => '''In esecuzione (${count})''',
+    runningInstances: ({required String count}) =>
+        '''In esecuzione (${count})''',
     context: DeviceTileLocContext(
       disconnect: 'Disconnetti',
       toWireless: 'A wireless',
@@ -7569,13 +7882,15 @@ final LocalizationMessages it = LocalizationMessages(
     title: 'Dispositivo',
     contentsEdit:
         '''Nessun dispositivo selezionato. \nSeleziona un dispositivo per modificare la configurazione di scrcpy.''',
-    contentsStart: '''Nessun dispositivo selezionato. \nSeleziona un dispositivo per avviare scrcpy.''',
+    contentsStart:
+        '''Nessun dispositivo selezionato. \nSeleziona un dispositivo per avviare scrcpy.''',
     contentsNew:
         '''Nessun dispositivo selezionato. \nSeleziona un dispositivo per creare la configurazione di scrcpy.''',
   ),
   noConfigDialogLoc: NoConfigDialogLoc(
     title: 'Configurazione',
-    contents: '''Nessuna configurazione selezionata.\nSeleziona una configurazione di scrcpy da avviare.''',
+    contents:
+        '''Nessuna configurazione selezionata.\nSeleziona una configurazione di scrcpy da avviare.''',
   ),
   deviceSettingsLoc: DeviceSettingsLoc(
     title: 'Impostazioni',
@@ -7591,7 +7906,8 @@ final LocalizationMessages it = LocalizationMessages(
     ),
     onConnected: DeviceSettingsLocOnConnected(
       label: 'Alla connessione',
-      info: 'Avvia (1) scrcpy con la configurazione selezionata alla connessione del dispositivo',
+      info:
+          'Avvia (1) scrcpy con la configurazione selezionata alla connessione del dispositivo',
     ),
     doNothing: 'Non fare nulla',
     scrcpyInfo: DeviceSettingsLocScrcpyInfo(
@@ -7600,7 +7916,8 @@ final LocalizationMessages it = LocalizationMessages(
       name: ({required String name}) => '''Nome: ${name}''',
       id: ({required String id}) => '''ID: ${id}''',
       model: ({required String model}) => '''Modello: ${model}''',
-      version: ({required String version}) => '''Versione Android: ${version}''',
+      version: ({required String version}) =>
+          '''Versione Android: ${version}''',
       displays: ({required String count}) => '''Display (${count})''',
       cameras: ({required String count}) => '''Fotocamere (${count})''',
       videoEnc: ({required String count}) => '''Encoder video (${count})''',
@@ -7617,11 +7934,15 @@ final LocalizationMessages it = LocalizationMessages(
       title: 'Comando',
     ),
   ),
+  renameSection: RenameSection(
+    title: 'Rinomina',
+  ),
   modeSection: ModeSection(
     title: 'Modalità',
     saveFolder: ModeSectionSaveFolder(
       label: 'Cartella di salvataggio',
-      info: '''aggiunge il percorso di salvataggio a '--record=percorso_salvataggio/file' ''',
+      info:
+          '''aggiunge il percorso di salvataggio a '--record=percorso_salvataggio/file' ''',
     ),
     mainMode: ModeSectionMainMode(
       label: 'Modalità',
@@ -7662,7 +7983,8 @@ final LocalizationMessages it = LocalizationMessages(
           label: 'Risoluzione',
           info: VideoSectionDisplaysVirtualResolutionInfo(
             default$: 'predefinito sulla risoluzione del dispositivo',
-            alt: ({required String res}) => '''aggiunge la risoluzione al flag '--new-display=${res}' ''',
+            alt: ({required String res}) =>
+                '''aggiunge la risoluzione al flag '--new-display=${res}' ''',
           ),
         ),
         dpi: VideoSectionDisplaysVirtualDpi(
@@ -7683,7 +8005,8 @@ final LocalizationMessages it = LocalizationMessages(
         preserve: VideoSectionDisplaysVirtualPreserve(
           label: 'Mantieni app',
           info: VideoSectionDisplaysVirtualPreserveInfo(
-            default$: 'le app vengono distrutte per impostazione predefinita quando una sessione scrcpy termina',
+            default$:
+                'le app vengono distrutte per impostazione predefinita quando una sessione scrcpy termina',
             alt:
                 '''sposta l'app sul display principale al termine della sessione; usa il flag '--no-vd-destroy-content' ''',
           ),
@@ -7694,14 +8017,16 @@ final LocalizationMessages it = LocalizationMessages(
       label: 'Codec',
       info: VideoSectionCodecInfo(
         default$: 'predefinito su h264, nessun flag',
-        alt: ({required String codec}) => '''usa il flag '--video-codec=${codec}' ''',
+        alt: ({required String codec}) =>
+            '''usa il flag '--video-codec=${codec}' ''',
       ),
     ),
     encoder: VideoSectionEncoder(
       label: 'Encoder',
       info: VideoSectionEncoderInfo(
         default$: 'predefinito sul primo disponibile, nessun flag',
-        alt: ({required String encoder}) => '''usa il flag '--video-encoder=${encoder}' ''',
+        alt: ({required String encoder}) =>
+            '''usa il flag '--video-encoder=${encoder}' ''',
       ),
     ),
     format: VideoSectionFormat(
@@ -7715,7 +8040,8 @@ final LocalizationMessages it = LocalizationMessages(
       label: 'Bitrate',
       info: VideoSectionBitrateInfo(
         default$: 'predefinito su 8M, nessun flag',
-        alt: ({required String bitrate}) => '''usa il flag '--video-bit-rate=${bitrate}M' ''',
+        alt: ({required String bitrate}) =>
+            '''usa il flag '--video-bit-rate=${bitrate}M' ''',
       ),
     ),
     fpsLimit: VideoSectionFpsLimit(
@@ -7728,8 +8054,10 @@ final LocalizationMessages it = LocalizationMessages(
     resolutionScale: VideoSectionResolutionScale(
       label: 'Scala risoluzione',
       info: VideoSectionResolutionScaleInfo(
-        default$: 'calcolata in base alla risoluzione del dispositivo, nessun flag a meno che non sia impostato',
-        alt: ({required String size}) => '''usa il flag '--max-size=${size}' ''',
+        default$:
+            'calcolata in base alla risoluzione del dispositivo, nessun flag a meno che non sia impostato',
+        alt: ({required String size}) =>
+            '''usa il flag '--max-size=${size}' ''',
       ),
     ),
   ),
@@ -7747,14 +8075,16 @@ final LocalizationMessages it = LocalizationMessages(
       info: AudioSectionSourceInfo(
         default$: 'predefinito su output, nessun flag',
         alt: ({required String source}) => '''usa il flag '${source}' ''',
-        inCaseOfDup: '''implicito su 'Riproduzione' con '--audio-dup', nessun flag''',
+        inCaseOfDup:
+            '''implicito su 'Riproduzione' con '--audio-dup', nessun flag''',
       ),
     ),
     codec: AudioSectionCodec(
       label: 'Codec',
       info: AudioSectionCodecInfo(
         default$: 'predefinito su opus, nessun flag',
-        alt: ({required String codec}) => '''usa il flag '--audio-codec=${codec}' ''',
+        alt: ({required String codec}) =>
+            '''usa il flag '--audio-codec=${codec}' ''',
         isAudioOnly: ({required String format, required String codec}) =>
             '''Formato: ${format}, richiede Codec: ${codec}''',
       ),
@@ -7763,7 +8093,8 @@ final LocalizationMessages it = LocalizationMessages(
       label: 'Encoder',
       info: AudioSectionEncoderInfo(
         default$: 'predefinito sul primo disponibile, nessun flag',
-        alt: ({required String encoder}) => '''usa il flag '--audio-encoder=${encoder}' ''',
+        alt: ({required String encoder}) =>
+            '''usa il flag '--audio-encoder=${encoder}' ''',
       ),
     ),
     format: AudioSectionFormat(
@@ -7777,7 +8108,8 @@ final LocalizationMessages it = LocalizationMessages(
       label: 'Bitrate',
       info: AudioSectionBitrateInfo(
         default$: 'predefinito su 128k, nessun flag',
-        alt: ({required String bitrate}) => '''usa il flag '--audio-bit-rate=${bitrate}K' ''',
+        alt: ({required String bitrate}) =>
+            '''usa il flag '--audio-bit-rate=${bitrate}K' ''',
       ),
     ),
   ),
@@ -7802,14 +8134,16 @@ final LocalizationMessages it = LocalizationMessages(
     stayAwake: DeviceSectionStayAwake(
       label: 'Mantieni attivo',
       info: DeviceSectionStayAwakeInfo(
-        default$: 'impedisce al dispositivo di andare in sospensione, funziona solo con connessione USB',
+        default$:
+            'impedisce al dispositivo di andare in sospensione, funziona solo con connessione USB',
         alt: '''usa il flag '--stay-awake' ''',
       ),
     ),
     showTouches: DeviceSectionShowTouches(
       label: 'Mostra tocchi',
       info: DeviceSectionShowTouchesInfo(
-        default$: 'mostra i tocchi delle dita, funziona solo con tocchi fisici sul dispositivo',
+        default$:
+            'mostra i tocchi delle dita, funziona solo con tocchi fisici sul dispositivo',
         alt: '''usa il flag '--show-touches' ''',
       ),
     ),
@@ -7862,7 +8196,8 @@ final LocalizationMessages it = LocalizationMessages(
       label: 'Limite di tempo',
       info: WindowSectionTimeLimitInfo(
         default$: 'limita la sessione scrcpy, in secondi',
-        alt: ({required String time}) => '''usa il flag '--time-limit=${time}' ''',
+        alt: ({required String time}) =>
+            '''usa il flag '--time-limit=${time}' ''',
       ),
     ),
   ),
@@ -7993,13 +8328,15 @@ final LocalizationMessages it = LocalizationMessages(
   disconnectDialogLoc: DisconnectDialogLoc(
     title: ({required String name}) => '''Disconnettere ${name}?''',
     hasRunning: DisconnectDialogLocHasRunning(
-      label: ({required String name, required String count}) => '''${name} ha ${count} scrcpy(s) in esecuzione''',
+      label: ({required String name, required String count}) =>
+          '''${name} ha ${count} scrcpy(s) in esecuzione''',
       info: 'La disconnessione terminerà gli scrcpy(s)',
     ),
   ),
   closeDialogLoc: CloseDialogLoc(
     notAllowed: 'Non consentito!',
     overwrite: 'Sovrascrivere?',
+    nameExist: 'Nome già esistente!',
     save: 'Salvare configurazione?',
     commandPreview: 'Anteprima comando:',
     name: 'Nome:',
@@ -8056,11 +8393,13 @@ final LocalizationMessages ms = LocalizationMessages(
   homeLoc: HomeLoc(
     title: 'Laman Utama',
     devices: HomeLocDevices(
-      label: ({required String count}) => '''Peranti yang disambungkan (${count})''',
+      label: ({required String count}) =>
+          '''Peranti yang disambungkan (${count})''',
     ),
   ),
   deviceTileLoc: DeviceTileLoc(
-    runningInstances: ({required String count}) => '''Sedang Berjalan (${count})''',
+    runningInstances: ({required String count}) =>
+        '''Sedang Berjalan (${count})''',
     context: DeviceTileLocContext(
       disconnect: 'Putuskan Sambungan',
       toWireless: 'Ke Tanpa Wayar',
@@ -8087,13 +8426,17 @@ final LocalizationMessages ms = LocalizationMessages(
   ),
   noDeviceDialogLoc: NoDeviceDialogLoc(
     title: 'Peranti',
-    contentsEdit: '''Tiada peranti dipilih. \nPilih peranti untuk mengedit konfigurasi scrcpy.''',
-    contentsStart: '''Tiada peranti dipilih. \nPilih peranti untuk memulakan scrcpy.''',
-    contentsNew: '''Tiada peranti dipilih. \nPilih peranti untuk mencipta konfigurasi scrcpy.''',
+    contentsEdit:
+        '''Tiada peranti dipilih. \nPilih peranti untuk mengedit konfigurasi scrcpy.''',
+    contentsStart:
+        '''Tiada peranti dipilih. \nPilih peranti untuk memulakan scrcpy.''',
+    contentsNew:
+        '''Tiada peranti dipilih. \nPilih peranti untuk mencipta konfigurasi scrcpy.''',
   ),
   noConfigDialogLoc: NoConfigDialogLoc(
     title: 'Konfigurasi',
-    contents: '''Tiada konfigurasi dipilih.\nPilih konfigurasi scrcpy untuk dimulakan.''',
+    contents:
+        '''Tiada konfigurasi dipilih.\nPilih konfigurasi scrcpy untuk dimulakan.''',
   ),
   deviceSettingsLoc: DeviceSettingsLoc(
     title: 'Tetapan',
@@ -8109,7 +8452,8 @@ final LocalizationMessages ms = LocalizationMessages(
     ),
     onConnected: DeviceSettingsLocOnConnected(
       label: 'Semasa Disambungkan',
-      info: 'Mulakan (1) scrcpy dengan konfigurasi yang dipilih semasa sambungan peranti',
+      info:
+          'Mulakan (1) scrcpy dengan konfigurasi yang dipilih semasa sambungan peranti',
     ),
     doNothing: 'Jangan buat apa-apa',
     scrcpyInfo: DeviceSettingsLocScrcpyInfo(
@@ -8135,6 +8479,9 @@ final LocalizationMessages ms = LocalizationMessages(
       title: 'Perintah',
     ),
   ),
+  renameSection: RenameSection(
+    title: 'Namakan Semula',
+  ),
   modeSection: ModeSection(
     title: 'Mod',
     saveFolder: ModeSectionSaveFolder(
@@ -8156,7 +8503,8 @@ final LocalizationMessages ms = LocalizationMessages(
       videoOnly: 'Video sahaja',
       info: ModeSectionScrcpyModeInfo(
         default$: 'lalai kepada kedua-duanya, tiada bendera',
-        alt: ({required String command}) => '''menggunakan bendera '${command}' ''',
+        alt: ({required String command}) =>
+            '''menggunakan bendera '${command}' ''',
       ),
     ),
   ),
@@ -8180,7 +8528,8 @@ final LocalizationMessages ms = LocalizationMessages(
           label: 'Resolusi',
           info: VideoSectionDisplaysVirtualResolutionInfo(
             default$: 'lalai kepada resolusi peranti',
-            alt: ({required String res}) => '''menambah resolusi ke bendera '--new-display=${res}' ''',
+            alt: ({required String res}) =>
+                '''menambah resolusi ke bendera '--new-display=${res}' ''',
           ),
         ),
         dpi: VideoSectionDisplaysVirtualDpi(
@@ -8201,7 +8550,8 @@ final LocalizationMessages ms = LocalizationMessages(
         preserve: VideoSectionDisplaysVirtualPreserve(
           label: 'Kekalkan Aplikasi',
           info: VideoSectionDisplaysVirtualPreserveInfo(
-            default$: 'aplikasi dimusnahkan secara lalai apabila sesi scrcpy berakhir',
+            default$:
+                'aplikasi dimusnahkan secara lalai apabila sesi scrcpy berakhir',
             alt:
                 '''pindahkan aplikasi ke paparan utama apabila sesi berakhir; menggunakan bendera '--no-vd-destroy-content' ''',
           ),
@@ -8212,41 +8562,48 @@ final LocalizationMessages ms = LocalizationMessages(
       label: 'Codec',
       info: VideoSectionCodecInfo(
         default$: 'lalai kepada h264, tiada bendera',
-        alt: ({required String codec}) => '''menggunakan bendera '--video-codec=${codec}' ''',
+        alt: ({required String codec}) =>
+            '''menggunakan bendera '--video-codec=${codec}' ''',
       ),
     ),
     encoder: VideoSectionEncoder(
       label: 'Pengekod',
       info: VideoSectionEncoderInfo(
         default$: 'lalai kepada yang pertama tersedia, tiada bendera',
-        alt: ({required String encoder}) => '''menggunakan bendera '--video-encoder=${encoder}' ''',
+        alt: ({required String encoder}) =>
+            '''menggunakan bendera '--video-encoder=${encoder}' ''',
       ),
     ),
     format: VideoSectionFormat(
       label: 'Format',
       info: VideoSectionFormatInfo(
-        default$: ({required String format}) => '''menambah format ke '--record=laluan_simpan/fail${format}' "''',
+        default$: ({required String format}) =>
+            '''menambah format ke '--record=laluan_simpan/fail${format}' "''',
       ),
     ),
     bitrate: VideoSectionBitrate(
       label: 'Kadar Bit',
       info: VideoSectionBitrateInfo(
         default$: 'lalai kepada 8M, tiada bendera',
-        alt: ({required String bitrate}) => '''menggunakan bendera '--video-bit-rate=${bitrate}M' ''',
+        alt: ({required String bitrate}) =>
+            '''menggunakan bendera '--video-bit-rate=${bitrate}M' ''',
       ),
     ),
     fpsLimit: VideoSectionFpsLimit(
       label: 'Had FPS',
       info: VideoSectionFpsLimitInfo(
         default$: 'tiada bendera melainkan ditetapkan',
-        alt: ({required String fps}) => '''menggunakan bendera '--max-fps=${fps}' ''',
+        alt: ({required String fps}) =>
+            '''menggunakan bendera '--max-fps=${fps}' ''',
       ),
     ),
     resolutionScale: VideoSectionResolutionScale(
       label: 'Skala Resolusi',
       info: VideoSectionResolutionScaleInfo(
-        default$: 'dikira berdasarkan resolusi peranti, tiada bendera melainkan ditetapkan',
-        alt: ({required String size}) => '''menggunakan bendera '--max-size=${size}' ''',
+        default$:
+            'dikira berdasarkan resolusi peranti, tiada bendera melainkan ditetapkan',
+        alt: ({required String size}) =>
+            '''menggunakan bendera '--max-size=${size}' ''',
       ),
     ),
   ),
@@ -8263,15 +8620,18 @@ final LocalizationMessages ms = LocalizationMessages(
       label: 'Sumber',
       info: AudioSectionSourceInfo(
         default$: 'lalai kepada output, tiada bendera',
-        alt: ({required String source}) => '''menggunakan bendera '${source}' ''',
-        inCaseOfDup: '''tersirat kepada 'Main Semula' dengan '--audio-dup', tiada bendera''',
+        alt: ({required String source}) =>
+            '''menggunakan bendera '${source}' ''',
+        inCaseOfDup:
+            '''tersirat kepada 'Main Semula' dengan '--audio-dup', tiada bendera''',
       ),
     ),
     codec: AudioSectionCodec(
       label: 'Codec',
       info: AudioSectionCodecInfo(
         default$: 'lalai kepada opus, tiada bendera',
-        alt: ({required String codec}) => '''menggunakan bendera '--audio-codec=${codec}' ''',
+        alt: ({required String codec}) =>
+            '''menggunakan bendera '--audio-codec=${codec}' ''',
         isAudioOnly: ({required String format, required String codec}) =>
             '''Format: ${format}, memerlukan Codec: ${codec}''',
       ),
@@ -8280,20 +8640,23 @@ final LocalizationMessages ms = LocalizationMessages(
       label: 'Pengekod',
       info: AudioSectionEncoderInfo(
         default$: 'lalai kepada yang pertama tersedia, tiada bendera',
-        alt: ({required String encoder}) => '''menggunakan bendera '--audio-encoder=${encoder}' ''',
+        alt: ({required String encoder}) =>
+            '''menggunakan bendera '--audio-encoder=${encoder}' ''',
       ),
     ),
     format: AudioSectionFormat(
       label: 'Format',
       info: AudioSectionFormatInfo(
-        default$: ({required String format}) => '''menambah format ke '--record=laluan_simpan/fail.${format}' "''',
+        default$: ({required String format}) =>
+            '''menambah format ke '--record=laluan_simpan/fail.${format}' "''',
       ),
     ),
     bitrate: AudioSectionBitrate(
       label: 'Kadar Bit',
       info: AudioSectionBitrateInfo(
         default$: 'lalai kepada 128k, tiada bendera',
-        alt: ({required String bitrate}) => '''menggunakan bendera '--audio-bit-rate=${bitrate}K' ''',
+        alt: ({required String bitrate}) =>
+            '''menggunakan bendera '--audio-bit-rate=${bitrate}K' ''',
       ),
     ),
   ),
@@ -8302,8 +8665,10 @@ final LocalizationMessages ms = LocalizationMessages(
     select: AppSectionSelect(
       label: 'Pilih Aplikasi',
       info: AppSectionSelectInfo(
-        alt: ({required String app}) => '''menggunakan bendera '--start-app=${app}' ''',
-        fc: ({required String app}) => '''menggunakan bendera '--start-app=+${app}' ''',
+        alt: ({required String app}) =>
+            '''menggunakan bendera '--start-app=${app}' ''',
+        fc: ({required String app}) =>
+            '''menggunakan bendera '--start-app=+${app}' ''',
       ),
     ),
     forceClose: AppSectionForceClose(
@@ -8318,14 +8683,16 @@ final LocalizationMessages ms = LocalizationMessages(
     stayAwake: DeviceSectionStayAwake(
       label: 'Kekal Berjaga',
       info: DeviceSectionStayAwakeInfo(
-        default$: 'menghalang peranti daripada tidur, hanya berfungsi dengan sambungan USB',
+        default$:
+            'menghalang peranti daripada tidur, hanya berfungsi dengan sambungan USB',
         alt: '''menggunakan bendera '--stay-awake' ''',
       ),
     ),
     showTouches: DeviceSectionShowTouches(
       label: 'Tunjukkan Sentuhan',
       info: DeviceSectionShowTouchesInfo(
-        default$: 'menunjukkan sentuhan jari, hanya berfungsi dengan sentuhan fizikal pada peranti',
+        default$:
+            'menunjukkan sentuhan jari, hanya berfungsi dengan sentuhan fizikal pada peranti',
         alt: '''menggunakan bendera '--show-touches' ''',
       ),
     ),
@@ -8378,7 +8745,8 @@ final LocalizationMessages ms = LocalizationMessages(
       label: 'Had Masa',
       info: WindowSectionTimeLimitInfo(
         default$: 'mengehadkan sesi scrcpy, dalam saat',
-        alt: ({required String time}) => '''menggunakan bendera '--time-limit=${time}' ''',
+        alt: ({required String time}) =>
+            '''menggunakan bendera '--time-limit=${time}' ''',
       ),
     ),
   ),
@@ -8498,7 +8866,8 @@ final LocalizationMessages ms = LocalizationMessages(
     title: 'Keluar dari GUI scrcpy?',
     killRunning: QuitDialogLocKillRunning(
       label: 'Hentikan yang Sedang Berjalan?',
-      info: ({required String count}) => '''${count} scrcpy. scrcpy tanpa tetingkap akan dihentikan juga''',
+      info: ({required String count}) =>
+          '''${count} scrcpy. scrcpy tanpa tetingkap akan dihentikan juga''',
     ),
     disconnect: QuitDialogLocDisconnect(
       label: 'Putuskan Sambungan ADB Tanpa Wayar?',
@@ -8516,6 +8885,7 @@ final LocalizationMessages ms = LocalizationMessages(
   closeDialogLoc: CloseDialogLoc(
     notAllowed: 'Tidak Dibenarkan!',
     overwrite: 'Timpa?',
+    nameExist: 'Nama sudah wujud!',
     save: 'Simpan Konfigurasi?',
     commandPreview: 'Pratonton Perintah:',
     name: 'Nama:',
@@ -8577,7 +8947,8 @@ final Map<Locale, LocalizationMessages> _languageMap = {
 
 final Map<Locale, LocalizationMessages> _providersLanguagesMap = {};
 
-class EasiestLocalizationDelegate extends LocalizationsDelegate<LocalizationMessages> {
+class EasiestLocalizationDelegate
+    extends LocalizationsDelegate<LocalizationMessages> {
   EasiestLocalizationDelegate({
     List<LocalizationProvider<LocalizationMessages>> providers = const [],
   }) {
@@ -8592,7 +8963,8 @@ class EasiestLocalizationDelegate extends LocalizationsDelegate<LocalizationMess
 
   @override
   bool isSupported(Locale locale) {
-    final bool supportedByProviders = _providers.any((LocalizationProvider value) => value.canLoad(locale));
+    final bool supportedByProviders =
+        _providers.any((LocalizationProvider value) => value.canLoad(locale));
     if (supportedByProviders) {
       return true;
     }
@@ -8613,7 +8985,8 @@ class EasiestLocalizationDelegate extends LocalizationsDelegate<LocalizationMess
 
     LocalizationProvider<LocalizationMessages>? localizationProvider;
 
-    for (final LocalizationProvider<LocalizationMessages> provider in _providers) {
+    for (final LocalizationProvider<LocalizationMessages> provider
+        in _providers) {
       if (provider.canLoad(locale)) {
         localizationProvider = provider;
         break;
@@ -8637,20 +9010,26 @@ class EasiestLocalizationDelegate extends LocalizationsDelegate<LocalizationMess
   }
 
   @override
-  bool shouldReload(LocalizationsDelegate<LocalizationMessages> old) => old != this;
+  bool shouldReload(LocalizationsDelegate<LocalizationMessages> old) =>
+      old != this;
 }
 
 class Messages {
-  static LocalizationMessages of(BuildContext context) => Localizations.of(context, LocalizationMessages)!;
+  static LocalizationMessages of(BuildContext context) =>
+      Localizations.of(context, LocalizationMessages)!;
 
-  static LocalizationMessages? getContent(Locale locale) => _loadLocalLocale(locale);
+  static LocalizationMessages? getContent(Locale locale) =>
+      _loadLocalLocale(locale);
 
   static LocalizationMessages get el {
     final String? defaultLocaleString = Intl.defaultLocale;
-    final List<String> localeParticles = defaultLocaleString == null ? [] : defaultLocaleString.split(RegExp(r'[_-]'));
+    final List<String> localeParticles = defaultLocaleString == null
+        ? []
+        : defaultLocaleString.split(RegExp(r'[_-]'));
     final Locale? defaultLocale = localeParticles.isEmpty
         ? null
-        : Locale(localeParticles.first, localeParticles.length > 1 ? localeParticles[1] : null);
+        : Locale(localeParticles.first,
+            localeParticles.length > 1 ? localeParticles[1] : null);
     LocalizationMessages? localeContent = _providersLanguagesMap[defaultLocale];
     localeContent ??= _languageMap[defaultLocale] ?? _languageMap.values.first;
     return localeContent;
@@ -8693,8 +9072,11 @@ const List<Locale> supportedLocales = [
   Locale('ms'),
 ];
 
-List<Locale> supportedLocalesWithProviders(List<LocalizationProvider<LocalizationMessages>> providers) => [
-      for (final LocalizationProvider provider in providers) ...provider.supportedLocales,
+List<Locale> supportedLocalesWithProviders(
+        List<LocalizationProvider<LocalizationMessages>> providers) =>
+    [
+      for (final LocalizationProvider provider in providers)
+        ...provider.supportedLocales,
       ...supportedLocales,
     ];
 
