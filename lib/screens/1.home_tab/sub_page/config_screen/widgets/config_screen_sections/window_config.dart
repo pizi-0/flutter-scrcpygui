@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/providers/version_provider.dart';
+import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -120,16 +122,19 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
   _toggleWindow() {
     final config = ref.read(configScreenConfig);
     final noWindow = config!.windowOptions.noWindow;
+    final scrcpyVersion = ref.read(scrcpyVersionProvider);
 
     ref.read(configScreenConfig.notifier).setWindowConfig(noWindow: !noWindow);
 
     if (!noWindow) {
-      ref.read(configScreenConfig.notifier).setDeviceConfig(
-            stayAwake: false,
-            showTouches: false,
-            offScreenOnClose: false,
-            turnOffDisplay: false,
-          );
+      if (scrcpyVersion.parseVersionToInt()! < '3.2'.parseVersionToInt()!) {
+        ref.read(configScreenConfig.notifier).setDeviceConfig(
+              stayAwake: false,
+              showTouches: false,
+              offScreenOnClose: false,
+              turnOffDisplay: false,
+            );
+      }
     }
   }
 
