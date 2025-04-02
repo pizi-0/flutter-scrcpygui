@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
@@ -11,7 +12,8 @@ import 'package:scrcpygui/utils/scrcpy_command.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class ConfigScreenCloseDialog extends ConsumerStatefulWidget {
-  const ConfigScreenCloseDialog({super.key});
+  final ScrcpyConfig oldConfig;
+  const ConfigScreenCloseDialog({super.key, required this.oldConfig});
 
   @override
   ConsumerState<ConfigScreenCloseDialog> createState() =>
@@ -22,7 +24,6 @@ class _ConfigScreenCloseDialogState
     extends ConsumerState<ConfigScreenCloseDialog> {
   bool nameExist = false;
   List<String> name = ['New config', 'Default (Mirror)', 'Default (Record)'];
-  bool notAllowed = false;
 
   late TextEditingController nameController;
 
@@ -37,7 +38,8 @@ class _ConfigScreenCloseDialogState
             : selectedConfig.configName);
     nameExist = allConfigs
         .where((e) =>
-            e.configName.toLowerCase() == nameController.text.toLowerCase())
+            e.configName.toLowerCase() == nameController.text.toLowerCase() &&
+            e.id != selectedConfig.id)
         .isNotEmpty;
     super.initState();
   }
@@ -50,23 +52,25 @@ class _ConfigScreenCloseDialogState
 
   @override
   Widget build(BuildContext context) {
+    final allConfigs = ref.watch(configsProvider);
     final selectedConfig = ref.watch(configScreenConfig);
     final selectedDevice = ref.watch(selectedDeviceProvider);
+    final theme = Theme.of(context);
+
+    final hasChanges = widget.oldConfig != selectedConfig &&
+        allConfigs.where((conf) => conf.id == selectedConfig!.id).isNotEmpty;
 
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: appWidth),
       child: IntrinsicHeight(
         child: AlertDialog(
-          title: notAllowed
+          title: nameExist
               ? Text(
-                  el.closeDialogLoc.notAllowed,
+                  el.closeDialogLoc.nameExist,
                   style: const TextStyle(color: Colors.red),
                 )
-              : nameExist
-                  ? Text(
-                      el.closeDialogLoc.overwrite,
-                      style: const TextStyle(color: Colors.red),
-                    )
+              : hasChanges
+                  ? Text(el.closeDialogLoc.overwrite)
                   : Text(el.closeDialogLoc.save),
           content: ConstrainedBox(
             constraints:
@@ -88,15 +92,23 @@ class _ConfigScreenCloseDialogState
                 TextField(
                   controller: nameController,
                   placeholder: const Text('Config name'),
-                  onSubmitted: notAllowed ? null : (v) => _submitEdit(),
+                  onSubmitted: nameExist ? null : (v) => _submitEdit(),
+                  decoration: nameExist
+                      ? BoxDecoration(
+                          borderRadius: BorderRadius.circular(theme.radiusMd),
+                          color: theme.colorScheme.destructive,
+                          border: Border.all(
+                            color: theme.colorScheme.destructive,
+                          ),
+                        )
+                      : null,
                   onChanged: (value) {
                     final allConfigs = ref.read(configsProvider);
                     nameExist = allConfigs
-                        .where((e) => e.configName == value)
-                        .isNotEmpty;
-
-                    notAllowed = name
-                        .where((e) => e.toLowerCase() == value.toLowerCase())
+                        .where((e) =>
+                            e.configName.trim().toLowerCase() ==
+                                value.trim().toLowerCase() &&
+                            e.id != selectedConfig.id)
                         .isNotEmpty;
 
                     setState(() {});
@@ -114,10 +126,9 @@ class _ConfigScreenCloseDialogState
             ),
             const Spacer(),
             PrimaryButton(
-              onPressed: notAllowed || nameController.text.isEmpty
-                  ? null
-                  : _submitEdit,
-              child: Text(nameExist
+              onPressed:
+                  nameExist || nameController.text.isEmpty ? null : _submitEdit,
+              child: Text(hasChanges
                   ? el.buttonLabelLoc.overwrite
                   : el.buttonLabelLoc.save),
             ),
@@ -141,21 +152,13 @@ class _ConfigScreenCloseDialogState
     currentConfig = currentConfig.copyWith(configName: nameController.text);
     final allConfigs = ref.read(configsProvider);
 
-    if (nameExist) {
-      final toRemove = allConfigs.firstWhere((e) =>
-          e.id == currentConfig.id || e.configName == currentConfig.configName);
+    if (allConfigs.where((c) => c.id == currentConfig.id).isNotEmpty) {
+      final toRemove = allConfigs.firstWhere((e) => e.id == currentConfig.id);
       ref
           .read(configsProvider.notifier)
           .overwriteConfig(toRemove, currentConfig);
     } else {
-      if (allConfigs.where((c) => c.id == currentConfig.id).isNotEmpty) {
-        final toRemove = allConfigs.firstWhere((e) => e.id == currentConfig.id);
-        ref
-            .read(configsProvider.notifier)
-            .overwriteConfig(toRemove, currentConfig);
-      } else {
-        ref.read(configsProvider.notifier).addConfig(currentConfig);
-      }
+      ref.read(configsProvider.notifier).addConfig(currentConfig);
     }
 
     final toSave = ref
