@@ -6,6 +6,8 @@ class PgScaffold extends ConsumerWidget {
   final List<Widget> children;
   final List<Widget> footers;
   final List<Widget>? appBarTrailing;
+  final List<Widget>? leading;
+
   final bool showLoading;
   final bool wrap;
   final Function()? onBack;
@@ -16,6 +18,7 @@ class PgScaffold extends ConsumerWidget {
     required this.children,
     required this.title,
     this.footers = const [],
+    this.leading,
     this.appBarTrailing,
     this.onBack,
     this.showLoading = false,
@@ -32,14 +35,16 @@ class PgScaffold extends ConsumerWidget {
           constraints: const BoxConstraints(
               maxHeight: kToolbarHeight + 5, minHeight: kToolbarHeight + 5),
           child: AppBar(
-            leading: [
-              IconButton.ghost(
-                onPressed: onBack,
-                icon: Icon(Icons.arrow_back,
-                    color:
-                        onBack == null ? theme.colorScheme.background : null),
-              ),
-            ],
+            leading: leading ??
+                [
+                  IconButton.ghost(
+                    onPressed: onBack,
+                    icon: Icon(Icons.arrow_back,
+                        color: onBack == null
+                            ? theme.colorScheme.background
+                            : null),
+                  ),
+                ],
             trailing: appBarTrailing ??
                 [
                   IconButton.ghost(
