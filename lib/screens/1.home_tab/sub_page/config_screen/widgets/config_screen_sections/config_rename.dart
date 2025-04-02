@@ -90,7 +90,6 @@ class _RenameConfigState extends ConsumerState<RenameConfig> {
                   .isNotEmpty;
 
               setState(() {});
-              print(nameExist);
               ref.read(configScreenConfig.notifier).setName(value.trim());
             },
             onSubmitted: nameExist
