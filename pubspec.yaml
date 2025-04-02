@@ -77,7 +77,7 @@ dependencies:
   go_transitions: ^0.7.1
   collection: ^1.19.0
   easiest_localization: ^2.0.1
-  shadcn_flutter: ^0.0.28
+  shadcn_flutter: ^0.0.32
   flutter_single_instance: ^1.2.3
   package_info_plus: ^8.3.0
   font_awesome_flutter: ^10.8.0
