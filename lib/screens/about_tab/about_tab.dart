@@ -28,6 +28,9 @@ class _AboutTabState extends ConsumerState<AboutTab> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getLatest();
+    });
   }
 
   _getLatest() async {
@@ -59,7 +62,8 @@ class _AboutTabState extends ConsumerState<AboutTab> {
           builder: (context, overlay) => SurfaceCard(
             child: Basic(
               title: Text(el.scrcpyManagerLoc.infoPopup.noUpdate),
-              trailing: Icon(Icons.info_outline_rounded),
+              trailing:
+                  Icon(Icons.check_circle_outline_rounded, color: Colors.lime),
             ),
           ),
         );
