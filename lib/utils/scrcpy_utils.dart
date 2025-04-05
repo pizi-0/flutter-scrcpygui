@@ -39,7 +39,7 @@ class ScrcpyUtils {
   static Future<List<String>> getRunningScrcpy(String appPID) async {
     List<String> pids = [];
 
-    if (Platform.isLinux) {
+    if (Platform.isLinux || Platform.isMacOS) {
       List<String> split = (await Process.run('bash', ['-c', 'pgrep scrcpy']))
           .stdout
           .toString()
@@ -140,11 +140,7 @@ class ScrcpyUtils {
     final instance = ScrcpyRunningInstance(
       device: d,
       config: selectedConfig,
-      scrcpyPID: Platform.isMacOS
-          ? (process.pid + 1).toString()
-          : Platform.isMacOS && selectedConfig.windowOptions.noWindow
-              ? process.pid.toString()
-              : process.pid.toString(),
+      scrcpyPID: process.pid.toString(),
       process: process,
       instanceName: customName,
       startTime: now,
@@ -162,7 +158,7 @@ class ScrcpyUtils {
       });
     }
 
-    if (Platform.isLinux) {
+    if (Platform.isLinux || Platform.isMacOS) {
       final strays = await AdbUtils.getScrcpyServerPIDs();
       if (strays.isNotEmpty) {
         ScrcpyUtils.killStrays(strays, ProcessSignal.sigterm);
@@ -218,7 +214,7 @@ class ScrcpyUtils {
 
   static Future<void> killServer(ScrcpyRunningInstance instance,
       {bool forceKill = false}) async {
-    if (Platform.isLinux) {
+    if (Platform.isLinux || Platform.isMacOS) {
       Process.killPid(int.parse(instance.scrcpyPID));
     }
 

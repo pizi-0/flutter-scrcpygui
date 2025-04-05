@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
@@ -21,6 +22,12 @@ class SetupUtils {
   static List<FileSystemEntity> get getWindowsExec =>
       Directory("$appDir\\data\\flutter_assets\\assets\\exec\\windows")
           .listSync();
+
+  static List<FileSystemEntity> get getIntelMacExec =>
+      Directory("assets/exec/mac-intel").listSync();
+
+  static List<FileSystemEntity> get getAppleMacExec =>
+      Directory("assets/exec/mac-apple").listSync();
 
   static initScrcpy(WidgetRef ref) async {
     try {
@@ -87,7 +94,7 @@ class SetupUtils {
         createIfNot: true);
     final bundledDirContent = bundledVersionDir.listSync();
 
-    final execPath = _getExecPath();
+    final execPath = await _getExecPath();
 
     for (final f in execPath) {
       final filename = f.path.split(Platform.pathSeparator).last;
@@ -101,9 +108,7 @@ class SetupUtils {
       }
     }
 
-    if (Platform.isLinux) {
-      _markAsExecutable(bundledVersionDir.path);
-    }
+    _markAsExecutable(bundledVersionDir.path);
   }
 
   static Future<void> _markAsExecutable(String path) async {
@@ -115,11 +120,17 @@ class SetupUtils {
     }
   }
 
-  static _getExecPath() {
+  static Future<List<FileSystemEntity>> _getExecPath() async {
+    final devInfo = await DeviceInfoPlugin().deviceInfo;
+    final arch = devInfo.data['arch'];
+
     if (Platform.isLinux) {
       return getLinuxExec;
     } else if (Platform.isMacOS) {
-      return getLinuxExec;
+      if (arch == 'x86_64') {
+        return getIntelMacExec;
+      }
+      return getAppleMacExec;
     } else if (Platform.isWindows) {
       return getWindowsExec;
     } else {

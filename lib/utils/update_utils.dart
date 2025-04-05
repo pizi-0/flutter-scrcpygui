@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:archive/archive_io.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:scrcpygui/models/installed_scrcpy.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
+import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/utils/setup.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -39,11 +41,17 @@ class UpdateUtils {
     return installed
         .map((i) =>
             InstalledScrcpy(version: i.path.split(sep).last, path: i.path))
+        .toList()
+        .where((i) => i.version.parseVersionToInt() != 0)
         .toList();
   }
 
   static Future<String?> checkForScrcpyUpdate(WidgetRef ref) async {
     String? latest;
+
+    final devInfo = await DeviceInfoPlugin().deviceInfo;
+
+    print(devInfo.data['arch']);
 
     logger.i('Checking for scrcpy update...');
 
@@ -90,8 +98,8 @@ class UpdateUtils {
       await Future.delayed(500.milliseconds);
 
       await dio.download(
-        downloadLink(newversion),
-        Platform.isLinux
+        await downloadLink(newversion),
+        Platform.isLinux || Platform.isMacOS
             ? '${downloadPath.path}${sep}v$newversion.tar.gz'
             : '${downloadPath.path}${sep}v$newversion.zip',
         onReceiveProgress: (count, total) => ref
@@ -114,9 +122,20 @@ class UpdateUtils {
     }
   }
 
-  static String downloadLink(String newversion) {
+  static Future<String> downloadLink(String newversion) async {
+    final devInfo = await DeviceInfoPlugin().deviceInfo;
+    final arch = devInfo.data['arch'];
+
+    print(arch);
+
     if (Platform.isWindows) {
       return 'https://github.com/Genymobile/scrcpy/releases/download/v$newversion/scrcpy-win64-v$newversion.zip';
+    } else if (Platform.isMacOS) {
+      // if (arch == 'x86_64') {
+      //   return 'https://github.com/Genymobile/scrcpy/releases/download/v$newversion/scrcpy-macos-x86_64-v$newversion.tar.gz';
+      // }
+
+      return 'https://github.com/Genymobile/scrcpy/releases/download/v$newversion/scrcpy-macos-$arch-v$newversion.tar.gz';
     } else {
       return 'https://github.com/Genymobile/scrcpy/releases/download/v$newversion/scrcpy-linux-x86_64-v$newversion.tar.gz';
     }
@@ -129,26 +148,29 @@ class UpdateUtils {
     final sep = Platform.pathSeparator;
 
     final downloadPath = Directory('$cache${sep}download');
-    final filepath = Platform.isLinux
+    final filepath = Platform.isLinux || Platform.isMacOS
         ? '${downloadPath.path}${sep}v$newversion.tar.gz'
         : '${downloadPath.path}${sep}v$newversion.zip';
 
-    final newExecDir = Directory('$supportDir${sep}exec');
-    final newVersionDir = Directory('${newExecDir.path}$sep$newversion');
+    final execDir = Directory('$supportDir${sep}exec');
+    final newVersionDir = Directory('${execDir.path}$sep$newversion');
 
     try {
       if (await newVersionDir.exists()) {
+        print(newVersionDir);
         await newVersionDir.delete(recursive: true);
       }
       ref.read(updateStatusProvider.notifier).state = 'Extracting archive';
       await Future.delayed(500.milliseconds);
 
       //extract
-      await extractFileToDisk(filepath, newExecDir.path);
+      await extractFileToDisk(filepath, execDir.path);
 
-      final entities = newExecDir.listSync();
+      final entities = execDir.listSync();
 
-      await entities.last.rename(newVersionDir.path);
+      await entities
+          .lastWhere((e) => e.path.contains(newversion))
+          .rename(newVersionDir.path);
 
       //set executable
       if (Platform.isLinux || Platform.isMacOS) {

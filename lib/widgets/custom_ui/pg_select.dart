@@ -40,6 +40,8 @@ class Select<T> extends StatefulWidget with SelectBase<T> {
   final SelectValueSelectionHandler<T>? valueSelectionHandler;
   @override
   final SelectValueSelectionPredicate<T>? valueSelectionPredicate;
+  @override
+  final Predicate<T>? showValuePredicate;
 
   const Select({
     super.key,
@@ -61,6 +63,7 @@ class Select<T> extends StatefulWidget with SelectBase<T> {
     this.enabled,
     this.valueSelectionHandler,
     this.valueSelectionPredicate,
+    this.showValuePredicate,
     required this.popup,
     required this.itemBuilder,
   });
@@ -80,6 +83,7 @@ class SelectState<T> extends State<Select<T>>
     super.initState();
     _focusNode = widget.focusNode ?? FocusNode();
     _valueNotifier = ValueNotifier(widget.value);
+    formValue = widget.value;
   }
 
   @override
@@ -121,14 +125,14 @@ class SelectState<T> extends State<Select<T>>
     widget.onChanged?.call(value);
   }
 
-  closePopup() {
-    _popoverController.close();
-  }
-
   @override
   void dispose() {
     _popoverController.dispose();
     super.dispose();
+  }
+
+  closePopup() {
+    _popoverController.close();
   }
 
   BoxDecoration _overrideBorderRadius(
@@ -149,7 +153,8 @@ class SelectState<T> extends State<Select<T>>
     }
     var selectionHandler = widget.valueSelectionHandler ??
         _defaultSingleSelectValueSelectionHandler;
-    widget.onChanged?.call(selectionHandler(widget.value, value, selected));
+    var newValue = selectionHandler(widget.value, value, selected);
+    widget.onChanged?.call(newValue);
     return true;
   }
 
@@ -249,7 +254,10 @@ class SelectState<T> extends State<Select<T>>
                       hasSelection: widget.value != null,
                     ),
                     child: Expanded(
-                      child: widget.value != null
+                      child: widget.value != null &&
+                              (widget.showValuePredicate
+                                      ?.call(widget.value as T) ??
+                                  true)
                           ? Builder(builder: (context) {
                               return widget.itemBuilder(
                                 context,
@@ -265,7 +273,7 @@ class SelectState<T> extends State<Select<T>>
                       color: theme.colorScheme.foreground,
                       opacity: 0.5,
                     ),
-                    child: const Icon(Icons.unfold_more).iconSmall(),
+                    child: const Icon(LucideIcons.chevronsUpDown).iconSmall(),
                   ),
                 ],
               ),
