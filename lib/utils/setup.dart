@@ -16,6 +16,15 @@ class SetupUtils {
   static String get appDir =>
       _appPath.substring(0, _appPath.lastIndexOf(Platform.pathSeparator));
 
+  static String get macAppDir {
+    final macos =
+        appDir.substring(0, _appPath.lastIndexOf(Platform.pathSeparator));
+
+    final contents =
+        macos.substring(0, macos.lastIndexOf(Platform.pathSeparator));
+    return contents;
+  }
+
   static List<FileSystemEntity> get getLinuxExec =>
       Directory("$appDir/data/flutter_assets/assets/exec/linux").listSync();
 
@@ -23,11 +32,13 @@ class SetupUtils {
       Directory("$appDir\\data\\flutter_assets\\assets\\exec\\windows")
           .listSync();
 
-  static List<FileSystemEntity> get getIntelMacExec =>
-      Directory("assets/exec/mac-intel").listSync();
+  static List<FileSystemEntity> get getIntelMacExec => Directory(
+          "$macAppDir/Frameworks/App.framework/Versions/A/Resources/flutter_assets/assets/exec/mac-intel")
+      .listSync();
 
-  static List<FileSystemEntity> get getAppleMacExec =>
-      Directory("assets/exec/mac-apple").listSync();
+  static List<FileSystemEntity> get getAppleMacExec => Directory(
+          "$macAppDir/Frameworks/App.framework/Versions/A/Resources/flutter_assets/assets/exec/mac-apple")
+      .listSync();
 
   static initScrcpy(WidgetRef ref) async {
     try {
@@ -113,10 +124,9 @@ class SetupUtils {
 
   static Future<void> _markAsExecutable(String path) async {
     if (Platform.isLinux || Platform.isMacOS) {
-      await Process.run('bash', ['-c', 'chmod +x adb'], workingDirectory: path);
+      await Process.run('chmod', ['+x', 'adb'], workingDirectory: path);
 
-      await Process.run('bash', ['-c', 'chmod +x scrcpy'],
-          workingDirectory: path);
+      await Process.run('chmod', ['+x', 'scrcpy'], workingDirectory: path);
     }
   }
 
