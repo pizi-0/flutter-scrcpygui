@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart'
     show StyledText, PaddingX, NumExtension;
@@ -89,6 +91,7 @@ class TitleBar extends ConsumerWidget {
       borderRadius: theme.borderRadiusXs,
       child: Row(
         children: [
+          if (Platform.isMacOS) TitleBarButton(),
           Expanded(
             child: DragToMoveArea(
               child: Padding(
@@ -112,7 +115,7 @@ class TitleBar extends ConsumerWidget {
               ),
             ),
           ),
-          const TitleBarButton()
+          if (!Platform.isMacOS) const TitleBarButton()
         ],
       ),
     );
