@@ -44,6 +44,9 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
       try {
         await _checkForUpdate();
       } on Exception catch (e) {
+        checkingForUpdate = false;
+        setState(() {});
+
         debugPrint(e.toString());
 
         showToast(
