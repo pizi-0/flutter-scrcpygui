@@ -94,8 +94,10 @@ class _RenameConfigState extends ConsumerState<RenameConfig> {
             },
             onSubmitted: nameExist
                 ? null
-                : (value) =>
-                    ref.read(configScreenConfig.notifier).setName(value.trim()),
+                : (value) {
+                    ref.read(configScreenConfig.notifier).setName(value.trim());
+                    node.unfocus();
+                  },
           ),
         )
       ],

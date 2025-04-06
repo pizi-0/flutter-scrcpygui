@@ -310,6 +310,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   void _onTextBoxSubmit(value) async {
     dev = dev.copyWith(name: value.toUpperCase());
     ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
+    textBox.unfocus();
     await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
   }
 
