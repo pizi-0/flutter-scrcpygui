@@ -102,7 +102,7 @@ class AppUtils {
     bool isMaximized = await windowManager.isMaximized();
 
     if (isMaximized) {
-      await windowManager.restore();
+      await windowManager.unmaximize();
     }
     if (!isMaximized) {
       await windowManager.maximize();
