@@ -110,12 +110,11 @@ class SetupUtils {
       final bundledDirContent = bundledVersionDir.listSync();
 
       final execPath = await _getExecPath();
+      final assetPath = execPath.first.path.substring(
+          0, execPath.first.path.lastIndexOf(Platform.pathSeparator));
 
-      logger.i('Setting up scrcpy. Copying scrcpy...');
-
-      logger.i(
-          'From: ${execPath.first.path.substring(0, execPath.first.path.lastIndexOf(Platform.pathSeparator))}');
-
+      logger.i('Setting up scrcpy. Copying (${execPath.length}) items...');
+      logger.i('From: $assetPath');
       logger.i('To: ${bundledVersionDir.path}');
 
       for (final (i, f) in execPath.indexed) {
@@ -125,16 +124,19 @@ class SetupUtils {
           logger.i('$i. $filename');
           final byte = File(f.path).readAsBytesSync();
 
-          await File(
+          final file = await File(
                   '${bundledVersionDir.path}${Platform.pathSeparator}$filename')
               .writeAsBytes(byte);
+
+          logger.i('${file.path.split(Platform.pathSeparator).last} copied!');
         }
       }
-      logger.i('Scrcpy copied!');
+
+      logger.i('Scrcpy setup done!');
 
       _markAsExecutable(bundledVersionDir.path);
     } on Exception catch (e) {
-      logger.e(e);
+      logger.e('Error setting up bundled scrcpy', error: e);
     }
   }
 
@@ -142,10 +144,27 @@ class SetupUtils {
     if (Platform.isLinux || Platform.isMacOS) {
       try {
         logger.i('Marking adb as executable...');
-        await Process.run('chmod', ['+x', 'adb'], workingDirectory: path);
+
+        final adb =
+            await Process.run('chmod', ['+x', 'adb'], workingDirectory: path);
+        if (adb.stdout.isNotEmpty) {
+          logger.i('out: ${adb.stdout}');
+        }
+        if (adb.stderr.isNotEmpty) {
+          logger.i('err: ${adb.stderr}');
+        }
 
         logger.i('Marking scrcpy as executable...');
-        await Process.run('chmod', ['+x', 'scrcpy'], workingDirectory: path);
+
+        final scrcpy = await Process.run('chmod', ['+x', 'scrcpy'],
+            workingDirectory: path);
+
+        if (scrcpy.stdout.isNotEmpty) {
+          logger.i('out: ${scrcpy.stdout}');
+        }
+        if (scrcpy.stderr.isNotEmpty) {
+          logger.i('err: ${scrcpy.stderr}');
+        }
       } on Exception catch (_) {
         rethrow;
       }

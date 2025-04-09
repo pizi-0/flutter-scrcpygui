@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/utils/const.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -136,6 +137,8 @@ class ScrcpyUtils {
     await Future.delayed(500.milliseconds);
 
     final now = DateTime.now();
+
+    logger.i('Scrcpy started: ${process.pid}');
 
     final instance = ScrcpyRunningInstance(
       device: d,
