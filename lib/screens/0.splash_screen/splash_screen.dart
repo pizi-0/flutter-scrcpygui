@@ -4,11 +4,13 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/setup.dart';
@@ -25,6 +27,8 @@ class SplashScreen extends ConsumerStatefulWidget {
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
+  String loadingText = 'Loading...';
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +39,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         });
       } on ProcessException catch (e) {
         logger.e(e);
+
+        loadingText = el.statusLoc.error;
+        setState(() {});
+
+        showDialog(
+          context: context,
+          builder: (context) =>
+              ErrorDialog(title: el.statusLoc.error, content: [
+            Text(e.message),
+            Text('Executable: ${e.executable}'),
+          ]),
+        );
       }
     });
   }
@@ -96,7 +112,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
               height: 50,
             ),
             const SizedBox(height: 20),
-            const Text('Loading..')
+            Text(loadingText)
           ],
         ),
       ),
