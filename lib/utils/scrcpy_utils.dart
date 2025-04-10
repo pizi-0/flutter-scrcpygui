@@ -13,11 +13,9 @@ import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
-import 'package:scrcpygui/providers/toast_providers.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/command_runner.dart';
 import 'package:scrcpygui/widgets/override_dialog.dart';
-import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 
 import '../db/db.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
@@ -167,14 +165,6 @@ class ScrcpyUtils {
         ScrcpyUtils.killStrays(strays, ProcessSignal.sigterm);
       }
     }
-
-    ref.read(toastProvider.notifier).addToast(
-          SimpleToastItem(
-            message: 'All (${runningInstance.length}) servers  killed',
-            toastStyle: SimpleToastStyle.success,
-            key: UniqueKey(),
-          ),
-        );
   }
 
   static Future newInstance(WidgetRef ref,

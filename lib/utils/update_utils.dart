@@ -49,10 +49,6 @@ class UpdateUtils {
   static Future<String?> checkForScrcpyUpdate(WidgetRef ref) async {
     String? latest;
 
-    final devInfo = await DeviceInfoPlugin().deviceInfo;
-
-    print(devInfo.data['arch']);
-
     logger.i('Checking for scrcpy update...');
 
     try {
@@ -123,17 +119,11 @@ class UpdateUtils {
   }
 
   static Future<String> downloadLink(String newversion) async {
-    final devInfo = await DeviceInfoPlugin().deviceInfo;
-    final arch = devInfo.data['arch'];
-
-    print(arch);
-
     if (Platform.isWindows) {
       return 'https://github.com/Genymobile/scrcpy/releases/download/v$newversion/scrcpy-win64-v$newversion.zip';
     } else if (Platform.isMacOS) {
-      // if (arch == 'x86_64') {
-      //   return 'https://github.com/Genymobile/scrcpy/releases/download/v$newversion/scrcpy-macos-x86_64-v$newversion.tar.gz';
-      // }
+      final devInfo = await DeviceInfoPlugin().deviceInfo;
+      final arch = devInfo.data['arch'];
 
       return 'https://github.com/Genymobile/scrcpy/releases/download/v$newversion/scrcpy-macos-$arch-v$newversion.tar.gz';
     } else {
@@ -157,7 +147,6 @@ class UpdateUtils {
 
     try {
       if (await newVersionDir.exists()) {
-        print(newVersionDir);
         await newVersionDir.delete(recursive: true);
       }
       ref.read(updateStatusProvider.notifier).state = 'Extracting archive';
