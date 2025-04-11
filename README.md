@@ -25,6 +25,9 @@
 
 *   Windows (64-bit)
 *   Linux (64-bit)
+*   MacOS (64-bit) - Intel / Apple Silicon
+
+
 
 ## 🖼️ Preview
 
