@@ -45,7 +45,7 @@ class NavigationShellState extends ConsumerState<NavigationShell> {
                 children: [
                   if (sizeInfo.isDesktop || sizeInfo.isTablet)
                     const AppSideBar(),
-                  if (sizeInfo.isMobile) const Gap(62),
+                  if (sizeInfo.isMobile) const Gap(52),
                   Expanded(
                     child: AnimatedBranchContainer(
                       currentIndex: currentIndex,
@@ -189,6 +189,7 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
               alignment: NavigationRailAlignment.start,
               labelPosition: NavigationLabelPosition.end,
               labelType: NavigationLabelType.expanded,
+              padding: EdgeInsets.all(8),
               onSelected: (value) =>
                   ref.read(mainScreenPage.notifier).state = value,
               children: [
