@@ -82,7 +82,7 @@ final ScrcpyConfig defaultMirror = ScrcpyConfig(
     timeLimit: 0,
   ),
   additionalFlags: '',
-  savePath: Platform.isLinux
+  savePath: Platform.isLinux || Platform.isMacOS
       ? Platform.environment['HOME']
       : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}',
 );
@@ -125,7 +125,7 @@ final ScrcpyConfig newConfig = ScrcpyConfig(
     timeLimit: 0,
   ),
   additionalFlags: '',
-  savePath: Platform.isLinux
+  savePath: Platform.isLinux || Platform.isMacOS
       ? Platform.environment['HOME']
       : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}',
 );
@@ -171,7 +171,7 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
     timeLimit: 0,
   ),
   additionalFlags: '',
-  savePath: Platform.isLinux
+  savePath: Platform.isLinux || Platform.isMacOS
       ? Platform.environment['HOME']
       : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}',
 );

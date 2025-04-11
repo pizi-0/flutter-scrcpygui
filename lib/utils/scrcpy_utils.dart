@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/utils/const.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -12,11 +13,9 @@ import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
-import 'package:scrcpygui/providers/toast_providers.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/command_runner.dart';
 import 'package:scrcpygui/widgets/override_dialog.dart';
-import 'package:scrcpygui/widgets/simple_toast/simple_toast_item.dart';
 
 import '../db/db.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
@@ -39,7 +38,7 @@ class ScrcpyUtils {
   static Future<List<String>> getRunningScrcpy(String appPID) async {
     List<String> pids = [];
 
-    if (Platform.isLinux) {
+    if (Platform.isLinux || Platform.isMacOS) {
       List<String> split = (await Process.run('bash', ['-c', 'pgrep scrcpy']))
           .stdout
           .toString()
@@ -137,14 +136,12 @@ class ScrcpyUtils {
 
     final now = DateTime.now();
 
+    logger.i('Scrcpy started: ${process.pid}');
+
     final instance = ScrcpyRunningInstance(
       device: d,
       config: selectedConfig,
-      scrcpyPID: Platform.isMacOS
-          ? (process.pid + 1).toString()
-          : Platform.isMacOS && selectedConfig.windowOptions.noWindow
-              ? process.pid.toString()
-              : process.pid.toString(),
+      scrcpyPID: process.pid.toString(),
       process: process,
       instanceName: customName,
       startTime: now,
@@ -162,20 +159,12 @@ class ScrcpyUtils {
       });
     }
 
-    if (Platform.isLinux) {
+    if (Platform.isLinux || Platform.isMacOS) {
       final strays = await AdbUtils.getScrcpyServerPIDs();
       if (strays.isNotEmpty) {
         ScrcpyUtils.killStrays(strays, ProcessSignal.sigterm);
       }
     }
-
-    ref.read(toastProvider.notifier).addToast(
-          SimpleToastItem(
-            message: 'All (${runningInstance.length}) servers  killed',
-            toastStyle: SimpleToastStyle.success,
-            key: UniqueKey(),
-          ),
-        );
   }
 
   static Future newInstance(WidgetRef ref,
@@ -218,7 +207,7 @@ class ScrcpyUtils {
 
   static Future<void> killServer(ScrcpyRunningInstance instance,
       {bool forceKill = false}) async {
-    if (Platform.isLinux) {
+    if (Platform.isLinux || Platform.isMacOS) {
       Process.killPid(int.parse(instance.scrcpyPID));
     }
 

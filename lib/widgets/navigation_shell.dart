@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart'
     show StyledText, PaddingX, NumExtension;
@@ -43,7 +45,7 @@ class NavigationShellState extends ConsumerState<NavigationShell> {
                 children: [
                   if (sizeInfo.isDesktop || sizeInfo.isTablet)
                     const AppSideBar(),
-                  if (sizeInfo.isMobile) const Gap(62),
+                  if (sizeInfo.isMobile) const Gap(52),
                   Expanded(
                     child: AnimatedBranchContainer(
                       currentIndex: currentIndex,
@@ -87,32 +89,34 @@ class TitleBar extends ConsumerWidget {
 
     return OutlinedContainer(
       borderRadius: theme.borderRadiusXs,
+      height: 45,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          if (Platform.isMacOS) TitleBarButton(),
+          if (Platform.isMacOS) VerticalDivider(indent: 16, endIndent: 16),
           Expanded(
             child: DragToMoveArea(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  spacing: 8,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Image.asset(
-                      'assets/logo.png',
-                      height: 20,
-                      width: 20,
-                    ).paddingOnly(left: 3),
-                    Text('Scrcpy GUI ($appversion)').small(),
-                    const Text('by pizi-0')
-                        .fontSize(8)
-                        .underline()
-                        .paddingOnly(bottom: 2),
-                  ],
-                ),
-              ),
+              child: Row(
+                spacing: 8,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    'assets/logo.png',
+                    height: 20,
+                    width: 20,
+                  ).paddingOnly(left: 3),
+                  Text('Scrcpy GUI ($appversion)').fontSize(12),
+                  const Text('by pizi-0')
+                      .fontSize(8)
+                      .underline()
+                      .paddingOnly(top: 4.5),
+                ],
+              ).paddingOnly(left: 8),
             ),
           ),
-          const TitleBarButton()
+          if (!Platform.isMacOS) VerticalDivider(indent: 16, endIndent: 16),
+          if (!Platform.isMacOS) const TitleBarButton()
         ],
       ),
     );
@@ -185,6 +189,7 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
               alignment: NavigationRailAlignment.start,
               labelPosition: NavigationLabelPosition.end,
               labelType: NavigationLabelType.expanded,
+              padding: EdgeInsets.all(8),
               onSelected: (value) =>
                   ref.read(mainScreenPage.notifier).state = value,
               children: [

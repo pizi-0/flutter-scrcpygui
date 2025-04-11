@@ -9,7 +9,7 @@ class CommandRunner {
       if (Platform.isWindows) {
         return await Process.run('$workDir\\adb.exe', args,
             workingDirectory: workDir);
-      } else if (Platform.isLinux) {
+      } else if (Platform.isLinux || Platform.isMacOS) {
         return await Process.run('$workDir/adb', args,
             workingDirectory: workDir);
       } else {
@@ -35,7 +35,7 @@ class CommandRunner {
           '$workDir\\scrcpy.exe', ['-s', device.id, ...args],
           workingDirectory: workDir);
       return res;
-    } else if (Platform.isLinux) {
+    } else if (Platform.isLinux || Platform.isMacOS) {
       final res = await Process.run(
           '$workDir/scrcpy', ['-s', device.id, ...args],
           workingDirectory: workDir);
@@ -52,10 +52,11 @@ class CommandRunner {
           '$workDir\\scrcpy.exe', ['-s', device.id, ...args],
           workingDirectory: workDir);
       return res;
-    } else if (Platform.isLinux) {
+    } else if (Platform.isLinux || Platform.isMacOS) {
       final res = await Process.start(
           '$workDir/scrcpy', ['-s', device.id, ...args],
           workingDirectory: workDir);
+
       return res;
     } else {
       throw Exception('Unsupported platform');

@@ -18,14 +18,16 @@ import 'scrcpy_utils.dart';
 
 class TrayUtils {
   static final String _trayIcon =
-      Platform.isLinux ? 'assets/logo.png' : 'assets/logo.ico';
+      Platform.isWindows ? 'assets/logo.ico' : 'assets/logo.png';
 
   static Future<void> initTray(WidgetRef ref, BuildContext context) async {
     final behaviour = ref.read(settingsProvider.select((s) => s.behaviour));
 
     if (behaviour.traySupport) {
       await trayManager.setIcon(_trayIcon);
-      if (!Platform.isLinux) await trayManager.setToolTip('Scrcpy GUI');
+      if (!Platform.isLinux) {
+        await trayManager.setToolTip('Scrcpy GUI');
+      }
 
       final menu = await TrayUtils.trayMenu(ref, context);
 

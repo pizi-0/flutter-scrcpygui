@@ -35,10 +35,10 @@ void main() async {
     center: true,
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.hidden,
-    windowButtonVisibility: true,
+    windowButtonVisibility: false,
   );
 
-  if (Platform.isWindows) {
+  if (Platform.isWindows || Platform.isMacOS) {
     if (await FlutterSingleInstance().isFirstInstance()) {
       windowManager.waitUntilReadyToShow(windowOptions, () async {
         await windowManager.show();

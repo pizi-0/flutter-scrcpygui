@@ -45,8 +45,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   void initState() {
     dev = ref.read(adbProvider).firstWhere((d) => d.id == widget.id);
 
-    namecontroller =
-        TextEditingController(text: dev.name?.toUpperCase() ?? dev.modelName);
+    namecontroller = TextEditingController(text: dev.name ?? dev.modelName);
 
     ddValue = dev.automationData?.actions
             .firstWhere((a) => a.type == ActionType.launchConfig,
@@ -102,7 +101,6 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                   focusNode: textBox,
                   placeholder: Text(dev.name ?? dev.modelName),
                   controller: namecontroller,
-                  onChanged: _toAllCaps,
                   onSubmitted: _onTextBoxSubmit,
                 ),
               ),
@@ -300,16 +298,17 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
     setState(() {});
   }
 
-  void _toAllCaps(value) {
-    namecontroller.value = TextEditingValue(
-      text: value.toUpperCase(),
-      selection: namecontroller.selection,
-    );
-  }
+  // void _toAllCaps(value) {
+  //   namecontroller.value = TextEditingValue(
+  //     text: value.toUpperCase(),
+  //     selection: namecontroller.selection,
+  //   );
+  // }
 
   void _onTextBoxSubmit(value) async {
-    dev = dev.copyWith(name: value.toUpperCase());
+    dev = dev.copyWith(name: value);
     ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
+    textBox.unfocus();
     await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
   }
 
@@ -338,8 +337,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
 
   _onLoseFocus() {
     if (!textBox.hasFocus) {
-      namecontroller =
-          TextEditingController(text: dev.name?.toUpperCase() ?? dev.modelName);
+      namecontroller = TextEditingController(text: dev.name ?? dev.modelName);
       setState(() {});
     }
   }

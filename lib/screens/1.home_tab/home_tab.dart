@@ -41,17 +41,46 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               cardPadding: const EdgeInsets.all(8),
               // borderColor: Colors.transparent,
               label: el.homeLoc.devices.label(count: '${connected.length}'),
-              children: connected
-                  .mapIndexed(
-                    (index, conn) => Column(
-                      spacing: 8,
-                      children: [
-                        DeviceTile(device: conn),
-                        if (index != connected.length - 1) const Divider()
-                      ],
-                    ),
-                  )
-                  .toList(),
+              children: connected.isEmpty
+                  ? [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child:
+                                    Text('Connect your devices to get started')
+                                        .muted
+                                        .small,
+                              ),
+                              Row(
+                                spacing: 4,
+                                children: [
+                                  Icon(BootstrapIcons.usbPlug)
+                                      .iconMutedForeground(),
+                                  Text('/'),
+                                  Icon(BootstrapIcons.wifi)
+                                      .iconMutedForeground(),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ]
+                  : connected
+                      .mapIndexed(
+                        (index, conn) => Column(
+                          spacing: 8,
+                          children: [
+                            DeviceTile(device: conn),
+                            if (index != connected.length - 1) const Divider()
+                          ],
+                        ),
+                      )
+                      .toList(),
             ),
             if (size.isDesktop) const ConfigListBig(),
           ],

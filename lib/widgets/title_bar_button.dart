@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -7,38 +9,72 @@ class TitleBarButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final buttons = [
+      IconButton(
+        variance: ButtonVariance.ghost,
+        size: ButtonSize.small,
+        icon: const Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Icon(Icons.minimize),
+        ),
+        onPressed: () {
+          AppUtils.onAppMinimizeRequested(ref, context);
+        },
+      ),
+      IconButton(
+        variance: ButtonVariance.ghost,
+        size: ButtonSize.small,
+        icon: const Padding(
+            padding: EdgeInsets.all(4.0), child: Icon(Icons.square_outlined)),
+        onPressed: () {
+          AppUtils.onAppMaximizeRequested();
+        },
+      ),
+      IconButton(
+        variance: ButtonVariance.ghost,
+        size: ButtonSize.small,
+        icon: const Padding(
+            padding: EdgeInsets.all(4.0), child: Icon(Icons.close)),
+        onPressed: () {
+          AppUtils.onAppCloseRequested(ref, context);
+        },
+      ),
+    ];
+
+    final buttonsMac = [
+      IconButton(
+        variance: ButtonVariance.ghost,
+        size: ButtonSize.small,
+        icon: const Padding(
+            padding: EdgeInsets.all(4.0), child: Icon(Icons.close)),
+        onPressed: () {
+          AppUtils.onAppCloseRequested(ref, context);
+        },
+      ),
+      IconButton(
+        variance: ButtonVariance.ghost,
+        size: ButtonSize.small,
+        icon: const Padding(
+          padding: EdgeInsets.all(4.0),
+          child: Icon(Icons.minimize),
+        ),
+        onPressed: () {
+          AppUtils.onAppMinimizeRequested(ref, context);
+        },
+      ),
+      IconButton(
+        variance: ButtonVariance.ghost,
+        size: ButtonSize.small,
+        icon: const Padding(
+            padding: EdgeInsets.all(4.0), child: Icon(Icons.square_outlined)),
+        onPressed: () {
+          AppUtils.onAppMaximizeRequested();
+        },
+      ),
+    ];
+
     return Row(
-      children: [
-        IconButton(
-          variance: ButtonVariance.ghost,
-          size: ButtonSize.small,
-          icon: const Padding(
-            padding: EdgeInsets.all(4.0),
-            child: Icon(Icons.minimize),
-          ),
-          onPressed: () {
-            AppUtils.onAppMinimizeRequested(ref, context);
-          },
-        ),
-        IconButton(
-          variance: ButtonVariance.ghost,
-          size: ButtonSize.small,
-          icon: const Padding(
-              padding: EdgeInsets.all(4.0), child: Icon(Icons.square_outlined)),
-          onPressed: () {
-            AppUtils.onAppMaximizeRequested();
-          },
-        ),
-        IconButton(
-          variance: ButtonVariance.ghost,
-          size: ButtonSize.small,
-          icon: const Padding(
-              padding: EdgeInsets.all(4.0), child: Icon(Icons.close)),
-          onPressed: () {
-            AppUtils.onAppCloseRequested(ref, context);
-          },
-        ),
-      ],
+      children: Platform.isMacOS ? buttonsMac : buttons,
     );
   }
 }

@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:io';
 import 'package:collection/collection.dart';
 
 import 'package:animate_do/animate_do.dart';
@@ -75,6 +76,17 @@ class _MainScreenState extends ConsumerState<MainScreen>
 
     if (eventName == kWindowEventResize) {
       await windowManager.setMinimumSize(const Size(500, 600));
+    }
+
+    if (Platform.isMacOS) {
+      if (eventName == kWindowEventEnterFullScreen) {
+        await windowManager.setTitleBarStyle(TitleBarStyle.normal);
+      }
+
+      if (eventName == kWindowEventLeaveFullScreen) {
+        await windowManager.setTitleBarStyle(TitleBarStyle.hidden,
+            windowButtonVisibility: false);
+      }
     }
 
     super.onWindowEvent(eventName);

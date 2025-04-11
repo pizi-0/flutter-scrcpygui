@@ -46,7 +46,7 @@ class AppUtils {
   static Future<String> getAppPid() async {
     String pidof = 'Unknown';
 
-    if (Platform.isLinux) {
+    if (Platform.isLinux || Platform.isMacOS) {
       pidof = (await Process.run('pgrep', ['scrcpygui'])).stdout;
     }
 
@@ -102,7 +102,7 @@ class AppUtils {
     bool isMaximized = await windowManager.isMaximized();
 
     if (isMaximized) {
-      await windowManager.restore();
+      await windowManager.unmaximize();
     }
     if (!isMaximized) {
       await windowManager.maximize();
