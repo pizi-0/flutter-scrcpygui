@@ -89,7 +89,7 @@ class TitleBar extends ConsumerWidget {
 
     return OutlinedContainer(
       borderRadius: theme.borderRadiusXs,
-      height: 40,
+      height: 45,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -110,7 +110,7 @@ class TitleBar extends ConsumerWidget {
                   const Text('by pizi-0')
                       .fontSize(8)
                       .underline()
-                      .paddingOnly(top: 8),
+                      .paddingOnly(top: 4.5),
                 ],
               ).paddingOnly(left: 8),
             ),
