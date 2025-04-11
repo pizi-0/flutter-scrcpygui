@@ -106,14 +106,15 @@ class UpdateUtils {
       ref.read(updateStatusProvider.notifier).state = 'Download complete';
       await Future.delayed(500.milliseconds);
     } catch (e) {
+       
       logger.e([
         e.toString(),
-        'URL: https://github.com/Genymobile/scrcpy/releases/download/v$newversion/scrcpy-linux-x86_64-v$newversion.tar.gz',
+        'URL: ${await downloadLink(newversion)}',
       ], error: 'Update download failed');
 
       throw Exception([
         'Download failed: $e',
-        'URL: https://github.com/Genymobile/scrcpy/releases/download/v$newversion/scrcpy-linux-x86_64-v$newversion.tar.gz'
+        'URL: ${downloadLink(newversion)}'
       ]);
     }
   }
@@ -123,7 +124,11 @@ class UpdateUtils {
       return 'https://github.com/Genymobile/scrcpy/releases/download/v$newversion/scrcpy-win64-v$newversion.zip';
     } else if (Platform.isMacOS) {
       final devInfo = await DeviceInfoPlugin().deviceInfo;
-      final arch = devInfo.data['arch'];
+      var arch = devInfo.data['arch'];
+
+      if (arch == 'arm64'){
+        arch = 'aarch64';
+      }
 
       return 'https://github.com/Genymobile/scrcpy/releases/download/v$newversion/scrcpy-macos-$arch-v$newversion.tar.gz';
     } else {
