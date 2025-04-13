@@ -5,6 +5,7 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/app_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/device_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/video_options.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config_tags.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 
 import 'scrcpy_config/window_options.dart';
@@ -23,6 +24,9 @@ class ScrcpyConfig {
   final SWindowOptions windowOptions;
   final String additionalFlags;
 
+  //tags are auto generated
+  List<ConfigTag> tags;
+
   final String? savePath;
   ScrcpyConfig({
     required this.id,
@@ -36,7 +40,41 @@ class ScrcpyConfig {
     required this.windowOptions,
     required this.additionalFlags,
     this.savePath,
-  });
+    this.tags = const [],
+  }) {
+    tags = getTags();
+  }
+
+  getTags() {
+    List<ConfigTag> tags = [];
+    if (isRecording) {
+      tags.add(ConfigTag.recording);
+    }
+
+    if (scrcpyMode == ScrcpyMode.videoOnly) {
+      tags.add(ConfigTag.videoOnly);
+    }
+
+    if (scrcpyMode == ScrcpyMode.audioOnly) {
+      tags.add(ConfigTag.audioOnly);
+    }
+
+    if (videoOptions.displayId == 'new') {
+      tags.add(ConfigTag.virtualDisplay);
+    }
+
+    if (appOptions.selectedApp != null) {
+      tags.add(ConfigTag.withApp);
+    }
+
+    if (id == 'default-mirror' || id == 'default-record') {
+      tags.add(ConfigTag.defaultConfig);
+    } else {
+      tags.add(ConfigTag.customConfig);
+    }
+
+    return tags;
+  }
 
   ScrcpyConfig copyWith({
     String? id,
