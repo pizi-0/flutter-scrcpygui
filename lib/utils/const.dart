@@ -190,6 +190,7 @@ final defaultAppBehaviour = AppBehaviour(
   traySupport: true,
   toastEnabled: true,
   minimizeAction: MinimizeAction.toTaskBar,
+  hideDefaultConfig: false,
 );
 
 final defaultSettings = AppSettings(

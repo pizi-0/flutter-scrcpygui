@@ -22,6 +22,7 @@ class AppBehaviour {
   final bool traySupport;
   final bool toastEnabled;
   final MinimizeAction minimizeAction;
+  final bool hideDefaultConfig;
 
   AppBehaviour({
     required this.languageCode,
@@ -29,6 +30,7 @@ class AppBehaviour {
     required this.traySupport,
     required this.toastEnabled,
     required this.minimizeAction,
+    required this.hideDefaultConfig,
   });
 
   Map<String, dynamic> toMap() {
@@ -38,6 +40,7 @@ class AppBehaviour {
       'traySupport': traySupport,
       'toastEnabled': toastEnabled,
       'minimizeAction': minimizeAction.index,
+      'hideDefaultConfig': hideDefaultConfig,
     };
   }
 
@@ -50,6 +53,7 @@ class AppBehaviour {
       minimizeAction: map['minimizeAction'] == null
           ? MinimizeAction.toTaskBar
           : MinimizeAction.values[map['minimizeAction']],
+      hideDefaultConfig: map['hideDefaultConfig'] ?? false,
     );
   }
 
@@ -64,36 +68,41 @@ class AppBehaviour {
     bool? toastEnabled,
     MinimizeAction? minimizeAction,
     String? languageCode,
+    bool? hideDefaultConfig,
   }) {
     return AppBehaviour(
-      languageCode: languageCode ?? this.languageCode,
-      killNoWindowInstance: killNoWindowInstance ?? this.killNoWindowInstance,
-      traySupport: traySupport ?? this.traySupport,
-      toastEnabled: toastEnabled ?? this.toastEnabled,
-      minimizeAction: minimizeAction ?? this.minimizeAction,
-    );
+        languageCode: languageCode ?? this.languageCode,
+        killNoWindowInstance: killNoWindowInstance ?? this.killNoWindowInstance,
+        traySupport: traySupport ?? this.traySupport,
+        toastEnabled: toastEnabled ?? this.toastEnabled,
+        minimizeAction: minimizeAction ?? this.minimizeAction,
+        hideDefaultConfig: hideDefaultConfig ?? this.hideDefaultConfig);
   }
 
   @override
   String toString() {
-    return 'AppBehaviour(killNoWindowInstance: $killNoWindowInstance, traySupport: $traySupport, toastEnabled: $toastEnabled, minimizeAction: $minimizeAction)';
+    return 'AppBehaviour(languageCode: $languageCode, killNoWindowInstance: $killNoWindowInstance, traySupport: $traySupport, toastEnabled: $toastEnabled, minimizeAction: $minimizeAction, hideDefaultConfig: $hideDefaultConfig)';
   }
 
   @override
   bool operator ==(covariant AppBehaviour other) {
     if (identical(this, other)) return true;
 
-    return other.killNoWindowInstance == killNoWindowInstance &&
+    return other.languageCode == languageCode &&
+        other.killNoWindowInstance == killNoWindowInstance &&
         other.traySupport == traySupport &&
         other.toastEnabled == toastEnabled &&
-        other.minimizeAction == minimizeAction;
+        other.minimizeAction == minimizeAction &&
+        other.hideDefaultConfig == hideDefaultConfig;
   }
 
   @override
   int get hashCode {
-    return killNoWindowInstance.hashCode ^
+    return languageCode.hashCode ^
+        killNoWindowInstance.hashCode ^
         traySupport.hashCode ^
         toastEnabled.hashCode ^
-        minimizeAction.hashCode;
+        minimizeAction.hashCode ^
+        hideDefaultConfig.hashCode;
   }
 }

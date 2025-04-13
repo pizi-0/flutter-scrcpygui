@@ -1,8 +1,11 @@
 import 'package:awesome_extensions/awesome_extensions_dart.dart';
+import 'package:flutter/material.dart' show InkWell;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config_tags.dart';
 import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
@@ -91,6 +94,50 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
                             SelectItemButton(value: act, child: Text(act.$2)))
                         .toList()),
               ).call,
+            ),
+          ),
+        ),
+        Divider(),
+        InkWell(
+          onTap: () async {
+            ref.read(settingsProvider.notifier).changeHideConfig();
+
+            if (!behaviour.hideDefaultConfig) {
+              ref.read(configTags.notifier).addTag(ConfigTag.customConfig);
+            } else {
+              ref.read(configTags.notifier).removeTag(ConfigTag.customConfig);
+            }
+
+            await Db.saveAppSettings(ref.read(settingsProvider));
+          },
+          child: PgListTile(
+            title: 'Hide default configs',
+            trailing: ConstrainedBox(
+              constraints: const BoxConstraints(
+                  minWidth: 180, maxWidth: 180, minHeight: 30),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Checkbox(
+                  state: behaviour.hideDefaultConfig
+                      ? CheckboxState.checked
+                      : CheckboxState.unchecked,
+                  onChanged: (val) async {
+                    ref.read(settingsProvider.notifier).changeHideConfig();
+
+                    if (!behaviour.hideDefaultConfig) {
+                      ref
+                          .read(configTags.notifier)
+                          .addTag(ConfigTag.customConfig);
+                    } else {
+                      ref
+                          .read(configTags.notifier)
+                          .removeTag(ConfigTag.customConfig);
+                    }
+
+                    await Db.saveAppSettings(ref.read(settingsProvider));
+                  },
+                ),
+              ),
             ),
           ),
         ),

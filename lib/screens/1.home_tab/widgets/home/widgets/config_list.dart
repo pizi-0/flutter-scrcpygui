@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:scrcpygui/utils/configs_list_extension.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -41,6 +42,10 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
     final config = ref.watch(selectedConfigProvider);
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
+    final filteredList = allConfigs.filterByAnyTag(ref.watch(configTags));
+
+    print(filteredList.length);
+
     return PgSectionCard(
       label: el.configLoc.label(count: '${allConfigs.length}'),
       // labelButton: IconButton.ghost(
@@ -66,7 +71,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
                 value: config,
                 popup: SelectPopup(
                   items: SelectItemList(
-                    children: allConfigs
+                    children: filteredList
                         .map((conf) => SelectItemButton(
                             value: conf,
                             child: IntrinsicHeight(

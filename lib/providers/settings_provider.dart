@@ -49,6 +49,14 @@ class SettingsNotifier extends Notifier<AppSettings> {
     state = state.copyWith(
         behaviour: currentBehaviour.copyWith(languageCode: languageCode));
   }
+
+  changeHideConfig() {
+    var currentBehaviour = state.behaviour;
+
+    state = state.copyWith(
+        behaviour: currentBehaviour.copyWith(
+            hideDefaultConfig: !state.behaviour.hideDefaultConfig));
+  }
 }
 
 final settingsProvider =

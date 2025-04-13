@@ -33,7 +33,9 @@ extension ScrcpyConfigListExtension on List<ScrcpyConfig> {
   /// Returns a new list containing the filtered configurations.
   /// If [tagsToMatch] is empty, returns an empty list.
   List<ScrcpyConfig> filterByAnyTag(List<ConfigTag> tagsToMatch) {
-    if (tagsToMatch.isEmpty) return []; // Return none if no tags specified
+    if (tagsToMatch.isEmpty) {
+      return List.from(this); // Return none if no tags specified
+    }
     return where(
             (config) => tagsToMatch.any((tag) => config.tags.contains(tag)))
         .toList();
