@@ -49,6 +49,8 @@ class ScrcpyConfig {
     List<ConfigTag> tags = [];
     if (isRecording) {
       tags.add(ConfigTag.recording);
+    } else {
+      tags.add(ConfigTag.mirror);
     }
 
     if (scrcpyMode == ScrcpyMode.videoOnly) {

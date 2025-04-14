@@ -4,6 +4,7 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/app_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config_tags.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_app_list.dart';
+import 'package:scrcpygui/utils/configs_list_extension.dart';
 import 'package:scrcpygui/utils/const.dart';
 
 class ConfigsNotifier extends Notifier<List<ScrcpyConfig>> {
@@ -195,11 +196,51 @@ class ConfigTagNotifier extends Notifier<List<ConfigTag>> {
   addTag(ConfigTag tag) {
     if (!state.contains(tag)) {
       state = [...state, tag];
+
+      _setSelectedConfig();
     }
   }
 
   removeTag(ConfigTag tag) {
     state = [...state.where((t) => t != tag)];
+
+    _setSelectedConfig();
+  }
+
+  toggleTag(ConfigTag tag) {
+    if (state.contains(tag)) {
+      removeTag(tag);
+    } else {
+      addTag(tag);
+    }
+  }
+
+  clearTag() {
+    state = [
+      ...state.where(
+          (e) => e == ConfigTag.customConfig || e == ConfigTag.defaultConfig)
+    ];
+
+    _setSelectedConfig();
+  }
+
+  void _setSelectedConfig() {
+    final allconfig = ref.read(configsProvider);
+    final f1 = allconfig.filterByAnyTag(state
+        .where(
+            (t) => t == ConfigTag.customConfig || t == ConfigTag.defaultConfig)
+        .toList());
+
+    final f2 = f1.filterByAllTags(state
+        .where(
+            (t) => t != ConfigTag.customConfig || t != ConfigTag.defaultConfig)
+        .toList());
+
+    if (f2.isNotEmpty) {
+      ref.read(selectedConfigProvider.notifier).state = f2.first;
+    } else {
+      ref.read(selectedConfigProvider.notifier).state = null;
+    }
   }
 }
 
