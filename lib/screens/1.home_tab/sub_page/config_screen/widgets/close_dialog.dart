@@ -166,10 +166,12 @@ class _ConfigScreenCloseDialogState
         .where((e) => !defaultConfigs.contains(e))
         .toList();
 
-    ref.read(selectedConfigProvider.notifier).state = ref
-        .read(configsProvider)
-        .firstWhere((c) => c.id == currentConfig.id,
-            orElse: () => defaultMirror);
+    if (ref.read(filteredConfigsProvider).contains(currentConfig)) {
+      ref.read(selectedConfigProvider.notifier).state = ref
+          .read(configsProvider)
+          .firstWhere((c) => c.id == currentConfig.id,
+              orElse: () => defaultMirror);
+    }
 
     await Db.saveConfigs(ref, context, toSave);
 
