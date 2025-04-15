@@ -466,3 +466,8 @@ color_scheme_name_loc:
   violet: Ungu
   yellow: Kuning
   zinc: Zink
+
+config_filters_loc:
+  label:
+    withApp: Dengan aplikasi
+    virt: Paparan maya

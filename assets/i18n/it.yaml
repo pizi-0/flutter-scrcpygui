@@ -465,3 +465,8 @@ color_scheme_name_loc:
   violet: Viola
   yellow: Giallo
   zinc: Zinco
+
+config_filters_loc:
+  label:
+    withApp: Con app
+    virt: Display virtuale

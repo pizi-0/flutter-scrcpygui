@@ -6273,6 +6273,7 @@ class ButtonLabelLoc {
     required this.overwrite,
     required this.save,
     required this.clear,
+    required this.filter,
   });
   factory ButtonLabelLoc.fromJson(Map<String, dynamic> json) {
     return ButtonLabelLoc(
@@ -6289,6 +6290,7 @@ class ButtonLabelLoc {
       overwrite: (json['overwrite'] ?? '').toString(),
       save: (json['save'] ?? '').toString(),
       clear: (json['clear'] ?? '').toString(),
+      filter: (json['filter'] ?? '').toString(),
     );
   }
   final String ok;
@@ -6304,6 +6306,7 @@ class ButtonLabelLoc {
   final String overwrite;
   final String save;
   final String clear;
+  final String filter;
   Map<String, Object> get _content => {
         r'''ok''': ok,
         r'''close''': close,
@@ -6318,6 +6321,7 @@ class ButtonLabelLoc {
         r'''overwrite''': overwrite,
         r'''save''': save,
         r'''clear''': clear,
+        r'''filter''': filter,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -6546,6 +6550,94 @@ class ColorSchemeNameLoc {
   }
 }
 
+class ConfigFiltersLoc {
+  const ConfigFiltersLoc({
+    required this.label,
+  });
+  factory ConfigFiltersLoc.fromJson(Map<String, dynamic> json) {
+    return ConfigFiltersLoc(
+      label: ConfigFiltersLocLabel.fromJson(
+          (json['label'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final ConfigFiltersLocLabel label;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ConfigFiltersLocLabel {
+  const ConfigFiltersLocLabel({
+    required this.withApp,
+    required this.virt,
+  });
+  factory ConfigFiltersLocLabel.fromJson(Map<String, dynamic> json) {
+    return ConfigFiltersLocLabel(
+      withApp: (json['withApp'] ?? '').toString(),
+      virt: (json['virt'] ?? '').toString(),
+    );
+  }
+  final String withApp;
+  final String virt;
+  Map<String, Object> get _content => {
+        r'''withApp''': withApp,
+        r'''virt''': virt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class LocalizationMessages {
   LocalizationMessages({
     required this.homeLoc,
@@ -6578,6 +6670,7 @@ class LocalizationMessages {
     required this.statusLoc,
     required this.commonLoc,
     required this.colorSchemeNameLoc,
+    required this.configFiltersLoc,
   });
   factory LocalizationMessages.fromJson(Map<String, dynamic> json) {
     return LocalizationMessages(
@@ -6641,6 +6734,8 @@ class LocalizationMessages {
           (json['common_loc'] as Map).cast<String, dynamic>()),
       colorSchemeNameLoc: ColorSchemeNameLoc.fromJson(
           (json['color_scheme_name_loc'] as Map).cast<String, dynamic>()),
+      configFiltersLoc: ConfigFiltersLoc.fromJson(
+          (json['config_filters_loc'] as Map).cast<String, dynamic>()),
     );
   }
   final HomeLoc homeLoc;
@@ -6703,6 +6798,8 @@ class LocalizationMessages {
 
   final ColorSchemeNameLoc colorSchemeNameLoc;
 
+  final ConfigFiltersLoc configFiltersLoc;
+
   Map<String, Object> get _content => {
         r'''home_loc''': homeLoc,
         r'''device_tile_loc''': deviceTileLoc,
@@ -6734,6 +6831,7 @@ class LocalizationMessages {
         r'''status_loc''': statusLoc,
         r'''common_loc''': commonLoc,
         r'''color_scheme_name_loc''': colorSchemeNameLoc,
+        r'''config_filters_loc''': configFiltersLoc,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -7272,6 +7370,7 @@ final LocalizationMessages en = LocalizationMessages(
     overwrite: 'Overwrite',
     save: 'Save',
     clear: 'Clear',
+    filter: 'Filter configs',
   ),
   statusLoc: StatusLoc(
     failed: 'Failed',
@@ -7300,6 +7399,12 @@ final LocalizationMessages en = LocalizationMessages(
     violet: 'Violet',
     yellow: 'Yellow',
     zinc: 'Zinc',
+  ),
+  configFiltersLoc: ConfigFiltersLoc(
+    label: ConfigFiltersLocLabel(
+      withApp: 'With app',
+      virt: 'Virtual display',
+    ),
   ),
 );
 final LocalizationMessages es = LocalizationMessages(
@@ -7826,6 +7931,7 @@ final LocalizationMessages es = LocalizationMessages(
     overwrite: 'Sobrescribir',
     save: 'Guardar',
     clear: 'Limpiar',
+    filter: '',
   ),
   statusLoc: StatusLoc(
     failed: 'Fallido',
@@ -7854,6 +7960,12 @@ final LocalizationMessages es = LocalizationMessages(
     violet: 'Violeta',
     yellow: 'Amarillo',
     zinc: 'Zinc',
+  ),
+  configFiltersLoc: ConfigFiltersLoc(
+    label: ConfigFiltersLocLabel(
+      withApp: 'Con app',
+      virt: 'Pantalla virtual',
+    ),
   ),
 );
 final LocalizationMessages it = LocalizationMessages(
@@ -8373,6 +8485,7 @@ final LocalizationMessages it = LocalizationMessages(
     overwrite: 'Sovrascrivi',
     save: 'Salva',
     clear: 'Cancella',
+    filter: '',
   ),
   statusLoc: StatusLoc(
     failed: 'Fallito',
@@ -8401,6 +8514,12 @@ final LocalizationMessages it = LocalizationMessages(
     violet: 'Viola',
     yellow: 'Giallo',
     zinc: 'Zinco',
+  ),
+  configFiltersLoc: ConfigFiltersLoc(
+    label: ConfigFiltersLocLabel(
+      withApp: 'Con app',
+      virt: 'Display virtuale',
+    ),
   ),
 );
 final LocalizationMessages ms = LocalizationMessages(
@@ -8924,6 +9043,7 @@ final LocalizationMessages ms = LocalizationMessages(
     overwrite: 'Timpa',
     save: 'Simpan',
     clear: 'Kosongkan',
+    filter: '',
   ),
   statusLoc: StatusLoc(
     failed: 'Gagal',
@@ -8952,6 +9072,12 @@ final LocalizationMessages ms = LocalizationMessages(
     violet: 'Ungu',
     yellow: 'Kuning',
     zinc: 'Zink',
+  ),
+  configFiltersLoc: ConfigFiltersLoc(
+    label: ConfigFiltersLocLabel(
+      withApp: 'Dengan aplikasi',
+      virt: 'Paparan maya',
+    ),
   ),
 );
 final Map<Locale, LocalizationMessages> _languageMap = {

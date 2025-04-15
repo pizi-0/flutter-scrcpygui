@@ -458,6 +458,7 @@ button_label_loc:
   overwrite: Overwrite
   save: Save
   clear: Clear
+  filter: Filter configs
 
 # status 
 status_loc: 
@@ -489,3 +490,9 @@ color_scheme_name_loc:
   violet: Violet
   yellow: Yellow
   zinc: Zinc
+
+
+config_filters_loc:
+  label:
+    withApp: With app
+    virt: Virtual display

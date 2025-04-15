@@ -465,3 +465,8 @@ color_scheme_name_loc:
   violet: Violeta
   yellow: Amarillo
   zinc: Zinc
+
+config_filters_loc:
+  label:
+    withApp: Con app
+    virt: Pantalla virtual
