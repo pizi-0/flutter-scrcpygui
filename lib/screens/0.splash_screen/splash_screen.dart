@@ -89,7 +89,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       final filtered = allConfigs.filterByAnyTag([ConfigTag.customConfig]);
 
       if (!filtered.contains(lastUsedConfig)) {
-        ref.read(selectedConfigProvider.notifier).state = filtered.first;
+        ref.read(selectedConfigProvider.notifier).state = filtered.firstOrNull;
       }
     }
 
