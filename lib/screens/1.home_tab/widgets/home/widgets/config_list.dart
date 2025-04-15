@@ -3,10 +3,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
-import 'package:scrcpygui/models/scrcpy_related/scrcpy_config_tags.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/config_filter_button.dart';
-import 'package:scrcpygui/utils/configs_list_extension.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -40,29 +38,13 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
 
   @override
   Widget build(BuildContext context) {
-    final allConfigs = ref.watch(configsProvider);
     final config = ref.watch(selectedConfigProvider);
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
-    final filters = ref.watch(configTags);
 
-    final f1 = allConfigs.filterByAnyTag(filters
-        .where(
-            (f) => f == ConfigTag.customConfig || f == ConfigTag.defaultConfig)
-        .toList());
-
-    final f2 = f1.filterByAllTags(filters
-        .where(
-            (f) => f != ConfigTag.customConfig || f != ConfigTag.defaultConfig)
-        .toList());
-
-    f2.sort((a, b) => a.configName.compareTo(b.configName));
+    final filteredConfigs = ref.watch(filteredConfigsProvider);
 
     return PgSectionCard(
-      label: el.configLoc.label(count: '${f2.length}'),
-      // labelButton: IconButton.ghost(
-      //   icon: Icon(Icons.settings_rounded).iconSmall(),
-      //   onPressed: () => context.push('/home/config-manager'),
-      // ),
+      label: el.configLoc.label(count: '${filteredConfigs.length}'),
       labelButton: ConfigFilterButton(),
       labelTrail: IconButton.ghost(
         leading: Text(el.configLoc.new$),
@@ -76,17 +58,17 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
             Expanded(
               child: pg.Select(
                 key: configDropdownKey,
-                onChanged: f2.isEmpty
+                onChanged: filteredConfigs.isEmpty
                     ? null
                     : (value) => ref
                         .read(selectedConfigProvider.notifier)
                         .state = value as ScrcpyConfig,
                 filled: true,
-                placeholder: const Text('No config found'),
+                placeholder: Text(el.configLoc.empty),
                 value: config,
                 popup: SelectPopup(
                   items: SelectItemList(
-                    children: f2
+                    children: filteredConfigs
                         .map((conf) => SelectItemButton(
                             value: conf,
                             child: IntrinsicHeight(
@@ -197,36 +179,24 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
 
   @override
   Widget build(BuildContext context) {
-    final allConfigs = ref.watch(configsProvider);
-    final filters = ref.watch(configTags);
-
-    final f1 = allConfigs.filterByAnyTag(filters
-        .where(
-            (f) => f == ConfigTag.customConfig || f == ConfigTag.defaultConfig)
-        .toList());
-
-    final f2 = f1.filterByAllTags(filters
-        .where(
-            (f) => f != ConfigTag.customConfig || f != ConfigTag.defaultConfig)
-        .toList());
-
-    f2.sort((a, b) => a.configName.compareTo(b.configName));
+    final filteredConfigs = ref.watch(filteredConfigsProvider);
 
     return PgSectionCard(
-      label: el.configLoc.label(count: '${f2.length}'),
-      labelButton: ConfigFilterButton(),
+      label: el.configLoc.label(count: '${filteredConfigs.length}'),
       labelTrail: IconButton.ghost(
         icon: const Icon(Icons.add),
         leading: Text(el.configLoc.new$),
         onPressed: _onNewConfigPressed,
       ),
       children: [
-        ...f2.mapIndexed(
+        ConfigFilterButtonBig(),
+        if (filteredConfigs.isNotEmpty) Divider(),
+        ...filteredConfigs.mapIndexed(
           (index, conf) => Column(
             spacing: 8,
             children: [
               ConfigListTile(conf: conf),
-              if (index != f2.length - 1) const Divider()
+              if (index != filteredConfigs.length - 1) const Divider()
             ],
           ),
         ),
