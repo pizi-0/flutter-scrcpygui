@@ -246,3 +246,28 @@ class ConfigTagNotifier extends Notifier<List<ConfigTag>> {
 
 final configTags = NotifierProvider<ConfigTagNotifier, List<ConfigTag>>(
     () => ConfigTagNotifier());
+
+class FilteredConfigNotifier extends Notifier<List<ScrcpyConfig>> {
+  @override
+  List<ScrcpyConfig> build() {
+    final filters = ref.watch(configTags);
+    final allconfigs = ref.watch(configsProvider);
+    final f1 = allconfigs.filterByAnyTag(filters
+        .where(
+            (f) => f == ConfigTag.customConfig || f == ConfigTag.defaultConfig)
+        .toList());
+
+    final f2 = f1
+        .filterByAllTags(filters
+            .where((f) =>
+                f != ConfigTag.customConfig || f != ConfigTag.defaultConfig)
+            .toList())
+        .toList();
+
+    return f2;
+  }
+}
+
+final filteredConfigsProvider =
+    NotifierProvider<FilteredConfigNotifier, List<ScrcpyConfig>>(
+        () => FilteredConfigNotifier());
