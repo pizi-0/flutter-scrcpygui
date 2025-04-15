@@ -335,6 +335,7 @@ class ConfigLoc {
     required this.select,
     required this.details,
     required this.start,
+    required this.empty,
   });
   factory ConfigLoc.fromJson(Map<String, dynamic> json) {
     return ConfigLoc(
@@ -346,6 +347,7 @@ class ConfigLoc {
       select: (json['select'] ?? '').toString(),
       details: (json['details'] ?? '').toString(),
       start: (json['start'] ?? '').toString(),
+      empty: (json['empty'] ?? '').toString(),
     );
   }
   final String Function({required String count}) label;
@@ -354,12 +356,14 @@ class ConfigLoc {
   final String select;
   final String details;
   final String start;
+  final String empty;
   Map<String, Object> get _content => {
         r'''label''': label,
         r'''new''': new$,
         r'''select''': select,
         r'''details''': details,
         r'''start''': start,
+        r'''empty''': empty,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -455,6 +459,55 @@ class NoConfigDialogLoc {
   }
   final String title;
   final String contents;
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''contents''': contents,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class DeleteConfigDialogLoc {
+  const DeleteConfigDialogLoc({
+    required this.title,
+    required this.contents,
+  });
+  factory DeleteConfigDialogLoc.fromJson(Map<String, dynamic> json) {
+    return DeleteConfigDialogLoc(
+      title: (json['title'] ?? '').toString(),
+      contents: ({required String configname}) => (json['contents'] ?? '')
+          .toString()
+          .replaceAll(r'${configname}', configname)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String title;
+  final String Function({required String configname}) contents;
+
   Map<String, Object> get _content => {
         r'''title''': title,
         r'''contents''': contents,
@@ -6274,6 +6327,7 @@ class ButtonLabelLoc {
     required this.save,
     required this.clear,
     required this.filter,
+    required this.delete,
   });
   factory ButtonLabelLoc.fromJson(Map<String, dynamic> json) {
     return ButtonLabelLoc(
@@ -6291,6 +6345,7 @@ class ButtonLabelLoc {
       save: (json['save'] ?? '').toString(),
       clear: (json['clear'] ?? '').toString(),
       filter: (json['filter'] ?? '').toString(),
+      delete: (json['delete'] ?? '').toString(),
     );
   }
   final String ok;
@@ -6307,6 +6362,7 @@ class ButtonLabelLoc {
   final String save;
   final String clear;
   final String filter;
+  final String delete;
   Map<String, Object> get _content => {
         r'''ok''': ok,
         r'''close''': close,
@@ -6322,6 +6378,7 @@ class ButtonLabelLoc {
         r'''save''': save,
         r'''clear''': clear,
         r'''filter''': filter,
+        r'''delete''': delete,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -6646,6 +6703,7 @@ class LocalizationMessages {
     required this.configLoc,
     required this.noDeviceDialogLoc,
     required this.noConfigDialogLoc,
+    required this.deleteConfigDialogLoc,
     required this.deviceSettingsLoc,
     required this.configScreenLoc,
     required this.logScreenLoc,
@@ -6686,6 +6744,8 @@ class LocalizationMessages {
           (json['no_device_dialog_loc'] as Map).cast<String, dynamic>()),
       noConfigDialogLoc: NoConfigDialogLoc.fromJson(
           (json['no_config_dialog_loc'] as Map).cast<String, dynamic>()),
+      deleteConfigDialogLoc: DeleteConfigDialogLoc.fromJson(
+          (json['delete_config_dialog_loc'] as Map).cast<String, dynamic>()),
       deviceSettingsLoc: DeviceSettingsLoc.fromJson(
           (json['device_settings_loc'] as Map).cast<String, dynamic>()),
       configScreenLoc: ConfigScreenLoc.fromJson(
@@ -6750,6 +6810,8 @@ class LocalizationMessages {
 
   final NoConfigDialogLoc noConfigDialogLoc;
 
+  final DeleteConfigDialogLoc deleteConfigDialogLoc;
+
   final DeviceSettingsLoc deviceSettingsLoc;
 
   final ConfigScreenLoc configScreenLoc;
@@ -6807,6 +6869,7 @@ class LocalizationMessages {
         r'''config_loc''': configLoc,
         r'''no_device_dialog_loc''': noDeviceDialogLoc,
         r'''no_config_dialog_loc''': noConfigDialogLoc,
+        r'''delete_config_dialog_loc''': deleteConfigDialogLoc,
         r'''device_settings_loc''': deviceSettingsLoc,
         r'''config_screen_loc''': configScreenLoc,
         r'''log_screen_loc''': logScreenLoc,
@@ -6893,6 +6956,7 @@ final LocalizationMessages en = LocalizationMessages(
     select: 'Select a config',
     details: 'Show details',
     start: 'Start',
+    empty: 'No config found',
   ),
   noDeviceDialogLoc: NoDeviceDialogLoc(
     title: 'Device',
@@ -6905,6 +6969,10 @@ final LocalizationMessages en = LocalizationMessages(
   noConfigDialogLoc: NoConfigDialogLoc(
     title: 'Config',
     contents: '''No config selected.\nSelect a scrcpy config to start.''',
+  ),
+  deleteConfigDialogLoc: DeleteConfigDialogLoc(
+    title: 'Confirm',
+    contents: ({required String configname}) => '''Delete ${configname}?''',
   ),
   deviceSettingsLoc: DeviceSettingsLoc(
     title: 'Settings',
@@ -7371,6 +7439,7 @@ final LocalizationMessages en = LocalizationMessages(
     save: 'Save',
     clear: 'Clear',
     filter: 'Filter configs',
+    delete: 'Delete',
   ),
   statusLoc: StatusLoc(
     failed: 'Failed',
@@ -7441,6 +7510,7 @@ final LocalizationMessages es = LocalizationMessages(
     select: 'Seleccionar una configuración',
     details: 'Mostrar detalles',
     start: 'Iniciar',
+    empty: 'Ninguna configuración encontrada',
   ),
   noDeviceDialogLoc: NoDeviceDialogLoc(
     title: 'Dispositivo',
@@ -7455,6 +7525,10 @@ final LocalizationMessages es = LocalizationMessages(
     title: 'Configuración',
     contents:
         '''Ninguna configuración seleccionada.\nSeleccione una configuración de scrcpy para iniciar.''',
+  ),
+  deleteConfigDialogLoc: DeleteConfigDialogLoc(
+    title: 'Confirmar',
+    contents: ({required String configname}) => '''¿Eliminar ${configname}?''',
   ),
   deviceSettingsLoc: DeviceSettingsLoc(
     title: 'Ajustes',
@@ -7931,7 +8005,8 @@ final LocalizationMessages es = LocalizationMessages(
     overwrite: 'Sobrescribir',
     save: 'Guardar',
     clear: 'Limpiar',
-    filter: '',
+    filter: 'Filtrar configuraciones',
+    delete: 'Eliminar',
   ),
   statusLoc: StatusLoc(
     failed: 'Fallido',
@@ -8001,6 +8076,7 @@ final LocalizationMessages it = LocalizationMessages(
     select: 'Seleziona una configurazione',
     details: 'Mostra dettagli',
     start: 'Avvia',
+    empty: 'Nessuna configurazione trovata',
   ),
   noDeviceDialogLoc: NoDeviceDialogLoc(
     title: 'Dispositivo',
@@ -8015,6 +8091,10 @@ final LocalizationMessages it = LocalizationMessages(
     title: 'Configurazione',
     contents:
         '''Nessuna configurazione selezionata.\nSeleziona una configurazione di scrcpy da avviare.''',
+  ),
+  deleteConfigDialogLoc: DeleteConfigDialogLoc(
+    title: 'Conferma',
+    contents: ({required String configname}) => '''Eliminare ${configname}?''',
   ),
   deviceSettingsLoc: DeviceSettingsLoc(
     title: 'Impostazioni',
@@ -8485,7 +8565,8 @@ final LocalizationMessages it = LocalizationMessages(
     overwrite: 'Sovrascrivi',
     save: 'Salva',
     clear: 'Cancella',
-    filter: '',
+    filter: 'Filtra configurazioni',
+    delete: 'Elimina',
   ),
   statusLoc: StatusLoc(
     failed: 'Fallito',
@@ -8556,6 +8637,7 @@ final LocalizationMessages ms = LocalizationMessages(
     select: 'Pilih konfigurasi',
     details: 'Tunjukkan butiran',
     start: 'Mula',
+    empty: 'Tiada konfigurasi ditemui',
   ),
   noDeviceDialogLoc: NoDeviceDialogLoc(
     title: 'Peranti',
@@ -8570,6 +8652,10 @@ final LocalizationMessages ms = LocalizationMessages(
     title: 'Konfigurasi',
     contents:
         '''Tiada konfigurasi dipilih.\nPilih konfigurasi scrcpy untuk dimulakan.''',
+  ),
+  deleteConfigDialogLoc: DeleteConfigDialogLoc(
+    title: 'Sahkan',
+    contents: ({required String configname}) => '''Padam ${configname}?''',
   ),
   deviceSettingsLoc: DeviceSettingsLoc(
     title: 'Tetapan',
@@ -9043,7 +9129,8 @@ final LocalizationMessages ms = LocalizationMessages(
     overwrite: 'Timpa',
     save: 'Simpan',
     clear: 'Kosongkan',
-    filter: '',
+    filter: 'Tapis konfigurasi',
+    delete: 'Padam',
   ),
   statusLoc: StatusLoc(
     failed: 'Gagal',

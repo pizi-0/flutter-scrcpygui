@@ -28,6 +28,7 @@ config_loc:
   select: Pilih konfigurasi
   details: Tunjukkan butiran
   start: Mula
+  empty: Tiada konfigurasi ditemui
 
 # error dialog
 no_device_dialog_loc:
@@ -35,6 +36,10 @@ no_device_dialog_loc:
   contentsEdit: Tiada peranti dipilih. \nPilih peranti untuk mengedit konfigurasi scrcpy.
   contentsStart: Tiada peranti dipilih. \nPilih peranti untuk memulakan scrcpy.
   contentsNew: Tiada peranti dipilih. \nPilih peranti untuk mencipta konfigurasi scrcpy.
+
+delete_config_dialog_loc:
+  title: Sahkan
+  contents: Padam ${configname}?
 
 no_config_dialog_loc:
   title: Konfigurasi
@@ -436,6 +441,8 @@ button_label_loc:
   overwrite: Timpa
   save: Simpan
   clear: Kosongkan
+  filter: Tapis konfigurasi
+  delete: Padam
 
 # status
 status_loc:

@@ -29,6 +29,7 @@ config_loc:
   select: Select a config
   details: Show details
   start: Start
+  empty: No config found
 
 # error dialog
 no_device_dialog_loc:
@@ -42,6 +43,10 @@ no_device_dialog_loc:
 no_config_dialog_loc:
   title: Config
   contents: No config selected.\nSelect a scrcpy config to start.
+
+delete_config_dialog_loc:
+  title: Confirm
+  contents: Delete ${configname}?
 
 ## home_tab > device settings screen
 device_settings_loc: 
@@ -459,6 +464,7 @@ button_label_loc:
   save: Save
   clear: Clear
   filter: Filter configs
+  delete: Delete  
 
 # status 
 status_loc: 

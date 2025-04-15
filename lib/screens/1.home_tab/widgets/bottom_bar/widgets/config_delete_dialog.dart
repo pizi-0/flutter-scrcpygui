@@ -2,6 +2,7 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../db/db.dart';
@@ -22,18 +23,19 @@ class _ConfigDeleteDialogState extends ConsumerState<ConfigDeleteDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Confirm'),
+      title: Text(el.deleteConfigDialogLoc.title),
       content: ConstrainedBox(
           constraints:
               const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
-          child: Text('Delete ${widget.config.configName}?')),
+          child: Text(el.deleteConfigDialogLoc
+              .contents(configname: widget.config.configName))),
       actions: [
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           spacing: 8,
           children: [
             DestructiveButton(
-              child: const Text('Delete'),
+              child: Text(el.buttonLabelLoc.delete),
               onPressed: () async {
                 if (ref.read(selectedConfigProvider) == widget.config) {
                   ref.read(selectedConfigProvider.notifier).state = ref
@@ -53,7 +55,8 @@ class _ConfigDeleteDialogState extends ConsumerState<ConfigDeleteDialog> {
               },
             ),
             SecondaryButton(
-                child: const Text('Cancel'), onPressed: () => context.pop()),
+                child: Text(el.buttonLabelLoc.cancel),
+                onPressed: () => context.pop()),
           ],
         ),
       ],

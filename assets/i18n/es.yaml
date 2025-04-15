@@ -28,6 +28,7 @@ config_loc:
   select: Seleccionar una configuración
   details: Mostrar detalles
   start: Iniciar
+  empty: Ninguna configuración encontrada
 
 # error dialog
 no_device_dialog_loc:
@@ -39,6 +40,10 @@ no_device_dialog_loc:
 no_config_dialog_loc:
   title: Configuración
   contents: Ninguna configuración seleccionada.\nSeleccione una configuración de scrcpy para iniciar.
+
+delete_config_dialog_loc:
+  title: Confirmar
+  contents: ¿Eliminar ${configname}?
 
 ## home_tab > device settings screen
 device_settings_loc:
@@ -435,6 +440,8 @@ button_label_loc:
   overwrite: Sobrescribir
   save: Guardar
   clear: Limpiar
+  filter: Filtrar configuraciones
+  delete: Eliminar
 
 # status
 status_loc:
