@@ -42,8 +42,8 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
   }
 }
 
-_audioFormat(ScrcpyConfig selectedConfig) {
-  switch (selectedConfig.audioOptions.audioCodec) {
+_audioFormat(ScrcpyConfig? selectedConfig) {
+  switch (selectedConfig?.audioOptions.audioCodec) {
     case 'aac':
       return AudioFormat.aac;
     case 'flac':
@@ -162,7 +162,7 @@ class ScrcpyModeFlag extends ConsumerWidget {
               .setModeConfig(scrcpyMode: value!.$1);
 
           if (value.$1 == ScrcpyMode.audioOnly) {
-            final audioFormat = _audioFormat(ref.read(selectedConfigProvider)!);
+            final audioFormat = _audioFormat(ref.read(selectedConfigProvider));
 
             ref
                 .read(configScreenConfig.notifier)
