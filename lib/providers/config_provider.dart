@@ -237,7 +237,10 @@ class ConfigTagNotifier extends Notifier<List<ConfigTag>> {
         .toList());
 
     if (f2.isNotEmpty) {
-      ref.read(selectedConfigProvider.notifier).state = f2.first;
+      final selectedConfig = ref.read(selectedConfigProvider);
+      if (!f2.contains(selectedConfig)) {
+        ref.read(selectedConfigProvider.notifier).state = f2.first;
+      }
     } else {
       ref.read(selectedConfigProvider.notifier).state = null;
     }
