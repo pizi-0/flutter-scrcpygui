@@ -100,44 +100,49 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
           ContextMenu(
             items: contextMenu,
             child: GhostButton(
+              density: ButtonDensity.dense,
               onPressed: () => ref.read(selectedDeviceProvider.notifier).state =
                   widget.device,
-              child: PgListTile(
-                key: ValueKey(widget.device.id),
-                leading:
-                    isWireless ? const Icon(Icons.wifi) : const Icon(Icons.usb),
-                title: widget.device.name ?? widget.device.modelName,
-                subtitle: widget.device.id,
-                showSubtitle: true,
-                showSubtitleLeading: false,
-                titleOverflow: true,
-                trailing: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    if (hasRunningInstance)
-                      Row(
-                        children: [
-                          const Icon(
-                            Icons.play_arrow_rounded,
-                            color: Colors.green,
-                          ),
-                          Text('( ${deviceInstance.length} )').xSmall()
-                        ],
-                      ),
-                    if (widget.device.info != null)
-                      IconButton.ghost(
-                        icon: Icon(Icons.apps),
-                        onPressed: () => showDialog(
-                          context: context,
-                          builder: (context) => ControlDialog(widget.device),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: PgListTile(
+                  key: ValueKey(widget.device.id),
+                  leading: isWireless
+                      ? const Icon(Icons.wifi)
+                      : const Icon(Icons.usb),
+                  title: widget.device.name ?? widget.device.modelName,
+                  subtitle: widget.device.id,
+                  showSubtitle: true,
+                  showSubtitleLeading: false,
+                  titleOverflow: true,
+                  trailing: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (hasRunningInstance)
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.play_arrow_rounded,
+                              color: Colors.green,
+                            ),
+                            Text('( ${deviceInstance.length} )').xSmall()
+                          ],
                         ),
-                      ),
-                    IconButton.ghost(
-                      icon: const Icon(Icons.settings),
-                      onPressed: () => context
-                          .push('/home/device-settings/${widget.device.id}'),
-                    )
-                  ],
+                      if (widget.device.info != null)
+                        IconButton.ghost(
+                          icon: Icon(Icons.apps),
+                          onPressed: () => showDialog(
+                            context: context,
+                            builder: (context) => ControlDialog(widget.device),
+                          ),
+                        ),
+                      IconButton.ghost(
+                        icon: const Icon(Icons.settings),
+                        onPressed: () => context
+                            .push('/home/device-settings/${widget.device.id}'),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

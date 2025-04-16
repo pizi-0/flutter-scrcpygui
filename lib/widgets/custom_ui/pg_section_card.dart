@@ -37,7 +37,7 @@ class PgSectionCard extends ConsumerWidget {
                 trailing: labelTrail,
                 child: Row(
                   children: [
-                    Text(label!).paddingSymmetric(vertical: 8),
+                    Text(label!).small.firstP.paddingSymmetric(vertical: 8),
                     if (labelButton != null) labelButton!,
                   ],
                 )),

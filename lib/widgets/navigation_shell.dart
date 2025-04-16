@@ -170,6 +170,7 @@ class AppSideBar extends ConsumerStatefulWidget {
 class _AppSideBarState extends ConsumerState<AppSideBar> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final expanded = ref.watch(appSideBarStateProvider);
     final currentPage = ref.watch(mainScreenPage);
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
@@ -181,8 +182,14 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
         final shouldExpand = sizingInfo.isTablet || sizingInfo.isDesktop;
 
         return IntrinsicWidth(
-          child: OutlinedContainer(
-            borderRadius: const BorderRadius.all(Radius.zero),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                right: BorderSide(
+                  color: theme.colorScheme.border,
+                ),
+              ),
+            ),
             child: NavigationRail(
               expanded: expanded || shouldExpand,
               index: currentPage,
