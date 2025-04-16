@@ -13,7 +13,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
-import 'package:scrcpygui/utils/adb_utils.dart';
+// import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/configs_list_extension.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/setup.dart';
@@ -67,7 +67,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     ref.read(appVersionProvider.notifier).state =
         await AppUtils.getAppVersion();
 
-    final workDir = ref.read(execDirProvider);
+    // final workDir = ref.read(execDirProvider);
     final savedDevices = await Db.getSavedAdbDevice();
 
     ref.read(savedAdbDevicesProvider.notifier).setDevices(savedDevices);
@@ -93,8 +93,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       }
     }
 
-    final adbDevices = await AdbUtils.connectedDevices(workDir);
-    ref.read(adbProvider.notifier).setConnected(adbDevices, savedDevices);
+    // final adbDevices = await AdbUtils.connectedDevices(workDir);
+    // ref.read(adbProvider.notifier).setConnected(adbDevices, savedDevices);
 
     final wirelessHistory = await Db.getWirelessHistory();
     ref.read(ipHistoryProvider.notifier).update((state) => wirelessHistory);
