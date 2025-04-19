@@ -20,6 +20,23 @@ class CommandRunner {
     }
   }
 
+  static Future<Process> startAdbCommand(String workDir,
+      {List<String> args = const []}) async {
+    try {
+      if (Platform.isWindows) {
+        return await Process.start('$workDir\\adb.exe', [],
+            workingDirectory: workDir);
+      } else if (Platform.isLinux || Platform.isMacOS) {
+        return await Process.start('$workDir/adb', [],
+            workingDirectory: workDir);
+      } else {
+        throw Exception('Unsupported platform');
+      }
+    } on Exception catch (_) {
+      rethrow;
+    }
+  }
+
   static Future<ProcessResult> runAdbShellCommand(
       String workDir, AdbDevices device,
       {List<String> args = const []}) async {
