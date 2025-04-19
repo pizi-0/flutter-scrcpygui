@@ -24,11 +24,14 @@ class CommandRunner {
       {List<String> args = const []}) async {
     try {
       if (Platform.isWindows) {
-        return await Process.start('$workDir\\adb.exe', [],
+        final res = await Process.start('$workDir\\adb.exe', args,
             workingDirectory: workDir);
+        return res;
       } else if (Platform.isLinux || Platform.isMacOS) {
-        return await Process.start('$workDir/adb', [],
+        final res = await Process.start('$workDir/adb', args,
             workingDirectory: workDir);
+
+        return res;
       } else {
         throw Exception('Unsupported platform');
       }
