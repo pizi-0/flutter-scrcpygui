@@ -10,7 +10,6 @@ import 'package:bonsoir/bonsoir.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
-import 'package:scrcpygui/providers/poll_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/widgets/navigation_shell.dart';
@@ -104,11 +103,9 @@ class _MainScreenState extends ConsumerState<MainScreen>
 
     if (visible) {
       await windowManager.hide();
-      await trayManager.destroy();
       await TrayUtils.initTray(ref, context);
     } else {
       await windowManager.show();
-      await trayManager.destroy();
       await TrayUtils.initTray(ref, context);
     }
 
@@ -118,7 +115,12 @@ class _MainScreenState extends ConsumerState<MainScreen>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    ref.watch(pollAdbProvider);
+
+    ref.listen(adbProvider, (previous, next) async {
+      if (!listEquals(previous, next)) {
+        await TrayUtils.initTray(ref, context);
+      }
+    });
 
     return Focus(
       focusNode: node,
@@ -144,24 +146,13 @@ class _MainScreenState extends ConsumerState<MainScreen>
 
     ref.read(savedAdbDevicesProvider.notifier).listenSelf(
       (previous, next) async {
-        trayManager.destroy();
         await TrayUtils.initTray(ref, context);
-      },
-    );
-
-    ref.read(adbProvider.notifier).listenSelf(
-      (a, b) async {
-        if (!listEquals(a, b)) {
-          await trayManager.destroy();
-          await TrayUtils.initTray(ref, context);
-        }
       },
     );
 
     ref.read(configsProvider.notifier).listenSelf(
       (a, b) async {
         if (!listEquals(a, b)) {
-          await trayManager.destroy();
           await TrayUtils.initTray(ref, context);
         }
       },
