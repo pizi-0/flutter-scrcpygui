@@ -100,18 +100,26 @@ class AdbDevices {
   bool operator ==(covariant AdbDevices other) {
     if (identical(this, other)) return true;
 
-    return other.id == id &&
+    return other.name == name &&
+        other.id == id &&
+        other.ip == ip &&
         other.modelName == modelName &&
         other.serialNo == serialNo &&
-        other.status == status;
+        other.status == status &&
+        other.automationData == automationData &&
+        other.info == info;
   }
 
   @override
   int get hashCode {
-    return id.hashCode ^
+    return name.hashCode ^
+        id.hashCode ^
+        ip.hashCode ^
         modelName.hashCode ^
         serialNo.hashCode ^
-        status.hashCode;
+        status.hashCode ^
+        automationData.hashCode ^
+        info.hashCode;
   }
 
   @override
