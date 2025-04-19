@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
+import 'package:scrcpygui/utils/command_runner.dart';
 import 'package:scrcpygui/utils/const.dart';
 
 final adbTrackDevicesStreamProvider = StreamProvider<List<AdbDevices>>((ref) {
@@ -51,12 +52,8 @@ final adbTrackDevicesStreamProvider = StreamProvider<List<AdbDevices>>((ref) {
       }
 
       // Start track
-      adbProcess = await Process.start(
-        'adb',
-        ['track-devices'],
-        workingDirectory: workDir,
-        runInShell: Platform.isWindows, // Often needed on Windows
-      );
+      adbProcess =
+          await CommandRunner.startAdbCommand(workDir, args: ['track-devices']);
 
       logger.i('adb track-devices process started (PID: ${adbProcess?.pid})');
 
