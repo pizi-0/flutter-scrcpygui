@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 class VideoEncoder {
@@ -41,6 +43,16 @@ class VideoEncoder {
 
   @override
   String toString() => 'codec: $codec, encoder: $encoder';
+
+  @override
+  bool operator ==(covariant VideoEncoder other) {
+    if (identical(this, other)) return true;
+
+    return other.codec == codec && listEquals(other.encoder, encoder);
+  }
+
+  @override
+  int get hashCode => codec.hashCode ^ encoder.hashCode;
 }
 
 class AudioEncoder {
@@ -82,4 +94,14 @@ class AudioEncoder {
 
   @override
   String toString() => 'codec: $codec, encoder: $encoder';
+
+  @override
+  bool operator ==(covariant AudioEncoder other) {
+    if (identical(this, other)) return true;
+
+    return other.codec == codec && listEquals(other.encoder, encoder);
+  }
+
+  @override
+  int get hashCode => codec.hashCode ^ encoder.hashCode;
 }

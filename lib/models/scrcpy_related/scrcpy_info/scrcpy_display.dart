@@ -28,4 +28,14 @@ class ScrcpyDisplay {
 
   @override
   String toString() => 'id: $id, resolution: $resolution';
+
+  @override
+  bool operator ==(covariant ScrcpyDisplay other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id && other.resolution == resolution;
+  }
+
+  @override
+  int get hashCode => id.hashCode ^ resolution.hashCode;
 }

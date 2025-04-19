@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_app_list.dart';
 
@@ -101,5 +103,29 @@ class ScrcpyInfo {
   @override
   String toString() {
     return 'ScrcpyInfo(device: $device, buildVersion: $buildVersion, cameras: $cameras, displays: $displays, videoEncoders: $videoEncoders, audioEncoder: $audioEncoder)';
+  }
+
+  @override
+  bool operator ==(covariant ScrcpyInfo other) {
+    if (identical(this, other)) return true;
+
+    return other.device == device &&
+        other.buildVersion == buildVersion &&
+        listEquals(other.cameras, cameras) &&
+        listEquals(other.displays, displays) &&
+        listEquals(other.videoEncoders, videoEncoders) &&
+        listEquals(other.audioEncoder, audioEncoder) &&
+        listEquals(other.appList, appList);
+  }
+
+  @override
+  int get hashCode {
+    return device.hashCode ^
+        buildVersion.hashCode ^
+        cameras.hashCode ^
+        displays.hashCode ^
+        videoEncoders.hashCode ^
+        audioEncoder.hashCode ^
+        appList.hashCode;
   }
 }

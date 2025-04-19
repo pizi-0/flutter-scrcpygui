@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 class ScrcpyCamera {
@@ -43,5 +45,20 @@ class ScrcpyCamera {
   @override
   String toString() {
     return 'id: $id, desc: $desc, sizes: $sizes, fps: $fps';
+  }
+
+  @override
+  bool operator ==(covariant ScrcpyCamera other) {
+    if (identical(this, other)) return true;
+
+    return other.id == id &&
+        other.desc == desc &&
+        listEquals(other.sizes, sizes) &&
+        listEquals(other.fps, fps);
+  }
+
+  @override
+  int get hashCode {
+    return id.hashCode ^ desc.hashCode ^ sizes.hashCode ^ fps.hashCode;
   }
 }
