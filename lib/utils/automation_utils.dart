@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/bonsoir_devices.dart';
@@ -81,9 +80,5 @@ class AutomationUtils {
         }
       }
     }
-  }
-
-  static setAutoConnect(WidgetRef ref, AdbDevices device) {
-    ref.read(savedAdbDevicesProvider.notifier).addEditDevices(device);
   }
 }

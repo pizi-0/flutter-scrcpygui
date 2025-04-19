@@ -57,32 +57,6 @@ class ScrcpyUtils {
           .stdout
           .toString();
 
-      // // needed as closing scrcpy window does not remove the process from task manager, unless the main app is closed
-      // final strayList = (await Process.run('tasklist', [
-      //   '/fi',
-      //   'ImageName eq scrcpy.exe',
-      //   '/fi',
-      //   'Status eq NOT RESPONDING',
-      //   '/v',
-      //   '/fo',
-      //   'csv'
-      // ]))
-      //     .stdout
-      //     .toString();
-
-      // final strays = strayList.splitLines();
-      // strays.removeAt(0);
-      // strays
-      //     .removeWhere((e) => e.isEmpty || e.contains('OleMainThreadWndName'));
-      // // OleMainThreadWndName is in exception because for some reason, instances with no window show not responding as status from tasklist and ends up buing killed as strays
-
-      // if (strays.isNotEmpty) {
-      //   final strayPIDS =
-      //       strays.map((e) => e.replaceAll('"', '').split(',')[1]).toList();
-
-      //   killStrays(strayPIDS, ProcessSignal.sigterm);
-      // }
-
       final split = list.splitLines();
       split.removeAt(0);
       split.removeWhere((e) => e.isEmpty);
@@ -293,90 +267,6 @@ class ScrcpyUtils {
         audioEncoder: audioEncoder,
       ));
     }
-
-    //)
-
-    // if (display == true) {
-    //   FlagCheckResult dis = FlagCheckResult(ok: true);
-    //   result.add(dis);
-    // } else if (display == false) {
-    //   FlagCheckResult dis = FlagCheckResult(
-    //     ok: false,
-    //     errorMessage:
-    //         "Display with ID: '${selectedConfig.videoOptions.displayId}' is not available for this device.",
-    //     overrideFlag: const DisplayIdOverride(),
-    //   );
-
-    //   result.add(dis);
-    // }
-
-    // if (videoCodec == true) {
-    //   FlagCheckResult vidCodec = FlagCheckResult(ok: true);
-    //   result.add(vidCodec);
-    // } else if (videoCodec == false) {
-    //   FlagCheckResult vidCodec = FlagCheckResult(
-    //     ok: false,
-    //     errorMessage:
-    //         "Codec: '${selectedConfig.videoOptions.videoCodec}' is not available for this device.",
-    //     overrideFlag: const VideoCodecOverride(),
-    //   );
-
-    //   result.add(vidCodec);
-    // }
-
-    // if (videoEncoder == true) {
-    //   FlagCheckResult vidEncoder = FlagCheckResult(ok: true);
-    //   result.add(vidEncoder);
-    // } else if (videoEncoder == false) {
-    //   FlagCheckResult vidEncoder = FlagCheckResult(
-    //     ok: false,
-    //     errorMessage:
-    //         "Encoder: '${selectedConfig.videoOptions.videoEncoder}' is not available for this device.",
-    //     overrideFlag: const VideoEncoderOverride(),
-    //   );
-
-    //   result.add(vidEncoder);
-    // }
-
-    // if (duplicateAudio == true) {
-    //   FlagCheckResult dup = FlagCheckResult(ok: true);
-    //   result.add(dup);
-    // } else if (duplicateAudio == false) {
-    //   FlagCheckResult dup = FlagCheckResult(
-    //     ok: false,
-    //     errorMessage: 'Audio duplicate only available for Android 13 and up.',
-    //   );
-
-    //   result.add(dup);
-    // }
-
-    // if (audioCodec == true) {
-    //   FlagCheckResult audCodec = FlagCheckResult(ok: true);
-    //   result.add(audCodec);
-    // } else if (audioCodec == false) {
-    //   FlagCheckResult audCodec = FlagCheckResult(
-    //     ok: false,
-    //     errorMessage:
-    //         "Codec: '${selectedConfig.audioOptions.audioCodec}' is not available for this device.",
-    //     overrideFlag: const VideoCodecOverride(),
-    //   );
-
-    //   result.add(audCodec);
-    // }
-
-    // if (audioEncoder == true) {
-    //   FlagCheckResult audEncoder = FlagCheckResult(ok: true);
-    //   result.add(audEncoder);
-    // } else if (audioEncoder == false) {
-    //   FlagCheckResult audEncoder = FlagCheckResult(
-    //     ok: false,
-    //     errorMessage:
-    //         "Encoder: '${selectedConfig.audioOptions.audioEncoder}' is not available for this device.",
-    //     overrideFlag: const VideoCodecOverride(),
-    //   );
-
-    //   result.add(audEncoder);
-    // }
 
     if (overrideWidget.isNotEmpty) {
       ref.read(configOverrideProvider.notifier).state = selectedConfig;

@@ -149,16 +149,12 @@ class _IPHistoryDialogState extends ConsumerState<IPHistoryDialog> {
                 children: [
                   PgListTile(
                     title: ip,
-                    trailing: Row(
-                      children: [
-                        IconButton.ghost(
-                          onPressed: () => {
-                            widget.controller.text = ip,
-                            context.pop(),
-                          },
-                          icon: Icon(Icons.edit_rounded),
-                        ),
-                      ],
+                    trailing: IconButton.ghost(
+                      onPressed: () => {
+                        widget.controller.text = ip,
+                        context.pop(),
+                      },
+                      icon: Icon(Icons.edit_rounded),
                     ),
                   ),
                   if (index != ipHistory.length - 1) const Divider()

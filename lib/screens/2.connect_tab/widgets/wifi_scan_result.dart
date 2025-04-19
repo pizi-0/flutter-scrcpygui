@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:collection/collection.dart';
@@ -23,8 +21,6 @@ class BonsoirResults extends ConsumerStatefulWidget {
 }
 
 class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
-  bool loading = false;
-
   @override
   Widget build(BuildContext context) {
     final bonsoirDevices = ref.watch(bonsoirDeviceProvider);
@@ -50,14 +46,6 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
               Row(
                 children: [
                   Text(el.connectLoc.withMdns.info.i1).muted().xSmall(),
-                  // LinkButton(
-                  //   density: ButtonDensity.dense,
-                  //   onPressed: () => showDialog(
-                  //     context: context,
-                  //     builder: (context) => const WifiQrPairing(),
-                  //   ),
-                  //   child: const Icon(Icons.qr_code).iconSmall(),
-                  // )
                 ],
               ),
               Text(el.connectLoc.withMdns.info.i2).muted().xSmall(),
@@ -107,20 +95,18 @@ class _BdTileState extends ConsumerState<BdTile> {
         // subtitle: '${bd.toJson()['service.host']}:${bd.port}',
         trailing: Align(
           alignment: Alignment.centerRight,
-          child: Center(
-            child: IconButton(
-              variance: ButtonVariance.ghost,
-              icon: loading
-                  ? CircularProgressIndicator(
-                      size: theme.iconTheme.medium.size,
-                    )
-                  : connected
-                      ? const Icon(Icons.check)
-                      : const Icon(Icons.link),
-              onPressed: loading || connected
-                  ? null
-                  : () async => await _connectMdns(bd),
-            ),
+          child: IconButton(
+            variance: ButtonVariance.ghost,
+            icon: loading
+                ? CircularProgressIndicator(
+                    size: theme.iconTheme.medium.size,
+                  )
+                : connected
+                    ? const Icon(Icons.check)
+                    : const Icon(Icons.link),
+            onPressed: loading || connected
+                ? null
+                : () async => await _connectMdns(bd),
           ),
         ),
       ),

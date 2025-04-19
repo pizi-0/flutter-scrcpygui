@@ -106,7 +106,6 @@ class _MyAppState extends ConsumerState<MyApp> {
     final settings = ref.watch(settingsProvider);
     final looks = settings.looks;
     final behaviour = settings.behaviour;
-    ColorSchemes.blue(ThemeMode.dark).toMap();
 
     return ShadcnApp.router(
       supportedLocales: supportedLocales,

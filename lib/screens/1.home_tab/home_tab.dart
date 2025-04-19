@@ -11,17 +11,12 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'widgets/home/widgets/config_list.dart';
 
-class HomeTab extends ConsumerStatefulWidget {
+class HomeTab extends ConsumerWidget {
   static const route = '/home';
   const HomeTab({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _HomeTabState();
-}
-
-class _HomeTabState extends ConsumerState<HomeTab> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
     final connected = ref.watch(adbProvider);
 
