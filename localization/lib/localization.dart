@@ -7464,7 +7464,7 @@ final LocalizationMessages en = LocalizationMessages(
     red: 'Red',
     rose: 'Rose',
     slate: 'Slate',
-    stone: 'stone',
+    stone: 'Stone',
     violet: 'Violet',
     yellow: 'Yellow',
     zinc: 'Zinc',
