@@ -205,9 +205,14 @@ class TagChip extends ConsumerWidget {
 
           if (tag == ConfigTag.audioOnly) {
             ref.read(configTags.notifier).removeTag(ConfigTag.videoOnly);
+            ref.read(configTags.notifier).removeTag(ConfigTag.virtualDisplay);
           }
 
           if (tag == ConfigTag.videoOnly) {
+            ref.read(configTags.notifier).removeTag(ConfigTag.audioOnly);
+          }
+
+          if (tag == ConfigTag.virtualDisplay) {
             ref.read(configTags.notifier).removeTag(ConfigTag.audioOnly);
           }
         },
