@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/app_config_pair.dart';
+import 'package:scrcpygui/providers/server_key_provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -139,5 +140,23 @@ class Db {
 
     prefs.setStringList(
         PKEY_APP_CONFIG_PAIR, pairList.map((pair) => pair.toJson()).toList());
+  }
+
+  /*
+  Server API Key DB
+  */
+
+  static Future<String?> getApiKey() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    return prefs.getString(PKEY_SERVER_API_KEY);
+  }
+
+  static Future<void> setApiKey(WidgetRef ref, String newkey) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    ref.read(serverApiKeyProvider.notifier).state = newkey;
+
+    prefs.setString(PKEY_SERVER_API_KEY, newkey);
   }
 }
