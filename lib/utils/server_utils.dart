@@ -7,6 +7,7 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/providers/server_key_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
@@ -16,9 +17,107 @@ import '../providers/scrcpy_provider.dart';
 import '../providers/version_provider.dart';
 
 class ServerUtils {
+  HttpServer? _server;
+  bool _isServerRunning = false;
+  InternetAddress? _boundAddress;
+  int? _boundPort;
+
+  bool isServerRunning() => _isServerRunning;
+  InternetAddress? get ipAddress => _boundAddress;
+  int? get boundPort => _boundPort;
+
+  String? get serverUrl => _boundAddress != null && _boundPort != null
+      ? 'http://${_boundAddress!.address}:$_boundPort'
+      : null;
+
+  Future<bool> startServer(WidgetRef ref, {int port = 8080}) async {
+    final ipAddress = await getDeviceIp();
+    if (ipAddress == null) {
+      logger.e('Failed to get IP address for server binding');
+    }
+
+    try {
+      _server = await HttpServer.bind(ipAddress, port);
+      _boundAddress = _server!.address;
+      _boundPort = _server!.port;
+
+      logger.i('HTTP Server listening on $serverUrl');
+      _isServerRunning = true;
+
+      _server!.listen(
+        (HttpRequest request) =>
+            ServerUtils.handleRequest(ref, request), // Use static handler
+        onError: (e, s) {
+          logger.e('Server listen error:', error: e, stackTrace: s);
+          _isServerRunning = false;
+          _server = null; // Clear instance on error
+        },
+        onDone: () {
+          logger.i('HTTP Server stopped listening.');
+          _isServerRunning = false;
+          _server = null; // Clear instance when done
+        },
+        cancelOnError: true,
+      );
+      return true;
+    } catch (e, s) {
+      logger.e('Failed to bind or start HTTP server:', error: e, stackTrace: s);
+      _isServerRunning = false;
+      _server = null;
+      return false;
+    }
+    // ...
+  }
+
+  Future<void> stop() async {
+    if (!_isServerRunning && _server == null) {
+      logger.w('Server stop requested but not running or already stopped.');
+      return;
+    }
+    try {
+      await _server?.close(force: true);
+      logger.i('HTTP Server stopped successfully.');
+    } catch (e, s) {
+      logger.e('Error stopping HTTP server:', error: e, stackTrace: s);
+    } finally {
+      _server = null;
+      _boundAddress = null;
+      _boundPort = null;
+
+      if (_isServerRunning) {
+        _isServerRunning = false;
+      }
+    }
+  }
+
   static Future<void> handleRequest(WidgetRef ref, HttpRequest request) async {
     final path = request.uri.path;
     final method = request.method;
+    final query = request.uri.query;
+
+    final expectedKey = ref.read(serverApiKeyProvider);
+    final receivedKey = request.headers.value('x-api-key');
+
+    logger.i('Request received: $method $path $query');
+
+    if (expectedKey != null && expectedKey.isNotEmpty) {
+      if (receivedKey == null || receivedKey != expectedKey) {
+        logger.w(
+            'Authentication failed: Invalid or missing API Key from ${request.connectionInfo?.remoteAddress.address}. Expected key is set.');
+
+        request.response.statusCode = HttpStatus.unauthorized;
+
+        try {
+          await request.response.close();
+        } catch (_) {}
+        return;
+      }
+
+      logger.t('API Key authentication successful.');
+    } else {
+      logger.t(
+          'API Key authentication skipped: No API Key configured by user. Server is unsecured.');
+    }
 
     try {
       switch (method) {
@@ -30,6 +129,10 @@ class ServerUtils {
 
             case '/configs':
               await _handleConfigsList(ref, request);
+              break;
+
+            case '/running':
+              await _handleInstanceList(ref, request);
               break;
 
             default:
@@ -76,12 +179,34 @@ class ServerUtils {
       ..write(jsonEncode(devices));
   }
 
+  static _handleConfigsList(WidgetRef ref, HttpRequest request) async {
+    final configs = ref.read(configsProvider);
+
+    request.response
+      ..statusCode = HttpStatus.ok
+      ..write(jsonEncode(configs));
+  }
+
+  static _handleInstanceList(WidgetRef ref, HttpRequest request) async {
+    final instances = ref.read(scrcpyInstanceProvider);
+
+    final List<Map<String, String>> result = instances.map((i) {
+      return {
+        'pid': i.scrcpyPID,
+        'name': i.instanceName,
+        'device': i.device.id
+      };
+    }).toList();
+
+    request.response
+      ..statusCode = HttpStatus.ok
+      ..write(jsonEncode(result));
+  }
+
   static _handleDisconnectDevices(WidgetRef ref, HttpRequest request) async {
     final workDir = ref.read(execDirProvider);
     final devices = ref.read(adbProvider);
     final id = request.uri.queryParameters['id'];
-
-    print(id);
 
     if (id == null) {
       request.response.statusCode = HttpStatus.badRequest;
@@ -98,14 +223,6 @@ class ServerUtils {
         request.response.statusCode = HttpStatus.ok;
       }
     }
-  }
-
-  static _handleConfigsList(WidgetRef ref, HttpRequest request) async {
-    final configs = ref.read(configsProvider);
-
-    request.response
-      ..statusCode = HttpStatus.ok
-      ..write(jsonEncode(configs));
   }
 
   static _handleScrcpyStart(WidgetRef ref, HttpRequest request) async {
@@ -135,7 +252,7 @@ class ServerUtils {
 
   static _handleScrcpyStop(WidgetRef ref, HttpRequest request) async {
     final instances = ref.read(scrcpyInstanceProvider);
-    final scrcpyPID = request.uri.queryParameters['scrcpyPID'];
+    final scrcpyPID = request.uri.queryParameters['pid'];
 
     final instancesMap = {for (var i in instances) i.scrcpyPID: i};
     final instance = instancesMap[scrcpyPID];
