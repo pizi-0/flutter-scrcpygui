@@ -41,7 +41,7 @@ class MainScreen extends ConsumerStatefulWidget {
 class _MainScreenState extends ConsumerState<MainScreen>
     with WindowListener, TrayListener, AutomaticKeepAliveClientMixin {
   late BonsoirDiscovery discovery;
-  HttpServer? server;
+  final ServerUtils _serverUtils = ServerUtils();
 
   Timer? autoDevicesPingTimer;
   Timer? autoLaunchConfigTimer;
@@ -69,6 +69,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
     autoDevicesPingTimer?.cancel();
     autoLaunchConfigTimer?.cancel();
     runningInstancePingTimer?.cancel();
+    _serverUtils.stop();
     super.dispose();
   }
 
@@ -174,14 +175,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
         await ScrcpyUtils.pingRunning(ref);
       });
 
-      try {
-        server = await HttpServer.bind(await ServerUtils.getDeviceIp(), 8080);
-        server?.listen((request) {
-          ServerUtils.handleRequest(ref, request);
-        });
-      } catch (e) {
-        logger.e(e);
-      }
+      _serverUtils.startServer(ref);
     });
   }
 
