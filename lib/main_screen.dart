@@ -1,4 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
+/*
+  [EXPERIMENTAL]
+*/
 
 import 'dart:async';
 import 'dart:io';
@@ -12,6 +15,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
+import 'package:scrcpygui/utils/server_utils.dart';
 import 'package:scrcpygui/widgets/navigation_shell.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:tray_manager/tray_manager.dart';
@@ -37,6 +41,7 @@ class MainScreen extends ConsumerStatefulWidget {
 class _MainScreenState extends ConsumerState<MainScreen>
     with WindowListener, TrayListener, AutomaticKeepAliveClientMixin {
   late BonsoirDiscovery discovery;
+  HttpServer? server;
 
   Timer? autoDevicesPingTimer;
   Timer? autoLaunchConfigTimer;
@@ -158,7 +163,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
       },
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((a) {
+    WidgetsBinding.instance.addPostFrameCallback((a) async {
       autoDevicesPingTimer = Timer.periodic(1.seconds, (a) async {
         await AutomationUtils.autoconnectRunner(ref);
       });
@@ -168,6 +173,15 @@ class _MainScreenState extends ConsumerState<MainScreen>
       runningInstancePingTimer = Timer.periodic(1.seconds, (a) async {
         await ScrcpyUtils.pingRunning(ref);
       });
+
+      try {
+        server = await HttpServer.bind(await ServerUtils.getDeviceIp(), 8080);
+        server?.listen((request) {
+          ServerUtils.handleRequest(ref, request);
+        });
+      } catch (e) {
+        logger.e(e);
+      }
     });
   }
 
