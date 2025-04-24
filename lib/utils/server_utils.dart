@@ -17,6 +17,14 @@ import '../providers/scrcpy_provider.dart';
 import '../providers/version_provider.dart';
 
 class ServerUtils {
+  static final ServerUtils _instance = ServerUtils._internal();
+
+  factory ServerUtils() {
+    return _instance;
+  }
+
+  ServerUtils._internal();
+
   HttpServer? _server;
   bool _isServerRunning = false;
   InternetAddress? _boundAddress;
