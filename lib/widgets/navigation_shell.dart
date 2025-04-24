@@ -15,6 +15,7 @@ import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
 import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
 import 'package:scrcpygui/screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
 import 'package:scrcpygui/screens/4.settings_tab/settings_tab.dart';
+import 'package:scrcpygui/screens/5.companion_tab/companion_tab.dart';
 import 'package:scrcpygui/screens/about_tab/about_tab.dart';
 import 'package:scrcpygui/widgets/title_bar_button.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -233,6 +234,13 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
                   onChanged: (value) => context.go(SettingsTab.route),
                   label: Text(el.settingsLoc.title),
                   child: const Icon(Icons.settings),
+                ),
+                const NavigationDivider(),
+                NavigationItem(
+                  alignment: Alignment.centerLeft,
+                  onChanged: (value) => context.go(CompanionTab.route),
+                  label: Text('Companion App'),
+                  child: const Icon(Icons.phone_android),
                 ),
                 const NavigationDivider(),
                 NavigationItem(
