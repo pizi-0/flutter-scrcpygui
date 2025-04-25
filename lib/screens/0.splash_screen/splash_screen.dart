@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config_tags.dart';
+import 'package:scrcpygui/providers/server_settings_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
@@ -103,6 +104,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     ref.read(appConfigPairProvider.notifier).setPairs(appConfigPairs);
 
     final pid = await AppUtils.getAppPid();
+
+    final companionServerSettings = await Db.getCompanionServerSettings();
+
+    if (companionServerSettings != null) {
+      ref
+          .read(companionServerProvider.notifier)
+          .setSettings(companionServerSettings);
+    }
 
     ref.read(appPidProvider.notifier).update((state) => state = pid);
 

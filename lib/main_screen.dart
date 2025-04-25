@@ -23,6 +23,7 @@ import 'package:window_manager/window_manager.dart';
 
 import 'providers/adb_provider.dart';
 import 'providers/scrcpy_provider.dart';
+import 'providers/server_settings_provider.dart';
 import 'utils/automation_utils.dart';
 import 'utils/bonsoir_utils.dart';
 import 'utils/const.dart';
@@ -138,6 +139,8 @@ class _MainScreenState extends ConsumerState<MainScreen>
   }
 
   _init() async {
+    final companionSettings = ref.read(companionServerProvider);
+
     await windowManager.setPreventClose(true);
     TrayUtils.initTray(ref, context);
 
@@ -175,7 +178,12 @@ class _MainScreenState extends ConsumerState<MainScreen>
         await ScrcpyUtils.pingRunning(ref);
       });
 
-      _serverUtils.startServer(ref);
+      if (companionSettings.startOnLaunch) {
+        await _serverUtils.startServer(ref);
+        ref.read(companionServerProvider.notifier)
+          ..setPort(_serverUtils.boundPort.toString())
+          ..setEndpoint(_serverUtils.ipAddress?.address ?? '0.0.0.0');
+      }
     });
   }
 

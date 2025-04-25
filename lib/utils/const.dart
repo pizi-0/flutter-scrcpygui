@@ -18,6 +18,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import '../models/scrcpy_related/scrcpy_config.dart';
 import '../models/scrcpy_related/scrcpy_enum.dart';
 import '../models/settings_model/app_theme.dart';
+import '../models/settings_model/companion_server_settings.dart';
 
 final List<ScrcpyConfig> defaultConfigs = [
   defaultMirror,
@@ -191,6 +192,14 @@ final defaultAppBehaviour = AppBehaviour(
   toastEnabled: true,
   minimizeAction: MinimizeAction.toTaskBar,
   hideDefaultConfig: false,
+);
+
+final defaultCompanionServerSettings = CompanionServerSettings(
+  name: 'Scrcpy GUI',
+  port: '8080',
+  startOnLaunch: false,
+  endpoint: '',
+  secret: 'scrcpygui-is-okay',
 );
 
 final defaultSettings = AppSettings(

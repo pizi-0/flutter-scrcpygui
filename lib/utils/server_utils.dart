@@ -7,7 +7,7 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
-import 'package:scrcpygui/providers/server_key_provider.dart';
+import 'package:scrcpygui/providers/server_settings_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
@@ -103,29 +103,26 @@ class ServerUtils {
     final method = request.method;
     final query = request.uri.query;
 
-    final expectedKey = ref.read(serverApiKeyProvider);
+    final expectedKey = ref.read(companionServerProvider).secret;
     final receivedKey = request.headers.value('x-api-key');
 
     logger.i('Request received: $method $path $query');
 
-    if (expectedKey != null && expectedKey.isNotEmpty) {
-      if (receivedKey == null || receivedKey != expectedKey) {
-        logger.w(
-            'Authentication failed: Invalid or missing API Key from ${request.connectionInfo?.remoteAddress.address}. Expected key is set.');
+    logger.t('API Key authentication required.');
 
-        request.response.statusCode = HttpStatus.unauthorized;
+    if (receivedKey == null || receivedKey != expectedKey) {
+      logger.w(
+          'Authentication failed: Invalid or missing API Key from ${request.connectionInfo?.remoteAddress.address}.');
 
-        try {
-          await request.response.close();
-        } catch (_) {}
-        return;
-      }
+      request.response.statusCode = HttpStatus.unauthorized;
 
-      logger.t('API Key authentication successful.');
-    } else {
-      logger.t(
-          'API Key authentication skipped: No API Key configured by user. Server is unsecured.');
+      try {
+        await request.response.close();
+      } catch (_) {}
+      return;
     }
+
+    logger.t('API Key authentication successful.');
 
     try {
       switch (method) {

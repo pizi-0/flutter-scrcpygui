@@ -20,4 +20,4 @@ const PKEY_SCRCPYVERSION = 'scrcpy-version';
 
 const PKEY_APP_CONFIG_PAIR = 'app-config-pair';
 
-const PKEY_SERVER_API_KEY = 'server-api-key';
+const PKEY_COMPANION_SERVER_SETTINGS = 'companion-server-settings';
