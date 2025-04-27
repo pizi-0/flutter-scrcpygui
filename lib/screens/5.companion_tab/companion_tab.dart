@@ -2,6 +2,7 @@ import 'package:awesome_extensions/awesome_extensions_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:scrcpygui/db/db.dart';
+import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/server_utils.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
@@ -70,14 +71,13 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
     super.dispose();
     nameController.dispose();
     portController.dispose();
+    secretController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final isServerRunning = serverUtils.isServerRunning();
     final companionSettings = ref.watch(companionServerProvider);
-    final companionSettingsNotifier =
-        ref.read(companionServerProvider.notifier);
 
     return PgScaffold(
       title: 'Companion',
@@ -89,26 +89,7 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
               leading: isServerRunning
                   ? Icon(Icons.stop_rounded, color: Colors.red)
                   : Icon(Icons.play_arrow_rounded, color: Colors.green),
-              onPressed: () async {
-                if (isServerRunning) {
-                  await serverUtils.stop();
-                } else {
-                  await serverUtils.startServer(ref,
-                      port: int.tryParse(companionSettings.port) ?? 8080);
-
-                  companionSettingsNotifier
-                      .setPort(serverUtils.boundPort.toString());
-
-                  portController.text = serverUtils.boundPort.toString();
-
-                  companionSettingsNotifier
-                      .setEndpoint(serverUtils.ipAddress?.address ?? '0.0.0.0');
-
-                  await Db.saveCompanionServerSettings(
-                      ref.read(companionServerProvider));
-                }
-                setState(() {});
-              },
+              onPressed: () => _toggleServer(isServerRunning),
               child: isServerRunning ? Text('Stop') : Text('Start')),
           children: [
             ConfigCustom(
@@ -171,20 +152,12 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
             ConfigCustom(
               title: 'Start server on launch',
               childExpand: false,
-              onPressed: () async {
-                companionSettingsNotifier.setStartOnLaunch();
-                await Db.saveCompanionServerSettings(
-                    ref.read(companionServerProvider));
-              },
+              onPressed: _toggleAutoStart,
               child: Checkbox(
                 state: companionSettings.startOnLaunch
                     ? CheckboxState.checked
                     : CheckboxState.unchecked,
-                onChanged: (v) async {
-                  companionSettingsNotifier.setStartOnLaunch();
-                  await Db.saveCompanionServerSettings(
-                      ref.read(companionServerProvider));
-                },
+                onChanged: (v) => _toggleAutoStart(),
               ),
             ),
             if (isServerRunning) Divider(),
@@ -222,5 +195,64 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
         ),
       ],
     );
+  }
+
+  _toggleServer(bool isServerRunning) async {
+    final companionSettings = ref.read(companionServerProvider);
+    final companionSettingsNotifier =
+        ref.read(companionServerProvider.notifier);
+
+    if (isServerRunning) {
+      await serverUtils.stop();
+    } else {
+      final agree = (await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text('Disclaimer'),
+              content: ConstrainedBox(
+                constraints:
+                    BoxConstraints(maxWidth: appWidth, minWidth: appWidth),
+                child: Text(
+                  'Security Warning: The companion server uses an unencrypted connection (HTTP).\n\n'
+                  'Only start the server if you are connected to a private network you trust, such as your home Wi-Fi.',
+                ),
+              ),
+              actions: [
+                Button.primary(
+                  child: Text('I understand, start server'),
+                  onPressed: () => Navigator.of(context).pop(true),
+                ),
+                Button.destructive(
+                  child: Text('Cancel'),
+                  onPressed: () => Navigator.of(context).pop(false),
+                ),
+              ],
+            ),
+          )) ??
+          false;
+
+      if (!agree) return;
+
+      await serverUtils.startServer(ref,
+          port: int.tryParse(companionSettings.port) ?? 8080);
+
+      companionSettingsNotifier.setPort(serverUtils.boundPort.toString());
+
+      portController.text = serverUtils.boundPort.toString();
+
+      companionSettingsNotifier
+          .setEndpoint(serverUtils.ipAddress?.address ?? '0.0.0.0');
+
+      await Db.saveCompanionServerSettings(ref.read(companionServerProvider));
+    }
+    setState(() {});
+  }
+
+  _toggleAutoStart() async {
+    final companionSettingsNotifier =
+        ref.read(companionServerProvider.notifier);
+
+    companionSettingsNotifier.setStartOnLaunch();
+    await Db.saveCompanionServerSettings(ref.read(companionServerProvider));
   }
 }
