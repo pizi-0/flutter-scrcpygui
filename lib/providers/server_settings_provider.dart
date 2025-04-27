@@ -1,12 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/utils/const.dart';
+import 'package:uuid/uuid.dart';
 
 import '../models/settings_model/companion_server_settings.dart';
 
 class CompanionServerNotifier extends Notifier<CompanionServerSettings> {
   @override
   build() {
-    return defaultCompanionServerSettings;
+    return defaultCompanionServerSettings.copyWith(secret: Uuid().v4());
   }
 
   setSettings(CompanionServerSettings settings) {
