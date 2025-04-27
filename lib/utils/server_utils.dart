@@ -106,7 +106,8 @@ class ServerUtils {
     final expectedKey = ref.read(companionServerProvider).secret;
     final receivedKey = request.headers.value('x-api-key');
 
-    logger.i('Request received: $method $path $query');
+    logger.i(
+        'Request received: $method $path $query. From ${request.connectionInfo?.remoteAddress.address}.');
 
     logger.t('API Key authentication required.');
 
