@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:scrcpygui/db/db.dart';
@@ -19,6 +20,57 @@ class CompanionTab extends ConsumerStatefulWidget {
 
 class _CompanionTabState extends ConsumerState<CompanionTab> {
   final serverUtils = ServerUtils();
+  bool obscurePass = true;
+  TextEditingController nameController = TextEditingController();
+  TextEditingController portController = TextEditingController();
+  TextEditingController secretController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = ref.read(companionServerProvider).name;
+    nameController.addListener(() {
+      if (nameController.text.isEmpty) {
+        ref.read(companionServerProvider.notifier).setServerName('Scrcpy GUI');
+        return;
+      }
+
+      ref
+          .read(companionServerProvider.notifier)
+          .setServerName(nameController.text);
+    });
+
+    portController.text = ref.read(companionServerProvider).port;
+    portController.addListener(() {
+      if (portController.text.isEmpty) {
+        ref.read(companionServerProvider.notifier).setPort('8080');
+        return;
+      }
+
+      ref.read(companionServerProvider.notifier).setPort(portController.text);
+    });
+
+    secretController.text = ref.read(companionServerProvider).secret;
+    secretController.addListener(() {
+      if (secretController.text.isEmpty) {
+        ref
+            .read(companionServerProvider.notifier)
+            .setSecret('scrcpygui-is-okay');
+        return;
+      }
+
+      ref
+          .read(companionServerProvider.notifier)
+          .setSecret(secretController.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    nameController.dispose();
+    portController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +87,8 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
           labelTrail: Button(
               style: ButtonStyle.ghost(),
               leading: isServerRunning
-                  ? Icon(Icons.stop_rounded)
-                  : Icon(Icons.play_arrow_rounded),
+                  ? Icon(Icons.stop_rounded, color: Colors.red)
+                  : Icon(Icons.play_arrow_rounded, color: Colors.green),
               onPressed: () async {
                 if (isServerRunning) {
                   await serverUtils.stop();
@@ -47,8 +99,13 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
                   companionSettingsNotifier
                       .setPort(serverUtils.boundPort.toString());
 
+                  portController.text = serverUtils.boundPort.toString();
+
                   companionSettingsNotifier
                       .setEndpoint(serverUtils.ipAddress?.address ?? '0.0.0.0');
+
+                  await Db.saveCompanionServerSettings(
+                      ref.read(companionServerProvider));
                 }
                 setState(() {});
               },
@@ -58,7 +115,57 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
               title: 'Status',
               dimTitle: false,
               childExpand: false,
-              child: Text(isServerRunning ? 'Running' : 'Stopped').textSmall,
+              child: Text(isServerRunning ? 'Running' : 'Stopped')
+                  .textColor(isServerRunning ? Colors.green : Colors.red)
+                  .textSmall,
+            ),
+            Divider(),
+            ConfigCustom(
+              title: 'Server name',
+              dimTitle: false,
+              child: TextField(
+                enabled: !isServerRunning,
+                controller: nameController,
+                filled: !isServerRunning,
+                placeholder: Text('Default: Scrcpy GUI'),
+              ),
+            ),
+            Divider(),
+            ConfigCustom(
+              title: 'Server port',
+              dimTitle: false,
+              child: TextField(
+                enabled: !isServerRunning,
+                controller: portController,
+                filled: !isServerRunning,
+                placeholder: Text('Default: 8080'),
+              ),
+            ),
+            Divider(),
+            ConfigCustom(
+              title: 'Server secret',
+              dimTitle: false,
+              child: TextField(
+                enabled: !isServerRunning,
+                controller: secretController,
+                obscureText: obscurePass,
+                filled: !isServerRunning,
+                features: [
+                  InputFeature.trailing(IconButton.ghost(
+                    density: ButtonDensity.iconDense,
+                    icon: Icon(obscurePass
+                            ? Icons.visibility_off_rounded
+                            : Icons.visibility_rounded)
+                        .iconXSmall(),
+                    onPressed: () {
+                      setState(() {
+                        obscurePass = !obscurePass;
+                      });
+                    },
+                  ))
+                ],
+                placeholder: Text('Default: 8080'),
+              ),
             ),
             Divider(),
             ConfigCustom(
@@ -82,24 +189,34 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
             ),
             if (isServerRunning) Divider(),
             if (isServerRunning)
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  spacing: 10,
-                  children: [
-                    Text('Scan the QR code from Scrcpy GUI companion app')
-                        .textSmall
-                        .muted,
-                    SizedBox.square(
-                      dimension: 200,
-                      child: QrImageView(
-                        data: companionSettings.toQrJson(),
-                        backgroundColor: Colors.white,
-                        padding: EdgeInsets.all(10),
-                      ),
+              Row(
+                spacing: 10,
+                children: [
+                  SizedBox.square(
+                    dimension: 150,
+                    child: QrImageView(
+                      data: companionSettings.toQrJson(),
+                      backgroundColor: Colors.white,
+                      padding: EdgeInsets.all(4),
                     ),
-                  ],
-                ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      spacing: 8,
+                      children: [
+                        Text('Scan the QR code from the companion app')
+                            .textAlignment(TextAlign.center)
+                            .textSmall
+                            .muted,
+                        OutlineButton(
+                          leading: Icon(BootstrapIcons.github).iconSmall(),
+                          onPressed: () {},
+                          child: Text('Github'),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
               )
           ],
         ),
