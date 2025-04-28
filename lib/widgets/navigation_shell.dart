@@ -228,19 +228,18 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
                   label: Text(el.scrcpyManagerLoc.title),
                   child: const Icon(Icons.system_update_alt),
                 ),
+                NavigationItem(
+                  alignment: Alignment.centerLeft,
+                  onChanged: (value) => context.go(CompanionTab.route),
+                  label: Text(el.companionLoc.title),
+                  child: const Icon(Icons.phone_android),
+                ),
                 const NavigationDivider(),
                 NavigationItem(
                   alignment: Alignment.centerLeft,
                   onChanged: (value) => context.go(SettingsTab.route),
                   label: Text(el.settingsLoc.title),
                   child: const Icon(Icons.settings),
-                ),
-                const NavigationDivider(),
-                NavigationItem(
-                  alignment: Alignment.centerLeft,
-                  onChanged: (value) => context.go(CompanionTab.route),
-                  label: Text('Companion App'),
-                  child: const Icon(Icons.phone_android),
                 ),
                 const NavigationDivider(),
                 NavigationItem(

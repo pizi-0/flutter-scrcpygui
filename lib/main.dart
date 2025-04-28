@@ -202,16 +202,16 @@ final _router = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: SettingsTab.route,
-              builder: (context, state) => const SettingsTab(),
+              path: CompanionTab.route,
+              builder: (context, state) => const CompanionTab(),
             ),
           ],
         ),
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: CompanionTab.route,
-              builder: (context, state) => const CompanionTab(),
+              path: SettingsTab.route,
+              builder: (context, state) => const SettingsTab(),
             ),
           ],
         ),
