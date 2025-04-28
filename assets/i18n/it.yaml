@@ -387,6 +387,25 @@ settings_loc:
         tray: a icona
         taskbar: a barra delle applicazioni
 
+## companion tab
+companion_loc:
+  title: Companion
+  server:
+    label: Configura server
+    status: Stato
+    name: 
+      label: Nome del server
+      info: 'Predefinito: Scrcpy GUI'
+    port: 
+      label: Porta del server
+      info: 'Predefinito: 8080'
+    secret:
+      label: Chiave API del server
+    auto_start:
+      label: Avvia server all'avvio
+
+  qr: Scansiona il codice QR dall'app companion
+
 # about tab
 about_loc:
   title: Informazioni
@@ -420,6 +439,11 @@ close_dialog_loc:
   command_preview: 'Anteprima comando:'
   name: 'Nome:'
 
+# companion tab > disclaimer
+server_disclaimer_loc:
+  title: Avviso
+  contents: 'Avviso di sicurezza: Il server companion utilizza una connessione non crittografata (HTTP).\n\nAvvia il server solo se sei connesso a una rete privata di cui ti fidi, come il tuo Wi-Fi domestico.'
+
 # connect tab > ip history
 ip_history_loc:
   title: Cronologia
@@ -442,6 +466,8 @@ button_label_loc:
   clear: Cancella
   filter: Filtra configurazioni
   delete: Elimina
+  server_agree: Capisco, avvia server
+
   
 # status
 status_loc:
@@ -451,7 +477,9 @@ status_loc:
   latest: Ultimo
   closing: Chiusura in corso
   copied: Copiato
-
+  running: In esecuzione
+  stopped: Fermato
+  
 # common
 common_loc:
   default: Predefinito

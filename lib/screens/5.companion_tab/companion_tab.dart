@@ -1,7 +1,9 @@
 import 'package:awesome_extensions/awesome_extensions_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:scrcpygui/db/db.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/server_utils.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
@@ -76,55 +78,60 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(settingsProvider.select((s) => s.behaviour.languageCode));
     final isServerRunning = serverUtils.isServerRunning();
     final companionSettings = ref.watch(companionServerProvider);
 
     return PgScaffold(
-      title: 'Companion',
+      title: el.companionLoc.title,
       children: [
         PgSectionCard(
-          label: 'Setup server',
+          label: el.companionLoc.server.label,
           labelTrail: Button(
               style: ButtonStyle.ghost(),
               leading: isServerRunning
                   ? Icon(Icons.stop_rounded, color: Colors.red)
                   : Icon(Icons.play_arrow_rounded, color: Colors.green),
               onPressed: () => _toggleServer(isServerRunning),
-              child: isServerRunning ? Text('Stop') : Text('Start')),
+              child: isServerRunning
+                  ? Text(el.buttonLabelLoc.stop)
+                  : Text(el.configLoc.start)),
           children: [
             ConfigCustom(
-              title: 'Status',
+              title: el.companionLoc.server.status,
               dimTitle: false,
               childExpand: false,
-              child: Text(isServerRunning ? 'Running' : 'Stopped')
+              child: Text(isServerRunning
+                      ? el.statusLoc.running
+                      : el.statusLoc.stopped)
                   .textColor(isServerRunning ? Colors.green : Colors.red)
                   .textSmall,
             ),
             Divider(),
             ConfigCustom(
-              title: 'Server name',
+              title: el.companionLoc.server.name.label,
               dimTitle: false,
               child: TextField(
                 enabled: !isServerRunning,
                 controller: nameController,
                 filled: !isServerRunning,
-                placeholder: Text('Default: Scrcpy GUI'),
+                placeholder: Text(el.companionLoc.server.name.info),
               ),
             ),
             Divider(),
             ConfigCustom(
-              title: 'Server port',
+              title: el.companionLoc.server.port.label,
               dimTitle: false,
               child: TextField(
                 enabled: !isServerRunning,
                 controller: portController,
                 filled: !isServerRunning,
-                placeholder: Text('Default: 8080'),
+                placeholder: Text(el.companionLoc.server.port.info),
               ),
             ),
             Divider(),
             ConfigCustom(
-              title: 'Server secret',
+              title: el.companionLoc.server.secret.label,
               dimTitle: false,
               child: TextField(
                 enabled: !isServerRunning,
@@ -145,12 +152,11 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
                     },
                   ))
                 ],
-                placeholder: Text('Default: 8080'),
               ),
             ),
             Divider(),
             ConfigCustom(
-              title: 'Start server on launch',
+              title: el.companionLoc.server.autoStart.label,
               childExpand: false,
               onPressed: _toggleAutoStart,
               child: Checkbox(
@@ -177,7 +183,7 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
                     child: Column(
                       spacing: 8,
                       children: [
-                        Text('Scan the QR code from the companion app')
+                        Text(el.companionLoc.qr)
                             .textAlignment(TextAlign.center)
                             .textSmall
                             .muted,
@@ -208,22 +214,21 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
       final agree = (await showDialog<bool>(
             context: context,
             builder: (context) => AlertDialog(
-              title: Text('Disclaimer'),
+              title: Text(el.serverDisclaimerLoc.title),
               content: ConstrainedBox(
                 constraints:
                     BoxConstraints(maxWidth: appWidth, minWidth: appWidth),
                 child: Text(
-                  'Security Warning: The companion server uses an unencrypted connection (HTTP).\n\n'
-                  'Only start the server if you are connected to a private network you trust, such as your home Wi-Fi.',
+                  el.serverDisclaimerLoc.contents,
                 ),
               ),
               actions: [
                 Button.primary(
-                  child: Text('I understand, start server'),
+                  child: Text(el.buttonLabelLoc.serverAgree),
                   onPressed: () => Navigator.of(context).pop(true),
                 ),
                 Button.destructive(
-                  child: Text('Cancel'),
+                  child: Text(el.buttonLabelLoc.cancel),
                   onPressed: () => Navigator.of(context).pop(false),
                 ),
               ],

@@ -387,6 +387,25 @@ settings_loc:
         tray: ke dulang
         taskbar: ke bar tugas
 
+## companion tab
+companion_loc:
+  title: Pendamping
+  server:
+    label: Konfigurasi server
+    status: Status
+    name: 
+      label: Nama server
+      info: 'Lalai: Scrcpy GUI'
+    port: 
+      label: Port server
+      info: 'Lalai: 8080'
+    secret:
+      label: Kunci API server
+    auto_start:
+      label: Mulakan server sewaktu aplikasi dilancarkan
+
+  qr: Imbas kod QR daripada aplikasi pendamping
+
 # about tab
 about_loc:
   title: Perihal
@@ -421,6 +440,11 @@ close_dialog_loc:
   command_preview: 'Pratonton Perintah:'
   name: 'Nama:'
 
+# companion tab > disclaimer
+server_disclaimer_loc:
+  title: Maklumat
+  contents: 'Amaran Keselamatan: Server pendamping menggunakan sambungan tidak disulitkan (HTTP).\n\nHanya mulakan server jika anda disambungkan ke rangkaian peribadi yang anda percayai, seperti Wi-Fi rumah anda.'
+
 # connect tab > ip history
 ip_history_loc:
   title: Sejarah
@@ -443,6 +467,8 @@ button_label_loc:
   clear: Kosongkan
   filter: Tapis konfigurasi
   delete: Padam
+  server_agree: Saya faham, mulakan pelayan
+
 
 # status
 status_loc:
@@ -452,6 +478,8 @@ status_loc:
   latest: Terkini
   closing: Menutup
   copied: Disalin
+  running: Sedang berjalan
+  stopped: Dihentikan
 
 # common
 common_loc:

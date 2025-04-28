@@ -387,6 +387,25 @@ settings_loc:
         tray: a la bandeja
         taskbar: a la barra de tareas
 
+## companion tab
+companion_loc:
+  title: Compañero
+  server:
+    label: Configurar servidor
+    status: Estado
+    name: 
+      label: Nombre del servidor
+      info: 'Predeterminado: Scrcpy GUI'
+    port: 
+      label: Puerto del servidor
+      info: 'Predeterminado: 8080'
+    secret:
+      label: Clave API del servidor
+    auto_start:
+      label: Iniciar servidor al arrancar
+
+  qr: Escanea el código QR desde la aplicación compañera
+
 # about tab
 about_loc:
   title: Acerca de
@@ -420,6 +439,11 @@ close_dialog_loc:
   command_preview: 'Vista previa del comando:'
   name: 'Nombre:'
 
+# companion tab > disclaimer
+server_disclaimer_loc:
+  title: Aviso
+  contents: 'Advertencia de seguridad: El servidor compañero utiliza una conexión no cifrada (HTTP).\n\nInicia el servidor solo si estás conectado a una red privada en la que confíes, como tu Wi-Fi doméstico.'
+
 # connect tab > ip history
 ip_history_loc:
   title: Historial
@@ -442,6 +466,8 @@ button_label_loc:
   clear: Limpiar
   filter: Filtrar configuraciones
   delete: Eliminar
+  server_agree: Entiendo, iniciar servidor
+
 
 # status
 status_loc:
@@ -451,6 +477,8 @@ status_loc:
   latest: Último
   closing: Cerrando
   copied: Copiado
+  running: En ejecución
+  stopped: Detenido
 
 # common
 common_loc:

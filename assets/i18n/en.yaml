@@ -405,6 +405,26 @@ settings_loc:
         tray: to tray
         taskbar: to taskbar
 
+## companion tab
+companion_loc:
+  title: Companion
+  server:
+    label: Setup server
+    status: Status
+    name: 
+      label: Server name
+      info: 'Default: Scrcpy GUI'
+    port: 
+      label: Server port
+      info: 'Default: 8080'
+    secret:
+      label: Server apikey
+    auto_start:
+      label: Start server on launch
+
+  qr: Scan the QR code from the companion app
+
+
 ## about tab
 about_loc:
   title: About
@@ -440,6 +460,12 @@ close_dialog_loc:
   command_preview: 'Command preview:'
   name: 'Name:'
 
+
+# companion tab > disclaimer
+server_disclaimer_loc:
+  title: Disclaimer
+  contents: 'Security Warning: The companion server uses an unencrypted connection (HTTP).\n\nOnly start the server if you are connected to a private network you trust, such as your home Wi-Fi.'
+
 # connect tab > ip history 
 
 ip_history_loc:
@@ -465,6 +491,7 @@ button_label_loc:
   clear: Clear
   filter: Filter configs
   delete: Delete  
+  server_agree: I understand, start server
 
 # status 
 status_loc: 
@@ -474,6 +501,8 @@ status_loc:
   latest: Latest
   closing: Closing
   copied: Copied
+  running: Running
+  stopped: Stopped
 
 # common
 common_loc:
