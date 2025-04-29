@@ -195,6 +195,24 @@ class ServerUtils {
 
   static _handleInstanceList(WidgetRef ref, HttpRequest request) async {
     final instances = ref.read(scrcpyInstanceProvider);
+    final query = request.uri.queryParameters;
+
+    if (query['deviceId'] != null) {
+      final deviceId = query['deviceId'];
+      final List<Map<String, String>> result =
+          instances.where((i) => i.device.id == deviceId).map((e) {
+        return {
+          'pid': e.scrcpyPID,
+          'name': e.instanceName,
+          'deviceId': e.device.id
+        };
+      }).toList();
+
+      request.response
+        ..statusCode = HttpStatus.ok
+        ..write(jsonEncode(result));
+      return;
+    }
 
     final List<Map<String, String>> result = instances.map((i) {
       return {
