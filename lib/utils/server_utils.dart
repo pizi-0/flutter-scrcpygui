@@ -5,7 +5,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/models/app_config_pair.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/server_settings_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
@@ -13,6 +15,7 @@ import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
 import '../providers/adb_provider.dart';
+import '../providers/app_config_pair_provider.dart';
 import '../providers/scrcpy_provider.dart';
 import '../providers/version_provider.dart';
 
@@ -141,6 +144,10 @@ class ServerUtils {
               await _handleInstanceList(ref, request);
               break;
 
+            case '/pinned-apps':
+              await _handlePinnedAppsList(ref, request);
+              break;
+
             default:
               _notFound(request);
           }
@@ -158,6 +165,10 @@ class ServerUtils {
 
             case '/scrcpy/stop':
               await _handleScrcpyStop(ref, request);
+              break;
+
+            case '/scrcpy/start/pinned-app':
+              await _handlePinnedAppStart(ref, request);
               break;
 
             default:
@@ -227,6 +238,31 @@ class ServerUtils {
       ..write(jsonEncode(result));
   }
 
+  static _handlePinnedAppsList(WidgetRef ref, HttpRequest request) async {
+    final appConfigPairs = ref.read(appConfigPairProvider);
+    final configsList = ref.read(configsProvider);
+    final configsMap = {for (var c in configsList) c.id: c};
+
+    final query = request.uri.queryParameters;
+    final deviceId = query['deviceId'];
+
+    if (deviceId == null) {
+      request.response
+        ..statusCode = HttpStatus.badRequest
+        ..write(jsonEncode({'error': 'Missing deviceId parameter'}));
+      return;
+    }
+
+    final List<AppConfigPair> result = appConfigPairs
+        .where((pair) =>
+            pair.deviceId == deviceId && configsMap[pair.config.id] != null)
+        .toList();
+
+    request.response
+      ..statusCode = HttpStatus.ok
+      ..write(jsonEncode(result));
+  }
+
   static _handleDisconnectDevices(WidgetRef ref, HttpRequest request) async {
     final workDir = ref.read(execDirProvider);
     final devices = ref.read(adbProvider);
@@ -271,6 +307,32 @@ class ServerUtils {
       }
     } else {
       request.response.statusCode = HttpStatus.badRequest;
+    }
+  }
+
+  static _handlePinnedAppStart(WidgetRef ref, HttpRequest request) async {
+    final devices = ref.read(adbProvider);
+    final appConfigPairs = ref.read(appConfigPairProvider);
+    final appConfigPairsMap = {
+      for (var pair in appConfigPairs) pair.hashCode: pair
+    };
+    final query = request.uri.queryParameters;
+    final pairHash = query['pair'];
+
+    if (pairHash == null) {
+      request.response.statusCode = HttpStatus.badRequest;
+      return;
+    }
+
+    final pair = appConfigPairsMap[int.parse(pairHash)]!;
+    final device = devices.firstWhereOrNull((d) => d.id == pair.deviceId);
+
+    if (device != null) {
+      await ScrcpyUtils.newInstance(ref,
+          selectedConfig: pair.config.copyWith(
+              appOptions:
+                  (pair.config.appOptions).copyWith(selectedApp: pair.app)),
+          selectedDevice: device);
     }
   }
 
