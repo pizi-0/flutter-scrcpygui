@@ -258,9 +258,13 @@ class ServerUtils {
             pair.deviceId == deviceId && configsMap[pair.config.id] != null)
         .toList();
 
+    final maps = result.map((pair) {
+      return {'hashCode': pair.hashCode, ...pair.toMap()};
+    }).toList();
+
     request.response
       ..statusCode = HttpStatus.ok
-      ..write(jsonEncode(result));
+      ..write(jsonEncode(maps));
   }
 
   static _handleDisconnectDevices(WidgetRef ref, HttpRequest request) async {
