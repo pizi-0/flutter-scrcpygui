@@ -219,6 +219,8 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
     final companionSettingsNotifier =
         ref.read(companionServerProvider.notifier);
 
+    obscurePass = true;
+
     if (isServerRunning) {
       await serverUtils.stop();
     } else {
