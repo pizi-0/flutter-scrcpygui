@@ -1,4 +1,5 @@
 import 'package:awesome_extensions/awesome_extensions_flutter.dart';
+import 'package:encrypt_decrypt_plus/encrypt_decrypt/xor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -175,7 +176,7 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
                   SizedBox.square(
                     dimension: 150,
                     child: QrImageView(
-                      data: companionSettings.toQrJson(),
+                      data: XOR().xorEncode(companionSettings.toQrJson()),
                       backgroundColor: Colors.white,
                       padding: EdgeInsets.all(4),
                     ),
