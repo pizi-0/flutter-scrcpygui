@@ -10,6 +10,7 @@ import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../providers/server_settings_provider.dart';
 
@@ -187,10 +188,19 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
                             .textAlignment(TextAlign.center)
                             .textSmall
                             .muted,
-                        OutlineButton(
-                          leading: Icon(BootstrapIcons.github).iconSmall(),
-                          onPressed: () {},
-                          child: Text('Github'),
+                        Tooltip(
+                          tooltip: TooltipContainer(
+                                  child: Text(
+                                      'https://github.com/pizi-0/flutter_scrcpygui_companion'))
+                              .call,
+                          child: OutlineButton(
+                            leading: Icon(BootstrapIcons.github).iconSmall(),
+                            onPressed: () {
+                              launchUrl(Uri.parse(
+                                  'https://github.com/pizi-0/flutter_scrcpygui_companion'));
+                            },
+                            child: Text('Github'),
+                          ),
                         )
                       ],
                     ),
