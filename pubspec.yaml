@@ -39,6 +39,7 @@ dependencies:
   device_info_plus: ^11.3.3
   dio: ^5.7.0
   easiest_localization: ^2.0.1
+  encrypt_decrypt_plus: ^1.7.0
   file_picker: ^9.0.2
   flex_color_picker: ^3.5.1
   flutter:

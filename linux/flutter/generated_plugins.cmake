@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  encrypt_decrypt_plus
   screen_retriever_linux
   tray_manager
   url_launcher_linux

@@ -6,12 +6,16 @@
 
 #include "generated_plugin_registrant.h"
 
+#include <encrypt_decrypt_plus/encrypt_decrypt_plus_plugin.h>
 #include <screen_retriever_linux/screen_retriever_linux_plugin.h>
 #include <tray_manager/tray_manager_plugin.h>
 #include <url_launcher_linux/url_launcher_plugin.h>
 #include <window_manager/window_manager_plugin.h>
 
 void fl_register_plugins(FlPluginRegistry* registry) {
+  g_autoptr(FlPluginRegistrar) encrypt_decrypt_plus_registrar =
+      fl_plugin_registry_get_registrar_for_plugin(registry, "EncryptDecryptPlusPlugin");
+  encrypt_decrypt_plus_plugin_register_with_registrar(encrypt_decrypt_plus_registrar);
   g_autoptr(FlPluginRegistrar) screen_retriever_linux_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "ScreenRetrieverLinuxPlugin");
   screen_retriever_linux_plugin_register_with_registrar(screen_retriever_linux_registrar);

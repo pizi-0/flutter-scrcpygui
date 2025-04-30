@@ -7,6 +7,7 @@ import Foundation
 
 import bonsoir_darwin
 import device_info_plus
+import encrypt_decrypt_plus
 import file_picker
 import package_info_plus
 import path_provider_foundation
@@ -19,6 +20,7 @@ import window_manager
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   SwiftBonsoirPlugin.register(with: registry.registrar(forPlugin: "SwiftBonsoirPlugin"))
   DeviceInfoPlusMacosPlugin.register(with: registry.registrar(forPlugin: "DeviceInfoPlusMacosPlugin"))
+  EncryptDecryptPlusPlugin.register(with: registry.registrar(forPlugin: "EncryptDecryptPlusPlugin"))
   FilePickerPlugin.register(with: registry.registrar(forPlugin: "FilePickerPlugin"))
   FPPPackageInfoPlusPlugin.register(with: registry.registrar(forPlugin: "FPPPackageInfoPlusPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
