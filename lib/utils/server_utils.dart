@@ -336,7 +336,8 @@ class ServerUtils {
           selectedConfig: pair.config.copyWith(
               appOptions:
                   (pair.config.appOptions).copyWith(selectedApp: pair.app)),
-          selectedDevice: device);
+          selectedDevice: device,
+          customInstanceName: '${pair.app.name} (${pair.config.configName})');
     }
   }
 
