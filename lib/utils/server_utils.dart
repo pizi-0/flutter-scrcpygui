@@ -227,7 +227,7 @@ class ServerUtils {
         return {
           'pid': e.scrcpyPID,
           'name': e.instanceName,
-          'deviceId': e.device.id
+          'device': e.device.id
         };
       }).toList();
 
@@ -285,7 +285,9 @@ class ServerUtils {
     final deviceId = request.uri.queryParameters['deviceId'];
 
     if (deviceId == null) {
-      request.response.statusCode = HttpStatus.badRequest;
+      request.response
+        ..statusCode = HttpStatus.badRequest
+        ..write('Missing deviceId parameter');
       return;
     } else {
       final devMap = {for (var d in devices) d.id: d};
@@ -322,7 +324,9 @@ class ServerUtils {
         _notFound(request);
       }
     } else {
-      request.response.statusCode = HttpStatus.badRequest;
+      request.response
+        ..statusCode = HttpStatus.badRequest
+        ..write('Missing deviceId or configId parameter');
     }
   }
 
@@ -336,7 +340,9 @@ class ServerUtils {
     final pairHash = query['pair'];
 
     if (pairHash == null) {
-      request.response.statusCode = HttpStatus.badRequest;
+      request.response
+        ..statusCode = HttpStatus.badRequest
+        ..write('Missing pair parameter');
       return;
     }
 
