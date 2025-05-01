@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:encrypt_decrypt_plus/encrypt_decrypt/xor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/app_config_pair.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
@@ -107,7 +108,18 @@ class ServerUtils {
     final query = request.uri.query;
 
     final expectedKey = ref.read(companionServerProvider).secret;
-    final receivedKey = request.headers.value('x-api-key');
+    var receivedKey = request.headers.value('x-api-key');
+
+    if (receivedKey != null) {
+      try {
+        receivedKey = XOR().xorDecode(receivedKey);
+      } catch (_) {
+        request.response
+          ..statusCode = HttpStatus.unauthorized
+          ..write('Invalid API Key');
+        await request.response.close();
+      }
+    }
 
     logger.i(
         'Request received: $method $path $query. From ${request.connectionInfo?.remoteAddress.address}.');
@@ -155,7 +167,7 @@ class ServerUtils {
 
         case 'POST':
           switch (path) {
-            case '/disconnect':
+            case '/devices/disconnect':
               await _handleDisconnectDevices(ref, request);
               break;
 
@@ -207,9 +219,9 @@ class ServerUtils {
   static _handleInstanceList(WidgetRef ref, HttpRequest request) async {
     final instances = ref.read(scrcpyInstanceProvider);
     final query = request.uri.queryParameters;
+    final deviceId = query['deviceId'];
 
-    if (query['deviceId'] != null) {
-      final deviceId = query['deviceId'];
+    if (deviceId != null) {
       final List<Map<String, String>> result =
           instances.where((i) => i.device.id == deviceId).map((e) {
         return {
@@ -249,7 +261,7 @@ class ServerUtils {
     if (deviceId == null) {
       request.response
         ..statusCode = HttpStatus.badRequest
-        ..write(jsonEncode({'error': 'Missing deviceId parameter'}));
+        ..write('Missing deviceId parameter');
       return;
     }
 
@@ -270,22 +282,22 @@ class ServerUtils {
   static _handleDisconnectDevices(WidgetRef ref, HttpRequest request) async {
     final workDir = ref.read(execDirProvider);
     final devices = ref.read(adbProvider);
-    final id = request.uri.queryParameters['id'];
+    final deviceId = request.uri.queryParameters['deviceId'];
 
-    if (id == null) {
+    if (deviceId == null) {
       request.response.statusCode = HttpStatus.badRequest;
       return;
     } else {
       final devMap = {for (var d in devices) d.id: d};
-      final device = devMap[id];
+      final device = devMap[deviceId];
 
       if (device == null) {
-        request.response.statusCode = HttpStatus.notFound;
+        _notFound(request);
         return;
-      } else {
-        await AdbUtils.disconnectWirelessDevice(workDir, device);
-        request.response.statusCode = HttpStatus.ok;
       }
+
+      await AdbUtils.disconnectWirelessDevice(workDir, device);
+      request.response.statusCode = HttpStatus.ok;
     }
   }
 
@@ -307,7 +319,7 @@ class ServerUtils {
         await ScrcpyUtils.newInstance(ref,
             selectedConfig: config, selectedDevice: device);
       } else {
-        request.response.statusCode = HttpStatus.notFound;
+        _notFound(request);
       }
     } else {
       request.response.statusCode = HttpStatus.badRequest;
@@ -328,17 +340,26 @@ class ServerUtils {
       return;
     }
 
-    final pair = appConfigPairsMap[int.parse(pairHash)]!;
+    final pair = appConfigPairsMap[int.parse(pairHash)];
+
+    if (pair == null) {
+      _notFound(request);
+      return;
+    }
+
     final device = devices.firstWhereOrNull((d) => d.id == pair.deviceId);
 
-    if (device != null) {
-      await ScrcpyUtils.newInstance(ref,
-          selectedConfig: pair.config.copyWith(
-              appOptions:
-                  (pair.config.appOptions).copyWith(selectedApp: pair.app)),
-          selectedDevice: device,
-          customInstanceName: '${pair.app.name} (${pair.config.configName})');
+    if (device == null) {
+      _notFound(request);
+      return;
     }
+
+    await ScrcpyUtils.newInstance(ref,
+        selectedConfig: pair.config.copyWith(
+            appOptions:
+                (pair.config.appOptions).copyWith(selectedApp: pair.app)),
+        selectedDevice: device,
+        customInstanceName: '${pair.app.name} (${pair.config.configName})');
   }
 
   static _handleScrcpyStop(WidgetRef ref, HttpRequest request) async {
@@ -352,13 +373,13 @@ class ServerUtils {
       await ScrcpyUtils.killServer(instance);
       request.response.statusCode = HttpStatus.ok;
     } else {
-      request.response.statusCode = HttpStatus.notFound;
+      _notFound(request);
     }
   }
 
   static void _notFound(HttpRequest request) {
     request.response.statusCode = HttpStatus.notFound;
-    request.response.write(jsonEncode({'error': 'Not Found'}));
+    request.response.write('Not Found');
   }
 
   static Future<InternetAddress?> getDeviceIp() async {
