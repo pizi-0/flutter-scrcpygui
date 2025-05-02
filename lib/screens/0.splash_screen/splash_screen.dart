@@ -6,16 +6,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
-import 'package:scrcpygui/models/scrcpy_related/scrcpy_config_tags.dart';
 import 'package:scrcpygui/providers/server_settings_provider.dart';
-import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
 // import 'package:scrcpygui/utils/adb_utils.dart';
-import 'package:scrcpygui/utils/configs_list_extension.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/setup.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -61,7 +58,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> _init() async {
     final start = DateTime.now().millisecondsSinceEpoch;
-    final settings = ref.read(settingsProvider);
+    // final settings = ref.read(settingsProvider);
 
     await SetupUtils.initScrcpy(ref);
 
@@ -92,14 +89,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         (conf) => conf == lastUsedConfig,
         orElse: () => defaultMirror);
 
-    if (settings.behaviour.hideDefaultConfig) {
-      ref.read(configTags.notifier).addTag(ConfigTag.customConfig);
-      final filtered = allConfigs.filterByAnyTag([ConfigTag.customConfig]);
+    // if (settings.behaviour.hideDefaultConfig) {
+    //   ref.read(configTags.notifier).addTag(ConfigTag.customConfig);
+    //   final filtered = allConfigs.filterByAnyTag([ConfigTag.customConfig]);
 
-      if (!filtered.contains(lastUsedConfig)) {
-        ref.read(selectedConfigProvider.notifier).state = filtered.firstOrNull;
-      }
-    }
+    //   if (!filtered.contains(lastUsedConfig)) {
+    //     ref.read(selectedConfigProvider.notifier).state = filtered.firstOrNull;
+    //   }
+    // }
 
     // final adbDevices = await AdbUtils.connectedDevices(workDir);
     // ref.read(adbProvider.notifier).setConnected(adbDevices, savedDevices);
