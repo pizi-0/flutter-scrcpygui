@@ -79,7 +79,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       ref.read(configsProvider.notifier).addConfig(c);
     }
 
+    for (final c in defaultConfigs) {
+      if (!confs.contains(c)) {
+        ref.read(configsProvider.notifier).addConfig(c);
+      }
+    }
+
     final allConfigs = ref.read(configsProvider);
+
     final lastUsedConfig = await Db.getLastUsedConfig(ref);
     ref.read(selectedConfigProvider.notifier).state = allConfigs.firstWhere(
         (conf) => conf == lastUsedConfig,

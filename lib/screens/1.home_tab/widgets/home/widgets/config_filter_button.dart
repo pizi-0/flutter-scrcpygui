@@ -111,7 +111,8 @@ class _ConfigFilterPopoverState extends ConsumerState<ConfigFilterPopover> {
 }
 
 class ConfigFilterButtonBig extends ConsumerStatefulWidget {
-  const ConfigFilterButtonBig({super.key});
+  final bool disable;
+  const ConfigFilterButtonBig({super.key, this.disable = false});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -132,23 +133,26 @@ class _ConfigFilterButtonBigState extends ConsumerState<ConfigFilterButtonBig> {
             (t) => t != ConfigTag.customConfig && t != ConfigTag.defaultConfig)
         .toList();
 
-    return Row(
-      spacing: 4,
-      // runSpacing: 4,
-      children: [
-        Chip(
-          style: filters.isNotEmpty
-              ? ButtonStyle.destructiveIcon()
-              : ButtonStyle.secondary(),
-          onPressed: filters.isEmpty
-              ? null
-              : () => ref.read(configTags.notifier).clearTag(),
-          child: Icon(filters.isEmpty ? BootstrapIcons.filter : Icons.clear)
-              .iconSmall(),
-        ),
-        Gap(0, crossAxisExtent: 4),
-        ...tagsList.map((t) => TagChip(tag: t))
-      ],
+    return IgnorePointer(
+      ignoring: widget.disable,
+      child: Row(
+        spacing: 4,
+        // runSpacing: 4,
+        children: [
+          Chip(
+            style: filters.isNotEmpty
+                ? ButtonStyle.destructiveIcon()
+                : ButtonStyle.secondary(),
+            onPressed: filters.isEmpty
+                ? null
+                : () => ref.read(configTags.notifier).clearTag(),
+            child: Icon(filters.isEmpty ? BootstrapIcons.filter : Icons.clear)
+                .iconSmall(),
+          ),
+          Gap(0, crossAxisExtent: 4),
+          ...tagsList.map((t) => TagChip(tag: t))
+        ],
+      ),
     );
   }
 }

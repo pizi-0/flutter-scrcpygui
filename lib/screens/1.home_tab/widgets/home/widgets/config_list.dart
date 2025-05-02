@@ -1,5 +1,5 @@
-import 'package:awesome_extensions/awesome_extensions.dart' show PaddingX;
-import 'package:collection/collection.dart';
+import 'package:awesome_extensions/awesome_extensions.dart'
+    show NumExtension, PaddingX;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
@@ -176,10 +176,15 @@ class ConfigListBig extends ConsumerStatefulWidget {
 
 class ConfigListBigState extends ConsumerState<ConfigListBig> {
   bool loading = false;
+  bool reorder = false;
+
+  List<ScrcpyConfig> reorderList = [];
 
   @override
   Widget build(BuildContext context) {
     final filteredConfigs = ref.watch(filteredConfigsProvider);
+
+    reorderList = [...filteredConfigs];
 
     return PgSectionCard(
       label: el.configLoc.label(count: '${filteredConfigs.length}'),
@@ -189,17 +194,73 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
         onPressed: _onNewConfigPressed,
       ),
       children: [
-        ConfigFilterButtonBig(),
-        if (filteredConfigs.isNotEmpty) Divider(),
-        ...filteredConfigs.mapIndexed(
-          (index, conf) => Column(
+        ConfigFilterButtonBig(disable: reorder),
+        Padding(
+          padding: const EdgeInsets.only(top: 4.0, bottom: 4),
+          child: Row(
             spacing: 8,
             children: [
-              ConfigListTile(conf: conf),
-              if (index != filteredConfigs.length - 1) const Divider()
+              Chip(
+                style: reorder ? ButtonStyle.primary() : null,
+                onPressed: _onReorderPressed,
+                child: Text(!reorder ? 'Reorder' : 'Save'),
+              ),
+              if (reorder)
+                Chip(
+                    child: Text('Cancel'),
+                    onPressed: () => setState(() => reorder = false))
             ],
           ),
         ),
+        if (filteredConfigs.isNotEmpty) Divider(),
+        ReorderableList(
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return _reorderableConfigListTIle(index, filteredConfigs);
+          },
+          itemCount: reorder ? reorderList.length : filteredConfigs.length,
+          onReorder: (oldIndex, newIndex) {
+            if (oldIndex < newIndex) {
+              newIndex -= 1;
+            }
+            final item = reorderList.removeAt(oldIndex);
+            reorderList.insert(newIndex, item);
+          },
+        )
+      ],
+    );
+  }
+
+  Widget _reorderableConfigListTIle(
+      int index, List<ScrcpyConfig> filteredConfigs) {
+    return Column(
+      key: reorder
+          ? ValueKey(reorderList[index].id)
+          : ValueKey(filteredConfigs[index].id),
+      spacing: 8,
+      children: [
+        Row(
+          spacing: reorder ? 8 : 0,
+          children: [
+            AnimatedContainer(
+              duration: 100.milliseconds,
+              width: reorder ? 20 : 0,
+              child: FittedBox(
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.grab,
+                  child: ReorderableDragStartListener(
+                      index: index, child: Icon(Icons.drag_indicator_rounded)),
+                ),
+              ),
+            ),
+            Expanded(
+                child: ConfigListTile(
+                    conf:
+                        reorder ? reorderList[index] : filteredConfigs[index])),
+          ],
+        ),
+        if (reorder && index != reorderList.length - 1) const Divider(),
+        if (!reorder && index != filteredConfigs.length - 1) const Divider()
       ],
     );
   }
@@ -219,6 +280,26 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
             content: [Text(el.noDeviceDialogLoc.contentsNew)]),
       );
     }
+  }
+
+  _onReorderPressed() async {
+    if (!reorder) {
+      ref.read(configTags.notifier).clearTag();
+
+      reorder = true;
+    } else {
+      for (final conf in reorderList) {
+        ref.read(configsProvider.notifier).removeConfig(conf);
+        ref.read(configsProvider.notifier).addConfig(conf);
+      }
+      reorderList.clear();
+
+      await Db.saveConfigs(ref.read(configsProvider));
+
+      reorder = false;
+    }
+
+    setState(() {});
   }
 }
 

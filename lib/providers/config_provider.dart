@@ -10,7 +10,7 @@ import 'package:scrcpygui/utils/const.dart';
 class ConfigsNotifier extends Notifier<List<ScrcpyConfig>> {
   @override
   List<ScrcpyConfig> build() {
-    return [...defaultConfigs];
+    return [];
   }
 
   addConfig(ScrcpyConfig config) {
