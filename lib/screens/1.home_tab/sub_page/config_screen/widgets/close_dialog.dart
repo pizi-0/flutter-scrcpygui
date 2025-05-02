@@ -161,10 +161,7 @@ class _ConfigScreenCloseDialogState
       ref.read(configsProvider.notifier).addConfig(currentConfig);
     }
 
-    final toSave = ref
-        .read(configsProvider)
-        .where((e) => !defaultConfigs.contains(e))
-        .toList();
+    final toSave = ref.read(configsProvider).toList();
 
     if (ref.read(filteredConfigsProvider).contains(currentConfig)) {
       ref.read(selectedConfigProvider.notifier).state = ref
@@ -173,7 +170,7 @@ class _ConfigScreenCloseDialogState
               orElse: () => defaultMirror);
     }
 
-    await Db.saveConfigs(ref, context, toSave);
+    await Db.saveConfigs(toSave);
 
     context.pop(CloseDialogResult.save);
   }

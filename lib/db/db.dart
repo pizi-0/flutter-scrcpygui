@@ -111,8 +111,7 @@ class Db {
     }
   }
 
-  static Future<void> saveConfigs(
-      WidgetRef ref, BuildContext context, List<ScrcpyConfig> conf) async {
+  static Future<void> saveConfigs(List<ScrcpyConfig> conf) async {
     final prefs = await SharedPreferences.getInstance();
     List<String> savedJson = [];
 
