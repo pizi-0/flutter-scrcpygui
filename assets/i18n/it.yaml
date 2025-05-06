@@ -73,6 +73,10 @@ device_settings_loc:
     video_enc: Encoder video (${count})
     audio_enc: Encoder audio (${count})
 
+## home_tab > config manager
+config_manager_loc:
+  title: Gestore configurazioni
+
 ## home_tab > config screen
 config_screen_loc:
   title: Impostazioni configurazione
@@ -467,6 +471,8 @@ button_label_loc:
   filter: Filtra configurazioni
   delete: Elimina
   server_agree: Capisco, avvia server
+  reorder: Riordina
+
 
   
 # status

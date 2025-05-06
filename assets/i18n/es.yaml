@@ -73,6 +73,10 @@ device_settings_loc:
     video_enc: Codificadores de vídeo (${count})
     audio_enc: Codificadores de audio (${count})
 
+## home_tab > config manager
+config_manager_loc:
+  title: Administrador de configuraciones
+
 ## home_tab > config screen
 config_screen_loc:
   title: Ajustes de configuración
@@ -467,7 +471,7 @@ button_label_loc:
   filter: Filtrar configuraciones
   delete: Eliminar
   server_agree: Entiendo, iniciar servidor
-
+  reorder: Reordenar
 
 # status
 status_loc:

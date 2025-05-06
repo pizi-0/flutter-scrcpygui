@@ -73,6 +73,10 @@ device_settings_loc:
     video_enc: Pengekod video (${count})
     audio_enc: Pengekod audio (${count})
 
+## home_tab > config manager
+config_manager_loc:
+  title: Pengurus konfigurasi
+
 ## home_tab > config screen
 config_screen_loc:
   title: Tetapan konfigurasi
@@ -468,6 +472,8 @@ button_label_loc:
   filter: Tapis konfigurasi
   delete: Padam
   server_agree: Saya faham, mulakan pelayan
+  reorder: Susun semula
+
 
 
 # status

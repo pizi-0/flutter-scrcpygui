@@ -75,6 +75,10 @@ device_settings_loc:
     cameras: Cameras (${count})
     video_enc: Video encoders (${count})
     audio_enc: Audio encoders (${count})
+
+## home_tab > config manager
+config_manager_loc:
+  title: Configs manager
   
 
 ## home_tab > config screen
@@ -492,6 +496,7 @@ button_label_loc:
   filter: Filter configs
   delete: Delete  
   server_agree: I understand, start server
+  reorder: Reorder
 
 # status 
 status_loc: 
