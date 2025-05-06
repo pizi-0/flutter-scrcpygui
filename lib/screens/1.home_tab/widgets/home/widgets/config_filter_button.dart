@@ -27,9 +27,9 @@ class _ConfigFilterButtonState extends ConsumerState<ConfigFilterButton> {
           TooltipContainer(child: Text(el.buttonLabelLoc.filter)),
       child: IconButton.ghost(
         icon: Icon(
-          BootstrapIcons.filter,
+          Icons.filter_alt_rounded,
           color: filters.isNotEmpty ? theme.colorScheme.primary : null,
-        ),
+        ).iconSmall(),
         onSecondaryTapDown: (details) =>
             ref.read(configTags.notifier).clearTag(),
         onLongPressStart: (details) => ref.read(configTags.notifier).clearTag(),

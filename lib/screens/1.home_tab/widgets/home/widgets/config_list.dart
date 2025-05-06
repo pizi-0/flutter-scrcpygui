@@ -49,9 +49,13 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
       labelButton: Row(
         children: [
           ConfigFilterButton(),
-          IconButton.ghost(
-            icon: Icon(Icons.move_down),
-            onPressed: () => context.go('/home/${ConfigManager.route}'),
+          Tooltip(
+            tooltip:
+                TooltipContainer(child: Text(el.configManagerLoc.title)).call,
+            child: IconButton.ghost(
+              icon: Icon(Icons.settings_rounded).iconSmall(),
+              onPressed: () => context.go('/home/${ConfigManager.route}'),
+            ),
           )
         ],
       ),
