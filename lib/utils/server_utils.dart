@@ -167,6 +167,10 @@ class ServerUtils {
 
         case 'POST':
           switch (path) {
+            case '/devices/connect':
+              await _handleConnectWithIp(ref, request);
+              break;
+
             case '/devices/disconnect':
               await _handleDisconnectDevices(ref, request);
               break;
@@ -277,6 +281,30 @@ class ServerUtils {
     request.response
       ..statusCode = HttpStatus.ok
       ..write(jsonEncode(maps));
+  }
+
+  static _handleConnectWithIp(WidgetRef ref, HttpRequest request) async {
+    final workDir = ref.read(execDirProvider);
+    final ip = request.uri.queryParameters['ip'];
+
+    if (ip == null) {
+      request.response
+        ..statusCode = HttpStatus.badRequest
+        ..write('Missing parameter ip');
+      return;
+    }
+
+    final res = await AdbUtils.connectWithIp(workDir, ipport: ip);
+
+    if (!res.success) {
+      request.response
+        ..statusCode = HttpStatus.notFound
+        ..write(res.errorMessage);
+
+      return;
+    }
+
+    request.response.statusCode = HttpStatus.ok;
   }
 
   static _handleDisconnectDevices(WidgetRef ref, HttpRequest request) async {
