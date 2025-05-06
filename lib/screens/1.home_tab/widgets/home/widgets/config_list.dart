@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_manager/config_manager.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/config_filter_button.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -45,7 +46,15 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
 
     return PgSectionCard(
       label: el.configLoc.label(count: '${filteredConfigs.length}'),
-      labelButton: ConfigFilterButton(),
+      labelButton: Row(
+        children: [
+          ConfigFilterButton(),
+          IconButton.ghost(
+            icon: Icon(Icons.move_down),
+            onPressed: () => context.go('/home/${ConfigManager.route}'),
+          )
+        ],
+      ),
       labelTrail: IconButton.ghost(
         leading: Text(el.configLoc.new$),
         icon: const Icon(Icons.add),
@@ -305,7 +314,9 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
 
 class ConfigListTile extends ConsumerStatefulWidget {
   final ScrcpyConfig conf;
-  const ConfigListTile({super.key, required this.conf});
+  final bool showStartButton;
+  const ConfigListTile(
+      {super.key, required this.conf, this.showStartButton = true});
 
   @override
   ConsumerState<ConfigListTile> createState() => _ConfigListTileState();
@@ -319,24 +330,26 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
 
     return PgListTile(
       title: widget.conf.configName,
-      trailing: Row(
-        children: [
-          IconButton.ghost(
-            onPressed: loading
-                ? null
-                : () {
-                    ref.read(selectedConfigProvider.notifier).state =
-                        widget.conf;
-                    _start();
-                  },
-            icon: loading
-                ? SizedBox.square(
-                    dimension: 20,
-                    child: Center(child: CircularProgressIndicator()))
-                : const Icon(Icons.play_arrow_rounded),
-          ),
-        ],
-      ),
+      trailing: widget.showStartButton
+          ? Row(
+              children: [
+                IconButton.ghost(
+                  onPressed: loading
+                      ? null
+                      : () {
+                          ref.read(selectedConfigProvider.notifier).state =
+                              widget.conf;
+                          _start();
+                        },
+                  icon: loading
+                      ? SizedBox.square(
+                          dimension: 20,
+                          child: Center(child: CircularProgressIndicator()))
+                      : const Icon(Icons.play_arrow_rounded),
+                ),
+              ],
+            )
+          : null,
       content: OutlinedContainer(
         borderRadius: theme.borderRadiusSm,
         child: IntrinsicHeight(

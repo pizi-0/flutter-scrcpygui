@@ -1,14 +1,16 @@
-import 'package:collection/collection.dart';
+import 'package:animate_do/animate_do.dart';
+import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
-import 'package:scrcpygui/widgets/config_tiles.dart';
-import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../../../db/db.dart';
 import '../../../../providers/config_provider.dart';
+import '../../widgets/home/widgets/config_list.dart';
 
 class ConfigManager extends ConsumerStatefulWidget {
   static const String route = 'config-manager';
@@ -19,66 +21,118 @@ class ConfigManager extends ConsumerStatefulWidget {
 }
 
 class _ConfigManagerState extends ConsumerState<ConfigManager> {
-  List<SortableData<ScrcpyConfig>> configs = [];
-  ScrollController controller = ScrollController();
+  bool loading = false;
+  bool reorder = false;
 
-  @override
-  void initState() {
-    configs = [...ref.read(configsProvider).map((conf) => SortableData(conf))];
-    super.initState();
-  }
+  List<ScrcpyConfig> reorderList = [];
 
   @override
   Widget build(BuildContext context) {
+    final filteredConfigs = ref.watch(filteredConfigsProvider);
+
+    reorderList = [...filteredConfigs];
+
     return PgScaffold(
+      title: el.configManagerLoc.title,
       onBack: () => context.pop(),
-      title: 'Configs manager',
       children: [
         PgSectionCard(
           children: [
-            ConfigCustom(
-              title: 'Hide default configs',
-              childExpand: false,
-              onPressed: () {},
-              child: Checkbox(
-                state: CheckboxState.unchecked,
-                onChanged: (v) {},
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0, bottom: 4),
+              child: Row(
+                spacing: 8,
+                children: [
+                  Chip(
+                    style: reorder ? ButtonStyle.primary() : null,
+                    onPressed: _onReorderPressed,
+                    child: Text(!reorder
+                        ? el.buttonLabelLoc.reorder
+                        : el.buttonLabelLoc.save),
+                  ),
+                  if (reorder)
+                    FadeIn(
+                      duration: 100.milliseconds,
+                      child: Chip(
+                          child: Text(el.buttonLabelLoc.cancel),
+                          onPressed: () => setState(() => reorder = false)),
+                    )
+                ],
               ),
             ),
-          ],
-        ),
-        PgSectionCard(
-          children: [
-            SortableLayer(
-                lock: true,
-                child: SortableDropFallback(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    spacing: 8,
-                    children: configs
-                        .mapIndexed(
-                          (i, conf) => Sortable(
-                            key: ValueKey(i),
-                            data: conf,
-                            child: Card(
-                              child: PgListTile(
-                                title: conf.data.configName,
-                              ),
-                            ),
-                            onAcceptBottom: (value) => setState(() {
-                              configs.swapItem(value, i + 1);
-                            }),
-                            onAcceptTop: (value) => setState(() {
-                              configs.swapItem(value, i);
-                            }),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ))
+            if (filteredConfigs.isNotEmpty) Divider(),
+            ReorderableList(
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                return _reorderableConfigListTIle(index, filteredConfigs);
+              },
+              itemCount: reorder ? reorderList.length : filteredConfigs.length,
+              onReorder: (oldIndex, newIndex) {
+                if (oldIndex < newIndex) {
+                  newIndex -= 1;
+                }
+                final item = reorderList.removeAt(oldIndex);
+                reorderList.insert(newIndex, item);
+              },
+            )
           ],
         )
       ],
     );
+  }
+
+  Widget _reorderableConfigListTIle(
+      int index, List<ScrcpyConfig> filteredConfigs) {
+    return Column(
+      key: reorder
+          ? ValueKey(reorderList[index].id)
+          : ValueKey(filteredConfigs[index].id),
+      spacing: 8,
+      children: [
+        Row(
+          spacing: reorder ? 8 : 0,
+          children: [
+            AnimatedContainer(
+              duration: 100.milliseconds,
+              width: reorder ? 20 : 0,
+              child: FittedBox(
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.grab,
+                  child: ReorderableDragStartListener(
+                      index: index, child: Icon(Icons.drag_indicator_rounded)),
+                ),
+              ),
+            ),
+            Expanded(
+                child: ConfigListTile(
+                    showStartButton: false,
+                    conf:
+                        reorder ? reorderList[index] : filteredConfigs[index])),
+          ],
+        ),
+        if (reorder && index != reorderList.length - 1) const Divider(),
+        if (!reorder && index != filteredConfigs.length - 1) const Divider()
+      ],
+    );
+  }
+
+  _onReorderPressed() async {
+    if (!reorder) {
+      ref.read(configTags.notifier).clearTag();
+
+      reorder = true;
+    } else {
+      for (final conf in reorderList) {
+        ref.read(configsProvider.notifier).removeConfig(conf);
+        ref.read(configsProvider.notifier).addConfig(conf);
+      }
+      reorderList.clear();
+
+      await Db.saveConfigs(ref.read(configsProvider));
+
+      reorder = false;
+    }
+
+    setState(() {});
   }
 }
