@@ -45,9 +45,9 @@ class CompanionServerSettings {
   Map<String, dynamic> toQrMap() {
     return <String, dynamic>{
       'name': name,
-      'endpoint': endpoint,
+      'ip': endpoint,
       'secret': secret,
-      'port': port,
+      'port': int.parse(port),
     };
   }
 
