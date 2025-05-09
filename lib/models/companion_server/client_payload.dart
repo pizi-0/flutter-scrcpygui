@@ -15,7 +15,7 @@ import '../../utils/adb_utils.dart';
 
 class ClientPayload {
   final ClientAction action;
-  final Map<String, String> payload;
+  final String payload;
 
   ClientPayload({required this.action, required this.payload});
 
@@ -39,9 +39,9 @@ class ClientPayload {
     }
   }
 
-  _startScrcpy(WidgetRef ref, Map<String, dynamic> json) async {
-    final deviceId = json['deviceId'];
-    final configId = json['configId'];
+  _startScrcpy(WidgetRef ref, String json) async {
+    final deviceId = jsonDecode(json)['deviceId'];
+    final configId = jsonDecode(json)['configId'];
 
     if (deviceId == null || configId == null) {
       throw Exception('Missing deviceId or configId');
@@ -53,23 +53,24 @@ class ClientPayload {
     final config = configMap[configId];
     final device = deviceMap[deviceId];
 
-    if (config != null && device != null) {
+    if (config == null || device == null) {
       throw Exception('Config or device not found');
     }
 
     await ScrcpyUtils.newInstance(ref,
-        selectedConfig: config!, selectedDevice: device);
+        selectedConfig: config, selectedDevice: device);
   }
 
-  _startAppConfigPair(WidgetRef ref, Map<String, dynamic> json) async {
-    final hash = json['hash'];
+  _startAppConfigPair(WidgetRef ref, String json) async {
+    final hash = jsonDecode(json)['hash'];
     if (hash == null) {
       throw Exception('Missing hash');
     }
 
     final pair = ref
         .read(appConfigPairProvider)
-        .firstWhereOrNull((pair) => pair.hashCode == hash);
+        .firstWhereOrNull((pair) => pair.hashCode.toString() == hash);
+
     if (pair == null) {
       throw Exception('Pair not found');
     }
@@ -90,8 +91,8 @@ class ClientPayload {
     );
   }
 
-  _killScrcpy(WidgetRef ref, Map<String, dynamic> json) async {
-    final pid = json['pid'];
+  _killScrcpy(WidgetRef ref, String json) async {
+    final pid = jsonDecode(json)['pid'];
     if (pid == null) {
       throw Exception('Missing pid');
     }
@@ -106,8 +107,8 @@ class ClientPayload {
     await ScrcpyUtils.killServer(instance);
   }
 
-  _connectDevice(WidgetRef ref, Map<String, dynamic> json) async {
-    final ip = json['ip'];
+  _connectDevice(WidgetRef ref, String json) async {
+    final ip = jsonDecode(json)['ip'];
     if (ip == null) {
       throw Exception('Missing ip');
     }
@@ -115,8 +116,8 @@ class ClientPayload {
     await AdbUtils.connectWithIp(ref.read(execDirProvider), ipport: ip);
   }
 
-  _disconnectDevice(WidgetRef ref, Map<String, dynamic> json) async {
-    final deviceId = json['deviceId'];
+  _disconnectDevice(WidgetRef ref, String json) async {
+    final deviceId = jsonDecode(json)['deviceId'];
     if (deviceId == null) {
       throw Exception('Missing deviceId');
     }
@@ -141,9 +142,7 @@ class ClientPayload {
   factory ClientPayload.fromMap(Map<String, dynamic> map) {
     return ClientPayload(
       action: ClientAction.values[int.parse(map['action'] as String)],
-      payload: Map<String, String>.from(
-        (map['payload'] as Map<String, String>),
-      ),
+      payload: map['payload'] as String,
     );
   }
 

@@ -2,18 +2,25 @@
 import 'dart:convert';
 
 import 'package:scrcpygui/models/app_config_pair.dart';
+import 'package:scrcpygui/models/companion_server/data/config_payload.dart';
 
 class PairsPayload {
   final String name;
+  final ConfigPayload config;
   final String deviceId;
   final String hash;
 
-  PairsPayload(
-      {required this.name, required this.deviceId, required this.hash});
+  PairsPayload({
+    required this.name,
+    required this.config,
+    required this.deviceId,
+    required this.hash,
+  });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'name': name,
+      'config': config.toMap(),
       'deviceId': deviceId,
       'hash': hash,
     };
@@ -22,6 +29,7 @@ class PairsPayload {
   factory PairsPayload.fromMap(Map<String, dynamic> map) {
     return PairsPayload(
       name: map['name'] as String,
+      config: ConfigPayload.fromMap(map['config'] as Map<String, dynamic>),
       deviceId: map['deviceId'] as String,
       hash: map['hash'] as String,
     );
@@ -39,6 +47,7 @@ extension PairsPayloader on AppConfigPair {
       name: app.name,
       deviceId: deviceId,
       hash: hashCode.toString(),
+      config: config.toPayload(),
     );
   }
 }
