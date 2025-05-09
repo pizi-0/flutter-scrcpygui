@@ -6,7 +6,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
-import 'package:scrcpygui/utils/server_utils.dart';
+import 'package:scrcpygui/utils/server_utils_ws.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
@@ -24,7 +24,7 @@ class CompanionTab extends ConsumerStatefulWidget {
 }
 
 class _CompanionTabState extends ConsumerState<CompanionTab> {
-  final serverUtils = ServerUtils();
+  final serverUtils = ServerUtilsWs();
   bool obscurePass = true;
   TextEditingController nameController = TextEditingController();
   TextEditingController portController = TextEditingController();
@@ -81,7 +81,7 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider.select((s) => s.behaviour.languageCode));
-    final isServerRunning = serverUtils.isServerRunning();
+    final isServerRunning = serverUtils.isServerRunning;
     final companionSettings = ref.watch(companionServerProvider);
 
     return PgScaffold(
@@ -215,14 +215,13 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
   }
 
   _toggleServer(bool isServerRunning) async {
-    final companionSettings = ref.read(companionServerProvider);
     final companionSettingsNotifier =
         ref.read(companionServerProvider.notifier);
 
     obscurePass = true;
 
     if (isServerRunning) {
-      await serverUtils.stop();
+      await serverUtils.stopServer();
     } else {
       final agree = (await showDialog<bool>(
             context: context,
@@ -251,15 +250,14 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
 
       if (!agree) return;
 
-      await serverUtils.startServer(ref,
-          port: int.tryParse(companionSettings.port) ?? 8080);
+      await serverUtils.startServer(ref);
 
-      companionSettingsNotifier.setPort(serverUtils.boundPort.toString());
+      companionSettingsNotifier.setPort(serverUtils.port.toString());
 
-      portController.text = serverUtils.boundPort.toString();
+      portController.text = serverUtils.port.toString();
 
       companionSettingsNotifier
-          .setEndpoint(serverUtils.ipAddress?.address ?? '0.0.0.0');
+          .setEndpoint(serverUtils.serverSocket?.address.address ?? '0.0.0.0');
 
       await Db.saveCompanionServerSettings(ref.read(companionServerProvider));
     }

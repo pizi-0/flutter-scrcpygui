@@ -15,7 +15,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
-import 'package:scrcpygui/utils/server_utils.dart';
 import 'package:scrcpygui/utils/server_utils_ws.dart';
 import 'package:scrcpygui/widgets/navigation_shell.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -181,9 +180,10 @@ class _MainScreenState extends ConsumerState<MainScreen>
 
       if (companionSettings.startOnLaunch) {
         await _serverUtils.startServer(ref);
-        // ref.read(companionServerProvider.notifier)
-        //   ..setPort(_serverUtils.boundPort.toString())
-        //   ..setEndpoint(_serverUtils.ipAddress?.address ?? '0.0.0.0');
+        ref.read(companionServerProvider.notifier)
+          ..setPort(_serverUtils.port.toString())
+          ..setEndpoint(
+              _serverUtils.serverSocket?.address.address ?? '0.0.0.0');
       }
     });
   }
