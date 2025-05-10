@@ -11,6 +11,7 @@ import 'package:scrcpygui/models/companion_server/data/instance_payload.dart';
 import 'package:scrcpygui/models/companion_server/data/pairs_payload.dart';
 import 'package:scrcpygui/models/companion_server/server_payload.dart';
 import 'package:scrcpygui/utils/const.dart';
+import 'package:string_extensions/string_extensions.dart';
 
 import '../providers/adb_provider.dart';
 import '../providers/app_config_pair_provider.dart';
@@ -37,11 +38,14 @@ class ServerUtilsWs {
   InternetAddress get endpoint => _endpoint ?? InternetAddress('0.0.0.0');
   int get port => _port ?? 8080;
 
-  _bindServer() async {
+  _bindServer(WidgetRef ref) async {
     try {
       final deviceIp = await _getDeviceIp();
 
-      serverSocket = await ServerSocket.bind(deviceIp.address, port);
+      final companionSettings = ref.read(companionServerProvider);
+
+      serverSocket = await ServerSocket.bind(
+          deviceIp.address, companionSettings.port.toInt() ?? 8080);
       _endpoint = serverSocket!.address;
       _port = serverSocket!.port;
 
@@ -165,7 +169,7 @@ class ServerUtilsWs {
 
   startServer(WidgetRef ref) async {
     try {
-      await _bindServer();
+      await _bindServer(ref);
 
       serverSocket!.listen(
         (socket) => _onData(ref, socket),
