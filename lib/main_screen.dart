@@ -23,6 +23,7 @@ import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'providers/adb_provider.dart';
+import 'providers/companion_server_state_provider.dart';
 import 'providers/scrcpy_provider.dart';
 import 'providers/server_settings_provider.dart';
 import 'utils/automation_utils.dart';
@@ -71,7 +72,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
     autoDevicesPingTimer?.cancel();
     autoLaunchConfigTimer?.cancel();
     runningInstancePingTimer?.cancel();
-    _serverUtils.stopServer();
+    _serverUtils.stopServer(ref);
     super.dispose();
   }
 
@@ -182,10 +183,10 @@ class _MainScreenState extends ConsumerState<MainScreen>
       if (companionSettings.startOnLaunch) {
         try {
           await _serverUtils.startServer(ref);
+          final serverState = ref.read(companionServerStateProvider);
           ref.read(companionServerProvider.notifier)
-            ..setPort(_serverUtils.port.toString())
-            ..setEndpoint(
-                _serverUtils.serverSocket?.address.address ?? '0.0.0.0');
+            ..setPort(serverState.port)
+            ..setEndpoint(serverState.ip);
         } on Exception catch (e) {
           showDialog(
             context: context,

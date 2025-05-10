@@ -10,6 +10,7 @@ import 'package:scrcpygui/models/companion_server/data/error_payload.dart';
 import 'package:scrcpygui/models/companion_server/data/instance_payload.dart';
 import 'package:scrcpygui/models/companion_server/data/pairs_payload.dart';
 import 'package:scrcpygui/models/companion_server/server_payload.dart';
+import 'package:scrcpygui/providers/companion_server_state_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -29,14 +30,7 @@ class ServerUtilsWs {
   ServerUtilsWs._internal();
 
   ServerSocket? serverSocket;
-  bool _isServerRunning = false;
-  InternetAddress? _endpoint;
-  int? _port;
   Set<Socket> authenticatedSockets = {};
-
-  bool get isServerRunning => _isServerRunning;
-  InternetAddress get endpoint => _endpoint ?? InternetAddress('0.0.0.0');
-  int get port => _port ?? 8080;
 
   _bindServer(WidgetRef ref) async {
     try {
@@ -46,13 +40,23 @@ class ServerUtilsWs {
 
       serverSocket = await ServerSocket.bind(
           deviceIp.address, companionSettings.port.toInt() ?? 8080);
-      _endpoint = serverSocket!.address;
-      _port = serverSocket!.port;
 
-      logger.i('Server bound on ws://${endpoint.address}:$port');
+      final ip = serverSocket?.address.address ?? '0.0.0.0';
+      final port = serverSocket?.port.toString() ?? '8080';
+
+      ref.read(companionServerStateProvider.notifier).setServerState(
+        isRunning: true,
+        ip: ip,
+        port: port,
+        clients: [],
+      );
+
+      logger.i('Server bound on $ip:$port');
     } on Exception catch (e) {
       logger.e('Failed to bind server', error: e.toString());
-      _isServerRunning = false;
+      ref
+          .read(companionServerStateProvider.notifier)
+          .setServerState(isRunning: false, ip: null, port: null, clients: []);
       rethrow;
     }
   }
@@ -79,11 +83,20 @@ class ServerUtilsWs {
       onDone: () {
         authenticatedSockets.removeWhere((sock) =>
             sock.remoteAddress.address == socket.remoteAddress.address);
+
+        ref
+            .read(companionServerStateProvider.notifier)
+            .setServerState(clients: authenticatedSockets.toList());
         logger.i('Client disconnected: $clientAddress');
       },
       onError: (error) {
         authenticatedSockets.removeWhere((sock) =>
             sock.remoteAddress.address == socket.remoteAddress.address);
+
+        ref
+            .read(companionServerStateProvider.notifier)
+            .setServerState(clients: authenticatedSockets.toList());
+
         logger.e('Client error', error: error.toString());
       },
     );
@@ -123,6 +136,9 @@ class ServerUtilsWs {
         } else {
           logger.i('Authentication successful: $clientAddress');
           authenticatedSockets.add(socket);
+          ref
+              .read(companionServerStateProvider.notifier)
+              .setServerState(clients: authenticatedSockets.toList());
 
           // Send initial data
           final devices = ref.read(adbProvider);
@@ -242,31 +258,38 @@ class ServerUtilsWs {
         onError: (error, stackTrace) => logger.e(error),
       );
 
-      _isServerRunning = true;
       logger.i('Server started');
     } catch (e) {
       logger.e('Failed to start server', error: e.toString());
       await serverSocket?.close();
-      _isServerRunning = false;
-      _endpoint = null;
-      _port = null;
+      ref.read(companionServerStateProvider.notifier).setServerState(
+        isRunning: false,
+        ip: null,
+        port: null,
+        clients: [],
+      );
+
       authenticatedSockets.clear();
       rethrow;
     }
   }
 
-  stopServer() async {
+  stopServer(WidgetRef ref) async {
     try {
       await serverSocket!.close();
-      _isServerRunning = false;
-      _endpoint = null;
-      _port = null;
 
       for (final sock in authenticatedSockets) {
         sock.close();
       }
 
       authenticatedSockets.clear();
+
+      ref.read(companionServerStateProvider.notifier).setServerState(
+        isRunning: false,
+        ip: null,
+        port: null,
+        clients: [],
+      );
     } catch (e) {
       logger.e('Failed to stop server', error: e.toString());
     }

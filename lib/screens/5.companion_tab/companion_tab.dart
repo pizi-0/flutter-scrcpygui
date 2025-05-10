@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:awesome_extensions/awesome_extensions_flutter.dart';
+import 'package:animate_do/animate_do.dart';
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:encrypt_decrypt_plus/encrypt_decrypt/xor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
@@ -10,11 +11,13 @@ import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/server_utils_ws.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../providers/companion_server_state_provider.dart';
 import '../../providers/server_settings_provider.dart';
 
 class CompanionTab extends ConsumerStatefulWidget {
@@ -83,7 +86,10 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider.select((s) => s.behaviour.languageCode));
-    final isServerRunning = serverUtils.isServerRunning;
+    final serverState = ref.watch(companionServerStateProvider);
+    final isServerRunning = serverState.isRunning;
+    final clients = serverState.clients;
+
     final companionSettings = ref.watch(companionServerProvider);
 
     return PgScaffold(
@@ -212,6 +218,21 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
               )
           ],
         ),
+        PgSectionCard(
+          label: 'Clients',
+          children: clients.isEmpty
+              ? [
+                  FadeIn(
+                      duration: 100.milliseconds,
+                      child: Center(
+                          child: Text('No clients connected').textSmall.muted))
+                ]
+              : clients
+                  .map((c) => FadeIn(
+                      duration: 100.milliseconds,
+                      child: PgListTile(title: c.remoteAddress.address)))
+                  .toList(),
+        )
       ],
     );
   }
@@ -223,7 +244,7 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
     obscurePass = true;
 
     if (isServerRunning) {
-      await serverUtils.stopServer();
+      await serverUtils.stopServer(ref);
     } else {
       final agree = (await showDialog<bool>(
             context: context,
@@ -254,9 +275,11 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
 
       try {
         await serverUtils.startServer(ref);
-        companionSettingsNotifier.setPort(serverUtils.port.toString());
+        final port = ref.read(companionServerStateProvider).port;
 
-        portController.text = serverUtils.port.toString();
+        companionSettingsNotifier.setPort(port);
+
+        portController.text = port;
 
         companionSettingsNotifier.setEndpoint(
             serverUtils.serverSocket?.address.address ?? '0.0.0.0');
