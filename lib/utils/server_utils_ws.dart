@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/companion_server/client_payload.dart';
 import 'package:scrcpygui/models/companion_server/data/config_payload.dart';
 import 'package:scrcpygui/models/companion_server/data/device_payload.dart';
+import 'package:scrcpygui/models/companion_server/data/error_payload.dart';
 import 'package:scrcpygui/models/companion_server/data/instance_payload.dart';
 import 'package:scrcpygui/models/companion_server/data/pairs_payload.dart';
 import 'package:scrcpygui/models/companion_server/server_payload.dart';
@@ -86,7 +87,16 @@ class ServerUtilsWs {
 
   _handleRequest(WidgetRef ref,
       {required Socket socket, required ClientPayload payload}) async {
-    await payload.toAction(ref);
+    try {
+      await payload.toAction(ref);
+    } on Exception catch (e) {
+      socket.write(
+        '${ServerPayload(
+          type: ServerPayloadType.error,
+          payload: ErrorPayload(message: e.toString().trim()).toJson(),
+        ).toJson()}\n',
+      );
+    }
   }
 
   Future<bool> _authenticate(

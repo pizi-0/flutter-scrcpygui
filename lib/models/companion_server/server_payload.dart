@@ -33,4 +33,5 @@ enum ServerPayloadType {
   runnings,
   pairs,
   initialData,
+  error,
 }

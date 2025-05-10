@@ -113,7 +113,12 @@ class ClientPayload {
       throw Exception('Missing ip');
     }
 
-    await AdbUtils.connectWithIp(ref.read(execDirProvider), ipport: ip);
+    final res =
+        await AdbUtils.connectWithIp(ref.read(execDirProvider), ipport: ip);
+
+    if (!res.success) {
+      throw Exception(res.errorMessage);
+    }
   }
 
   _disconnectDevice(WidgetRef ref, String json) async {
