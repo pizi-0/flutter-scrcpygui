@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:awesome_extensions/awesome_extensions_flutter.dart';
 import 'package:encrypt_decrypt_plus/encrypt_decrypt/xor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -250,18 +252,36 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
 
       if (!agree) return;
 
-      await serverUtils.startServer(ref);
+      try {
+        await serverUtils.startServer(ref);
+        companionSettingsNotifier.setPort(serverUtils.port.toString());
 
-      companionSettingsNotifier.setPort(serverUtils.port.toString());
+        portController.text = serverUtils.port.toString();
 
-      portController.text = serverUtils.port.toString();
+        companionSettingsNotifier.setEndpoint(
+            serverUtils.serverSocket?.address.address ?? '0.0.0.0');
 
-      companionSettingsNotifier
-          .setEndpoint(serverUtils.serverSocket?.address.address ?? '0.0.0.0');
-
-      await Db.saveCompanionServerSettings(ref.read(companionServerProvider));
+        await Db.saveCompanionServerSettings(ref.read(companionServerProvider));
+      } on Exception catch (e) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+              title: Text(el.statusLoc.error),
+              content: ConstrainedBox(
+                constraints:
+                    BoxConstraints(maxWidth: appWidth, minWidth: appWidth),
+                child: Text(
+                    'Failed to start companion server.\n\n${e.toString()}'),
+              ),
+              actions: [
+                Button.secondary(
+                  onPressed: () => context.pop(),
+                  child: Text(el.buttonLabelLoc.close),
+                )
+              ]),
+        );
+      }
     }
-    setState(() {});
   }
 
   _toggleAutoStart() async {

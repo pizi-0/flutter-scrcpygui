@@ -12,6 +12,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
@@ -179,11 +180,31 @@ class _MainScreenState extends ConsumerState<MainScreen>
       });
 
       if (companionSettings.startOnLaunch) {
-        await _serverUtils.startServer(ref);
-        ref.read(companionServerProvider.notifier)
-          ..setPort(_serverUtils.port.toString())
-          ..setEndpoint(
-              _serverUtils.serverSocket?.address.address ?? '0.0.0.0');
+        try {
+          await _serverUtils.startServer(ref);
+          ref.read(companionServerProvider.notifier)
+            ..setPort(_serverUtils.port.toString())
+            ..setEndpoint(
+                _serverUtils.serverSocket?.address.address ?? '0.0.0.0');
+        } on Exception catch (e) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                title: Text(el.statusLoc.error),
+                content: ConstrainedBox(
+                  constraints:
+                      BoxConstraints(maxWidth: appWidth, minWidth: appWidth),
+                  child: Text(
+                      'Failed to start companion server.\n\n${e.toString()}'),
+                ),
+                actions: [
+                  Button.secondary(
+                    onPressed: () => context.pop(),
+                    child: Text(el.buttonLabelLoc.close),
+                  )
+                ]),
+          );
+        }
       }
     });
   }

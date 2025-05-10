@@ -247,6 +247,7 @@ class ServerUtilsWs {
       _endpoint = null;
       _port = null;
       authenticatedSockets.clear();
+      rethrow;
     }
   }
 
