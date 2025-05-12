@@ -200,6 +200,7 @@ final defaultCompanionServerSettings = CompanionServerSettings(
   startOnLaunch: false,
   endpoint: '',
   secret: 'scrcpygui-is-okay',
+  blocklist: [],
 );
 
 final defaultSettings = AppSettings(

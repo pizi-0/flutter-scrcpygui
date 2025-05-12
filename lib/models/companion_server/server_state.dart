@@ -1,11 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:io';
+
+import 'package:scrcpygui/models/companion_server/authenticated_client.dart';
 
 class ServerState {
   final bool isRunning;
   final String ip;
   final String port;
-  final List<Socket> clients;
+  final List<AuthdClient> clients;
 
   ServerState(
       {required this.isRunning,
@@ -17,7 +18,7 @@ class ServerState {
     bool? isRunning,
     String? ip,
     String? port,
-    List<Socket>? clients,
+    List<AuthdClient>? clients,
   }) {
     return ServerState(
       isRunning: isRunning ?? this.isRunning,

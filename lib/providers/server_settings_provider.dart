@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/models/companion_server/authenticated_client.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:uuid/uuid.dart';
 
@@ -33,6 +34,17 @@ class CompanionServerNotifier extends Notifier<CompanionServerSettings> {
   setStartOnLaunch() {
     final current = state.startOnLaunch;
     state = state.copyWith(startOnLaunch: !current);
+  }
+
+  addToBlocklist(BlockedClient client) {
+    final current = state.blocklist;
+    state = state
+        .copyWith(blocklist: [...current.where((c) => c != client), client]);
+  }
+
+  removeFromBlocklist(BlockedClient client) {
+    final current = state.blocklist;
+    state = state.copyWith(blocklist: [...current.where((c) => c != client)]);
   }
 }
 

@@ -1,12 +1,17 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
+import 'package:scrcpygui/models/companion_server/authenticated_client.dart';
+
 class CompanionServerSettings {
   final String name;
   final String endpoint;
   final String secret;
   final String port;
   final bool startOnLaunch;
+  final List<BlockedClient> blocklist;
 
   CompanionServerSettings({
     required this.name,
@@ -14,6 +19,7 @@ class CompanionServerSettings {
     required this.secret,
     required this.port,
     required this.startOnLaunch,
+    required this.blocklist,
   });
 
   CompanionServerSettings copyWith({
@@ -22,6 +28,7 @@ class CompanionServerSettings {
     String? secret,
     String? port,
     bool? startOnLaunch,
+    List<BlockedClient>? blocklist,
   }) {
     return CompanionServerSettings(
       name: name ?? this.name,
@@ -29,6 +36,7 @@ class CompanionServerSettings {
       secret: secret ?? this.secret,
       port: port ?? this.port,
       startOnLaunch: startOnLaunch ?? this.startOnLaunch,
+      blocklist: blocklist ?? this.blocklist,
     );
   }
 
@@ -39,6 +47,7 @@ class CompanionServerSettings {
       'secret': secret,
       'port': port,
       'startOnLaunch': startOnLaunch,
+      'blocklist': blocklist.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -58,6 +67,11 @@ class CompanionServerSettings {
       secret: map['secret'] as String,
       port: map['port'] as String,
       startOnLaunch: map['startOnLaunch'] as bool,
+      blocklist: List<BlockedClient>.from(
+        (map['blocklist'] as List<dynamic>).map<BlockedClient>(
+          (x) => BlockedClient.fromMap(x as Map<String, dynamic>),
+        ),
+      ),
     );
   }
 
@@ -71,7 +85,7 @@ class CompanionServerSettings {
 
   @override
   String toString() {
-    return 'CompanionServerSettings(name: $name, endpoint: $endpoint, secret: $secret, port: $port, startOnLaunch: $startOnLaunch)';
+    return 'CompanionServerSettings(name: $name, endpoint: $endpoint, secret: $secret, port: $port, startOnLaunch: $startOnLaunch, blocklist: $blocklist)';
   }
 
   @override
@@ -82,7 +96,8 @@ class CompanionServerSettings {
         other.endpoint == endpoint &&
         other.secret == secret &&
         other.port == port &&
-        other.startOnLaunch == startOnLaunch;
+        other.startOnLaunch == startOnLaunch &&
+        listEquals(other.blocklist, blocklist);
   }
 
   @override
@@ -91,6 +106,7 @@ class CompanionServerSettings {
         endpoint.hashCode ^
         secret.hashCode ^
         port.hashCode ^
-        startOnLaunch.hashCode;
+        startOnLaunch.hashCode ^
+        blocklist.hashCode;
   }
 }

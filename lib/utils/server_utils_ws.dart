@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:encrypt_decrypt_plus/encrypt_decrypt/xor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/companion_server/client_payload.dart';
+import 'package:scrcpygui/models/companion_server/data/auth_payload.dart';
+import 'package:scrcpygui/models/companion_server/authenticated_client.dart';
 import 'package:scrcpygui/models/companion_server/data/config_payload.dart';
 import 'package:scrcpygui/models/companion_server/data/device_payload.dart';
 import 'package:scrcpygui/models/companion_server/data/error_payload.dart';
@@ -30,7 +32,7 @@ class ServerUtilsWs {
   ServerUtilsWs._internal();
 
   ServerSocket? serverSocket;
-  Set<Socket> authenticatedSockets = {};
+  Set<AuthdClient> authenticatedSockets = {};
 
   _bindServer(WidgetRef ref) async {
     try {
@@ -64,6 +66,18 @@ class ServerUtilsWs {
   _onData(WidgetRef ref, Socket socket) {
     final clientAddress = socket.remoteAddress.address;
     logger.i('Client connected: $clientAddress');
+    final blocklist = ref.read(companionServerProvider).blocklist;
+
+    if (blocklist.where((b) => b.clientAddress == clientAddress).isNotEmpty) {
+      logger.i('Client blocked: $clientAddress');
+
+      socket.write(
+        '${ServerPayload(type: ServerPayloadType.error, payload: ErrorPayload(message: 'You have been blocked.').toJson()).toJson()}\n',
+      );
+
+      socket.close();
+      return;
+    }
 
     socket.listen(
       (data) async {
@@ -81,8 +95,8 @@ class ServerUtilsWs {
         }
       },
       onDone: () {
-        authenticatedSockets.removeWhere((sock) =>
-            sock.remoteAddress.address == socket.remoteAddress.address);
+        authenticatedSockets
+            .removeWhere((authd) => authd.clientAddress == clientAddress);
 
         ref
             .read(companionServerStateProvider.notifier)
@@ -90,8 +104,8 @@ class ServerUtilsWs {
         logger.i('Client disconnected: $clientAddress');
       },
       onError: (error) {
-        authenticatedSockets.removeWhere((sock) =>
-            sock.remoteAddress.address == socket.remoteAddress.address);
+        authenticatedSockets.removeWhere(
+            (authd) => authd.socket.remoteAddress.address == clientAddress);
 
         ref
             .read(companionServerStateProvider.notifier)
@@ -119,11 +133,15 @@ class ServerUtilsWs {
   Future<bool> _authenticate(
       WidgetRef ref, Socket socket, List<int> data) async {
     final clientAddress = socket.remoteAddress.address;
-    if (!authenticatedSockets.contains(socket)) {
+    if (authenticatedSockets.where((authd) => authd.socket == socket).isEmpty) {
       try {
+        final json = utf8.decode(data);
+
+        final auth = AuthPayload.fromJson(json);
+
         logger.i('Authenticating client: $clientAddress');
         final expectedKey = ref.read(companionServerProvider).secret;
-        final receivedKey = XOR().xorDecode(utf8.decode(data));
+        final receivedKey = XOR().xorDecode(auth.apikey);
 
         // final expectedKey = 'pass';
         // final receivedKey = 'pass';
@@ -135,7 +153,7 @@ class ServerUtilsWs {
           return false;
         } else {
           logger.i('Authentication successful: $clientAddress');
-          authenticatedSockets.add(socket);
+          authenticatedSockets.add(AuthdClient(socket, auth));
           ref
               .read(companionServerStateProvider.notifier)
               .setServerState(clients: authenticatedSockets.toList());
@@ -173,7 +191,7 @@ class ServerUtilsWs {
         }
         return false;
       } on Exception catch (e) {
-        logger.w('Authentication failed: $clientAddress');
+        logger.w('Authentication failed: $clientAddress', error: e);
         socket.write(e);
         await socket.close();
         return false;
@@ -200,8 +218,8 @@ class ServerUtilsWs {
       ref.listenManual(
         adbProvider,
         (previous, next) {
-          for (final sock in authenticatedSockets) {
-            sock.write(
+          for (final authd in authenticatedSockets) {
+            authd.socket.write(
               '${ServerPayload(
                 type: ServerPayloadType.devices,
                 payload: jsonEncode(next.map((e) => e.toPayload()).toList()),
@@ -215,8 +233,8 @@ class ServerUtilsWs {
       ref.listenManual(
         configsProvider,
         (previous, next) {
-          for (final sock in authenticatedSockets) {
-            sock.write(
+          for (final authd in authenticatedSockets) {
+            authd.socket.write(
               '${ServerPayload(
                 type: ServerPayloadType.configs,
                 payload: jsonEncode(next.map((e) => e.toPayload()).toList()),
@@ -230,8 +248,8 @@ class ServerUtilsWs {
       ref.listenManual(
         appConfigPairProvider,
         (previous, next) {
-          for (final sock in authenticatedSockets) {
-            sock.write(
+          for (final authd in authenticatedSockets) {
+            authd.socket.write(
               '${ServerPayload(
                 type: ServerPayloadType.pairs,
                 payload: jsonEncode(next.map((e) => e.toPayload()).toList()),
@@ -245,8 +263,8 @@ class ServerUtilsWs {
       ref.listenManual(
         scrcpyInstanceProvider,
         (previous, next) async {
-          for (final sock in authenticatedSockets) {
-            sock.write(
+          for (final authd in authenticatedSockets) {
+            authd.socket.write(
               '${ServerPayload(
                 type: ServerPayloadType.runnings,
                 payload: jsonEncode(next.map((e) => e.toPayload()).toList()),
@@ -278,8 +296,8 @@ class ServerUtilsWs {
     try {
       await serverSocket!.close();
 
-      for (final sock in authenticatedSockets) {
-        sock.close();
+      for (final authd in authenticatedSockets) {
+        authd.socket.close();
       }
 
       authenticatedSockets.clear();
