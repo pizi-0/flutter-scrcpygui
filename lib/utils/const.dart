@@ -14,6 +14,7 @@ import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/device_settings_screen.dart';
 import 'package:scrcpygui/utils/themes.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 import '../models/scrcpy_related/scrcpy_config.dart';
 import '../models/scrcpy_related/scrcpy_enum.dart';
@@ -195,6 +196,7 @@ final defaultAppBehaviour = AppBehaviour(
 );
 
 final defaultCompanionServerSettings = CompanionServerSettings(
+  id: Uuid().v4(),
   name: 'Scrcpy GUI',
   port: '8080',
   startOnLaunch: false,

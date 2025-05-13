@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:scrcpygui/models/companion_server/authenticated_client.dart';
 
 class CompanionServerSettings {
+  final String id;
   final String name;
   final String endpoint;
   final String secret;
@@ -14,6 +15,7 @@ class CompanionServerSettings {
   final List<BlockedClient> blocklist;
 
   CompanionServerSettings({
+    required this.id,
     required this.name,
     required this.endpoint,
     required this.secret,
@@ -29,8 +31,10 @@ class CompanionServerSettings {
     String? port,
     bool? startOnLaunch,
     List<BlockedClient>? blocklist,
+    String? id,
   }) {
     return CompanionServerSettings(
+      id: id ?? this.id,
       name: name ?? this.name,
       endpoint: endpoint ?? this.endpoint,
       secret: secret ?? this.secret,
@@ -42,6 +46,7 @@ class CompanionServerSettings {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'id': id,
       'name': name,
       'endpoint': endpoint,
       'secret': secret,
@@ -53,6 +58,7 @@ class CompanionServerSettings {
 
   Map<String, dynamic> toQrMap() {
     return <String, dynamic>{
+      'id': id,
       'name': name,
       'ip': endpoint,
       'secret': secret,
@@ -62,6 +68,7 @@ class CompanionServerSettings {
 
   factory CompanionServerSettings.fromMap(Map<String, dynamic> map) {
     return CompanionServerSettings(
+      id: map['id'] as String,
       name: map['name'] as String,
       endpoint: map['endpoint'] as String,
       secret: map['secret'] as String,
@@ -92,7 +99,8 @@ class CompanionServerSettings {
   bool operator ==(covariant CompanionServerSettings other) {
     if (identical(this, other)) return true;
 
-    return other.name == name &&
+    return other.id == id &&
+        other.name == name &&
         other.endpoint == endpoint &&
         other.secret == secret &&
         other.port == port &&
@@ -102,7 +110,8 @@ class CompanionServerSettings {
 
   @override
   int get hashCode {
-    return name.hashCode ^
+    return id.hashCode ^
+        name.hashCode ^
         endpoint.hashCode ^
         secret.hashCode ^
         port.hashCode ^
