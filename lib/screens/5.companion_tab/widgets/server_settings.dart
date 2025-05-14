@@ -183,6 +183,8 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
                 child: Column(
                   spacing: 8,
                   children: [
+                    Text('Endpoint: ${serverState.ip}:${serverState.port}\n')
+                        .textSmall,
                     Text(el.companionLoc.qr)
                         .textAlignment(TextAlign.center)
                         .textSmall
