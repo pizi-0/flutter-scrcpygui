@@ -446,7 +446,7 @@ close_dialog_loc:
 # companion tab > disclaimer
 server_disclaimer_loc:
   title: Avviso
-  contents: 'Avviso di sicurezza: Il server companion utilizza una connessione non crittografata (HTTP).\n\nAvvia il server solo se sei connesso a una rete privata di cui ti fidi, come il tuo Wi-Fi domestico.'
+  contents: 'Avviso di sicurezza: Il server companion utilizza una connessione non crittografata.\n\nAvvia il server solo se sei connesso a una rete privata di cui ti fidi, come il tuo Wi-Fi domestico.'
 
 # connect tab > ip history
 ip_history_loc:

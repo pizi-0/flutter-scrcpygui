@@ -468,7 +468,7 @@ close_dialog_loc:
 # companion tab > disclaimer
 server_disclaimer_loc:
   title: Disclaimer
-  contents: 'Security Warning: The companion server uses an unencrypted connection (HTTP).\n\nOnly start the server if you are connected to a private network you trust, such as your home Wi-Fi.'
+  contents: 'Security Warning: The companion server uses an unencrypted connection.\n\nOnly start the server if you are connected to a private network you trust, such as your home Wi-Fi.'
 
 # connect tab > ip history 
 

@@ -447,7 +447,7 @@ close_dialog_loc:
 # companion tab > disclaimer
 server_disclaimer_loc:
   title: Maklumat
-  contents: 'Amaran Keselamatan: Server pendamping menggunakan sambungan tidak disulitkan (HTTP).\n\nHanya mulakan server jika anda disambungkan ke rangkaian peribadi yang anda percayai, seperti Wi-Fi rumah anda.'
+  contents: 'Amaran Keselamatan: Server pendamping menggunakan sambungan tidak disulitkan.\n\nHanya mulakan server jika anda disambungkan ke rangkaian peribadi yang anda percayai, seperti Wi-Fi rumah anda.'
 
 # connect tab > ip history
 ip_history_loc:

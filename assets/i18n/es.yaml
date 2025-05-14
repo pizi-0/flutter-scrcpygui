@@ -446,7 +446,7 @@ close_dialog_loc:
 # companion tab > disclaimer
 server_disclaimer_loc:
   title: Aviso
-  contents: 'Advertencia de seguridad: El servidor compañero utiliza una conexión no cifrada (HTTP).\n\nInicia el servidor solo si estás conectado a una red privada en la que confíes, como tu Wi-Fi doméstico.'
+  contents: 'Advertencia de seguridad: El servidor compañero utiliza una conexión no cifrada.\n\nInicia el servidor solo si estás conectado a una red privada en la que confíes, como tu Wi-Fi doméstico.'
 
 # connect tab > ip history
 ip_history_loc:
