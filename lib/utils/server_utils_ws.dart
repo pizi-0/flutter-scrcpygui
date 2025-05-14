@@ -72,7 +72,7 @@ class ServerUtilsWs {
       logger.i('Client blocked: $clientAddress');
 
       socket.write(
-        '${ServerPayload(type: ServerPayloadType.error, payload: ErrorPayload(message: 'You have been blocked.').toJson()).toJson()}\n',
+        '${ServerPayload(type: ServerPayloadType.error, payload: ErrorPayload(type: ErrorType.blocked, message: 'You have been blocked.').toJson()).toJson()}\n',
       );
 
       socket.close();
@@ -124,7 +124,9 @@ class ServerUtilsWs {
       socket.write(
         '${ServerPayload(
           type: ServerPayloadType.error,
-          payload: ErrorPayload(message: e.toString().trim()).toJson(),
+          payload: ErrorPayload(
+                  type: ErrorType.request, message: e.toString().trim())
+              .toJson(),
         ).toJson()}\n',
       );
     }
@@ -148,7 +150,8 @@ class ServerUtilsWs {
 
         if (receivedKey != expectedKey) {
           logger.w('Authentication failed: $clientAddress');
-          socket.write('Invalid API Key');
+          socket.write(
+              '${ServerPayload(type: ServerPayloadType.error, payload: ErrorPayload(message: 'Invalid API Key', type: ErrorType.invalidAuth).toJson()).toJson()}\n');
           await socket.close();
           return false;
         } else {
@@ -164,35 +167,34 @@ class ServerUtilsWs {
           final instances = ref.read(scrcpyInstanceProvider);
           final appConfigPairs = ref.read(appConfigPairProvider);
 
-          final initialData = '${jsonEncode([
-                ServerPayload(
-                    type: ServerPayloadType.devices,
-                    payload:
-                        jsonEncode(devices.map((d) => d.toPayload()).toList())),
-                ServerPayload(
-                    type: ServerPayloadType.configs,
-                    payload:
-                        jsonEncode(configs.map((c) => c.toPayload()).toList())),
-                ServerPayload(
-                    type: ServerPayloadType.pairs,
-                    payload: jsonEncode(
-                        appConfigPairs.map((p) => p.toPayload()).toList())),
-                ServerPayload(
-                    type: ServerPayloadType.runnings,
-                    payload: jsonEncode(
-                        instances.map((r) => r.toPayload()).toList())),
-              ])}\n';
+          final initialData = jsonEncode([
+            ServerPayload(
+                type: ServerPayloadType.devices,
+                payload:
+                    jsonEncode(devices.map((d) => d.toPayload()).toList())),
+            ServerPayload(
+                type: ServerPayloadType.configs,
+                payload:
+                    jsonEncode(configs.map((c) => c.toPayload()).toList())),
+            ServerPayload(
+                type: ServerPayloadType.pairs,
+                payload: jsonEncode(
+                    appConfigPairs.map((p) => p.toPayload()).toList())),
+            ServerPayload(
+                type: ServerPayloadType.runnings,
+                payload:
+                    jsonEncode(instances.map((r) => r.toPayload()).toList())),
+          ]);
 
           socket.write(
-            ServerPayload(
-                    type: ServerPayloadType.initialData, payload: initialData)
-                .toJson(),
+            '${ServerPayload(type: ServerPayloadType.initialData, payload: initialData).toJson()}\n',
           );
         }
         return false;
       } on Exception catch (e) {
         logger.w('Authentication failed: $clientAddress', error: e);
-        socket.write(e);
+        socket.write(
+            '${ServerPayload(type: ServerPayloadType.error, payload: ErrorPayload(message: e.toString(), type: ErrorType.invalidAuth).toJson()).toJson()}\n');
         await socket.close();
         return false;
       }

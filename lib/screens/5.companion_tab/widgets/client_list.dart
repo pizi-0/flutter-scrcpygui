@@ -3,10 +3,12 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/companion_server/authenticated_client.dart';
+import 'package:scrcpygui/models/companion_server/server_payload.dart';
 import 'package:scrcpygui/providers/companion_server_state_provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../db/db.dart';
+import '../../../models/companion_server/data/error_payload.dart';
 import '../../../providers/server_settings_provider.dart';
 import '../../../widgets/custom_ui/pg_list_tile.dart';
 import '../../../widgets/custom_ui/pg_section_card.dart';
@@ -129,6 +131,9 @@ class _ClientListState extends ConsumerState<ClientList> {
                                 child: IconButton.ghost(
                                   icon: Icon(Icons.block),
                                   onPressed: () async {
+                                    authd.socket.write(
+                                      '${ServerPayload(type: ServerPayloadType.error, payload: ErrorPayload(type: ErrorType.blocked, message: 'You have been blocked.').toJson()).toJson()}\n',
+                                    );
                                     await authd.socket.close();
                                     ref
                                         .read(companionServerProvider.notifier)
