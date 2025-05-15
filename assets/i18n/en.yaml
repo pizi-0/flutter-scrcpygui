@@ -426,6 +426,12 @@ companion_loc:
     auto_start:
       label: Start server on launch
 
+  client:
+    clients: Connected (${count})
+    blocked: Blocked (${count})
+    no_client: No clients connected
+    no_blocked: No blocked clients
+
   qr: Scan the QR code from the companion app
 
 

@@ -410,6 +410,13 @@ companion_loc:
 
   qr: Escanea el código QR desde la aplicación compañera
 
+  client:
+    clients: Conectados (${count})
+    blocked: Bloqueados (${count})
+    no_client: No hay clientes conectados
+    no_blocked: No hay clientes bloqueados
+
+
 # about tab
 about_loc:
   title: Acerca de

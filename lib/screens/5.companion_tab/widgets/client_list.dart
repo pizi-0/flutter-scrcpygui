@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/companion_server/authenticated_client.dart';
 import 'package:scrcpygui/models/companion_server/server_payload.dart';
 import 'package:scrcpygui/providers/companion_server_state_provider.dart';
@@ -31,7 +32,9 @@ class _ClientListState extends ConsumerState<ClientList> {
     final blocked = companionSettings.blocklist;
 
     return PgSectionCard(
-        label: 'Clients (${clients.length})',
+        label: showBlocked
+            ? el.companionLoc.client.blocked(count: '${blocked.length}')
+            : el.companionLoc.client.clients(count: '${clients.length}'),
         labelTrail: Toggle(
           style: ButtonStyle.ghost(density: ButtonDensity.dense),
           value: showBlocked,
@@ -39,15 +42,15 @@ class _ClientListState extends ConsumerState<ClientList> {
               ? Row(
                   spacing: 4,
                   children: [
-                    Icon(Icons.close_rounded).iconSmall(),
-                    Text('Hide blocked (${blocked.length})')
+                    Icon(Icons.link_rounded).iconSmall(),
+                    Text(el.companionLoc.client.clients(count: '${clients.length}'))
                   ],
                 )
               : Row(
                   spacing: 4,
                   children: [
                     Icon(Icons.block_rounded).iconSmall(),
-                    Text('Show blocked (${blocked.length})')
+                    Text(el.companionLoc.client.blocked(count: '${blocked.length}'))
                   ],
                 ),
           onChanged: (value) => setState(() {
@@ -68,33 +71,26 @@ class _ClientListState extends ConsumerState<ClientList> {
                             children: [
                               Expanded(
                                 child: PgListTile(
-                                  title:
-                                      '${blocked.deviceName} / ${blocked.deviceModel}',
+                                  title: '${blocked.deviceName} / ${blocked.deviceModel}',
                                   subtitle: blocked.clientAddress,
                                   showSubtitle: true,
                                   showSubtitleLeading: false,
                                 ),
                               ),
                               Tooltip(
-                                tooltip:
-                                    TooltipContainer(child: Text('Unblock'))
-                                        .call,
+                                tooltip: TooltipContainer(child: Text('Unblock')).call,
                                 child: IconButton.ghost(
                                   icon: Icon(Icons.delete_rounded),
                                   onPressed: () async {
-                                    ref
-                                        .read(companionServerProvider.notifier)
-                                        .removeFromBlocklist(blocked);
+                                    ref.read(companionServerProvider.notifier).removeFromBlocklist(blocked);
 
-                                    await Db.saveCompanionServerSettings(
-                                        ref.read(companionServerProvider));
+                                    await Db.saveCompanionServerSettings(ref.read(companionServerProvider));
                                   },
                                 ),
                               ),
                             ],
                           ),
-                          if (idx != companionSettings.blocklist.length - 1)
-                            Divider()
+                          if (idx != companionSettings.blocklist.length - 1) Divider()
                         ],
                       ),
                     ),
@@ -102,8 +98,7 @@ class _ClientListState extends ConsumerState<ClientList> {
                 else
                   FadeIn(
                       duration: 100.milliseconds,
-                      child: Center(
-                          child: Text('No blocked clients').textSmall.muted))
+                      child: Center(child: Text(el.companionLoc.client.noBlocked).textSmall.muted))
               ]
             : [
                 if (clients.isNotEmpty)
@@ -118,16 +113,14 @@ class _ClientListState extends ConsumerState<ClientList> {
                             children: [
                               Expanded(
                                 child: PgListTile(
-                                  title:
-                                      '${authd.authPayload.deviceName} / ${authd.authPayload.deviceModel}',
+                                  title: '${authd.authPayload.deviceName} / ${authd.authPayload.deviceModel}',
                                   subtitle: authd.socket.remoteAddress.address,
                                   showSubtitle: true,
                                   showSubtitleLeading: false,
                                 ),
                               ),
                               Tooltip(
-                                tooltip:
-                                    TooltipContainer(child: Text('Block')).call,
+                                tooltip: TooltipContainer(child: Text('Block')).call,
                                 child: IconButton.ghost(
                                   icon: Icon(Icons.block),
                                   onPressed: () async {
@@ -135,20 +128,15 @@ class _ClientListState extends ConsumerState<ClientList> {
                                       '${ServerPayload(type: ServerPayloadType.error, payload: ErrorPayload(type: ErrorType.blocked, message: 'You have been blocked.').toJson()).toJson()}\n',
                                     );
                                     await authd.socket.close();
-                                    ref
-                                        .read(companionServerProvider.notifier)
-                                        .addToBlocklist(
+                                    ref.read(companionServerProvider.notifier).addToBlocklist(
                                           BlockedClient(
                                             clientAddress: authd.clientAddress,
-                                            deviceName:
-                                                authd.authPayload.deviceName,
-                                            deviceModel:
-                                                authd.authPayload.deviceModel,
+                                            deviceName: authd.authPayload.deviceName,
+                                            deviceModel: authd.authPayload.deviceModel,
                                           ),
                                         );
 
-                                    await Db.saveCompanionServerSettings(
-                                        ref.read(companionServerProvider));
+                                    await Db.saveCompanionServerSettings(ref.read(companionServerProvider));
                                   },
                                 ),
                               ),
@@ -162,8 +150,7 @@ class _ClientListState extends ConsumerState<ClientList> {
                 else
                   FadeIn(
                       duration: 100.milliseconds,
-                      child: Center(
-                          child: Text('No clients connected').textSmall.muted))
+                      child: Center(child: Text(el.companionLoc.client.noClient).textSmall.muted))
               ]);
   }
 }

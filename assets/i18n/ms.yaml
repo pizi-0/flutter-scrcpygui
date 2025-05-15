@@ -410,6 +410,12 @@ companion_loc:
 
   qr: Imbas kod QR daripada aplikasi pendamping
 
+  client:
+    clients: Disambungkan (${count})
+    blocked: Disekat (${count})
+    no_client: Tiada klien disambungkan
+    no_blocked: Tiada klien disekat
+
 # about tab
 about_loc:
   title: Perihal
