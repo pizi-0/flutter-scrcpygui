@@ -24,8 +24,7 @@ class TitleBarButton extends ConsumerWidget {
       IconButton(
         variance: ButtonVariance.ghost,
         size: ButtonSize.small,
-        icon: const Padding(
-            padding: EdgeInsets.all(4.0), child: Icon(Icons.square_outlined)),
+        icon: const Padding(padding: EdgeInsets.all(4.0), child: Icon(Icons.square_outlined)),
         onPressed: () {
           AppUtils.onAppMaximizeRequested();
         },
@@ -33,8 +32,7 @@ class TitleBarButton extends ConsumerWidget {
       IconButton(
         variance: ButtonVariance.ghost,
         size: ButtonSize.small,
-        icon: const Padding(
-            padding: EdgeInsets.all(4.0), child: Icon(Icons.close)),
+        icon: const Padding(padding: EdgeInsets.all(4.0), child: Icon(Icons.close)),
         onPressed: () {
           AppUtils.onAppCloseRequested(ref, context);
         },
@@ -42,11 +40,20 @@ class TitleBarButton extends ConsumerWidget {
     ];
 
     final buttonsMac = [
+      Gap(8),
       IconButton(
         variance: ButtonVariance.ghost,
         size: ButtonSize.small,
-        icon: const Padding(
-            padding: EdgeInsets.all(4.0), child: Icon(Icons.close)),
+        icon: Container(
+          height: 12,
+          width: 12,
+          decoration: BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+          child: Center(
+              child: Icon(
+            Icons.close_rounded,
+            color: Colors.black.withAlpha(50),
+          ).iconX2Small()),
+        ),
         onPressed: () {
           AppUtils.onAppCloseRequested(ref, context);
         },
@@ -54,9 +61,15 @@ class TitleBarButton extends ConsumerWidget {
       IconButton(
         variance: ButtonVariance.ghost,
         size: ButtonSize.small,
-        icon: const Padding(
-          padding: EdgeInsets.all(4.0),
-          child: Icon(Icons.minimize),
+        icon: Container(
+          height: 12,
+          width: 12,
+          decoration: BoxDecoration(color: Colors.yellow, shape: BoxShape.circle),
+          child: Center(
+              child: Icon(
+            Icons.remove_rounded,
+            color: Colors.black.withAlpha(50),
+          ).iconX2Small()),
         ),
         onPressed: () {
           AppUtils.onAppMinimizeRequested(ref, context);
@@ -65,8 +78,16 @@ class TitleBarButton extends ConsumerWidget {
       IconButton(
         variance: ButtonVariance.ghost,
         size: ButtonSize.small,
-        icon: const Padding(
-            padding: EdgeInsets.all(4.0), child: Icon(Icons.square_outlined)),
+        icon: Container(
+          height: 12,
+          width: 12,
+          decoration: BoxDecoration(color: Colors.green, shape: BoxShape.circle),
+          child: Center(
+              child: Icon(
+            Icons.add_rounded,
+            color: Colors.black.withAlpha(50),
+          ).iconX2Small()),
+        ),
         onPressed: () {
           AppUtils.onAppMaximizeRequested();
         },
