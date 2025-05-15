@@ -30,8 +30,11 @@ void main() async {
 
   await windowManager.ensureInitialized();
 
-  WindowOptions windowOptions = const WindowOptions(
-    size: Size(500, 600),
+  final settings = await Db.getAppSettings();
+  final lastWinSize = await Db.getWinSize();
+
+  WindowOptions windowOptions = WindowOptions(
+    size: settings.behaviour.rememberWinSize ? lastWinSize : const Size(500, 600),
     minimumSize: Size(500, 600),
     center: true,
     skipTaskbar: false,
@@ -46,13 +49,11 @@ void main() async {
         await windowManager.focus();
       });
 
-      Db.getAppSettings().then((settings) {
-        runApp(
-          ProviderScope(
-            child: MyApp(settings: settings),
-          ),
-        );
-      });
+      runApp(
+        ProviderScope(
+          child: MyApp(settings: settings),
+        ),
+      );
     } else {
       logger.i('App is already running');
 
@@ -111,10 +112,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     return ShadcnApp.router(
       supportedLocales: supportedLocales,
       locale: Locale(behaviour.languageCode, ''),
-      localizationsDelegates: [
-        ...localizationsDelegates,
-        const ShadcnLocalizationsDelegate()
-      ],
+      localizationsDelegates: [...localizationsDelegates, const ShadcnLocalizationsDelegate()],
       routeInformationParser: _router.routeInformationParser,
       routerDelegate: _router.routerDelegate,
       routeInformationProvider: _router.routeInformationProvider,
@@ -146,8 +144,7 @@ final _router = GoRouter(
     ),
     StatefulShellRoute(
       builder: (context, state, navigationShell) => navigationShell,
-      navigatorContainerBuilder: (context, navigationShell, children) =>
-          MainScreen(children: children),
+      navigatorContainerBuilder: (context, navigationShell, children) => MainScreen(children: children),
       branches: [
         StatefulShellBranch(
           navigatorKey: _shellNavKey,
@@ -158,8 +155,7 @@ final _router = GoRouter(
               routes: [
                 GoRoute(
                   path: DeviceSettingsScreen.route,
-                  builder: (context, state) =>
-                      DeviceSettingsScreen(id: state.pathParameters['id']!),
+                  builder: (context, state) => DeviceSettingsScreen(id: state.pathParameters['id']!),
                   pageBuilder: GoTransitions.cupertino.call,
                 ),
                 GoRoute(

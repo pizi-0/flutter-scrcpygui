@@ -1,4 +1,5 @@
 import 'package:awesome_extensions/awesome_extensions_dart.dart';
+import 'package:flutter/material.dart' show InkWell;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
@@ -47,8 +48,7 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
           subtitle: el.settingsLoc.behavior.language.info,
           showSubtitle: true,
           trailing: ConstrainedBox(
-            constraints: const BoxConstraints(
-                minWidth: 180, maxWidth: 180, minHeight: 30),
+            constraints: const BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
             child: Select(
               filled: true,
               value: behaviour.languageCode,
@@ -57,8 +57,7 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
 
                 await Db.saveAppSettings(ref.read(settingsProvider));
               },
-              itemBuilder: (context, value) =>
-                  langDD.firstWhere((lang) => lang.value == value).child,
+              itemBuilder: (context, value) => langDD.firstWhere((lang) => lang.value == value).child,
               popup: SelectPopup(items: SelectItemList(children: langDD)).call,
             ),
           ),
@@ -67,30 +66,39 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
         PgListTile(
           title: el.settingsLoc.behavior.minimize.label,
           trailing: ConstrainedBox(
-            constraints: const BoxConstraints(
-                minWidth: 180, maxWidth: 180, minHeight: 30),
+            constraints: const BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
             child: Select(
               filled: true,
-              value: minimizeDD(context)
-                  .firstWhere((act) => act.$1 == behaviour.minimizeAction),
+              value: minimizeDD(context).firstWhere((act) => act.$1 == behaviour.minimizeAction),
               onChanged: (act) async {
-                ref
-                    .read(settingsProvider.notifier)
-                    .changeMinimizeBehaviour(act!.$1);
+                ref.read(settingsProvider.notifier).changeMinimizeBehaviour(act!.$1);
 
                 await Db.saveAppSettings(ref.read(settingsProvider));
               },
-              itemBuilder: (context, value) => OverflowMarquee(
-                  duration: 5.seconds,
-                  delayDuration: 1.seconds,
-                  child: Text(value.$2)),
+              itemBuilder: (context, value) =>
+                  OverflowMarquee(duration: 5.seconds, delayDuration: 1.seconds, child: Text(value.$2)),
               popup: SelectPopup(
                 items: SelectItemList(
-                    children: minimizeDD(context)
-                        .map((act) =>
-                            SelectItemButton(value: act, child: Text(act.$2)))
-                        .toList()),
+                    children:
+                        minimizeDD(context).map((act) => SelectItemButton(value: act, child: Text(act.$2))).toList()),
               ).call,
+            ),
+          ),
+        ),
+        const Divider(),
+        InkWell(
+          onTap: _toggleRememberWinSize,
+          child: PgListTile(
+            title: 'Remember window size',
+            trailing: ConstrainedBox(
+              constraints: BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Checkbox(
+                  state: behaviour.rememberWinSize ? CheckboxState.checked : CheckboxState.unchecked,
+                  onChanged: (b) => _toggleRememberWinSize(),
+                ),
+              ),
             ),
           ),
         ),
@@ -140,6 +148,11 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
         // ),
       ],
     );
+  }
+
+  _toggleRememberWinSize() async {
+    ref.read(settingsProvider.notifier).changeRememberWinSize();
+    await Db.saveAppSettings(ref.read(settingsProvider));
   }
 }
 

@@ -21,3 +21,5 @@ const PKEY_SCRCPYVERSION = 'scrcpy-version';
 const PKEY_APP_CONFIG_PAIR = 'app-config-pair';
 
 const PKEY_COMPANION_SERVER_SETTINGS = 'companion-server-settings';
+
+const PKEY_LAST_WIN_SIZE = 'last-win-size';

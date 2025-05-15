@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:scrcpygui/db/db.dart';
 import 'package:string_extensions/string_extensions.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -53,23 +54,16 @@ class AppUtils {
     if (Platform.isWindows) {
       String tasklist = (await Process.run('tasklist', [])).stdout;
 
-      pidof = tasklist
-          .splitLines()
-          .firstWhere((e) => e.contains('scrcpygui.exe'))
-          .trimAll
-          .split(' ')[1]
-          .trim();
+      pidof = tasklist.splitLines().firstWhere((e) => e.contains('scrcpygui.exe')).trimAll.split(' ')[1].trim();
     }
 
     return pidof;
   }
 
-  static Future<void> onAppCloseRequested(
-      WidgetRef ref, BuildContext context) async {
-    final wifi = ref
-        .read(adbProvider)
-        .where((d) => d.id.contains(adbMdns) || d.id.isIpv4);
+  static Future<void> onAppCloseRequested(WidgetRef ref, BuildContext context) async {
+    final wifi = ref.read(adbProvider).where((d) => d.id.contains(adbMdns) || d.id.isIpv4);
     final instance = ref.read(scrcpyInstanceProvider);
+    final settings = ref.read(settingsProvider);
 
     if (wifi.isNotEmpty || instance.isNotEmpty) {
       showDialog(
@@ -78,6 +72,11 @@ class AppUtils {
         builder: (context) => const Center(child: QuitDialog()),
       );
     } else {
+      if (settings.behaviour.rememberWinSize) {
+        final size = await windowManager.getSize();
+        await Db.saveWinSize(size);
+      }
+
       await windowManager.isPreventClose();
       await windowManager.setPreventClose(false);
       await windowManager.destroy();
@@ -85,8 +84,7 @@ class AppUtils {
     }
   }
 
-  static Future<void> onAppMinimizeRequested(
-      WidgetRef ref, BuildContext context) async {
+  static Future<void> onAppMinimizeRequested(WidgetRef ref, BuildContext context) async {
     final behaviour = ref.read(settingsProvider).behaviour;
 
     switch (behaviour.minimizeAction) {
@@ -111,8 +109,7 @@ class AppUtils {
 
   static Future<String> getLatestAppVersion() async {
     try {
-      final res = await Dio().get(
-          'https://api.github.com/repos/pizi-0/flutter-scrcpygui/releases');
+      final res = await Dio().get('https://api.github.com/repos/pizi-0/flutter-scrcpygui/releases');
 
       return res.data.first['tag_name'];
     } on DioException catch (_) {

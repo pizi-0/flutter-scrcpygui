@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/app_config_pair.dart';
 import 'package:scrcpygui/models/settings_model/companion_server_settings.dart';
@@ -39,14 +41,30 @@ class Db {
     prefs.remove(key);
   }
 
+  static saveWinSize(Size size) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(PKEY_LAST_WIN_SIZE, jsonEncode({'width': size.width, 'height': size.height}));
+  }
+
+  static Future<Size> getWinSize() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final res = prefs.getString(PKEY_LAST_WIN_SIZE);
+
+    if (res == null) {
+      return Size(500, 600);
+    } else {
+      return Size(jsonDecode(res)['width'], jsonDecode(res)['height']);
+    }
+  }
+
   /*
   Device DB
   */
 
   static Future<void> saveAdbDevice(List<AdbDevices> dev) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList(
-        PKEY_SAVED_DEVICES, dev.map((e) => e.toJson()).toList());
+    prefs.setStringList(PKEY_SAVED_DEVICES, dev.map((e) => e.toJson()).toList());
     // prefs.remove(PKEY_SAVED_DEVICES);
   }
 
@@ -60,14 +78,12 @@ class Db {
 
   static Future<void> saveWirelessHistory(List<String> devs) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(
-        PKEY_WIRELESS_DEVICE_HX, devs.map((d) => d).toList());
+    await prefs.setStringList(PKEY_WIRELESS_DEVICE_HX, devs.map((d) => d).toList());
   }
 
   static Future<List<String>> getWirelessHistory() async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> historyStr =
-        prefs.getStringList(PKEY_WIRELESS_DEVICE_HX) ?? [];
+    List<String> historyStr = prefs.getStringList(PKEY_WIRELESS_DEVICE_HX) ?? [];
 
     return historyStr;
   }
@@ -137,8 +153,7 @@ class Db {
   static Future<void> saveAppConfigPairs(List<AppConfigPair> pairList) async {
     final prefs = await SharedPreferences.getInstance();
 
-    prefs.setStringList(
-        PKEY_APP_CONFIG_PAIR, pairList.map((pair) => pair.toJson()).toList());
+    prefs.setStringList(PKEY_APP_CONFIG_PAIR, pairList.map((pair) => pair.toJson()).toList());
   }
 
   /*
