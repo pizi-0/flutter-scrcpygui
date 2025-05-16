@@ -408,6 +408,9 @@ settings_loc:
       value: 
         tray: to tray
         taskbar: to taskbar
+    window_size:
+      label: Remember window size
+      info: Remember window size on exit
 
 ## companion tab
 companion_loc:

@@ -390,6 +390,9 @@ settings_loc:
       value:
         tray: ke dulang
         taskbar: ke bar tugas
+    window_size:
+      label: Ingat saiz tetingkap
+      info: Ingat saiz tetingkap semasa keluar
 
 ## companion tab
 companion_loc:

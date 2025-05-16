@@ -390,6 +390,9 @@ settings_loc:
       value:
         tray: a la bandeja
         taskbar: a la barra de tareas
+    window_size:
+      label: Recordar tamaño de ventana
+      info: Recordar tamaño de ventana al salir
 
 ## companion tab
 companion_loc:

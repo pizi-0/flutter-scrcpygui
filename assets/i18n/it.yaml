@@ -390,6 +390,9 @@ settings_loc:
       value:
         tray: a icona
         taskbar: a barra delle applicazioni
+    window_size:
+      label: Ricorda dimensioni finestra
+      info: Ricorda le dimensioni della finestra all'uscita
 
 ## companion tab
 companion_loc:
