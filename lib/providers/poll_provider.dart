@@ -8,6 +8,8 @@ import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/command_runner.dart';
 import 'package:scrcpygui/utils/const.dart';
 
+final adbTrackDevicesPID = StateProvider<int?>((ref) => null);
+
 final adbTrackDevicesStreamProvider = StreamProvider<List<AdbDevices>>((ref) {
   final workDir = ref.watch(execDirProvider);
   final controller = StreamController<List<AdbDevices>>();
@@ -54,6 +56,8 @@ final adbTrackDevicesStreamProvider = StreamProvider<List<AdbDevices>>((ref) {
       // Start track
       adbProcess =
           await CommandRunner.startAdbCommand(workDir, args: ['track-devices']);
+
+      ref.read(adbTrackDevicesPID.notifier).state = adbProcess?.pid;
 
       logger.i('adb track-devices process started (PID: ${adbProcess?.pid})');
 

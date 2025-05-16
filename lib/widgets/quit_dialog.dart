@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:awesome_extensions/awesome_extensions.dart' show AlignExtensions;
+import 'package:awesome_extensions/awesome_extensions.dart'
+    show AlignExtensions;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
@@ -12,6 +13,7 @@ import 'package:string_extensions/string_extensions.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../db/db.dart';
+import '../providers/poll_provider.dart';
 import '../providers/settings_provider.dart';
 import '../providers/version_provider.dart';
 import '../utils/adb_utils.dart';
@@ -43,7 +45,10 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
   @override
   Widget build(BuildContext context) {
     final runningInstance = ref.watch(scrcpyInstanceProvider);
-    final wifiDevices = ref.watch(adbProvider).where((e) => e.id.contains(adbMdns) || e.id.isIpv4).toList();
+    final wifiDevices = ref
+        .watch(adbProvider)
+        .where((e) => e.id.contains(adbMdns) || e.id.isIpv4)
+        .toList();
 
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: appWidth),
@@ -66,7 +71,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
             : AlertDialog(
                 title: Text(el.quitDialogLoc.title),
                 content: ConstrainedBox(
-                  constraints: const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
+                  constraints: const BoxConstraints(
+                      minWidth: appWidth, maxWidth: appWidth),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -81,7 +87,9 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                           },
                           child: PgListTile(
                             trailing: Checkbox(
-                                state: instance ? CheckboxState.checked : CheckboxState.unchecked,
+                                state: instance
+                                    ? CheckboxState.checked
+                                    : CheckboxState.unchecked,
                                 onChanged: (v) {
                                   setState(() {
                                     instance = !instance;
@@ -89,10 +97,12 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                                 }).alignAtCenterRight(),
                             title: el.quitDialogLoc.killRunning.label,
                             showSubtitle: true,
-                            subtitle: el.quitDialogLoc.killRunning.info(count: '${runningInstance.length}'),
+                            subtitle: el.quitDialogLoc.killRunning
+                                .info(count: '${runningInstance.length}'),
                           ),
                         ),
-                      if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty) const Divider(),
+                      if (runningInstance.isNotEmpty && wifiDevices.isNotEmpty)
+                        const Divider(),
                       if (wifiDevices.isNotEmpty)
                         OutlineButton(
                           onPressed: () {
@@ -102,14 +112,17 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                           },
                           child: PgListTile(
                             trailing: Checkbox(
-                                state: wifi ? CheckboxState.checked : CheckboxState.unchecked,
+                                state: wifi
+                                    ? CheckboxState.checked
+                                    : CheckboxState.unchecked,
                                 onChanged: (v) {
                                   setState(() {
                                     wifi = !wifi;
                                   });
                                 }).alignAtCenterRight(),
                             title: el.quitDialogLoc.disconnect.label,
-                            subtitle: el.quitDialogLoc.disconnect.info(count: '${wifiDevices.length}'),
+                            subtitle: el.quitDialogLoc.disconnect
+                                .info(count: '${wifiDevices.length}'),
                             showSubtitle: true,
                           ),
                         )
@@ -161,7 +174,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
     final workDir = ref.read(execDirProvider);
     final settings = ref.read(settingsProvider);
 
-    for (final i in runningInstances.where((ins) => ins.config.windowOptions.noWindow)) {
+    for (final i
+        in runningInstances.where((ins) => ins.config.windowOptions.noWindow)) {
       await ScrcpyUtils.killServer(i).then((a) {
         ref.read(scrcpyInstanceProvider.notifier).removeInstance(i);
       });
@@ -183,7 +197,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
     }
 
     if (wifi) {
-      for (final d in connectedDevices.where((e) => e.id.contains(adbMdns) || e.id.isIpv4)) {
+      for (final d in connectedDevices
+          .where((e) => e.id.contains(adbMdns) || e.id.isIpv4)) {
         await AdbUtils.disconnectWirelessDevice(workDir, d);
       }
     }
@@ -191,6 +206,12 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
     if (settings.behaviour.rememberWinSize) {
       final size = await windowManager.getSize();
       await Db.saveWinSize(size);
+    }
+
+    final trackDevicesPID = ref.read(adbTrackDevicesPID);
+
+    if (trackDevicesPID != null) {
+      Process.killPid(trackDevicesPID);
     }
 
     await windowManager.isPreventClose();
