@@ -74,3 +74,55 @@ class PgSectionCard extends ConsumerWidget {
     );
   }
 }
+
+class PgSectionCardNoScroll extends ConsumerWidget {
+  final String? label;
+  final Widget? labelTrail;
+  final Widget? labelButton;
+  final EdgeInsetsGeometry? cardPadding;
+  final Color? borderColor;
+  final Widget content;
+  final BoxConstraints? constraints;
+
+  const PgSectionCardNoScroll({
+    super.key,
+    this.label,
+    this.labelButton,
+    this.labelTrail,
+    this.cardPadding,
+    this.borderColor,
+    required this.content,
+    this.constraints = const BoxConstraints(maxWidth: appWidth),
+    // required this.children,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+
+    return ConstrainedBox(
+      constraints: constraints!,
+      child: Column(
+        spacing: 8,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (label != null)
+            Label(
+                trailing: labelTrail,
+                child: Row(
+                  children: [
+                    Text(label!).small.firstP.paddingSymmetric(vertical: 8),
+                    if (labelButton != null) labelButton!,
+                  ],
+                )),
+          Card(
+            padding: cardPadding,
+            borderColor: borderColor,
+            borderRadius: theme.borderRadiusMd,
+            child: content,
+          ),
+        ],
+      ),
+    );
+  }
+}

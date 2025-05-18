@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:animate_do/animate_do.dart';
-import 'package:awesome_extensions/awesome_extensions.dart'
-    show StyledText, PaddingX, NumExtension;
+import 'package:awesome_extensions/awesome_extensions.dart' show StyledText, PaddingX, NumExtension;
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -20,6 +19,8 @@ import 'package:scrcpygui/screens/about_tab/about_tab.dart';
 import 'package:scrcpygui/widgets/title_bar_button.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:window_manager/window_manager.dart';
+
+final sidebarKey = GlobalKey<_AppSideBarState>();
 
 class NavigationShell extends ConsumerStatefulWidget {
   final List<Widget> children;
@@ -44,8 +45,7 @@ class NavigationShellState extends ConsumerState<NavigationShell> {
             children: [
               Row(
                 children: [
-                  if (sizeInfo.isDesktop || sizeInfo.isTablet)
-                    const AppSideBar(),
+                  if (sizeInfo.isDesktop || sizeInfo.isTablet) const AppSideBar(),
                   if (sizeInfo.isMobile) const Gap(52),
                   Expanded(
                     child: AnimatedBranchContainer(
@@ -108,10 +108,7 @@ class TitleBar extends ConsumerWidget {
                     width: 20,
                   ).paddingOnly(left: 3),
                   Text('Scrcpy GUI ($appversion)').fontSize(12),
-                  const Text('by pizi-0')
-                      .fontSize(8)
-                      .underline()
-                      .paddingOnly(top: 4.5),
+                  const Text('by pizi-0').fontSize(8).underline().paddingOnly(top: 4.5),
                 ],
               ).paddingOnly(left: 8),
             ),
@@ -126,8 +123,7 @@ class TitleBar extends ConsumerWidget {
 
 class AnimatedBranchContainer extends ConsumerWidget {
   /// Creates a AnimatedBranchContainer
-  const AnimatedBranchContainer(
-      {super.key, required this.currentIndex, required this.children});
+  const AnimatedBranchContainer({super.key, required this.currentIndex, required this.children});
 
   /// The index (in [children]) of the branch Navigator to display.
   final int currentIndex;
@@ -177,12 +173,12 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return TapRegion(
-      onTapOutside: (event) =>
-          ref.read(appSideBarStateProvider.notifier).state = false,
+      onTapOutside: (event) => ref.read(appSideBarStateProvider.notifier).state = false,
       child: ResponsiveBuilder(builder: (context, sizingInfo) {
         final shouldExpand = sizingInfo.isTablet || sizingInfo.isDesktop;
 
         return IntrinsicWidth(
+          key: sidebarKey,
           child: Container(
             decoration: BoxDecoration(
               border: Border(
@@ -198,14 +194,11 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
               labelPosition: NavigationLabelPosition.end,
               labelType: NavigationLabelType.expanded,
               padding: EdgeInsets.all(8),
-              onSelected: (value) =>
-                  ref.read(mainScreenPage.notifier).state = value,
+              onSelected: (value) => ref.read(mainScreenPage.notifier).state = value,
               children: [
                 NavigationButton(
                   alignment: Alignment.centerLeft,
-                  onPressed: () => ref
-                      .read(appSideBarStateProvider.notifier)
-                      .update((state) => !state),
+                  onPressed: () => ref.read(appSideBarStateProvider.notifier).update((state) => !state),
                   label: const Text('Menu'),
                   child: const Icon(Icons.menu),
                 ),

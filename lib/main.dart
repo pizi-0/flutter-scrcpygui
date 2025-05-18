@@ -7,6 +7,7 @@ import 'package:go_transitions/go_transitions.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/main_screen.dart';
+import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
@@ -15,6 +16,7 @@ import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_manager/config_manager.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/config_screen.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/sub_page/log_screen/log_screen.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/device_control/device_control_page.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/device_settings_screen.dart';
 import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
 import 'package:scrcpygui/screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
@@ -173,6 +175,11 @@ final _router = GoRouter(
                 GoRoute(
                   path: ConfigManager.route,
                   builder: (context, state) => ConfigManager(),
+                  pageBuilder: GoTransitions.cupertino.call,
+                ),
+                GoRoute(
+                  path: DeviceControlPage.route,
+                  builder: (context, state) => DeviceControlPage(device: state.extra as AdbDevices),
                   pageBuilder: GoTransitions.cupertino.call,
                 ),
               ],
