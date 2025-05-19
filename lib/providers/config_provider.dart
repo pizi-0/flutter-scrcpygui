@@ -274,3 +274,5 @@ class FilteredConfigNotifier extends Notifier<List<ScrcpyConfig>> {
 final filteredConfigsProvider =
     NotifierProvider<FilteredConfigNotifier, List<ScrcpyConfig>>(
         () => FilteredConfigNotifier());
+
+final controlPageConfigProvider = StateProvider<ScrcpyConfig?>((ref) => null);
