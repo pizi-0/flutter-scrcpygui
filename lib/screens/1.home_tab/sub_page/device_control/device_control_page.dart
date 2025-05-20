@@ -13,19 +13,18 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'widgets/big_control_page.dart';
 import 'widgets/small_control_page.dart';
 
+final FocusNode controlPageKeyboardListenerNode = FocusNode(debugLabel: 'keyboard-listener');
+
 class DeviceControlPage extends ConsumerStatefulWidget {
   static const route = 'device-control';
   final AdbDevices device;
   const DeviceControlPage({super.key, required this.device});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _DeviceControlPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _DeviceControlPageState();
 }
 
 class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
-  final FocusNode klNode = FocusNode(debugLabel: 'keyboard-listener');
-
   ScrcpyConfig? config;
 
   @override
@@ -33,7 +32,7 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
     final device = widget.device;
 
     return KeyboardListener(
-      focusNode: klNode,
+      focusNode: controlPageKeyboardListenerNode,
       autofocus: true,
       onKeyEvent: (value) async {
         if (value.physicalKey == PhysicalKeyboardKey.slash) {
@@ -44,11 +43,11 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
         }
 
         if (value.physicalKey == PhysicalKeyboardKey.escape) {
-          klNode.requestFocus();
+          controlPageKeyboardListenerNode.requestFocus();
         }
       },
       child: GestureDetector(
-        onTap: () => klNode.requestFocus(),
+        onTap: () => controlPageKeyboardListenerNode.requestFocus(),
         child: PgScaffoldCustom(
           onBack: context.pop,
           title: 'Lounge / ${device.name}',
@@ -63,13 +62,12 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
               if (sizingInfo.isMobile) {
                 sidebarWidth = 52;
               }
-              bool wrapped = sizingInfo.screenSize.width >=
-                  ((appWidth * 2) + sidebarWidth + 40);
+              bool wrapped = sizingInfo.screenSize.width >= ((appWidth * 2) + sidebarWidth + 40);
 
               if (!wrapped) {
                 return SmallControlPage(device: device);
               } else {
-                return BigControlPage(device: device);
+                return BigControlPage2(device: device);
               }
             },
           ),
