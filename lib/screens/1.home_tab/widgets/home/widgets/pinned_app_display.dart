@@ -18,17 +18,14 @@ class PinnedAppDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appConfigPairs = ref.watch(appConfigPairProvider
-        .select((pair) => pair.where((p) => p.deviceId == device.id)));
+    final appConfigPairs =
+        ref.watch(appConfigPairProvider.select((pair) => pair.where((p) => p.deviceId == device.id)));
 
     return GridView.builder(
       shrinkWrap: true,
       itemCount: appConfigPairs.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisSpacing: 2,
-          mainAxisSpacing: 2,
-          crossAxisCount: 3,
-          childAspectRatio: 16 / 3.5),
+          crossAxisSpacing: 2, mainAxisSpacing: 2, crossAxisCount: 3, childAspectRatio: 16 / 4.2),
       itemBuilder: (context, index) {
         final pair = appConfigPairs.toList()[index];
 
@@ -54,10 +51,8 @@ class _PinnedAppChipState extends ConsumerState<PinnedAppChip> {
     final allConfigs = ref.watch(configsProvider);
     final connected = ref.watch(adbProvider);
 
-    final config =
-        allConfigs.firstWhereOrNull((c) => c.id == widget.pair.config.id);
-    final device =
-        connected.firstWhereOrNull((conn) => conn.id == widget.pair.deviceId);
+    final config = allConfigs.firstWhereOrNull((c) => c.id == widget.pair.config.id);
+    final device = connected.firstWhereOrNull((conn) => conn.id == widget.pair.deviceId);
 
     final noConfig = config == null;
 
@@ -77,14 +72,9 @@ class _PinnedAppChipState extends ConsumerState<PinnedAppChip> {
               ref.read(appConfigPairProvider.notifier).removePair(widget.pair);
               Db.saveAppConfigPairs(ref.read(appConfigPairProvider));
             },
-            child: loading
-                ? CircularProgressIndicator(size: 15)
-                : Icon(Icons.close),
+            child: loading ? CircularProgressIndicator(size: 15) : Icon(Icons.close),
           ),
-          child: OverflowMarquee(
-              duration: 3.seconds,
-              delayDuration: 0.5.seconds,
-              child: Text(widget.pair.app.name)),
+          child: OverflowMarquee(duration: 3.seconds, delayDuration: 0.5.seconds, child: Text(widget.pair.app.name)),
         ),
       ),
     );
@@ -95,9 +85,7 @@ class _PinnedAppChipState extends ConsumerState<PinnedAppChip> {
     setState(() {});
     await ScrcpyUtils.newInstance(
       ref,
-      selectedConfig: config.copyWith(
-          appOptions:
-              (config.appOptions).copyWith(selectedApp: widget.pair.app)),
+      selectedConfig: config.copyWith(appOptions: (config.appOptions).copyWith(selectedApp: widget.pair.app)),
       selectedDevice: device,
       customInstanceName: '${widget.pair.app.name} (${config.configName})',
     );
