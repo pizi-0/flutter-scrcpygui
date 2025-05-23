@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/app_config_pair.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/app_config_pair_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
@@ -90,13 +91,19 @@ class DeviceRunningInstances extends ConsumerWidget {
       content: PgListTile(
         title: '${deviceInstance.length} instance(s)',
         trailing: PrimaryButton(
-          onPressed: () => openSheet(
-            context: context,
-            position: OverlayPosition.right,
-            builder: (context) {
-              return InstanceList(device: device);
-            },
-          ),
+          onPressed: () async {
+            await openSheet(
+              context: context,
+              position: OverlayPosition.right,
+              builder: (context) {
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: InstanceList(device: device),
+                );
+              },
+            );
+            controlPageKeyboardListenerNode.requestFocus();
+          },
           child: Text('Manage'),
         ),
       ),
@@ -136,12 +143,7 @@ class _InstanceListState extends ConsumerState<InstanceList> {
 
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: PgListTile(
-                      title: instance.instanceName,
-                      trailing: IconButton.destructive(
-                          onPressed: () => ScrcpyUtils.killServer(instance),
-                          icon: Icon(Icons.stop_rounded)),
-                    ),
+                    child: InstanceListTile(instance: instance),
                   );
                 },
               ),
@@ -151,26 +153,108 @@ class _InstanceListState extends ConsumerState<InstanceList> {
               child: Center(child: Text('No instances').textSmall.muted),
             )
           ],
-          AppBar(
-            title: Row(
-              spacing: 8,
-              children: [
-                Expanded(
-                  child: DestructiveButton(
-                    enabled: deviceInstance.isNotEmpty,
-                    onPressed: () {},
-                    child: Text('Stop all'),
-                  ),
-                ),
-                Expanded(
-                  child: SecondaryButton(
-                    onPressed: () => closeDrawer(context),
-                    child: Text('Close'),
-                  ),
-                )
-              ],
+          InstanceListBottomBar(deviceInstance: deviceInstance),
+        ],
+      ),
+    );
+  }
+}
+
+class InstanceListTile extends StatefulWidget {
+  const InstanceListTile({
+    super.key,
+    required this.instance,
+  });
+
+  final ScrcpyRunningInstance instance;
+
+  @override
+  State<InstanceListTile> createState() => _InstanceListTileState();
+}
+
+class _InstanceListTileState extends State<InstanceListTile> {
+  bool loading = false;
+  @override
+  Widget build(BuildContext context) {
+    return PgListTile(
+      title: widget.instance.instanceName,
+      trailing: IconButton.destructive(
+          enabled: !loading,
+          onPressed: loading
+              ? null
+              : () async {
+                  loading = true;
+                  setState(() {});
+                  try {
+                    await ScrcpyUtils.killServer(widget.instance);
+                    await Future.delayed(300.milliseconds);
+                  } catch (e) {
+                    debugPrint(e.toString());
+                  } finally {
+                    if (mounted) {
+                      loading = false;
+                      setState(() {});
+                    }
+                  }
+                },
+          icon: Icon(Icons.stop_rounded)),
+    );
+  }
+}
+
+class InstanceListBottomBar extends StatefulWidget {
+  const InstanceListBottomBar({
+    super.key,
+    required this.deviceInstance,
+  });
+
+  final List<ScrcpyRunningInstance> deviceInstance;
+
+  @override
+  State<InstanceListBottomBar> createState() => _InstanceListBottomBarState();
+}
+
+class _InstanceListBottomBarState extends State<InstanceListBottomBar> {
+  bool loading = false;
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      title: Row(
+        spacing: 8,
+        children: [
+          Expanded(
+            child: DestructiveButton(
+              enabled: widget.deviceInstance.isNotEmpty && !loading,
+              onPressed: loading
+                  ? null
+                  : () async {
+                      loading = true;
+                      setState(() {});
+                      try {
+                        List<Future> future = [];
+                        for (final instance in widget.deviceInstance) {
+                          future.add(ScrcpyUtils.killServer(instance));
+                        }
+                        future.add(Future.delayed(300.milliseconds));
+                        await Future.wait(future);
+                      } catch (e) {
+                        debugPrint(e.toString());
+                      } finally {
+                        if (mounted) {
+                          loading = false;
+                          setState(() {});
+                        }
+                      }
+                    },
+              child: Text('Stop all'),
             ),
           ),
+          Expanded(
+            child: SecondaryButton(
+              onPressed: () => closeDrawer(context),
+              child: Text('Close'),
+            ),
+          )
         ],
       ),
     );
@@ -192,8 +276,10 @@ class _AppGridState extends ConsumerState<AppGrid> {
   @override
   Widget build(BuildContext context) {
     final device = widget.device;
-    final devicePairs =
-        ref.watch(appConfigPairProvider).where((p) => p.deviceId == device.id);
+    final devicePairs = ref
+        .watch(appConfigPairProvider)
+        .where((p) => p.deviceId == device.id)
+        .toList();
 
     final config = ref.watch(controlPageConfigProvider);
 
@@ -204,6 +290,9 @@ class _AppGridState extends ConsumerState<AppGrid> {
 
     appsList
         .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
+    devicePairs.sort(
+        (a, b) => a.app.name.toLowerCase().compareTo(b.app.name.toLowerCase()));
 
     final finalList = [...devicePairs.map((p) => p.app), ...appsList];
 
@@ -395,13 +484,17 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
                 await Db.saveAppConfigPairs(ref.read(appConfigPairProvider));
               },
               leading: Icon(Icons.push_pin_rounded),
-              child: Text('Pin'),
+              child: Text('Pin on ${config?.configName}'),
             ),
           if (isPinned)
             MenuButton(
               enabled: config != null || isPinned,
               onPressed: (context) async {
                 controlPageKeyboardListenerNode.requestFocus();
+                final config = devicePair
+                    .firstWhereOrNull((p) => p.app == widget.app)
+                    ?.config;
+
                 ref.read(appConfigPairProvider.notifier).removePair(
                     AppConfigPair(
                         deviceId: widget.device.id,
@@ -413,6 +506,7 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
               leading: Icon(Icons.push_pin_rounded),
               child: Text('Unpin'),
             ),
+          MenuDivider(),
           MenuButton(
             enabled: isPinned || config != null,
             onPressed: (context) async {
@@ -480,7 +574,7 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
                     },
               child: hover
                   ? OverflowMarquee(
-                      duration: 3.seconds,
+                      duration: 2.seconds,
                       delayDuration: 0.5.seconds,
                       child: Text(
                         widget.app.name,
