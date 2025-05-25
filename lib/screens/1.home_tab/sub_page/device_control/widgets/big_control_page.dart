@@ -276,14 +276,14 @@ class _AppGridState extends ConsumerState<AppGrid> {
   @override
   Widget build(BuildContext context) {
     final device = widget.device;
+    final allConfigs = ref.watch(configsProvider);
+    final config = ref.watch(controlPageConfigProvider);
+
     final devicePairs = ref
         .watch(appConfigPairProvider)
         .where((p) => p.deviceId == device.id)
         .toList();
 
-    final config = ref.watch(controlPageConfigProvider);
-
-    final allConfigs = ref.watch(configsProvider);
     final appsList = (device.info?.appList ?? [])
         .where((app) => devicePairs.where((dp) => dp.app == app).isEmpty)
         .toList();
@@ -441,9 +441,7 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
     final allConfigs = ref.watch(configsProvider);
     final devicePair = ref
         .watch(appConfigPairProvider)
-        .where((p) =>
-            p.deviceId == widget.device.id &&
-            allConfigs.where((c) => c.id == p.config.id).isNotEmpty)
+        .where((p) => p.deviceId == widget.device.id)
         .toList();
 
     final isPinned = devicePair.where((p) => p.app == widget.app).isNotEmpty;
@@ -451,12 +449,17 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
     final configForPinned =
         devicePair.firstWhereOrNull((p) => p.app == widget.app)?.config;
 
+    final isMissingConfig = isPinned &&
+        allConfigs.where((c) => c.id == configForPinned?.id).isEmpty;
+
     return Tooltip(
       tooltip: TooltipContainer(
           child: Text(
-        isPinned
-            ? 'On: ${configForPinned?.configName}'
-            : widget.app.packageName,
+        isMissingConfig
+            ? 'Missing config: ${configForPinned?.configName}'
+            : isPinned
+                ? 'On: ${configForPinned?.configName}'
+                : widget.app.packageName,
         textAlign: TextAlign.center,
       )).call,
       child: ContextMenu(
@@ -484,7 +487,7 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
                 await Db.saveAppConfigPairs(ref.read(appConfigPairProvider));
               },
               leading: Icon(Icons.push_pin_rounded),
-              child: Text('Pin on ${config?.configName}'),
+              child: Text('Pin on ${config?.configName ?? 'config'}'),
             ),
           if (isPinned)
             MenuButton(
@@ -508,31 +511,10 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
             ),
           MenuDivider(),
           MenuButton(
-            enabled: isPinned || config != null,
-            onPressed: (context) async {
-              loading = true;
-              setState(() {});
-
-              controlPageKeyboardListenerNode.requestFocus();
-              final selectedConfig = isPinned
-                  ? devicePair.firstWhere((p) => p.app == widget.app).config
-                  : config;
-
-              await ScrcpyUtils.newInstance(
-                widget.ref,
-                selectedConfig: selectedConfig!.copyWith(
-                    appOptions: selectedConfig.appOptions
-                        .copyWith(selectedApp: widget.app, forceClose: true)),
-                selectedDevice: widget.device,
-                customInstanceName:
-                    '${widget.app.name} (${selectedConfig.configName})',
-              );
-
-              if (mounted) {
-                loading = false;
-                setState(() {});
-              }
-            },
+            enabled:
+                enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
+            onPressed: (context) =>
+                _startScrcpy(isPinned: isPinned, devicePair: devicePair),
             leading: Icon(Icons.play_arrow_rounded),
             child: Text('Force close & start'),
           ),
@@ -546,32 +528,10 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
                 setState(() {});
               },
               style: isPinned ? ButtonStyle.secondary() : ButtonStyle.outline(),
-              onPressed: loading || config == null && !isPinned
-                  ? null
-                  : () async {
-                      loading = true;
-                      setState(() {});
-
-                      final selectedConfig = isPinned
-                          ? devicePair
-                              .firstWhere((p) => p.app == widget.app)
-                              .config
-                          : config;
-
-                      controlPageKeyboardListenerNode.requestFocus();
-                      await ScrcpyUtils.newInstance(widget.ref,
-                          selectedConfig: selectedConfig!.copyWith(
-                              appOptions: selectedConfig.appOptions
-                                  .copyWith(selectedApp: widget.app)),
-                          selectedDevice: widget.device,
-                          customInstanceName:
-                              '${widget.app.name} (${selectedConfig.configName})');
-
-                      if (mounted) {
-                        loading = false;
-                        setState(() {});
-                      }
-                    },
+              enabled:
+                  enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
+              onPressed: () =>
+                  _startScrcpy(isPinned: isPinned, devicePair: devicePair),
               child: hover
                   ? OverflowMarquee(
                       duration: 2.seconds,
@@ -588,11 +548,14 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
             ),
             Align(
               alignment: Alignment.centerRight,
-              child: Icon(isPinned
-                      ? Icons.push_pin_rounded
-                      : Icons.more_vert_rounded)
-                  .iconXSmall()
-                  .paddingOnly(right: 4),
+              child: Icon(
+                isPinned
+                    ? isMissingConfig
+                        ? Icons.warning_rounded
+                        : Icons.push_pin_rounded
+                    : Icons.more_vert_rounded,
+                color: isMissingConfig ? theme.colorScheme.destructive : null,
+              ).iconXSmall().paddingOnly(right: 4),
             ),
             if (loading)
               Positioned.fill(
@@ -606,6 +569,43 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
         ),
       ),
     );
+  }
+
+  bool enabled({required bool isMissingConfig, required bool isPinned}) {
+    final config = ref.watch(controlPageConfigProvider);
+
+    if (isMissingConfig || loading || (!isPinned && config == null)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  _startScrcpy(
+      {required bool isPinned, required List<AppConfigPair> devicePair}) async {
+    final config = ref.watch(controlPageConfigProvider);
+
+    loading = true;
+    setState(() {});
+
+    controlPageKeyboardListenerNode.requestFocus();
+    final selectedConfig = isPinned
+        ? devicePair.firstWhere((p) => p.app == widget.app).config
+        : config;
+
+    await ScrcpyUtils.newInstance(
+      widget.ref,
+      selectedConfig: selectedConfig!.copyWith(
+          appOptions: selectedConfig.appOptions
+              .copyWith(selectedApp: widget.app, forceClose: true)),
+      selectedDevice: widget.device,
+      customInstanceName: '${widget.app.name} (${selectedConfig.configName})',
+    );
+
+    if (mounted) {
+      loading = false;
+      setState(() {});
+    }
   }
 }
 

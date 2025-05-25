@@ -43,6 +43,9 @@ class _ConfigDeleteDialogState extends ConsumerState<ConfigDeleteDialog> {
                       .where((e) => e.id != widget.config.id)
                       .firstOrNull;
                 }
+                if (ref.read(controlPageConfigProvider) == widget.config) {
+                  ref.read(controlPageConfigProvider.notifier).state = null;
+                }
                 ref.read(configsProvider.notifier).removeConfig(widget.config);
                 await Db.saveConfigs(ref.read(configsProvider).toList());
                 context.pop(true);

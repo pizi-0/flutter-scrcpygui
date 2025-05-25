@@ -105,7 +105,12 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     ref.read(ipHistoryProvider.notifier).update((state) => wirelessHistory);
 
     final appConfigPairs = await Db.getAppConfigPairs();
-    ref.read(appConfigPairProvider.notifier).setPairs(appConfigPairs);
+
+    final finalPairs = appConfigPairs
+        .where((p) => allConfigs.where((c) => c.id == p.config.id).isNotEmpty)
+        .toList();
+
+    ref.read(appConfigPairProvider.notifier).setPairs(finalPairs);
 
     final pid = await AppUtils.getAppPid();
 
