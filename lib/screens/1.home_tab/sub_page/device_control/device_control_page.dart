@@ -9,6 +9,7 @@ import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/navigation_shell.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:string_extensions/string_extensions.dart';
 
 import 'widgets/big_control_page.dart';
 import 'widgets/small_control_page.dart';
@@ -29,7 +30,9 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final device = widget.device;
+    final isWireless = device.id.isIpv4 || device.id.contains(adbMdns);
 
     return KeyboardListener(
       focusNode: controlPageKeyboardListenerNode,
@@ -50,7 +53,27 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
         onTap: () => controlPageKeyboardListenerNode.requestFocus(),
         child: PgScaffoldCustom(
           onBack: context.pop,
-          title: 'Lounge / ${device.name}',
+          title: RichText(
+            text: TextSpan(
+              style: TextStyle(
+                  fontSize: theme.typography.xLarge.fontSize,
+                  fontWeight: FontWeight.bold,
+                  decoration: TextDecoration.underline),
+              children: [
+                TextSpan(text: 'Lounge'),
+                TextSpan(text: ' / '),
+                WidgetSpan(
+                    baseline: TextBaseline.ideographic,
+                    child: isWireless
+                        ? Icon(
+                            Icons.wifi_rounded,
+                            size: 22,
+                          )
+                        : Icon(Icons.usb_rounded)),
+                TextSpan(text: ' ${device.name ?? device.modelName}')
+              ],
+            ),
+          ),
           scaffoldBody: ResponsiveBuilder(
             builder: (context, sizingInfo) {
               double sidebarWidth = 52;
