@@ -5,94 +5,95 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import '../../../../../models/adb_devices.dart';
 import '../../../../../models/scrcpy_related/scrcpy_running_instance.dart';
 import '../../../../../providers/scrcpy_provider.dart';
-import '../../../../../utils/const.dart';
 import '../../../../../utils/scrcpy_utils.dart';
 import '../../../../../widgets/custom_ui/pg_list_tile.dart';
 import '../../../../../widgets/custom_ui/pg_section_card.dart';
-import '../device_control_page.dart';
 
-class DeviceRunningInstances extends ConsumerWidget {
+class DeviceRunningInstances extends ConsumerStatefulWidget {
   final AdbDevices device;
   const DeviceRunningInstances({required this.device, super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final deviceInstance = ref
-        .watch(scrcpyInstanceProvider)
-        .where((i) => i.device == device)
-        .toList();
-
-    return PgSectionCardNoScroll(
-      label: 'Running instances',
-      content: PgListTile(
-        title: '${deviceInstance.length} instance(s)',
-        trailing: PrimaryButton(
-          onPressed: () async {
-            await openSheet(
-              context: context,
-              position: OverlayPosition.right,
-              builder: (context) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: InstanceList(device: device),
-                );
-              },
-            );
-            controlPageKeyboardListenerNode.requestFocus();
-          },
-          child: Text('Manage'),
-        ),
-      ),
-    );
-  }
+  ConsumerState<DeviceRunningInstances> createState() => _DeviceRunningInstancesState();
 }
 
-class InstanceList extends ConsumerStatefulWidget {
-  const InstanceList({super.key, required this.device});
+class _DeviceRunningInstancesState extends ConsumerState<DeviceRunningInstances> {
+  bool loading = false;
 
-  final AdbDevices device;
-
-  @override
-  ConsumerState<InstanceList> createState() => _InstanceListState();
-}
-
-class _InstanceListState extends ConsumerState<InstanceList> {
   @override
   Widget build(BuildContext context) {
-    final deviceInstance = ref
-        .watch(scrcpyInstanceProvider)
-        .where((i) => i.device == widget.device)
-        .toList();
+    final theme = Theme.of(context);
+    final deviceInstance = ref.watch(scrcpyInstanceProvider).where((i) => i.device == widget.device).toList();
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: appWidth * 0.8),
-      child: Column(
-        children: [
-          if (deviceInstance.isNotEmpty) ...[
-            Expanded(
-              child: ListView.separated(
-                padding: EdgeInsets.all(8),
-                separatorBuilder: (context, index) => Divider(),
-                itemCount: deviceInstance.length,
-                itemBuilder: (context, index) {
-                  final instance = deviceInstance[index];
+    return PgSectionCardNoScroll(
+        label: 'Running instances (${deviceInstance.length})',
+        labelTrail: deviceInstance.isNotEmpty
+            ? Button(
+                style: ButtonStyle.ghost(density: ButtonDensity.dense),
+                leading: Icon(
+                  Icons.stop_rounded,
+                  color: theme.colorScheme.destructive,
+                ),
+                onPressed: loading
+                    ? null
+                    : () async {
+                        loading = true;
+                        setState(() {});
+                        try {
+                          List<Future> future = [];
+                          for (final instance in deviceInstance) {
+                            future.add(ScrcpyUtils.killServer(instance));
+                          }
+                          future.add(Future.delayed(300.milliseconds));
+                          await Future.wait(future);
+                        } catch (e) {
+                          debugPrint(e.toString());
+                        } finally {
+                          if (mounted) {
+                            loading = false;
+                            setState(() {});
+                          }
+                        }
+                      },
+                child: Text('Stop all').textSmall,
+              )
+            : null,
+        expandContent: true,
+        content: Stack(
+          children: [
+            CustomScrollView(
+              slivers: [
+                if (deviceInstance.isEmpty) ...[
+                  SliverFillRemaining(
+                    child: Center(
+                      child: Text('No instances').textSmall.muted,
+                    ),
+                  )
+                ] else ...[
+                  SliverList.separated(
+                    separatorBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Divider(),
+                    ),
+                    itemCount: deviceInstance.length,
+                    itemBuilder: (context, index) {
+                      final instance = deviceInstance[index];
 
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: InstanceListTile(instance: instance),
-                  );
-                },
-              ),
-            )
-          ] else ...[
-            Expanded(
-              child: Center(child: Text('No instances').textSmall.muted),
-            )
+                      return InstanceListTile(instance: instance);
+                    },
+                  )
+                ],
+              ],
+            ),
+            if (loading)
+              Container(
+                color: theme.colorScheme.background.withAlpha(200),
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
           ],
-          InstanceListBottomBar(deviceInstance: deviceInstance),
-        ],
-      ),
-    );
+        ));
   }
 }
 
@@ -110,10 +111,13 @@ class InstanceListTile extends StatefulWidget {
 
 class _InstanceListTileState extends State<InstanceListTile> {
   bool loading = false;
+
   @override
   Widget build(BuildContext context) {
+    final name = widget.instance.instanceName.split(']').last;
+
     return PgListTile(
-      title: widget.instance.instanceName,
+      title: name,
       trailing: IconButton.destructive(
           enabled: !loading,
           onPressed: loading
@@ -134,65 +138,6 @@ class _InstanceListTileState extends State<InstanceListTile> {
                   }
                 },
           icon: Icon(Icons.stop_rounded)),
-    );
-  }
-}
-
-class InstanceListBottomBar extends StatefulWidget {
-  const InstanceListBottomBar({
-    super.key,
-    required this.deviceInstance,
-  });
-
-  final List<ScrcpyRunningInstance> deviceInstance;
-
-  @override
-  State<InstanceListBottomBar> createState() => _InstanceListBottomBarState();
-}
-
-class _InstanceListBottomBarState extends State<InstanceListBottomBar> {
-  bool loading = false;
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      title: Row(
-        spacing: 8,
-        children: [
-          Expanded(
-            child: DestructiveButton(
-              enabled: widget.deviceInstance.isNotEmpty && !loading,
-              onPressed: loading
-                  ? null
-                  : () async {
-                      loading = true;
-                      setState(() {});
-                      try {
-                        List<Future> future = [];
-                        for (final instance in widget.deviceInstance) {
-                          future.add(ScrcpyUtils.killServer(instance));
-                        }
-                        future.add(Future.delayed(300.milliseconds));
-                        await Future.wait(future);
-                      } catch (e) {
-                        debugPrint(e.toString());
-                      } finally {
-                        if (mounted) {
-                          loading = false;
-                          setState(() {});
-                        }
-                      }
-                    },
-              child: Text('Stop all'),
-            ),
-          ),
-          Expanded(
-            child: SecondaryButton(
-              onPressed: () => closeDrawer(context),
-              child: Text('Close'),
-            ),
-          )
-        ],
-      ),
     );
   }
 }
