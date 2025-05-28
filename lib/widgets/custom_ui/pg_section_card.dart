@@ -83,6 +83,7 @@ class PgSectionCardNoScroll extends ConsumerWidget {
   final Color? borderColor;
   final Widget content;
   final BoxConstraints? constraints;
+  final bool expandContent;
 
   const PgSectionCardNoScroll({
     super.key,
@@ -93,6 +94,7 @@ class PgSectionCardNoScroll extends ConsumerWidget {
     this.borderColor,
     required this.content,
     this.constraints = const BoxConstraints(maxWidth: appWidth),
+    this.expandContent = false,
     // required this.children,
   });
 
@@ -115,12 +117,23 @@ class PgSectionCardNoScroll extends ConsumerWidget {
                     if (labelButton != null) labelButton!,
                   ],
                 )),
-          Card(
-            padding: cardPadding,
-            borderColor: borderColor,
-            borderRadius: theme.borderRadiusMd,
-            child: content,
-          ),
+          if (expandContent) ...[
+            Expanded(
+              child: Card(
+                padding: cardPadding,
+                borderColor: borderColor,
+                borderRadius: theme.borderRadiusMd,
+                child: content,
+              ),
+            )
+          ] else ...[
+            Card(
+              padding: cardPadding,
+              borderColor: borderColor,
+              borderRadius: theme.borderRadiusMd,
+              child: content,
+            )
+          ]
         ],
       ),
     );

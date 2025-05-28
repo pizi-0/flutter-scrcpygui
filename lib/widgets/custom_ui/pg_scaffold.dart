@@ -96,7 +96,7 @@ class PgScaffoldCustom extends ConsumerWidget {
   final bool wrap;
   final Function()? onBack;
 
-  final String title;
+  final Widget title;
   const PgScaffoldCustom({
     super.key,
     required this.scaffoldBody,
@@ -138,7 +138,7 @@ class PgScaffoldCustom extends ConsumerWidget {
             padding: const EdgeInsets.all(8),
             title: Row(
               children: [
-                Expanded(child: Center(child: FittedBox(child: Text(title).xLarge().bold().underline()))),
+                Expanded(child: Center(child: FittedBox(child: title))),
               ],
             ),
             // backgroundColor: theme.colorScheme.muted,
