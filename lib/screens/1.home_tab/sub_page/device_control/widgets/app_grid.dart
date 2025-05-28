@@ -64,10 +64,6 @@ class _AppGridState extends ConsumerState<AppGrid> {
       content: CustomScrollView(
         controller: appScrollController,
         slivers: [
-          if (filteredList.isEmpty)
-            SliverFillRemaining(
-              child: Center(child: Text('No apps found').textSmall.muted),
-            ),
           SliverToBoxAdapter(
             child: Row(
               spacing: 8,
@@ -101,16 +97,17 @@ class _AppGridState extends ConsumerState<AppGrid> {
                     controller: appSearchController,
                     onChanged: (value) => setState(() {}),
                     features: [
-                      InputFeature.trailing(IconButton(
-                          variance: ButtonVariance.link,
-                          onPressed: () {
-                            appSearchController.clear();
-                            controlPageKeyboardListenerNode.requestFocus();
+                      if (appSearchController.text.isNotEmpty)
+                        InputFeature.trailing(IconButton(
+                            variance: ButtonVariance.link,
+                            onPressed: () {
+                              appSearchController.clear();
+                              controlPageKeyboardListenerNode.requestFocus();
 
-                            setState(() {});
-                          },
-                          density: ButtonDensity.compact,
-                          icon: Icon(Icons.close_rounded)))
+                              setState(() {});
+                            },
+                            density: ButtonDensity.compact,
+                            icon: Icon(Icons.close_rounded)))
                     ],
                     onSubmitted: (value) {
                       controlPageKeyboardListenerNode.requestFocus();
@@ -126,6 +123,10 @@ class _AppGridState extends ConsumerState<AppGrid> {
               child: Divider(),
             ),
           ),
+          if (filteredList.isEmpty)
+            SliverFillRemaining(
+              child: Center(child: Text('No apps found').textSmall.muted),
+            ),
           if (filteredList.isNotEmpty)
             SliverGrid.builder(
               gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
