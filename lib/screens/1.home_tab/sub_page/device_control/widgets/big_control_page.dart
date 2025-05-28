@@ -16,8 +16,7 @@ class BigControlPage2 extends ConsumerStatefulWidget {
   const BigControlPage2({super.key, required this.device});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() =>
-      _BigControlPage2State();
+  ConsumerState<ConsumerStatefulWidget> createState() => _BigControlPage2State();
 }
 
 class _BigControlPage2State extends ConsumerState<BigControlPage2> {
@@ -38,27 +37,22 @@ class _BigControlPage2State extends ConsumerState<BigControlPage2> {
   Widget build(BuildContext context) {
     final device = widget.device;
 
-    return Column(
-      spacing: 10,
+    return Row(
+      spacing: 16,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: (appWidth * 2) + 10),
-          child: Row(
+          constraints: BoxConstraints(maxWidth: appWidth - 50),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 8,
             children: [
               ControlButtons(device: device),
-              DeviceRunningInstances(device: device),
+              Expanded(child: DeviceRunningInstances(device: device)),
             ],
           ),
         ),
-        ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: (appWidth * 2) + 10),
-          child: Divider(),
-        ),
-        Expanded(
-          child: AppGrid(device: device),
-        ),
+        AppGrid(device: device),
       ],
     );
   }
