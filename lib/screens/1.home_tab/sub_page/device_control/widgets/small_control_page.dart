@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_control/widgets/control_buttons.dart';
@@ -34,140 +35,146 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
 
   @override
   Widget build(BuildContext context) {
-    final appsList = widget.device.info?.appList ?? [];
+    final device = widget.device;
+    final appsList = device.info?.appList ?? [];
     final selectedConfig = ref.watch(controlPageConfigProvider);
-    final allconfigs = ref.watch(configsProvider);
-    final appConfigPairs = ref.watch(appConfigPairProvider
-        .select((pair) => pair.where((p) => p.deviceId == widget.device.id)));
+    final allconfigs = ref.watch(filteredConfigsProvider);
+    final appConfigPairs =
+        ref.watch(appConfigPairProvider.select((pair) => pair.where((p) => p.deviceId == device.id)));
 
-    return SingleChildScrollView(
-      controller: scrollController,
-      child: Column(
-        spacing: 8,
-        children: [
-          ControlButtons(device: widget.device),
-          PgSectionCardNoScroll(
-              label: 'Pinned apps',
-              content: PinnedAppDisplay(device: widget.device)),
-          PgSectionCard(
-            label: el.appSection.title,
+    appsList.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+
+    bool isPinned = false;
+
+    if (selectedApp != null && selectedConfig != null) {
+      isPinned = appConfigPairs.contains(AppConfigPair(deviceId: device.id, app: selectedApp!, config: selectedConfig));
+    }
+
+    return Column(
+      spacing: 8,
+      children: [
+        Expanded(
+          child: Column(
+            spacing: 8,
             children: [
-              Text('${el.configLoc.start}:').textSmall,
-              Select(
-                filled: true,
-                value: selectedApp,
-                placeholder: Text(el.appSection.select.label),
-                popupConstraints: BoxConstraints(maxHeight: appWidth - 100),
-                onChanged: (app) {
-                  selectedApp = app!;
-                  setState(() {});
-                },
-                popup: SelectPopup.builder(
-                  searchPlaceholder: Text('Search'),
-                  builder: (context, searchQuery) {
-                    return SelectItemList(
-                      children: appsList
-                          .where((app) => app.name
-                              .toLowerCase()
-                              .contains(searchQuery?.toLowerCase() ?? ''))
-                          .map((e) =>
-                              SelectItemButton(value: e, child: Text(e.name)))
-                          .toList(),
-                    );
-                  },
-                ).call,
-                itemBuilder: (context, value) => Text(value.name),
-              ),
-              Text('${el.deviceControlDialogLoc.onConfig.label}:').textSmall,
-              Select<ScrcpyConfig>(
-                filled: true,
-                itemBuilder: (context, value) => Text(value.configName),
-                onChanged: selectedApp == null
-                    ? null
-                    : (config) {
-                        ref.read(controlPageConfigProvider.notifier).state =
-                            config;
-                      },
-                placeholder:
-                    Text(el.deviceControlDialogLoc.onConfig.ddPlaceholder),
-                value: selectedConfig,
-                popup: SelectPopup(
-                  items: SelectItemList(
-                    children: allconfigs
-                        .where((e) => !e.windowOptions.noWindow)
-                        .map((config) => SelectItemButton(
-                              value: config,
-                              child: Text(config.configName),
-                            ))
-                        .toList(),
+              ControlButtons(device: device),
+              Expanded(
+                  child: PgSectionCardNoScroll(
+                      // expandContent: true,
+                      label: 'Pinned apps',
+                      content: appConfigPairs.isEmpty
+                          ? Center(
+                              child: Text('No pinned apps').textSmall.muted,
+                            )
+                          : PinnedAppDisplay(device: widget.device))),
+            ],
+          ),
+        ),
+        PgSectionCardNoScroll(
+          label: el.appSection.title,
+          labelTrail: Row(
+            spacing: 8,
+            children: [
+              if (selectedApp != null && selectedConfig != null && !isPinned)
+                Tooltip(
+                  tooltip: const TooltipContainer(child: Text('Pin app/config pair')).call,
+                  child: GhostButton(
+                    density: ButtonDensity.dense,
+                    child: Icon(Icons.push_pin).iconSmall(),
+                    onPressed: () {
+                      final pair = AppConfigPair(deviceId: widget.device.id, app: selectedApp!, config: selectedConfig);
+                      ref.read(appConfigPairProvider.notifier).addOrEditPair(pair);
+                      Db.saveAppConfigPairs(ref.read(appConfigPairProvider));
+                    },
                   ),
-                ).call,
-              ),
-              if (selectedApp != null &&
-                  selectedConfig != null &&
-                  appConfigPairs.length < 6)
-                Divider(),
+                ),
+              if (selectedApp != null && selectedConfig != null)
+                PrimaryButton(
+                  density: ButtonDensity.dense,
+                  onPressed: loading
+                      ? null
+                      : () async {
+                          loading = true;
+                          setState(() {});
+                          await ScrcpyUtils.newInstance(
+                            ref,
+                            selectedDevice: widget.device,
+                            selectedConfig: selectedConfig.copyWith(
+                              appOptions: (selectedConfig.appOptions).copyWith(selectedApp: selectedApp),
+                            ),
+                            customInstanceName: '${selectedApp!.name} (${selectedConfig.configName})',
+                          );
+
+                          if (mounted) {
+                            loading = false;
+                            setState(() {});
+                          }
+                        },
+                  child: Text(el.configLoc.start),
+                ),
+            ],
+          ),
+          content: Column(
+            children: [
               Row(
                 spacing: 8,
                 children: [
-                  if (selectedApp != null &&
-                      selectedConfig != null &&
-                      appConfigPairs.length < 6)
-                    Tooltip(
-                      tooltip: const TooltipContainer(
-                              child: Text('Pin app/config pair'))
-                          .call,
-                      child: IconButton(
-                        density: ButtonDensity.icon,
-                        variance: ButtonVariance.secondary,
-                        icon: Icon(Icons.push_pin).iconSmall(),
-                        onPressed: () {
-                          final pair = AppConfigPair(
-                              deviceId: widget.device.id,
-                              app: selectedApp!,
-                              config: selectedConfig);
-                          ref
-                              .read(appConfigPairProvider.notifier)
-                              .addOrEditPair(pair);
-                          Db.saveAppConfigPairs(
-                              ref.read(appConfigPairProvider));
+                  Expanded(
+                    child: Select<ScrcpyConfig>(
+                      filled: true,
+                      itemBuilder: (context, value) => Text(value.configName),
+                      onChanged: (config) {
+                        ref.read(controlPageConfigProvider.notifier).state = config;
+                      },
+                      placeholder: Text('Select config'),
+                      value: selectedConfig,
+                      popup: SelectPopup(
+                        items: SelectItemList(
+                          children: allconfigs
+                              .where((e) => !e.windowOptions.noWindow)
+                              .map((config) => SelectItemButton(
+                                    value: config,
+                                    child: Text(config.configName),
+                                  ))
+                              .toList(),
+                        ),
+                      ).call,
+                    ),
+                  ),
+                  Expanded(
+                    child: Select(
+                      filled: true,
+                      value: selectedApp,
+                      placeholder: Text(el.appSection.select.label),
+                      popupConstraints: BoxConstraints(maxHeight: appWidth - 100),
+                      onChanged: (app) {
+                        selectedApp = app!;
+                        setState(() {});
+                      },
+                      popup: SelectPopup.builder(
+                        searchPlaceholder: Text('Search'),
+                        builder: (context, searchQuery) {
+                          return SelectItemList(
+                            children: appsList
+                                .where((app) => app.name.toLowerCase().contains(searchQuery?.toLowerCase() ?? ''))
+                                .map((e) => SelectItemButton(
+                                    value: e,
+                                    child: OverflowMarquee(
+                                        duration: 2.seconds, delayDuration: 0.5.seconds, child: Text(e.name))))
+                                .toList(),
+                          );
                         },
-                      ),
+                      ).call,
+                      itemBuilder: (context, value) =>
+                          OverflowMarquee(duration: 2.seconds, delayDuration: 0.5.seconds, child: Text(value.name)),
                     ),
-                  Spacer(),
-                  if (selectedApp != null && selectedConfig != null)
-                    PrimaryButton(
-                      onPressed: loading
-                          ? null
-                          : () async {
-                              loading = true;
-                              setState(() {});
-                              await ScrcpyUtils.newInstance(
-                                ref,
-                                selectedDevice: widget.device,
-                                selectedConfig: selectedConfig.copyWith(
-                                  appOptions: (selectedConfig.appOptions)
-                                      .copyWith(selectedApp: selectedApp),
-                                ),
-                                customInstanceName:
-                                    '${selectedApp!.name} (${selectedConfig.configName})',
-                              );
-
-                              if (mounted) {
-                                loading = false;
-                                setState(() {});
-                              }
-                            },
-                      child: loading
-                          ? CircularProgressIndicator()
-                          : Text(el.configLoc.start),
-                    ),
+                  ),
                 ],
               ),
             ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
