@@ -79,6 +79,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
                     popup: SelectPopup(
                       items: SelectItemList(
                           children: allConfigs
+                              .where((c) => !c.windowOptions.noWindow)
                               .map((c) => SelectItemButton(
                                   value: c,
                                   child: OverflowMarquee(
