@@ -97,6 +97,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
                     controller: appSearchController,
                     onChanged: (value) => setState(() {}),
                     features: [
+                      if (appSearchController.text.isEmpty) InputFeature.leading(Icon(Icons.search_rounded)),
                       if (appSearchController.text.isNotEmpty)
                         InputFeature.trailing(IconButton(
                             variance: ButtonVariance.link,
