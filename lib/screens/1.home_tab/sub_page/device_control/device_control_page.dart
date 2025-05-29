@@ -85,7 +85,7 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
               if (sizingInfo.isMobile) {
                 sidebarWidth = 52;
               }
-              bool wrapped = sizingInfo.screenSize.width >= ((appWidth * 2) + sidebarWidth + 40);
+              bool wrapped = sizingInfo.screenSize.width >= ((appWidth * 2) + sidebarWidth + 30);
 
               if (!wrapped) {
                 return SmallControlPage(device: device);
