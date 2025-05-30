@@ -15,7 +15,6 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/command_runner.dart';
-import 'package:scrcpygui/widgets/override_dialog.dart';
 
 import '../db/db.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
@@ -158,25 +157,25 @@ class ScrcpyUtils {
       await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
     }
 
-    final checkResult =
-        await checkForIncompatibleFlags(ref, selectedConfig, device);
+    // final checkResult =
+    //     await checkForIncompatibleFlags(ref, selectedConfig, device);
 
-    bool proceed = checkResult.isEmpty;
+    // bool proceed = checkResult.isEmpty;
 
-    if (!proceed) {
-      proceed = (await showDialog(
-            context: ref.context,
-            builder: (context) => OverrideDialog(overrideWidget: checkResult),
-          )) ??
-          false;
-    }
+    // if (!proceed) {
+    //   proceed = (await showDialog(
+    //         context: ref.context,
+    //         builder: (context) => OverrideDialog(overrideWidget: checkResult),
+    //       )) ??
+    //       false;
+    // }
 
-    if (proceed) {
-      final inst = await _startServer(ref, device, selectedConfig,
-          isTest: isTest, customInstanceName: customInstanceName);
+    // if (proceed) {
+    final inst = await _startServer(ref, device, selectedConfig,
+        isTest: isTest, customInstanceName: customInstanceName);
 
-      ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
-    }
+    ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
+    // }
   }
 
   static Future<void> killServer(ScrcpyRunningInstance instance,
@@ -260,11 +259,11 @@ class ScrcpyUtils {
       ));
     }
 
-    if (duplicateAudio || audioEncoder || audioCodec) {
+    if (!duplicateAudio || !audioEncoder || !audioCodec) {
       overrideWidget.add(AudioOptionsOverride(
-        duplicateAudio: duplicateAudio,
-        audioCodec: audioCodec,
-        audioEncoder: audioEncoder,
+        duplicateAudio: !duplicateAudio,
+        audioCodec: !audioCodec,
+        audioEncoder: !audioEncoder,
       ));
     }
 

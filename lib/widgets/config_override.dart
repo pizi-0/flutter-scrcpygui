@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions_dart.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
@@ -54,9 +55,9 @@ class AudioOptionsOverride extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final list = [
-      // if (duplicateAudio) DisplayIdOverride(),
-      // if (audioCodec) VideoCodecOverride(),
-      // if (audioEncoder) VideoEncoderOverride()
+      if (duplicateAudio) DisplayIdOverride(),
+      if (audioCodec) AudioCodecOverride(),
+      if (audioEncoder) VideoEncoderOverride()
     ];
 
     return PgSectionCard(
@@ -112,12 +113,16 @@ class VideoCodecOverride extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedDevice = ref.watch(selectedDeviceProvider);
-    final selectedConfig = ref.watch(configOverrideProvider);
-
-    final currentCodec = selectedConfig!.videoOptions.videoCodec;
+    final selectedConfig = ref.watch(configOverrideProvider)!;
+    final faultyConfig = ref.watch(selectedConfigProvider)!;
 
     return ConfigDropdownOthers(
       initialValue: selectedConfig.videoOptions.videoCodec,
+      subtitle:
+          "Codec: '${faultyConfig.videoOptions.videoCodec}' is not available for this device.",
+      showinfo: faultyConfig.videoOptions.videoCodec ==
+          selectedConfig.videoOptions.videoCodec,
+      popupWidthConstraint: PopoverConstraint.intrinsic,
       onSelected: (value) {
         ref.read(configOverrideProvider.notifier).update((state) => state =
             state!.copyWith(
@@ -125,8 +130,13 @@ class VideoCodecOverride extends ConsumerWidget {
       },
       items: [
         ...selectedDevice!.info!.videoEncoders
-            .map((e) => SelectItemButton(value: e.codec, child: Text(e.codec))),
-        SelectItemButton(value: currentCodec, child: Text('$currentCodec *'))
+            .firstWhere(
+                (enc) => enc.codec == selectedConfig.videoOptions.videoCodec)
+            .encoder
+            .map((e) => SelectItemButton(value: e, child: Text(e))),
+        SelectItemButton(
+            value: faultyConfig.videoOptions.videoCodec,
+            child: Text('${faultyConfig.videoOptions.videoCodec} *'))
       ],
       label: el.videoSection.codec.label,
     );
@@ -175,6 +185,79 @@ class AudioCodecOverride extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container();
+    final selectedDevice = ref.watch(selectedDeviceProvider);
+    final selectedConfig = ref.watch(configOverrideProvider)!;
+    final faultyConfig = ref.watch(selectedConfigProvider)!;
+
+    return ConfigDropdownOthers(
+      initialValue: selectedConfig.audioOptions.audioCodec,
+      subtitle:
+          "Codec: '${faultyConfig.audioOptions.audioCodec}' is not available for this device.",
+      showinfo: faultyConfig.audioOptions.audioCodec ==
+          selectedConfig.audioOptions.audioCodec,
+      onSelected: (value) {
+        ref.read(configOverrideProvider.notifier).update((state) => state =
+            state!.copyWith(
+                audioOptions: state.audioOptions.copyWith(audioCodec: value!)));
+      },
+      items: [
+        ...selectedDevice!.info!.audioEncoder
+            .where((e) => e.codec != selectedConfig.audioOptions.audioCodec)
+            .map((e) => SelectItemButton(
+                value: e.codec,
+                child: OverflowMarquee(
+                    duration: 2.seconds,
+                    delayDuration: 0.5.seconds,
+                    child: Text(e.codec)))),
+        SelectItemButton(
+            value: faultyConfig.audioOptions.audioCodec,
+            child: OverflowMarquee(
+                duration: 2.seconds,
+                delayDuration: 0.5.seconds,
+                child: Text('${faultyConfig.audioOptions.audioCodec} *')))
+      ],
+      label: el.audioSection.codec.label,
+    );
+  }
+}
+
+class AudioEncoderOverride extends ConsumerWidget {
+  const AudioEncoderOverride({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedDevice = ref.watch(selectedDeviceProvider);
+    final selectedConfig = ref.watch(configOverrideProvider)!;
+    final faultyConfig = ref.watch(selectedConfigProvider)!;
+
+    return ConfigDropdownOthers(
+      initialValue: selectedConfig.audioOptions.audioCodec,
+      subtitle:
+          "Encoder: '${faultyConfig.audioOptions.audioEncoder}' is not available for this device.",
+      showinfo: faultyConfig.audioOptions.audioCodec ==
+          selectedConfig.audioOptions.audioCodec,
+      onSelected: (value) {
+        ref.read(configOverrideProvider.notifier).update((state) => state =
+            state!.copyWith(
+                audioOptions: state.audioOptions.copyWith(audioCodec: value!)));
+      },
+      items: [
+        ...selectedDevice!.info!.audioEncoder
+            .where((e) => e.codec != selectedConfig.audioOptions.audioCodec)
+            .map((e) => SelectItemButton(
+                value: e.codec,
+                child: OverflowMarquee(
+                    duration: 2.seconds,
+                    delayDuration: 0.5.seconds,
+                    child: Text(e.codec)))),
+        SelectItemButton(
+            value: faultyConfig.audioOptions.audioCodec,
+            child: OverflowMarquee(
+                duration: 2.seconds,
+                delayDuration: 0.5.seconds,
+                child: Text('${faultyConfig.audioOptions.audioCodec} *')))
+      ],
+      label: el.audioSection.codec.label,
+    );
   }
 }
