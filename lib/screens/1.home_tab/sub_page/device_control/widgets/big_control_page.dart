@@ -16,7 +16,8 @@ class BigControlPage2 extends ConsumerStatefulWidget {
   const BigControlPage2({super.key, required this.device});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _BigControlPage2State();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _BigControlPage2State();
 }
 
 class _BigControlPage2State extends ConsumerState<BigControlPage2> {

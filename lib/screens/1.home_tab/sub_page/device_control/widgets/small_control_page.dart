@@ -34,6 +34,12 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
   ScrollController scrollController = ScrollController();
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final device = widget.device;
     final appsList = device.info?.appList ?? [];
