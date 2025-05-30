@@ -60,7 +60,8 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
               style: TextStyle(
                   fontSize: theme.typography.xLarge.fontSize,
                   fontWeight: FontWeight.bold,
-                  decoration: TextDecoration.underline),
+                  decoration: TextDecoration.underline,
+                  color: theme.colorScheme.foreground),
               children: [
                 TextSpan(text: 'Lounge'),
                 TextSpan(text: ' / '),
