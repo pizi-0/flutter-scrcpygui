@@ -24,6 +24,7 @@ import 'package:scrcpygui/screens/4.settings_tab/settings_tab.dart';
 import 'package:scrcpygui/screens/5.companion_tab/companion_tab.dart';
 import 'package:scrcpygui/screens/about_tab/about_tab.dart';
 import 'package:scrcpygui/utils/const.dart';
+import 'package:scrcpygui/utils/custom_scheme.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -33,10 +34,12 @@ void main() async {
   await windowManager.ensureInitialized();
 
   final settings = await Db.getAppSettings();
+
   final lastWinSize = await Db.getWinSize();
 
   WindowOptions windowOptions = WindowOptions(
-    size: settings.behaviour.rememberWinSize ? lastWinSize : const Size(500, 600),
+    size:
+        settings.behaviour.rememberWinSize ? lastWinSize : const Size(500, 600),
     minimumSize: Size(500, 600),
     center: true,
     skipTaskbar: false,
@@ -114,17 +117,24 @@ class _MyAppState extends ConsumerState<MyApp> {
     return ShadcnApp.router(
       supportedLocales: supportedLocales,
       locale: Locale(behaviour.languageCode, ''),
-      localizationsDelegates: [...localizationsDelegates, const ShadcnLocalizationsDelegate()],
+      localizationsDelegates: [
+        ...localizationsDelegates,
+        const ShadcnLocalizationsDelegate()
+      ],
       routeInformationParser: _router.routeInformationParser,
       routerDelegate: _router.routerDelegate,
       routeInformationProvider: _router.routeInformationProvider,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: looks.scheme.light,
+        colorScheme: looks.useOldScheme
+            ? looks.scheme.light
+            : mySchemeLight(looks.scheme.light.primary),
         radius: looks.widgetRadius,
       ),
       darkTheme: ThemeData(
-        colorScheme: looks.scheme.dark,
+        colorScheme: looks.useOldScheme
+            ? looks.scheme.dark
+            : mySchemeDark(looks.scheme.dark.primary),
         radius: looks.widgetRadius,
       ),
       themeMode: looks.themeMode,
@@ -146,7 +156,8 @@ final _router = GoRouter(
     ),
     StatefulShellRoute(
       builder: (context, state, navigationShell) => navigationShell,
-      navigatorContainerBuilder: (context, navigationShell, children) => MainScreen(children: children),
+      navigatorContainerBuilder: (context, navigationShell, children) =>
+          MainScreen(children: children),
       branches: [
         StatefulShellBranch(
           navigatorKey: _shellNavKey,
@@ -157,7 +168,8 @@ final _router = GoRouter(
               routes: [
                 GoRoute(
                   path: DeviceSettingsScreen.route,
-                  builder: (context, state) => DeviceSettingsScreen(id: state.pathParameters['id']!),
+                  builder: (context, state) =>
+                      DeviceSettingsScreen(id: state.pathParameters['id']!),
                   pageBuilder: GoTransitions.cupertino.call,
                 ),
                 GoRoute(
@@ -179,7 +191,8 @@ final _router = GoRouter(
                 ),
                 GoRoute(
                   path: DeviceControlPage.route,
-                  builder: (context, state) => DeviceControlPage(device: state.extra as AdbDevices),
+                  builder: (context, state) =>
+                      DeviceControlPage(device: state.extra as AdbDevices),
                   pageBuilder: GoTransitions.cupertino.call,
                 ),
               ],
