@@ -89,7 +89,7 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
     return PgSectionCard(
       label: el.companionLoc.server.label,
       labelTrail: Button(
-          style: ButtonStyle.ghost(),
+          style: ButtonStyle.ghost(density: ButtonDensity.dense),
           leading: isServerRunning
               ? Icon(Icons.stop_rounded, color: Colors.red)
               : Icon(Icons.play_arrow_rounded, color: Colors.green),

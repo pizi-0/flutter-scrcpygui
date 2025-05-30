@@ -155,6 +155,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
         PgSectionCard(
           label: el.deviceSettingsLoc.scrcpyInfo.label,
           labelTrail: IconButton.ghost(
+            density: ButtonDensity.dense,
             onPressed: _getScrcpyInfo,
             icon: const Icon(Icons.refresh),
           ),

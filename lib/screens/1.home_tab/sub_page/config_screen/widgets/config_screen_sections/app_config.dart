@@ -37,6 +37,7 @@ class AppConfigState extends ConsumerState<AppConfig> {
     return PgSectionCard(
       label: el.appSection.title,
       labelTrail: IconButton.ghost(
+        density: ButtonDensity.dense,
         onPressed: loading ? null : _onRefreshApp,
         icon: loading
             ? SizedBox.square(
