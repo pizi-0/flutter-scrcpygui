@@ -37,6 +37,13 @@ class _AppGridState extends ConsumerState<AppGrid> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    appSearchController.dispose();
+    appScrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final device = widget.device;
     final allConfigs = ref.watch(configsProvider);
@@ -71,100 +78,102 @@ class _AppGridState extends ConsumerState<AppGrid> {
       constraints: BoxConstraints(maxWidth: (size.width - sidebarWidth) * 0.5),
       label: el.loungeLoc.launcher.label,
       expandContent: true,
-      content: CustomScrollView(
-        controller: appScrollController,
-        slivers: [
-          SliverToBoxAdapter(
-            child: Row(
-              spacing: 8,
-              children: [
-                Expanded(
-                  child: Select<ScrcpyConfig>(
-                    filled: true,
-                    placeholder: OverflowMarquee(
-                        duration: 2.seconds,
-                        delayDuration: 0.5.seconds,
-                        child: Text(el.loungeLoc.placeholders.config)),
-                    value: config,
-                    onChanged: (value) {
-                      ref.read(controlPageConfigProvider.notifier).state =
-                          value;
-                    },
-                    popup: SelectPopup(
-                      items: SelectItemList(
-                          children: allConfigs
-                              .where((c) => !c.windowOptions.noWindow)
-                              .map((c) => SelectItemButton(
-                                  value: c,
-                                  child: OverflowMarquee(
-                                      duration: 3.seconds,
-                                      delayDuration: 0.5.seconds,
-                                      child: Text(c.configName))))
-                              .toList()),
-                    ).call,
-                    itemBuilder: (context, value) => OverflowMarquee(
-                        duration: 2.seconds,
-                        delayDuration: 0.5.seconds,
-                        child: Text(value.configName)),
-                  ),
+      content: Column(
+        spacing: 8,
+        children: [
+          Row(
+            spacing: 8,
+            children: [
+              Expanded(
+                child: Select<ScrcpyConfig>(
+                  filled: true,
+                  placeholder: OverflowMarquee(
+                      duration: 2.seconds,
+                      delayDuration: 0.5.seconds,
+                      child: Text(el.loungeLoc.placeholders.config)),
+                  value: config,
+                  onChanged: (value) {
+                    ref.read(controlPageConfigProvider.notifier).state = value;
+                  },
+                  popup: SelectPopup(
+                    items: SelectItemList(
+                        children: allConfigs
+                            .where((c) => !c.windowOptions.noWindow)
+                            .map((c) => SelectItemButton(
+                                value: c,
+                                child: OverflowMarquee(
+                                    duration: 3.seconds,
+                                    delayDuration: 0.5.seconds,
+                                    child: Text(c.configName))))
+                            .toList()),
+                  ).call,
+                  itemBuilder: (context, value) => OverflowMarquee(
+                      duration: 2.seconds,
+                      delayDuration: 0.5.seconds,
+                      child: Text(value.configName)),
                 ),
-                Expanded(
-                  child: TextField(
-                    padding: EdgeInsets.all(7),
-                    filled: true,
-                    placeholder: Text(el.loungeLoc.placeholders.search),
-                    focusNode: searchBoxFocusNode,
-                    controller: appSearchController,
-                    onChanged: (value) => setState(() {}),
-                    features: [
-                      if (appSearchController.text.isEmpty)
-                        InputFeature.leading(Icon(Icons.search_rounded)),
-                      if (appSearchController.text.isNotEmpty)
-                        InputFeature.trailing(IconButton(
-                            variance: ButtonVariance.link,
-                            onPressed: () {
-                              appSearchController.clear();
-                              controlPageKeyboardListenerNode.requestFocus();
+              ),
+              Expanded(
+                child: TextField(
+                  padding: EdgeInsets.all(7),
+                  filled: true,
+                  placeholder: Text(el.loungeLoc.placeholders.search),
+                  focusNode: searchBoxFocusNode,
+                  controller: appSearchController,
+                  onChanged: (value) => setState(() {}),
+                  features: [
+                    if (appSearchController.text.isEmpty)
+                      InputFeature.leading(Icon(Icons.search_rounded)),
+                    if (appSearchController.text.isNotEmpty)
+                      InputFeature.trailing(IconButton(
+                          variance: ButtonVariance.link,
+                          onPressed: () {
+                            appSearchController.clear();
+                            controlPageKeyboardListenerNode.requestFocus();
 
-                              setState(() {});
-                            },
-                            density: ButtonDensity.compact,
-                            icon: Icon(Icons.close_rounded)))
-                    ],
-                    onSubmitted: (value) {
-                      controlPageKeyboardListenerNode.requestFocus();
-                    },
+                            setState(() {});
+                          },
+                          density: ButtonDensity.compact,
+                          icon: Icon(Icons.close_rounded)))
+                  ],
+                  onSubmitted: (value) {
+                    controlPageKeyboardListenerNode.requestFocus();
+                  },
+                ),
+              )
+            ],
+          ),
+          Divider(),
+          Expanded(
+            child: CustomScrollView(
+              controller: appScrollController,
+              slivers: [
+                if (filteredList.isEmpty)
+                  SliverFillRemaining(
+                    child: Center(
+                        child: Text(el.loungeLoc.info.emptySearch)
+                            .textSmall
+                            .muted),
                   ),
-                )
+                if (filteredList.isNotEmpty)
+                  SliverGrid.builder(
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 150,
+                      mainAxisExtent: 40,
+                      mainAxisSpacing: 8,
+                      crossAxisSpacing: 8,
+                    ),
+                    itemCount: filteredList.length,
+                    itemBuilder: (context, index) {
+                      final app = filteredList[index];
+
+                      return AppGridTile(
+                          ref: ref, app: app, device: widget.device);
+                    },
+                  )
               ],
             ),
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Divider(),
-            ),
-          ),
-          if (filteredList.isEmpty)
-            SliverFillRemaining(
-              child: Center(
-                  child: Text(el.loungeLoc.info.emptySearch).textSmall.muted),
-            ),
-          if (filteredList.isNotEmpty)
-            SliverGrid.builder(
-              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                maxCrossAxisExtent: 150,
-                mainAxisExtent: 40,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-              ),
-              itemCount: filteredList.length,
-              itemBuilder: (context, index) {
-                final app = filteredList[index];
-
-                return AppGridTile(ref: ref, app: app, device: widget.device);
-              },
-            )
         ],
       ),
     );
