@@ -395,6 +395,8 @@ settings_loc:
         dark: Oscuro
         light: Claro
         system: Sistema
+    old_scheme:
+      label: Usar esquema de colores antiguo
     corner_radius:
       label: Radio de las esquinas
     accent_color:

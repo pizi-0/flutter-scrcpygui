@@ -85,7 +85,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
         InkWell(
           onTap: _toggleOldScheme,
           child: PgListTile(
-            title: 'Use old color scheme',
+            title: el.settingsLoc.looks.oldScheme.label,
             trailing: ConstrainedBox(
               constraints:
                   BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),

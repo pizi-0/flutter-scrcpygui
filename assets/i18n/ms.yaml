@@ -395,6 +395,8 @@ settings_loc:
         dark: Gelap
         light: Cerah
         system: Sistem
+    old_scheme:
+      label: Guna skema warna lama
     corner_radius:
       label: Jejari Sudut
     accent_color:

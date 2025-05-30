@@ -395,6 +395,8 @@ settings_loc:
         dark: Scuro
         light: Chiaro
         system: Sistema
+    old_scheme:
+      label: Usa vecchio schema di colori
     corner_radius:
       label: Raggio angoli
     accent_color:

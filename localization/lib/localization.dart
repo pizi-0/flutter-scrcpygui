@@ -5887,6 +5887,7 @@ class SettingsLocLooks {
   const SettingsLocLooks({
     required this.label,
     required this.mode,
+    required this.oldScheme,
     required this.cornerRadius,
     required this.accentColor,
     required this.tintLevel,
@@ -5896,6 +5897,8 @@ class SettingsLocLooks {
       label: (json['label'] ?? '').toString(),
       mode: SettingsLocLooksMode.fromJson(
           (json['mode'] as Map).cast<String, dynamic>()),
+      oldScheme: SettingsLocLooksOldScheme.fromJson(
+          (json['old_scheme'] as Map).cast<String, dynamic>()),
       cornerRadius: SettingsLocLooksCornerRadius.fromJson(
           (json['corner_radius'] as Map).cast<String, dynamic>()),
       accentColor: SettingsLocLooksAccentColor.fromJson(
@@ -5907,6 +5910,8 @@ class SettingsLocLooks {
   final String label;
   final SettingsLocLooksMode mode;
 
+  final SettingsLocLooksOldScheme oldScheme;
+
   final SettingsLocLooksCornerRadius cornerRadius;
 
   final SettingsLocLooksAccentColor accentColor;
@@ -5916,6 +5921,7 @@ class SettingsLocLooks {
   Map<String, Object> get _content => {
         r'''label''': label,
         r'''mode''': mode,
+        r'''old_scheme''': oldScheme,
         r'''corner_radius''': cornerRadius,
         r'''accent_color''': accentColor,
         r'''tint_level''': tintLevel,
@@ -6015,6 +6021,47 @@ class SettingsLocLooksModeValue {
         r'''dark''': dark,
         r'''light''': light,
         r'''system''': system,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class SettingsLocLooksOldScheme {
+  const SettingsLocLooksOldScheme({
+    required this.label,
+  });
+  factory SettingsLocLooksOldScheme.fromJson(Map<String, dynamic> json) {
+    return SettingsLocLooksOldScheme(
+      label: (json['label'] ?? '').toString(),
+    );
+  }
+  final String label;
+  Map<String, Object> get _content => {
+        r'''label''': label,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -8346,6 +8393,9 @@ final LocalizationMessages en = LocalizationMessages(
           system: 'System',
         ),
       ),
+      oldScheme: SettingsLocLooksOldScheme(
+        label: 'Use old color scheme',
+      ),
       cornerRadius: SettingsLocLooksCornerRadius(
         label: 'Corner radius',
       ),
@@ -8990,6 +9040,9 @@ final LocalizationMessages es = LocalizationMessages(
           system: 'Sistema',
         ),
       ),
+      oldScheme: SettingsLocLooksOldScheme(
+        label: 'Usar esquema de colores antiguo',
+      ),
       cornerRadius: SettingsLocLooksCornerRadius(
         label: 'Radio de las esquinas',
       ),
@@ -9626,6 +9679,9 @@ final LocalizationMessages it = LocalizationMessages(
           light: 'Chiaro',
           system: 'Sistema',
         ),
+      ),
+      oldScheme: SettingsLocLooksOldScheme(
+        label: 'Usa vecchio schema di colori',
       ),
       cornerRadius: SettingsLocLooksCornerRadius(
         label: 'Raggio angoli',
@@ -10267,6 +10323,9 @@ final LocalizationMessages ms = LocalizationMessages(
           light: 'Cerah',
           system: 'Sistem',
         ),
+      ),
+      oldScheme: SettingsLocLooksOldScheme(
+        label: 'Guna skema warna lama',
       ),
       cornerRadius: SettingsLocLooksCornerRadius(
         label: 'Jejari Sudut',
