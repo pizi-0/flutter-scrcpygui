@@ -183,7 +183,11 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
             selectedConfig.scrcpyMode == ScrcpyMode.audioOnly)
           const Divider(),
         ConfigDropdownOthers(
-          initialValue: selectedConfig.audioOptions.audioCodec,
+          initialValue: info.audioEncoder
+              .firstWhere(
+                  (ae) => ae.codec == selectedConfig.audioOptions.audioCodec,
+                  orElse: () => info.audioEncoder.first)
+              .codec,
           showinfo: showInfo || _isRecordingAudioOnly(selectedConfig),
           onSelected: _isRecordingAudioOnly(selectedConfig)
               ? null
@@ -228,9 +232,11 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
             ),
             if (selectedConfig.audioOptions.audioCodec != 'raw')
               ...info.audioEncoder
-                  .firstWhere((ae) =>
-                      ae.codec ==
-                      ref.read(configScreenConfig)!.audioOptions.audioCodec)
+                  .firstWhere(
+                      (ae) =>
+                          ae.codec ==
+                          ref.read(configScreenConfig)!.audioOptions.audioCodec,
+                      orElse: () => info.audioEncoder.first)
                   .encoder
                   .map(
                     (enc) => SelectItemButton(
