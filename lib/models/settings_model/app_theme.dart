@@ -6,7 +6,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class AppTheme {
   final double widgetRadius;
-  final bool fromWall;
+  final bool useOldScheme;
   final ColorSchemesWithName scheme;
   final ThemeMode themeMode;
   final double accentTintLevel;
@@ -14,21 +14,21 @@ class AppTheme {
   AppTheme({
     required this.scheme,
     required this.themeMode,
-    this.fromWall = false,
+    this.useOldScheme = false,
     this.widgetRadius = 0.5,
     required this.accentTintLevel,
   });
 
   AppTheme copyWith({
     double? widgetRadius,
-    bool? fromWall,
+    bool? useOldScheme,
     ColorSchemesWithName? scheme,
     ThemeMode? themeMode,
     double? accentTintLevel,
   }) {
     return AppTheme(
       widgetRadius: widgetRadius ?? this.widgetRadius,
-      fromWall: fromWall ?? this.fromWall,
+      useOldScheme: useOldScheme ?? this.useOldScheme,
       scheme: scheme ?? this.scheme,
       themeMode: themeMode ?? this.themeMode,
       accentTintLevel: accentTintLevel ?? this.accentTintLevel,
@@ -38,7 +38,7 @@ class AppTheme {
   Map<String, dynamic> toMap() {
     return {
       'widgetRadius': widgetRadius,
-      'fromWall': fromWall,
+      'useOldScheme': useOldScheme,
       'scheme': scheme.toMap(),
       'themeMode': ThemeMode.values.indexOf(themeMode),
       'accentTintLevel': accentTintLevel,
@@ -50,7 +50,7 @@ class AppTheme {
 
     return AppTheme(
       widgetRadius: map['widgetRadius'] ?? 0.5,
-      fromWall: map['fromWall'] ?? false,
+      useOldScheme: map['useOldScheme'] ?? false,
       scheme: map['scheme'] != null
           ? ColorSchemesWithName.fromMap(map['scheme'])
           : mySchemes().first,

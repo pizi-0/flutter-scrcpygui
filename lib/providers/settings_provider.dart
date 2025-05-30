@@ -25,9 +25,16 @@ class SettingsNotifier extends Notifier<AppSettings> {
     state = state.copyWith(looks: currentLooks.copyWith(scheme: scheme));
   }
 
+  toggleOldScheme() {
+    var currentLooks = state.looks;
+    state = state.copyWith(
+        looks: currentLooks.copyWith(useOldScheme: !currentLooks.useOldScheme));
+  }
+
   changeTintLevel(double tintLevel) {
     var currentLooks = state.looks;
-    state = state.copyWith(looks: currentLooks.copyWith(accentTintLevel: tintLevel));
+    state = state.copyWith(
+        looks: currentLooks.copyWith(accentTintLevel: tintLevel));
   }
 
   changeCornerRadius(double radius) {
@@ -38,26 +45,33 @@ class SettingsNotifier extends Notifier<AppSettings> {
   changeMinimizeBehaviour(MinimizeAction behaviour) {
     var currentBehaviour = state.behaviour;
 
-    state = state.copyWith(behaviour: currentBehaviour.copyWith(minimizeAction: behaviour));
+    state = state.copyWith(
+        behaviour: currentBehaviour.copyWith(minimizeAction: behaviour));
   }
 
   changeLanguage(String languageCode) {
     var currentBehaviour = state.behaviour;
 
-    state = state.copyWith(behaviour: currentBehaviour.copyWith(languageCode: languageCode));
+    state = state.copyWith(
+        behaviour: currentBehaviour.copyWith(languageCode: languageCode));
   }
 
   changeHideConfig() {
     var currentBehaviour = state.behaviour;
 
-    state = state.copyWith(behaviour: currentBehaviour.copyWith(hideDefaultConfig: !state.behaviour.hideDefaultConfig));
+    state = state.copyWith(
+        behaviour: currentBehaviour.copyWith(
+            hideDefaultConfig: !state.behaviour.hideDefaultConfig));
   }
 
   changeRememberWinSize() {
     var currentBehaviour = state.behaviour;
 
-    state = state.copyWith(behaviour: currentBehaviour.copyWith(rememberWinSize: !state.behaviour.rememberWinSize));
+    state = state.copyWith(
+        behaviour: currentBehaviour.copyWith(
+            rememberWinSize: !state.behaviour.rememberWinSize));
   }
 }
 
-final settingsProvider = NotifierProvider<SettingsNotifier, AppSettings>(() => SettingsNotifier());
+final settingsProvider =
+    NotifierProvider<SettingsNotifier, AppSettings>(() => SettingsNotifier());

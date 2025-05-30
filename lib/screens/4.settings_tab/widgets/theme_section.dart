@@ -1,4 +1,5 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:flutter/material.dart' show InkWell;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
@@ -81,6 +82,26 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
           ),
         ),
         const Divider(),
+        InkWell(
+          onTap: _toggleOldScheme,
+          child: PgListTile(
+            title: 'Use old color scheme',
+            trailing: ConstrainedBox(
+              constraints:
+                  BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Checkbox(
+                  state: looks.useOldScheme
+                      ? CheckboxState.checked
+                      : CheckboxState.unchecked,
+                  onChanged: (b) => _toggleOldScheme(),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const Divider(),
         PgListTile(
           title: el.settingsLoc.looks.cornerRadius.label,
           trailing: ConstrainedBox(
@@ -96,9 +117,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                     max: 3,
                     hintValue: SliderValue.single(looks.widgetRadius),
                     value: SliderValue.single(looks.widgetRadius),
-                    onChanged: (value) => ref
-                        .read(settingsProvider.notifier)
-                        .changeCornerRadius(value.value),
+                    onChanged: (value) => _onRadiusChange(value.value),
                   ),
                 ),
               ],
@@ -107,6 +126,16 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
         ),
       ],
     );
+  }
+
+  _toggleOldScheme() async {
+    ref.read(settingsProvider.notifier).toggleOldScheme();
+    await Db.saveAppSettings(ref.read(settingsProvider));
+  }
+
+  _onRadiusChange(double value) async {
+    ref.read(settingsProvider.notifier).changeCornerRadius(value);
+    await Db.saveAppSettings(ref.read(settingsProvider));
   }
 }
 
