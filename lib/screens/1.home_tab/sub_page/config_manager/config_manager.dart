@@ -32,53 +32,75 @@ class _ConfigManagerState extends ConsumerState<ConfigManager> {
 
     reorderList = [...filteredConfigs];
 
-    return PgScaffold(
-      title: el.configManagerLoc.title,
-      onBack: () => context.pop(),
-      children: [
-        PgSectionCard(
+    return PgScaffoldCustom(
+        title: Text(el.configManagerLoc.title),
+        onBack: () => context.pop(),
+        scaffoldBody: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 4.0, bottom: 4),
-              child: Row(
-                spacing: 8,
-                children: [
-                  Chip(
-                    style: reorder ? ButtonStyle.primary() : null,
-                    onPressed: _onReorderPressed,
-                    child: Text(!reorder
-                        ? el.buttonLabelLoc.reorder
-                        : el.buttonLabelLoc.save),
-                  ),
-                  if (reorder)
-                    FadeIn(
-                      duration: 100.milliseconds,
-                      child: Chip(
-                          child: Text(el.buttonLabelLoc.cancel),
-                          onPressed: () => setState(() => reorder = false)),
+            Expanded(
+              child: PgSectionCardNoScroll(
+                expandContent: true,
+                content: CustomScrollView(
+                  physics: NeverScrollableScrollPhysics(),
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0, bottom: 4),
+                            child: Row(
+                              spacing: 8,
+                              children: [
+                                Chip(
+                                  style: reorder ? ButtonStyle.primary() : null,
+                                  onPressed: _onReorderPressed,
+                                  child: Text(!reorder
+                                      ? el.buttonLabelLoc.reorder
+                                      : el.buttonLabelLoc.save),
+                                ),
+                                if (reorder)
+                                  FadeIn(
+                                    duration: 100.milliseconds,
+                                    child: Chip(
+                                        child: Text(el.buttonLabelLoc.cancel),
+                                        onPressed: () =>
+                                            setState(() => reorder = false)),
+                                  )
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Divider(),
+                          )
+                        ],
+                      ),
+                    ),
+                    SliverFillRemaining(
+                      child: ReorderableList(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return _reorderableConfigListTIle(
+                              index, filteredConfigs);
+                        },
+                        itemCount: reorder
+                            ? reorderList.length
+                            : filteredConfigs.length,
+                        onReorder: (oldIndex, newIndex) {
+                          if (oldIndex < newIndex) {
+                            newIndex -= 1;
+                          }
+                          final item = reorderList.removeAt(oldIndex);
+                          reorderList.insert(newIndex, item);
+                        },
+                      ),
                     )
-                ],
+                  ],
+                ),
               ),
             ),
-            if (filteredConfigs.isNotEmpty) Divider(),
-            ReorderableList(
-              shrinkWrap: true,
-              itemBuilder: (context, index) {
-                return _reorderableConfigListTIle(index, filteredConfigs);
-              },
-              itemCount: reorder ? reorderList.length : filteredConfigs.length,
-              onReorder: (oldIndex, newIndex) {
-                if (oldIndex < newIndex) {
-                  newIndex -= 1;
-                }
-                final item = reorderList.removeAt(oldIndex);
-                reorderList.insert(newIndex, item);
-              },
-            )
           ],
-        )
-      ],
-    );
+        ));
   }
 
   Widget _reorderableConfigListTIle(
@@ -110,8 +132,16 @@ class _ConfigManagerState extends ConsumerState<ConfigManager> {
                         reorder ? reorderList[index] : filteredConfigs[index])),
           ],
         ),
-        if (reorder && index != reorderList.length - 1) const Divider(),
-        if (!reorder && index != filteredConfigs.length - 1) const Divider()
+        if (reorder && index != reorderList.length - 1)
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: const Divider(),
+          ),
+        if (!reorder && index != filteredConfigs.length - 1)
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: const Divider(),
+          )
       ],
     );
   }

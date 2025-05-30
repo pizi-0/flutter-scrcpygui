@@ -200,51 +200,64 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
 
     reorderList = [...filteredConfigs];
 
-    return PgSectionCard(
+    return PgSectionCardNoScroll(
       label: el.configLoc.label(count: '${filteredConfigs.length}'),
+      expandContent: true,
       labelTrail: IconButton.ghost(
         density: ButtonDensity.dense,
         icon: const Icon(Icons.add),
         leading: Text(el.configLoc.new$),
         onPressed: _onNewConfigPressed,
       ),
-      children: [
-        ConfigFilterButtonBig(disable: reorder),
-        Padding(
-          padding: const EdgeInsets.only(top: 4.0, bottom: 4),
-          child: Row(
-            spacing: 8,
-            children: [
-              Chip(
-                style: reorder ? ButtonStyle.primary() : null,
-                onPressed: _onReorderPressed,
-                child: Text(!reorder
-                    ? el.buttonLabelLoc.reorder
-                    : el.buttonLabelLoc.save),
-              ),
-              if (reorder)
-                Chip(
-                    child: Text(el.buttonLabelLoc.cancel),
-                    onPressed: () => setState(() => reorder = false))
-            ],
+      content: CustomScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
+            child: Column(
+              spacing: 8,
+              children: [
+                ConfigFilterButtonBig(disable: reorder),
+                Padding(
+                  padding: const EdgeInsets.only(top: 4.0, bottom: 4),
+                  child: Row(
+                    spacing: 8,
+                    children: [
+                      Chip(
+                        style: reorder ? ButtonStyle.primary() : null,
+                        onPressed: _onReorderPressed,
+                        child: Text(!reorder
+                            ? el.buttonLabelLoc.reorder
+                            : el.buttonLabelLoc.save),
+                      ),
+                      if (reorder)
+                        Chip(
+                            child: Text(el.buttonLabelLoc.cancel),
+                            onPressed: () => setState(() => reorder = false))
+                    ],
+                  ),
+                ),
+                Divider(),
+              ],
+            ),
           ),
-        ),
-        if (filteredConfigs.isNotEmpty) Divider(),
-        ReorderableList(
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            return _reorderableConfigListTIle(index, filteredConfigs);
-          },
-          itemCount: reorder ? reorderList.length : filteredConfigs.length,
-          onReorder: (oldIndex, newIndex) {
-            if (oldIndex < newIndex) {
-              newIndex -= 1;
-            }
-            final item = reorderList.removeAt(oldIndex);
-            reorderList.insert(newIndex, item);
-          },
-        )
-      ],
+          SliverPadding(padding: EdgeInsets.only(top: 8)),
+          SliverFillRemaining(
+            child: ReorderableList(
+              itemBuilder: (context, index) {
+                return _reorderableConfigListTIle(index, filteredConfigs);
+              },
+              itemCount: reorder ? reorderList.length : filteredConfigs.length,
+              onReorder: (oldIndex, newIndex) {
+                if (oldIndex < newIndex) {
+                  newIndex -= 1;
+                }
+                final item = reorderList.removeAt(oldIndex);
+                reorderList.insert(newIndex, item);
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 

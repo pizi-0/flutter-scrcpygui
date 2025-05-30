@@ -18,6 +18,7 @@ import 'package:scrcpygui/utils/tray_utils.dart';
 
 import '../providers/adb_provider.dart';
 import '../providers/scrcpy_provider.dart';
+import '../widgets/navigation_shell.dart';
 import '../widgets/quit_dialog.dart';
 import 'const.dart';
 
@@ -131,6 +132,16 @@ class AppUtils {
       return res.data.first['tag_name'];
     } on DioException catch (_) {
       rethrow;
+    }
+  }
+
+  static findSidebarWidth() {
+    final box = sidebarKey.currentContext?.findRenderObject();
+
+    if (box != null) {
+      return (box as RenderBox).size.width;
+    } else {
+      return 0;
     }
   }
 }

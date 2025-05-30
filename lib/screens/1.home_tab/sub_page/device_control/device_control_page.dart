@@ -5,16 +5,17 @@ import 'package:go_router/go_router.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
+import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
-import 'package:scrcpygui/widgets/navigation_shell.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'widgets/big_control_page.dart';
 import 'widgets/small_control_page.dart';
 
-final FocusNode controlPageKeyboardListenerNode = FocusNode(debugLabel: 'keyboard-listener');
+final FocusNode controlPageKeyboardListenerNode =
+    FocusNode(debugLabel: 'keyboard-listener');
 
 class DeviceControlPage extends ConsumerStatefulWidget {
   static const route = 'device-control';
@@ -22,7 +23,8 @@ class DeviceControlPage extends ConsumerStatefulWidget {
   const DeviceControlPage({super.key, required this.device});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _DeviceControlPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _DeviceControlPageState();
 }
 
 class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
@@ -79,13 +81,14 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
               double sidebarWidth = 52;
 
               if (sizingInfo.isTablet || sizingInfo.isDesktop) {
-                sidebarWidth = _findSidebarWidth();
+                sidebarWidth = AppUtils.findSidebarWidth();
               }
 
               if (sizingInfo.isMobile) {
                 sidebarWidth = 52;
               }
-              bool wrapped = sizingInfo.screenSize.width >= ((appWidth * 2) + sidebarWidth + 30);
+              bool wrapped = sizingInfo.screenSize.width >=
+                  ((appWidth * 2) + sidebarWidth + 40);
 
               if (!wrapped) {
                 return SmallControlPage(device: device);
@@ -97,15 +100,5 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
         ),
       ),
     );
-  }
-
-  _findSidebarWidth() {
-    final box = sidebarKey.currentContext?.findRenderObject();
-
-    if (box != null) {
-      return (box as RenderBox).size.width;
-    } else {
-      return 0;
-    }
   }
 }
