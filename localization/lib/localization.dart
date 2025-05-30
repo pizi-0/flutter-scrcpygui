@@ -236,23 +236,436 @@ class DeviceTileLocContext {
   }
 }
 
-class DeviceControlDialogLoc {
-  const DeviceControlDialogLoc({
+class LoungeLoc {
+  const LoungeLoc({
     required this.controls,
-    required this.onConfig,
+    required this.pinnedApps,
+    required this.launcher,
+    required this.running,
+    required this.appTile,
+    required this.placeholders,
+    required this.tooltip,
+    required this.info,
   });
-  factory DeviceControlDialogLoc.fromJson(Map<String, dynamic> json) {
-    return DeviceControlDialogLoc(
-      controls: (json['controls'] ?? '').toString(),
-      onConfig: DeviceControlDialogLocOnConfig.fromJson(
-          (json['on_config'] as Map).cast<String, dynamic>()),
+  factory LoungeLoc.fromJson(Map<String, dynamic> json) {
+    return LoungeLoc(
+      controls: LoungeLocControls.fromJson(
+          (json['controls'] as Map).cast<String, dynamic>()),
+      pinnedApps: LoungeLocPinnedApps.fromJson(
+          (json['pinned_apps'] as Map).cast<String, dynamic>()),
+      launcher: LoungeLocLauncher.fromJson(
+          (json['launcher'] as Map).cast<String, dynamic>()),
+      running: LoungeLocRunning.fromJson(
+          (json['running'] as Map).cast<String, dynamic>()),
+      appTile: LoungeLocAppTile.fromJson(
+          (json['app_tile'] as Map).cast<String, dynamic>()),
+      placeholders: LoungeLocPlaceholders.fromJson(
+          (json['placeholders'] as Map).cast<String, dynamic>()),
+      tooltip: LoungeLocTooltip.fromJson(
+          (json['tooltip'] as Map).cast<String, dynamic>()),
+      info:
+          LoungeLocInfo.fromJson((json['info'] as Map).cast<String, dynamic>()),
     );
   }
-  final String controls;
-  final DeviceControlDialogLocOnConfig onConfig;
+  final LoungeLocControls controls;
+
+  final LoungeLocPinnedApps pinnedApps;
+
+  final LoungeLocLauncher launcher;
+
+  final LoungeLocRunning running;
+
+  final LoungeLocAppTile appTile;
+
+  final LoungeLocPlaceholders placeholders;
+
+  final LoungeLocTooltip tooltip;
+
+  final LoungeLocInfo info;
 
   Map<String, Object> get _content => {
         r'''controls''': controls,
+        r'''pinned_apps''': pinnedApps,
+        r'''launcher''': launcher,
+        r'''running''': running,
+        r'''app_tile''': appTile,
+        r'''placeholders''': placeholders,
+        r'''tooltip''': tooltip,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class LoungeLocControls {
+  const LoungeLocControls({
+    required this.label,
+  });
+  factory LoungeLocControls.fromJson(Map<String, dynamic> json) {
+    return LoungeLocControls(
+      label: (json['label'] ?? '').toString(),
+    );
+  }
+  final String label;
+  Map<String, Object> get _content => {
+        r'''label''': label,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class LoungeLocPinnedApps {
+  const LoungeLocPinnedApps({
+    required this.label,
+  });
+  factory LoungeLocPinnedApps.fromJson(Map<String, dynamic> json) {
+    return LoungeLocPinnedApps(
+      label: (json['label'] ?? '').toString(),
+    );
+  }
+  final String label;
+  Map<String, Object> get _content => {
+        r'''label''': label,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class LoungeLocLauncher {
+  const LoungeLocLauncher({
+    required this.label,
+  });
+  factory LoungeLocLauncher.fromJson(Map<String, dynamic> json) {
+    return LoungeLocLauncher(
+      label: (json['label'] ?? '').toString(),
+    );
+  }
+  final String label;
+  Map<String, Object> get _content => {
+        r'''label''': label,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class LoungeLocRunning {
+  const LoungeLocRunning({
+    required this.label,
+  });
+  factory LoungeLocRunning.fromJson(Map<String, dynamic> json) {
+    return LoungeLocRunning(
+      label: ({required String count}) => (json['label'] ?? '')
+          .toString()
+          .replaceAll(r'${count}', count)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String Function({required String count}) label;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class LoungeLocAppTile {
+  const LoungeLocAppTile({
+    required this.contextMenu,
+  });
+  factory LoungeLocAppTile.fromJson(Map<String, dynamic> json) {
+    return LoungeLocAppTile(
+      contextMenu: LoungeLocAppTileContextMenu.fromJson(
+          (json['context_menu'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final LoungeLocAppTileContextMenu contextMenu;
+
+  Map<String, Object> get _content => {
+        r'''context_menu''': contextMenu,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class LoungeLocAppTileContextMenu {
+  const LoungeLocAppTileContextMenu({
+    required this.pin,
+    required this.unpin,
+    required this.forceClose,
+    required this.selectConfig,
+  });
+  factory LoungeLocAppTileContextMenu.fromJson(Map<String, dynamic> json) {
+    return LoungeLocAppTileContextMenu(
+      pin: ({required String config}) => (json['pin'] ?? '')
+          .toString()
+          .replaceAll(r'${config}', config)
+          .replaceAll(_variableRegExp, ''),
+      unpin: (json['unpin'] ?? '').toString(),
+      forceClose: (json['force_close'] ?? '').toString(),
+      selectConfig: (json['select_config'] ?? '').toString(),
+    );
+  }
+  final String Function({required String config}) pin;
+
+  final String unpin;
+  final String forceClose;
+  final String selectConfig;
+  Map<String, Object> get _content => {
+        r'''pin''': pin,
+        r'''unpin''': unpin,
+        r'''force_close''': forceClose,
+        r'''select_config''': selectConfig,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class LoungeLocPlaceholders {
+  const LoungeLocPlaceholders({
+    required this.config,
+    required this.app,
+    required this.search,
+  });
+  factory LoungeLocPlaceholders.fromJson(Map<String, dynamic> json) {
+    return LoungeLocPlaceholders(
+      config: (json['config'] ?? '').toString(),
+      app: (json['app'] ?? '').toString(),
+      search: (json['search'] ?? '').toString(),
+    );
+  }
+  final String config;
+  final String app;
+  final String search;
+  Map<String, Object> get _content => {
+        r'''config''': config,
+        r'''app''': app,
+        r'''search''': search,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class LoungeLocTooltip {
+  const LoungeLocTooltip({
+    required this.missingConfig,
+    required this.pin,
+    required this.onConfig,
+  });
+  factory LoungeLocTooltip.fromJson(Map<String, dynamic> json) {
+    return LoungeLocTooltip(
+      missingConfig: ({required String config}) =>
+          (json['missing_config'] ?? '')
+              .toString()
+              .replaceAll(r'${config}', config)
+              .replaceAll(_variableRegExp, ''),
+      pin: (json['pin'] ?? '').toString(),
+      onConfig: ({required String config}) => (json['on_config'] ?? '')
+          .toString()
+          .replaceAll(r'${config}', config)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String Function({required String config}) missingConfig;
+
+  final String pin;
+  final String Function({required String config}) onConfig;
+
+  Map<String, Object> get _content => {
+        r'''missing_config''': missingConfig,
+        r'''pin''': pin,
         r'''on_config''': onConfig,
       };
   T getContent<T>(String key) {
@@ -283,22 +696,26 @@ class DeviceControlDialogLoc {
   }
 }
 
-class DeviceControlDialogLocOnConfig {
-  const DeviceControlDialogLocOnConfig({
-    required this.label,
-    required this.ddPlaceholder,
+class LoungeLocInfo {
+  const LoungeLocInfo({
+    required this.emptySearch,
+    required this.emptyPin,
+    required this.emptyInstance,
   });
-  factory DeviceControlDialogLocOnConfig.fromJson(Map<String, dynamic> json) {
-    return DeviceControlDialogLocOnConfig(
-      label: (json['label'] ?? '').toString(),
-      ddPlaceholder: (json['dd_placeholder'] ?? '').toString(),
+  factory LoungeLocInfo.fromJson(Map<String, dynamic> json) {
+    return LoungeLocInfo(
+      emptySearch: (json['empty_search'] ?? '').toString(),
+      emptyPin: (json['empty_pin'] ?? '').toString(),
+      emptyInstance: (json['empty_instance'] ?? '').toString(),
     );
   }
-  final String label;
-  final String ddPlaceholder;
+  final String emptySearch;
+  final String emptyPin;
+  final String emptyInstance;
   Map<String, Object> get _content => {
-        r'''label''': label,
-        r'''dd_placeholder''': ddPlaceholder,
+        r'''empty_search''': emptySearch,
+        r'''empty_pin''': emptyPin,
+        r'''empty_instance''': emptyInstance,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -6826,6 +7243,7 @@ class ButtonLabelLoc {
     required this.delete,
     required this.serverAgree,
     required this.reorder,
+    required this.stopAll,
   });
   factory ButtonLabelLoc.fromJson(Map<String, dynamic> json) {
     return ButtonLabelLoc(
@@ -6846,6 +7264,7 @@ class ButtonLabelLoc {
       delete: (json['delete'] ?? '').toString(),
       serverAgree: (json['server_agree'] ?? '').toString(),
       reorder: (json['reorder'] ?? '').toString(),
+      stopAll: (json['stop_all'] ?? '').toString(),
     );
   }
   final String ok;
@@ -6865,6 +7284,7 @@ class ButtonLabelLoc {
   final String delete;
   final String serverAgree;
   final String reorder;
+  final String stopAll;
   Map<String, Object> get _content => {
         r'''ok''': ok,
         r'''close''': close,
@@ -6883,6 +7303,7 @@ class ButtonLabelLoc {
         r'''delete''': delete,
         r'''server_agree''': serverAgree,
         r'''reorder''': reorder,
+        r'''stop_all''': stopAll,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -7211,7 +7632,7 @@ class LocalizationMessages {
   LocalizationMessages({
     required this.homeLoc,
     required this.deviceTileLoc,
-    required this.deviceControlDialogLoc,
+    required this.loungeLoc,
     required this.configLoc,
     required this.noDeviceDialogLoc,
     required this.noConfigDialogLoc,
@@ -7251,8 +7672,8 @@ class LocalizationMessages {
           HomeLoc.fromJson((json['home_loc'] as Map).cast<String, dynamic>()),
       deviceTileLoc: DeviceTileLoc.fromJson(
           (json['device_tile_loc'] as Map).cast<String, dynamic>()),
-      deviceControlDialogLoc: DeviceControlDialogLoc.fromJson(
-          (json['device_control_dialog_loc'] as Map).cast<String, dynamic>()),
+      loungeLoc: LoungeLoc.fromJson(
+          (json['lounge_loc'] as Map).cast<String, dynamic>()),
       configLoc: ConfigLoc.fromJson(
           (json['config_loc'] as Map).cast<String, dynamic>()),
       noDeviceDialogLoc: NoDeviceDialogLoc.fromJson(
@@ -7323,7 +7744,7 @@ class LocalizationMessages {
 
   final DeviceTileLoc deviceTileLoc;
 
-  final DeviceControlDialogLoc deviceControlDialogLoc;
+  final LoungeLoc loungeLoc;
 
   final ConfigLoc configLoc;
 
@@ -7392,7 +7813,7 @@ class LocalizationMessages {
   Map<String, Object> get _content => {
         r'''home_loc''': homeLoc,
         r'''device_tile_loc''': deviceTileLoc,
-        r'''device_control_dialog_loc''': deviceControlDialogLoc,
+        r'''lounge_loc''': loungeLoc,
         r'''config_loc''': configLoc,
         r'''no_device_dialog_loc''': noDeviceDialogLoc,
         r'''no_config_dialog_loc''': noConfigDialogLoc,
@@ -7473,11 +7894,42 @@ final LocalizationMessages en = LocalizationMessages(
       manage: 'Manage',
     ),
   ),
-  deviceControlDialogLoc: DeviceControlDialogLoc(
-    controls: 'Controls',
-    onConfig: DeviceControlDialogLocOnConfig(
-      label: 'On config',
-      ddPlaceholder: 'Select config to launch the app on',
+  loungeLoc: LoungeLoc(
+    controls: LoungeLocControls(
+      label: 'Controls',
+    ),
+    pinnedApps: LoungeLocPinnedApps(
+      label: 'Pinned apps',
+    ),
+    launcher: LoungeLocLauncher(
+      label: 'App launcher',
+    ),
+    running: LoungeLocRunning(
+      label: ({required String count}) => '''Running instances (${count})''',
+    ),
+    appTile: LoungeLocAppTile(
+      contextMenu: LoungeLocAppTileContextMenu(
+        pin: ({required String config}) => '''Pin on ${config}''',
+        unpin: 'Unpin',
+        forceClose: 'Force close & start',
+        selectConfig: 'Select a config first',
+      ),
+    ),
+    placeholders: LoungeLocPlaceholders(
+      config: 'Select config',
+      app: 'Select app',
+      search: '''Press '/' to search''',
+    ),
+    tooltip: LoungeLocTooltip(
+      missingConfig: ({required String config}) =>
+          '''Missing config: ${config}''',
+      pin: 'Pin app/config pair',
+      onConfig: ({required String config}) => '''On: ${config}''',
+    ),
+    info: LoungeLocInfo(
+      emptySearch: 'No apps found',
+      emptyPin: 'No pinned apps',
+      emptyInstance: 'No running instance',
     ),
   ),
   configLoc: ConfigLoc(
@@ -8012,6 +8464,7 @@ final LocalizationMessages en = LocalizationMessages(
     delete: 'Delete',
     serverAgree: 'I understand, start server',
     reorder: 'Reorder',
+    stopAll: 'Stop all',
   ),
   statusLoc: StatusLoc(
     failed: 'Failed',
@@ -8071,11 +8524,43 @@ final LocalizationMessages es = LocalizationMessages(
       manage: 'Administrar',
     ),
   ),
-  deviceControlDialogLoc: DeviceControlDialogLoc(
-    controls: 'Controles',
-    onConfig: DeviceControlDialogLocOnConfig(
-      label: 'En configuración',
-      ddPlaceholder: 'Seleccionar configuración para iniciar la aplicación',
+  loungeLoc: LoungeLoc(
+    controls: LoungeLocControls(
+      label: 'Controles',
+    ),
+    pinnedApps: LoungeLocPinnedApps(
+      label: 'Aplicaciones ancladas',
+    ),
+    launcher: LoungeLocLauncher(
+      label: 'Lanzador de aplicaciones',
+    ),
+    running: LoungeLocRunning(
+      label: ({required String count}) =>
+          '''Instancias en ejecución (${count})''',
+    ),
+    appTile: LoungeLocAppTile(
+      contextMenu: LoungeLocAppTileContextMenu(
+        pin: ({required String config}) => '''Anclar en ${config}''',
+        unpin: 'Desanclar',
+        forceClose: 'Forzar cierre y iniciar',
+        selectConfig: 'Selecciona una configuración primero',
+      ),
+    ),
+    placeholders: LoungeLocPlaceholders(
+      config: 'Seleccionar configuración',
+      app: 'Seleccionar aplicación',
+      search: '''Presiona '/' para buscar''',
+    ),
+    tooltip: LoungeLocTooltip(
+      missingConfig: ({required String config}) =>
+          '''Configuración faltante: ${config}''',
+      pin: 'Anclar par aplicación/configuración',
+      onConfig: ({required String config}) => '''En: ${config}''',
+    ),
+    info: LoungeLocInfo(
+      emptySearch: 'No se encontraron aplicaciones',
+      emptyPin: 'No hay aplicaciones ancladas',
+      emptyInstance: 'Ninguna instancia en ejecución',
     ),
   ),
   configLoc: ConfigLoc(
@@ -8623,6 +9108,7 @@ final LocalizationMessages es = LocalizationMessages(
     delete: 'Eliminar',
     serverAgree: 'Entiendo, iniciar servidor',
     reorder: 'Reordenar',
+    stopAll: 'Detener todo',
   ),
   statusLoc: StatusLoc(
     failed: 'Fallido',
@@ -8681,11 +9167,43 @@ final LocalizationMessages it = LocalizationMessages(
       manage: 'Gestisci',
     ),
   ),
-  deviceControlDialogLoc: DeviceControlDialogLoc(
-    controls: 'Controlli',
-    onConfig: DeviceControlDialogLocOnConfig(
-      label: 'Su configurazione',
-      ddPlaceholder: '''Seleziona configurazione per avviare l'app''',
+  loungeLoc: LoungeLoc(
+    controls: LoungeLocControls(
+      label: 'Controlli',
+    ),
+    pinnedApps: LoungeLocPinnedApps(
+      label: 'App bloccate',
+    ),
+    launcher: LoungeLocLauncher(
+      label: 'Avvio app',
+    ),
+    running: LoungeLocRunning(
+      label: ({required String count}) =>
+          '''Istanze in esecuzione (${count})''',
+    ),
+    appTile: LoungeLocAppTile(
+      contextMenu: LoungeLocAppTileContextMenu(
+        pin: ({required String config}) => '''Blocca su ${config}''',
+        unpin: 'Sblocca',
+        forceClose: 'Forza chiusura e avvia',
+        selectConfig: 'Seleziona prima una configurazione',
+      ),
+    ),
+    placeholders: LoungeLocPlaceholders(
+      config: 'Seleziona configurazione',
+      app: 'Seleziona app',
+      search: '''Premi '/' per cercare''',
+    ),
+    tooltip: LoungeLocTooltip(
+      missingConfig: ({required String config}) =>
+          '''Configurazione mancante: ${config}''',
+      pin: 'Blocca coppia app/configurazione',
+      onConfig: ({required String config}) => '''Su: ${config}''',
+    ),
+    info: LoungeLocInfo(
+      emptySearch: 'Nessuna app trovata',
+      emptyPin: 'Nessuna app bloccata',
+      emptyInstance: 'Nessuna istanza in esecuzione',
     ),
   ),
   configLoc: ConfigLoc(
@@ -9227,6 +9745,7 @@ final LocalizationMessages it = LocalizationMessages(
     delete: 'Elimina',
     serverAgree: 'Capisco, avvia server',
     reorder: 'Riordina',
+    stopAll: 'Ferma tutto',
   ),
   statusLoc: StatusLoc(
     failed: 'Fallito',
@@ -9286,11 +9805,43 @@ final LocalizationMessages ms = LocalizationMessages(
       manage: 'Urus',
     ),
   ),
-  deviceControlDialogLoc: DeviceControlDialogLoc(
-    controls: 'Kawalan',
-    onConfig: DeviceControlDialogLocOnConfig(
-      label: 'Pada konfigurasi',
-      ddPlaceholder: 'Pilih konfigurasi untuk melancarkan aplikasi',
+  loungeLoc: LoungeLoc(
+    controls: LoungeLocControls(
+      label: 'Kawalan',
+    ),
+    pinnedApps: LoungeLocPinnedApps(
+      label: 'Aplikasi yang disemat',
+    ),
+    launcher: LoungeLocLauncher(
+      label: 'Pelancar aplikasi',
+    ),
+    running: LoungeLocRunning(
+      label: ({required String count}) =>
+          '''Instans sedang berjalan (${count})''',
+    ),
+    appTile: LoungeLocAppTile(
+      contextMenu: LoungeLocAppTileContextMenu(
+        pin: ({required String config}) => '''Pin pada ${config}''',
+        unpin: 'Buang pin',
+        forceClose: 'Paksa tutup & mula',
+        selectConfig: 'Pilih konfigurasi dahulu',
+      ),
+    ),
+    placeholders: LoungeLocPlaceholders(
+      config: 'Pilih konfigurasi',
+      app: 'Pilih aplikasi',
+      search: '''Tekan '/' untuk mencari''',
+    ),
+    tooltip: LoungeLocTooltip(
+      missingConfig: ({required String config}) =>
+          '''Konfigurasi tiada: ${config}''',
+      pin: 'Pin pasangan aplikasi/konfigurasi',
+      onConfig: ({required String config}) => '''Pada: ${config}''',
+    ),
+    info: LoungeLocInfo(
+      emptySearch: 'Tiada aplikasi ditemui',
+      emptyPin: 'Tiada aplikasi yang di pin',
+      emptyInstance: 'Tiada instans sedang berjalan',
     ),
   ),
   configLoc: ConfigLoc(
@@ -9835,6 +10386,7 @@ final LocalizationMessages ms = LocalizationMessages(
     delete: 'Padam',
     serverAgree: 'Saya faham, mulakan pelayan',
     reorder: 'Susun semula',
+    stopAll: 'Hentikan semua',
   ),
   statusLoc: StatusLoc(
     failed: 'Gagal',

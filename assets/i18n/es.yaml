@@ -15,11 +15,33 @@ device_tile_loc:
     all_scrcpy: Detener todo scrcpy
     manage: Administrar
 
-device_control_dialog_loc:
-  controls: Controles
-  on_config:
-    label: En configuración
-    dd_placeholder: Seleccionar configuración para iniciar la aplicación
+lounge_loc:
+  controls:
+    label: Controles
+  pinned_apps:
+    label: Aplicaciones ancladas
+  launcher:
+    label: Lanzador de aplicaciones
+  running:
+    label: Instancias en ejecución (${count})
+  app_tile:
+    context_menu:
+      pin: Anclar en ${config}
+      unpin: Desanclar
+      force_close: Forzar cierre y iniciar
+      select_config: Selecciona una configuración primero
+  placeholders:
+    config: Seleccionar configuración
+    app: Seleccionar aplicación
+    search: "Presiona '/' para buscar"
+  tooltip:
+    missing_config: "Configuración faltante: ${config}"
+    pin: Anclar par aplicación/configuración
+    on_config: "En: ${config}"
+  info:
+    empty_search: No se encontraron aplicaciones
+    empty_pin: No hay aplicaciones ancladas
+    empty_instance: Ninguna instancia en ejecución
 
 
 config_loc:
@@ -482,6 +504,7 @@ button_label_loc:
   delete: Eliminar
   server_agree: Entiendo, iniciar servidor
   reorder: Reordenar
+  stop_all: Detener todo
 
 # status
 status_loc:

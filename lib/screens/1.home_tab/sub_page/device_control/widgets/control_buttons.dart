@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../models/adb_devices.dart';
@@ -19,7 +20,7 @@ class _ControlButtonsState extends ConsumerState<ControlButtons> {
   Widget build(BuildContext context) {
     return PgSectionCardNoScroll(
       cardPadding: EdgeInsets.all(15),
-      label: 'Controls',
+      label: el.loungeLoc.controls.label,
       content: FittedBox(
         child: Row(
           spacing: 8,

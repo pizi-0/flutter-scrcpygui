@@ -15,11 +15,33 @@ device_tile_loc:
     all_scrcpy: Termina tutti gli scrcpy
     manage: Gestisci
 
-device_control_dialog_loc:
-  controls: Controlli
-  on_config:
-    label: Su configurazione
-    dd_placeholder: Seleziona configurazione per avviare l'app
+lounge_loc:
+  controls:
+    label: Controlli
+  pinned_apps:
+    label: App bloccate
+  launcher:
+    label: Avvio app
+  running:
+    label: Istanze in esecuzione (${count})
+  app_tile:
+    context_menu:
+      pin: Blocca su ${config}
+      unpin: Sblocca
+      force_close: Forza chiusura e avvia
+      select_config: Seleziona prima una configurazione
+  placeholders:
+    config: Seleziona configurazione
+    app: Seleziona app
+    search: "Premi '/' per cercare"
+  tooltip:
+    missing_config: "Configurazione mancante: ${config}"
+    pin: Blocca coppia app/configurazione
+    on_config: "Su: ${config}"
+  info:
+    empty_search: Nessuna app trovata
+    empty_pin: Nessuna app bloccata
+    empty_instance: Nessuna istanza in esecuzione
 
 
 config_loc:
@@ -481,6 +503,7 @@ button_label_loc:
   delete: Elimina
   server_agree: Capisco, avvia server
   reorder: Riordina
+  stop_all: Ferma tutto
 
 
   

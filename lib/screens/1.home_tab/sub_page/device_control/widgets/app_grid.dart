@@ -1,6 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -41,25 +42,34 @@ class _AppGridState extends ConsumerState<AppGrid> {
     final allConfigs = ref.watch(configsProvider);
     final config = ref.watch(controlPageConfigProvider);
 
-    final devicePairs = ref.watch(appConfigPairProvider).where((p) => p.deviceId == device.id).toList();
+    final devicePairs = ref
+        .watch(appConfigPairProvider)
+        .where((p) => p.deviceId == device.id)
+        .toList();
 
-    final appsList =
-        (device.info?.appList ?? []).where((app) => devicePairs.where((dp) => dp.app == app).isEmpty).toList();
+    final appsList = (device.info?.appList ?? [])
+        .where((app) => devicePairs.where((dp) => dp.app == app).isEmpty)
+        .toList();
 
-    appsList.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    appsList
+        .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
-    devicePairs.sort((a, b) => a.app.name.toLowerCase().compareTo(b.app.name.toLowerCase()));
+    devicePairs.sort(
+        (a, b) => a.app.name.toLowerCase().compareTo(b.app.name.toLowerCase()));
 
     final finalList = [...devicePairs.map((p) => p.app), ...appsList];
 
-    final filteredList =
-        finalList.where((app) => app.name.toLowerCase().contains(appSearchController.text.toLowerCase())).toList();
+    final filteredList = finalList
+        .where((app) => app.name
+            .toLowerCase()
+            .contains(appSearchController.text.toLowerCase()))
+        .toList();
 
     final size = MediaQuery.sizeOf(context);
 
     return PgSectionCardNoScroll(
       constraints: BoxConstraints(maxWidth: (size.width - sidebarWidth) * 0.5),
-      label: 'Apps list',
+      label: el.loungeLoc.launcher.label,
       expandContent: true,
       content: CustomScrollView(
         controller: appScrollController,
@@ -71,10 +81,14 @@ class _AppGridState extends ConsumerState<AppGrid> {
                 Expanded(
                   child: Select<ScrcpyConfig>(
                     filled: true,
-                    placeholder: Text('Select config'),
+                    placeholder: OverflowMarquee(
+                        duration: 2.seconds,
+                        delayDuration: 0.5.seconds,
+                        child: Text(el.loungeLoc.placeholders.config)),
                     value: config,
                     onChanged: (value) {
-                      ref.read(controlPageConfigProvider.notifier).state = value;
+                      ref.read(controlPageConfigProvider.notifier).state =
+                          value;
                     },
                     popup: SelectPopup(
                       items: SelectItemList(
@@ -83,22 +97,28 @@ class _AppGridState extends ConsumerState<AppGrid> {
                               .map((c) => SelectItemButton(
                                   value: c,
                                   child: OverflowMarquee(
-                                      duration: 3.seconds, delayDuration: 0.5.seconds, child: Text(c.configName))))
+                                      duration: 3.seconds,
+                                      delayDuration: 0.5.seconds,
+                                      child: Text(c.configName))))
                               .toList()),
                     ).call,
-                    itemBuilder: (context, value) => Text(value.configName),
+                    itemBuilder: (context, value) => OverflowMarquee(
+                        duration: 2.seconds,
+                        delayDuration: 0.5.seconds,
+                        child: Text(value.configName)),
                   ),
                 ),
                 Expanded(
                   child: TextField(
                     padding: EdgeInsets.all(7),
                     filled: true,
-                    placeholder: Text("Press '/' to search"),
+                    placeholder: Text(el.loungeLoc.placeholders.search),
                     focusNode: searchBoxFocusNode,
                     controller: appSearchController,
                     onChanged: (value) => setState(() {}),
                     features: [
-                      if (appSearchController.text.isEmpty) InputFeature.leading(Icon(Icons.search_rounded)),
+                      if (appSearchController.text.isEmpty)
+                        InputFeature.leading(Icon(Icons.search_rounded)),
                       if (appSearchController.text.isNotEmpty)
                         InputFeature.trailing(IconButton(
                             variance: ButtonVariance.link,
@@ -127,7 +147,8 @@ class _AppGridState extends ConsumerState<AppGrid> {
           ),
           if (filteredList.isEmpty)
             SliverFillRemaining(
-              child: Center(child: Text('No apps found').textSmall.muted),
+              child: Center(
+                  child: Text(el.loungeLoc.info.emptySearch).textSmall.muted),
             ),
           if (filteredList.isNotEmpty)
             SliverGrid.builder(
@@ -185,19 +206,25 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
     final theme = Theme.of(context);
     final config = ref.watch(controlPageConfigProvider);
     final allConfigs = ref.watch(configsProvider);
-    final devicePair = ref.watch(appConfigPairProvider).where((p) => p.deviceId == widget.device.id).toList();
+    final devicePair = ref
+        .watch(appConfigPairProvider)
+        .where((p) => p.deviceId == widget.device.id)
+        .toList();
 
     final isPinned = devicePair.where((p) => p.app == widget.app).isNotEmpty;
 
-    final configForPinned = devicePair.firstWhereOrNull((p) => p.app == widget.app)?.config;
+    final configForPinned =
+        devicePair.firstWhereOrNull((p) => p.app == widget.app)?.config;
 
-    final isMissingConfig = isPinned && allConfigs.where((c) => c.id == configForPinned?.id).isEmpty;
+    final isMissingConfig = isPinned &&
+        allConfigs.where((c) => c.id == configForPinned?.id).isEmpty;
 
     return Tooltip(
       tooltip: TooltipContainer(
           child: Text(
         isMissingConfig
-            ? 'Missing config: ${configForPinned?.configName}'
+            ? el.loungeLoc.tooltip
+                .missingConfig(config: configForPinned?.configName ?? '')
             : isPinned
                 ? 'On: ${configForPinned?.configName}'
                 : widget.app.packageName,
@@ -211,7 +238,7 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
                   Icons.warning_rounded,
                   color: theme.colorScheme.destructive,
                 ),
-                child: Text('Select a config first')),
+                child: Text(el.loungeLoc.appTile.contextMenu.selectConfig)),
             MenuDivider(),
           ],
           if (!isPinned)
@@ -219,37 +246,46 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
               enabled: config != null,
               onPressed: (context) async {
                 controlPageKeyboardListenerNode.requestFocus();
-                ref
-                    .read(appConfigPairProvider.notifier)
-                    .addOrEditPair(AppConfigPair(deviceId: widget.device.id, app: widget.app, config: config!));
+                ref.read(appConfigPairProvider.notifier).addOrEditPair(
+                    AppConfigPair(
+                        deviceId: widget.device.id,
+                        app: widget.app,
+                        config: config!));
 
                 await Db.saveAppConfigPairs(ref.read(appConfigPairProvider));
               },
               leading: Icon(Icons.push_pin_rounded),
-              child: Text('Pin on ${config?.configName ?? 'config'}'),
+              child: Text(el.loungeLoc.appTile.contextMenu
+                  .pin(config: config?.configName ?? '')),
             ),
           if (isPinned)
             MenuButton(
               enabled: config != null || isPinned,
               onPressed: (context) async {
                 controlPageKeyboardListenerNode.requestFocus();
-                final config = devicePair.firstWhereOrNull((p) => p.app == widget.app)?.config;
+                final config = devicePair
+                    .firstWhereOrNull((p) => p.app == widget.app)
+                    ?.config;
 
-                ref
-                    .read(appConfigPairProvider.notifier)
-                    .removePair(AppConfigPair(deviceId: widget.device.id, app: widget.app, config: config!));
+                ref.read(appConfigPairProvider.notifier).removePair(
+                    AppConfigPair(
+                        deviceId: widget.device.id,
+                        app: widget.app,
+                        config: config!));
 
                 await Db.saveAppConfigPairs(ref.read(appConfigPairProvider));
               },
               leading: Icon(Icons.push_pin_rounded),
-              child: Text('Unpin'),
+              child: Text(el.loungeLoc.appTile.contextMenu.unpin),
             ),
           MenuDivider(),
           MenuButton(
-            enabled: enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
-            onPressed: (context) => _startScrcpy(isPinned: isPinned, devicePair: devicePair),
+            enabled:
+                enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
+            onPressed: (context) =>
+                _startScrcpy(isPinned: isPinned, devicePair: devicePair),
             leading: Icon(Icons.play_arrow_rounded),
-            child: Text('Force close & start'),
+            child: Text(el.loungeLoc.appTile.contextMenu.forceClose),
           ),
         ],
         child: Stack(
@@ -262,9 +298,11 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
               },
               style: isPinned ? ButtonStyle.secondary() : ButtonStyle.outline(),
               // enabled: enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
-              onPressed: !enabled(isMissingConfig: isMissingConfig, isPinned: isPinned)
+              onPressed: !enabled(
+                      isMissingConfig: isMissingConfig, isPinned: isPinned)
                   ? null
-                  : () => _startScrcpy(isPinned: isPinned, devicePair: devicePair),
+                  : () =>
+                      _startScrcpy(isPinned: isPinned, devicePair: devicePair),
               child: hover
                   ? OverflowMarquee(
                       duration: 2.seconds,
@@ -314,19 +352,23 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
     }
   }
 
-  _startScrcpy({required bool isPinned, required List<AppConfigPair> devicePair}) async {
+  _startScrcpy(
+      {required bool isPinned, required List<AppConfigPair> devicePair}) async {
     final config = ref.watch(controlPageConfigProvider);
 
     loading = true;
     setState(() {});
 
     controlPageKeyboardListenerNode.requestFocus();
-    final selectedConfig = isPinned ? devicePair.firstWhere((p) => p.app == widget.app).config : config;
+    final selectedConfig = isPinned
+        ? devicePair.firstWhere((p) => p.app == widget.app).config
+        : config;
 
     await ScrcpyUtils.newInstance(
       widget.ref,
-      selectedConfig: selectedConfig!
-          .copyWith(appOptions: selectedConfig.appOptions.copyWith(selectedApp: widget.app, forceClose: true)),
+      selectedConfig: selectedConfig!.copyWith(
+          appOptions: selectedConfig.appOptions
+              .copyWith(selectedApp: widget.app, forceClose: true)),
       selectedDevice: widget.device,
       customInstanceName: '${widget.app.name} (${selectedConfig.configName})',
     );

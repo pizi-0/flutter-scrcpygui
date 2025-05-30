@@ -1,5 +1,6 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../models/adb_devices.dart';
@@ -14,19 +15,25 @@ class DeviceRunningInstances extends ConsumerStatefulWidget {
   const DeviceRunningInstances({required this.device, super.key});
 
   @override
-  ConsumerState<DeviceRunningInstances> createState() => _DeviceRunningInstancesState();
+  ConsumerState<DeviceRunningInstances> createState() =>
+      _DeviceRunningInstancesState();
 }
 
-class _DeviceRunningInstancesState extends ConsumerState<DeviceRunningInstances> {
+class _DeviceRunningInstancesState
+    extends ConsumerState<DeviceRunningInstances> {
   bool loading = false;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final deviceInstance = ref.watch(scrcpyInstanceProvider).where((i) => i.device == widget.device).toList();
+    final deviceInstance = ref
+        .watch(scrcpyInstanceProvider)
+        .where((i) => i.device == widget.device)
+        .toList();
 
     return PgSectionCardNoScroll(
-        label: 'Running instances (${deviceInstance.length})',
+        label:
+            el.loungeLoc.running.label(count: deviceInstance.length.toString()),
         labelTrail: deviceInstance.isNotEmpty
             ? Button(
                 style: ButtonStyle.ghost(density: ButtonDensity.dense),
@@ -55,7 +62,7 @@ class _DeviceRunningInstancesState extends ConsumerState<DeviceRunningInstances>
                           }
                         }
                       },
-                child: Text('Stop all').textSmall,
+                child: Text(el.buttonLabelLoc.stopAll).textSmall,
               )
             : null,
         expandContent: true,
@@ -66,7 +73,8 @@ class _DeviceRunningInstancesState extends ConsumerState<DeviceRunningInstances>
                 if (deviceInstance.isEmpty) ...[
                   SliverFillRemaining(
                     child: Center(
-                      child: Text('No instances').textSmall.muted,
+                      child:
+                          Text(el.loungeLoc.info.emptyInstance).textSmall.muted,
                     ),
                   )
                 ] else ...[
@@ -118,7 +126,7 @@ class _InstanceListTileState extends State<InstanceListTile> {
 
     return PgListTile(
       title: name,
-      trailing: IconButton.destructive(
+      trailing: IconButton.ghost(
           enabled: !loading,
           onPressed: loading
               ? null
@@ -137,7 +145,10 @@ class _InstanceListTileState extends State<InstanceListTile> {
                     }
                   }
                 },
-          icon: Icon(Icons.stop_rounded)),
+          icon: Icon(
+            Icons.stop_rounded,
+            color: Theme.of(context).colorScheme.destructive,
+          )),
     );
   }
 }

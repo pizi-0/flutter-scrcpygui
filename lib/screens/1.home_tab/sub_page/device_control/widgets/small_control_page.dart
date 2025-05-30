@@ -39,15 +39,17 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
     final appsList = device.info?.appList ?? [];
     final selectedConfig = ref.watch(controlPageConfigProvider);
     final allconfigs = ref.watch(filteredConfigsProvider);
-    final appConfigPairs =
-        ref.watch(appConfigPairProvider.select((pair) => pair.where((p) => p.deviceId == device.id)));
+    final appConfigPairs = ref.watch(appConfigPairProvider
+        .select((pair) => pair.where((p) => p.deviceId == device.id)));
 
-    appsList.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
+    appsList
+        .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
     bool isPinned = false;
 
     if (selectedApp != null && selectedConfig != null) {
-      isPinned = appConfigPairs.contains(AppConfigPair(deviceId: device.id, app: selectedApp!, config: selectedConfig));
+      isPinned = appConfigPairs.contains(AppConfigPair(
+          deviceId: device.id, app: selectedApp!, config: selectedConfig));
     }
 
     return Column(
@@ -61,29 +63,38 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
               Expanded(
                   child: PgSectionCardNoScroll(
                       // expandContent: true,
-                      label: 'Pinned apps',
+                      label: el.loungeLoc.pinnedApps.label,
                       content: appConfigPairs.isEmpty
                           ? Center(
-                              child: Text('No pinned apps').textSmall.muted,
+                              child: Text(el.loungeLoc.info.emptyPin)
+                                  .textSmall
+                                  .muted,
                             )
                           : PinnedAppDisplay(device: widget.device))),
             ],
           ),
         ),
         PgSectionCardNoScroll(
-          label: el.appSection.title,
+          label: el.loungeLoc.launcher.label,
           labelTrail: Row(
             spacing: 8,
             children: [
               if (selectedApp != null && selectedConfig != null && !isPinned)
                 Tooltip(
-                  tooltip: const TooltipContainer(child: Text('Pin app/config pair')).call,
+                  tooltip:
+                      TooltipContainer(child: Text(el.loungeLoc.tooltip.pin))
+                          .call,
                   child: GhostButton(
                     density: ButtonDensity.dense,
                     child: Icon(Icons.push_pin).iconSmall(),
                     onPressed: () {
-                      final pair = AppConfigPair(deviceId: widget.device.id, app: selectedApp!, config: selectedConfig);
-                      ref.read(appConfigPairProvider.notifier).addOrEditPair(pair);
+                      final pair = AppConfigPair(
+                          deviceId: widget.device.id,
+                          app: selectedApp!,
+                          config: selectedConfig);
+                      ref
+                          .read(appConfigPairProvider.notifier)
+                          .addOrEditPair(pair);
                       Db.saveAppConfigPairs(ref.read(appConfigPairProvider));
                     },
                   ),
@@ -100,9 +111,11 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
                             ref,
                             selectedDevice: widget.device,
                             selectedConfig: selectedConfig.copyWith(
-                              appOptions: (selectedConfig.appOptions).copyWith(selectedApp: selectedApp),
+                              appOptions: (selectedConfig.appOptions)
+                                  .copyWith(selectedApp: selectedApp),
                             ),
-                            customInstanceName: '${selectedApp!.name} (${selectedConfig.configName})',
+                            customInstanceName:
+                                '${selectedApp!.name} (${selectedConfig.configName})',
                           );
 
                           if (mounted) {
@@ -124,9 +137,10 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
                       filled: true,
                       itemBuilder: (context, value) => Text(value.configName),
                       onChanged: (config) {
-                        ref.read(controlPageConfigProvider.notifier).state = config;
+                        ref.read(controlPageConfigProvider.notifier).state =
+                            config;
                       },
-                      placeholder: Text('Select config'),
+                      placeholder: Text(el.loungeLoc.placeholders.config),
                       value: selectedConfig,
                       popup: SelectPopup(
                         items: SelectItemList(
@@ -145,8 +159,9 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
                     child: Select(
                       filled: true,
                       value: selectedApp,
-                      placeholder: Text(el.appSection.select.label),
-                      popupConstraints: BoxConstraints(maxHeight: appWidth - 100),
+                      placeholder: Text(el.loungeLoc.placeholders.app),
+                      popupConstraints:
+                          BoxConstraints(maxHeight: appWidth - 100),
                       onChanged: (app) {
                         selectedApp = app!;
                         setState(() {});
@@ -156,17 +171,23 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
                         builder: (context, searchQuery) {
                           return SelectItemList(
                             children: appsList
-                                .where((app) => app.name.toLowerCase().contains(searchQuery?.toLowerCase() ?? ''))
+                                .where((app) => app.name
+                                    .toLowerCase()
+                                    .contains(searchQuery?.toLowerCase() ?? ''))
                                 .map((e) => SelectItemButton(
                                     value: e,
                                     child: OverflowMarquee(
-                                        duration: 2.seconds, delayDuration: 0.5.seconds, child: Text(e.name))))
+                                        duration: 2.seconds,
+                                        delayDuration: 0.5.seconds,
+                                        child: Text(e.name))))
                                 .toList(),
                           );
                         },
                       ).call,
-                      itemBuilder: (context, value) =>
-                          OverflowMarquee(duration: 2.seconds, delayDuration: 0.5.seconds, child: Text(value.name)),
+                      itemBuilder: (context, value) => OverflowMarquee(
+                          duration: 2.seconds,
+                          delayDuration: 0.5.seconds,
+                          child: Text(value.name)),
                     ),
                   ),
                 ],

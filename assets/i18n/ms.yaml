@@ -15,11 +15,33 @@ device_tile_loc:
     all_scrcpy: Hentikan semua scrcpy
     manage: Urus
 
-device_control_dialog_loc:
-  controls: Kawalan
-  on_config:
-    label: Pada konfigurasi
-    dd_placeholder: Pilih konfigurasi untuk melancarkan aplikasi
+lounge_loc:
+  controls:
+    label: Kawalan
+  pinned_apps:
+    label: Aplikasi yang disemat
+  launcher:
+    label: Pelancar aplikasi
+  running:
+    label: Instans sedang berjalan (${count})
+  app_tile:
+    context_menu:
+      pin: Pin pada ${config}
+      unpin: Buang pin
+      force_close: Paksa tutup & mula
+      select_config: Pilih konfigurasi dahulu
+  placeholders:
+    config: Pilih konfigurasi
+    app: Pilih aplikasi
+    search: "Tekan '/' untuk mencari"
+  tooltip:
+    missing_config: "Konfigurasi tiada: ${config}"
+    pin: Pin pasangan aplikasi/konfigurasi
+    on_config: "Pada: ${config}"
+  info:
+    empty_search: Tiada aplikasi ditemui
+    empty_pin: Tiada aplikasi yang di pin
+    empty_instance: Tiada instans sedang berjalan
 
 
 config_loc:
@@ -482,6 +504,7 @@ button_label_loc:
   delete: Padam
   server_agree: Saya faham, mulakan pelayan
   reorder: Susun semula
+  stop_all: Hentikan semua
 
 
 

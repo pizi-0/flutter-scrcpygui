@@ -16,11 +16,34 @@ device_tile_loc:
     all_scrcpy: Kill all scrcpy
     manage: Manage
 
-device_control_dialog_loc:
-  controls: Controls
-  on_config:
-    label: On config
-    dd_placeholder: Select config to launch the app on
+lounge_loc:
+  controls: 
+    label: Controls
+  pinned_apps:
+    label: Pinned apps
+  launcher:
+    label: App launcher
+  running:
+    label: Running instances (${count})
+  app_tile:
+    context_menu:
+      pin: Pin on ${config}
+      unpin: Unpin
+      force_close: Force close & start
+      select_config: Select a config first
+  placeholders:
+    config: Select config
+    app: Select app
+    search: "Press '/' to search"
+  tooltip:
+    missing_config: "Missing config: ${config}"
+    pin: Pin app/config pair
+    on_config: "On: ${config}"
+  info:
+    empty_search: No apps found
+    empty_pin: No pinned apps
+    empty_instance: No running instance
+
     
 
 config_loc:
@@ -506,6 +529,7 @@ button_label_loc:
   delete: Delete  
   server_agree: I understand, start server
   reorder: Reorder
+  stop_all: Stop all
 
 # status 
 status_loc: 
