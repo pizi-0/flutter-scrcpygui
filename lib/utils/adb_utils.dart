@@ -67,7 +67,7 @@ class AdbUtils {
     final cameraInfo = _getCameraInfo(info.stdout);
     final videoEncoderInfo = _getVideoEncoders(info.stdout);
     final audioEncoderInfo = _getAudioEncoders(info.stdout);
-    final displayInfo = _getDisplays(info.stdout);
+    final displayInfo = getDisplays(info.stdout);
     final appsList = getAppsList(info.stdout);
 
     return ScrcpyInfo(
@@ -329,7 +329,7 @@ List<AudioEncoder> _getAudioEncoders(String res) {
   return audioEncoder;
 }
 
-List<ScrcpyDisplay> _getDisplays(String res) {
+List<ScrcpyDisplay> getDisplays(String res) {
   RegExp idRegex = RegExp(r'(?<=--display-id=)\d+');
   RegExp resolutionRegex = RegExp(r'\d+x\d+');
   List<ScrcpyDisplay> displays = [];

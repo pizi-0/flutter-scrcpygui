@@ -10,9 +10,13 @@ import 'package:string_extensions/string_extensions.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 
+import '../../../../../../db/db.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../../../../../providers/config_provider.dart';
+import '../../../../../../providers/version_provider.dart';
+import '../../../../../../utils/adb_utils.dart';
+import '../../../../../../utils/command_runner.dart';
 import '../../../../../../utils/const.dart';
 import '../../../../../../widgets/config_tiles.dart';
 
@@ -28,6 +32,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   late TextEditingController maxFPSController;
   late TextEditingController vdResolutionController;
   late TextEditingController vdDPIController;
+
+  bool loading = false;
 
   @override
   void initState() {
@@ -72,6 +78,15 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
 
     return PgSectionCard(
       label: el.videoSection.title,
+      labelTrail: IconButton.ghost(
+        density: ButtonDensity.dense,
+        onPressed: loading ? null : _onRefreshDisplay,
+        icon: loading
+            ? SizedBox.square(
+                dimension: 20,
+                child: Center(child: CircularProgressIndicator()))
+            : Icon(Icons.refresh),
+      ),
       children: [
         _buildDisplaySelector(selectedConfig, selectedDevice!.info!),
         const Divider(),
@@ -86,6 +101,36 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
           _buildResolutionScale(selectedConfig, selectedDevice.info!),
       ],
     );
+  }
+
+  _onRefreshDisplay() async {
+    loading = true;
+    setState(() {});
+
+    try {
+      var dev = ref.read(selectedDeviceProvider)!;
+      final workDir = ref.read(execDirProvider);
+
+      final res = await CommandRunner.runScrcpyCommand(workDir, dev,
+          args: ['--list-displays']);
+
+      final displays = getDisplays(res.stdout);
+
+      dev = dev.copyWith(
+          info: dev.info!.copyWith(
+              displays: displays
+                  .where((d) => (int.tryParse(d.id) ?? 11) < 10)
+                  .toList()));
+
+      ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
+
+      ref.read(selectedDeviceProvider.notifier).state = dev;
+
+      await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+    } finally {
+      loading = false;
+      setState(() {});
+    }
   }
 
   Widget _buildMaxFPS(ScrcpyConfig selectedConfig) {
