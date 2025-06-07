@@ -54,8 +54,7 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
     bool isPinned = false;
 
     if (selectedApp != null && selectedConfig != null) {
-      isPinned = appConfigPairs.contains(AppConfigPair(
-          deviceId: device.id, app: selectedApp!, config: selectedConfig));
+      isPinned = appConfigPairs.where((p) => p.app == selectedApp).isNotEmpty;
     }
 
     return Column(
@@ -85,7 +84,7 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
           labelTrail: Row(
             spacing: 8,
             children: [
-              if (selectedApp != null && selectedConfig != null && !isPinned)
+              if (selectedApp != null && selectedConfig != null)
                 Tooltip(
                   tooltip:
                       TooltipContainer(child: Text(el.loungeLoc.tooltip.pin))
@@ -94,10 +93,17 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
                     density: ButtonDensity.dense,
                     child: Icon(Icons.push_pin).iconSmall(),
                     onPressed: () {
+                      if (isPinned) {
+                        ref.read(appConfigPairProvider.notifier).removePair(
+                            appConfigPairs
+                                .firstWhere((p) => p.app == selectedApp));
+                      }
+
                       final pair = AppConfigPair(
                           deviceId: widget.device.id,
                           app: selectedApp!,
                           config: selectedConfig);
+
                       ref
                           .read(appConfigPairProvider.notifier)
                           .addOrEditPair(pair);
