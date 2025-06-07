@@ -222,11 +222,16 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
 
     final isPinned = devicePair.where((p) => p.app == widget.app).isNotEmpty;
 
-    final configForPinned =
+    var configForPinned =
         devicePair.firstWhereOrNull((p) => p.app == widget.app)?.config;
 
     final isMissingConfig = isPinned &&
         allConfigs.where((c) => c.id == configForPinned?.id).isEmpty;
+
+    if (!isMissingConfig) {
+      configForPinned =
+          allConfigs.firstWhereOrNull((c) => c.id == configForPinned?.id);
+    }
 
     return Tooltip(
       tooltip: TooltipContainer(
@@ -291,8 +296,10 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
           MenuButton(
             enabled:
                 enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
-            onPressed: (context) =>
-                _startScrcpy(isPinned: isPinned, devicePair: devicePair),
+            onPressed: (context) => _startScrcpy(
+                isPinned: isPinned,
+                devicePair: devicePair,
+                configForPinned: configForPinned!),
             leading: Icon(Icons.play_arrow_rounded),
             child: Text(el.loungeLoc.appTile.contextMenu.forceClose),
           ),
@@ -307,11 +314,13 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
               },
               style: isPinned ? ButtonStyle.secondary() : ButtonStyle.outline(),
               // enabled: enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
-              onPressed: !enabled(
-                      isMissingConfig: isMissingConfig, isPinned: isPinned)
-                  ? null
-                  : () =>
-                      _startScrcpy(isPinned: isPinned, devicePair: devicePair),
+              onPressed:
+                  !enabled(isMissingConfig: isMissingConfig, isPinned: isPinned)
+                      ? null
+                      : () => _startScrcpy(
+                          isPinned: isPinned,
+                          devicePair: devicePair,
+                          configForPinned: configForPinned!),
               child: hover
                   ? OverflowMarquee(
                       duration: 2.seconds,
@@ -362,16 +371,16 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
   }
 
   _startScrcpy(
-      {required bool isPinned, required List<AppConfigPair> devicePair}) async {
+      {required bool isPinned,
+      required List<AppConfigPair> devicePair,
+      required ScrcpyConfig configForPinned}) async {
     final config = ref.watch(controlPageConfigProvider);
 
     loading = true;
     setState(() {});
 
     controlPageKeyboardListenerNode.requestFocus();
-    final selectedConfig = isPinned
-        ? devicePair.firstWhere((p) => p.app == widget.app).config
-        : config;
+    final selectedConfig = isPinned ? configForPinned : config;
 
     await ScrcpyUtils.newInstance(
       widget.ref,

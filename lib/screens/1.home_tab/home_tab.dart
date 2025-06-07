@@ -1,7 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/device_tile.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
@@ -12,12 +14,24 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import '../../utils/const.dart';
 import 'widgets/home/widgets/config_list.dart';
 
-class HomeTab extends ConsumerWidget {
+class HomeTab extends ConsumerStatefulWidget {
   static const route = '/home';
   const HomeTab({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends ConsumerState<HomeTab> {
+  @override
+  void initState() {
+    super.initState();
+
+    _handleControlPageConfigOnConfigsProviderChange();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return ResponsiveBuilder(
@@ -46,6 +60,25 @@ class HomeTab extends ConsumerWidget {
             },
           ),
         );
+      },
+    );
+  }
+
+  void _handleControlPageConfigOnConfigsProviderChange() {
+    ref.listenManual(
+      configsProvider,
+      (previous, next) {
+        final controlPageConfig = ref.read(controlPageConfigProvider);
+        if (controlPageConfig != null) {
+          final config = next.firstWhereOrNull(
+              (element) => element.id == controlPageConfig.id);
+
+          if (config != null) {
+            ref.read(controlPageConfigProvider.notifier).state = config;
+          } else {
+            ref.read(controlPageConfigProvider.notifier).state = null;
+          }
+        }
       },
     );
   }
