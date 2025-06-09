@@ -320,7 +320,7 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
                       : () => _startScrcpy(
                           isPinned: isPinned,
                           devicePair: devicePair,
-                          configForPinned: configForPinned!),
+                          configForPinned: configForPinned),
               child: hover
                   ? OverflowMarquee(
                       duration: 2.seconds,
@@ -373,14 +373,14 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
   _startScrcpy(
       {required bool isPinned,
       required List<AppConfigPair> devicePair,
-      required ScrcpyConfig configForPinned}) async {
+      ScrcpyConfig? configForPinned}) async {
     final config = ref.watch(controlPageConfigProvider);
 
     loading = true;
     setState(() {});
 
     controlPageKeyboardListenerNode.requestFocus();
-    final selectedConfig = isPinned ? configForPinned : config;
+    final selectedConfig = isPinned ? configForPinned ?? config : config;
 
     await ScrcpyUtils.newInstance(
       widget.ref,
