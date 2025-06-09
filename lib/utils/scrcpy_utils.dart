@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -38,23 +39,15 @@ class ScrcpyUtils {
     List<String> pids = [];
 
     if (Platform.isLinux || Platform.isMacOS) {
-      List<String> split = (await Process.run('bash', ['-c', 'pgrep scrcpy']))
-          .stdout
-          .toString()
-          .split('\n');
+      List<String> split = (await Process.run('bash', ['-c', 'pgrep scrcpy'])).stdout.toString().split('\n');
       split.removeLast();
 
-      pids = split
-          .map((e) => e.trim())
-          .where((el) => el != appPID.trim() && el.trim().isNotEmpty)
-          .toList();
+      pids = split.map((e) => e.trim()).where((el) => el != appPID.trim() && el.trim().isNotEmpty).toList();
     }
 
     if (Platform.isWindows) {
-      final list = (await Process.run('tasklist',
-              ['/fi', 'ImageName eq scrcpy.exe', '/v', '/fo', 'csv']))
-          .stdout
-          .toString();
+      final list =
+          (await Process.run('tasklist', ['/fi', 'ImageName eq scrcpy.exe', '/v', '/fo', 'csv'])).stdout.toString();
 
       final split = list.splitLines();
       split.removeAt(0);
@@ -78,9 +71,8 @@ class ScrcpyUtils {
     final workDir = ref.read(execDirProvider);
     final runningInstance = ref.read(scrcpyInstanceProvider);
 
-    final d = ref.watch(savedAdbDevicesProvider).firstWhere(
-        (d) => d.id == selectedDevice.id,
-        orElse: () => selectedDevice);
+    final d =
+        ref.watch(savedAdbDevicesProvider).firstWhere((d) => d.id == selectedDevice.id, orElse: () => selectedDevice);
 
     List<String> comm = [];
     String customName =
@@ -88,9 +80,7 @@ class ScrcpyUtils {
 
     if (runningInstance.where((r) => r.instanceName == customName).isNotEmpty) {
       for (int i = 1; i < 100; i++) {
-        bool alreadyExist = runningInstance
-            .where((r) => r.instanceName == '$customName($i)')
-            .isNotEmpty;
+        bool alreadyExist = runningInstance.where((r) => r.instanceName == '$customName($i)').isNotEmpty;
 
         if (!alreadyExist) {
           customName = '$customName($i)';
@@ -99,12 +89,9 @@ class ScrcpyUtils {
       }
     }
 
-    comm = ScrcpyCommand.buildCommand(ref, selectedConfig, d,
-        customName: '${isTest ? '[TEST] ' : ''}$customName');
+    comm = ScrcpyCommand.buildCommand(ref, selectedConfig, d, customName: '${isTest ? '[TEST] ' : ''}$customName');
 
-    final process = await CommandRunner.startScrcpyCommand(
-        workDir, selectedDevice,
-        args: comm);
+    final process = await CommandRunner.startScrcpyCommand(workDir, selectedDevice, args: comm);
     await Future.delayed(500.milliseconds);
 
     final now = DateTime.now();
@@ -148,8 +135,7 @@ class ScrcpyUtils {
     AdbDevices device = selectedDevice ?? ref.read(selectedDeviceProvider)!;
 
     if (device.info == null) {
-      final info =
-          await AdbUtils.getScrcpyDetailsFor(ref.read(execDirProvider), device);
+      final info = await AdbUtils.getScrcpyDetailsFor(ref.read(execDirProvider), device);
       device = device.copyWith(info: info);
 
       ref.read(savedAdbDevicesProvider.notifier).addEditDevices(device);
@@ -171,15 +157,14 @@ class ScrcpyUtils {
     // }
 
     // if (proceed) {
-    final inst = await _startServer(ref, device, selectedConfig,
-        isTest: isTest, customInstanceName: customInstanceName);
+    final inst =
+        await _startServer(ref, device, selectedConfig, isTest: isTest, customInstanceName: customInstanceName);
 
     ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
     // }
   }
 
-  static Future<void> killServer(ScrcpyRunningInstance instance,
-      {bool forceKill = false}) async {
+  static Future<void> killServer(ScrcpyRunningInstance instance, {bool forceKill = false}) async {
     if (Platform.isLinux || Platform.isMacOS) {
       Process.killPid(int.parse(instance.scrcpyPID));
     }
@@ -187,8 +172,7 @@ class ScrcpyUtils {
     if (Platform.isWindows) {
       // necessary as taskkill seems to unable to kill console app
       // give out this when running only taskkill: SUCCESS: Sent termination signal to the process with PID $instance.scrcpyPID
-      final res =
-          await Process.run('taskkill', ['/pid', instance.scrcpyPID, '/t']);
+      final res = await Process.run('taskkill', ['/pid', instance.scrcpyPID, '/t']);
 
       final pid = res.stderr
           .toString()
@@ -205,50 +189,40 @@ class ScrcpyUtils {
     }
   }
 
-  static List<ScrcpyRunningInstance> getInstanceForDevice(
-      WidgetRef ref, AdbDevices dev) {
-    List<ScrcpyRunningInstance> res = ref
-        .read(scrcpyInstanceProvider)
-        .where((inst) => inst.device == dev)
-        .toList();
+  static List<ScrcpyRunningInstance> getInstanceForDevice(WidgetRef ref, AdbDevices dev) {
+    List<ScrcpyRunningInstance> res = ref.read(scrcpyInstanceProvider).where((inst) => inst.device == dev).toList();
 
     return res;
   }
 
-  static Future<List<Widget>> checkForIncompatibleFlags(WidgetRef ref,
-      ScrcpyConfig selectedConfig, AdbDevices selectedDevice) async {
+  static Future<List<Widget>> checkForIncompatibleFlags(
+      WidgetRef ref, ScrcpyConfig selectedConfig, AdbDevices selectedDevice) async {
     // List<FlagCheckResult> result = [];
     List<Widget> overrideWidget = [];
 
-    bool display = selectedDevice.info!.displays
-            .where(
-                (d) => d.id == selectedConfig.videoOptions.displayId.toString())
-            .isEmpty &&
-        selectedConfig.videoOptions.displayId != 'new';
+    bool display =
+        selectedDevice.info!.displays.where((d) => d.id == selectedConfig.videoOptions.displayId.toString()).isEmpty &&
+            selectedConfig.videoOptions.displayId != 'new';
 
-    bool videoCodec = selectedDevice.info!.videoEncoders
-        .where((enc) => enc.codec == selectedConfig.videoOptions.videoCodec)
-        .isEmpty;
+    bool videoCodec =
+        selectedDevice.info!.videoEncoders.where((enc) => enc.codec == selectedConfig.videoOptions.videoCodec).isEmpty;
 
     bool videoEncoder = selectedConfig.videoOptions.videoEncoder == 'default'
         ? false
         : selectedDevice.info!.videoEncoders
-            .where((ve) =>
-                ve.encoder.contains(selectedConfig.videoOptions.videoEncoder))
+            .where((ve) => ve.encoder.contains(selectedConfig.videoOptions.videoEncoder))
             .isEmpty;
 
-    bool duplicateAudio = selectedConfig.audioOptions.duplicateAudio &&
-        int.parse(selectedDevice.info!.buildVersion) < 13;
+    bool duplicateAudio =
+        selectedConfig.audioOptions.duplicateAudio && int.parse(selectedDevice.info!.buildVersion) < 13;
 
-    bool audioCodec = selectedDevice.info!.audioEncoder
-        .where((enc) => enc.codec == selectedConfig.audioOptions.audioCodec)
-        .isEmpty;
+    bool audioCodec =
+        selectedDevice.info!.audioEncoder.where((enc) => enc.codec == selectedConfig.audioOptions.audioCodec).isEmpty;
 
     bool audioEncoder = selectedConfig.audioOptions.audioEncoder == 'default'
         ? false
         : selectedDevice.info!.audioEncoder
-            .where((ae) =>
-                ae.encoder.contains(selectedConfig.audioOptions.audioEncoder))
+            .where((ae) => ae.encoder.contains(selectedConfig.audioOptions.audioEncoder))
             .isEmpty;
 
     if (display || videoCodec || videoEncoder) {
@@ -272,5 +246,27 @@ class ScrcpyUtils {
     }
 
     return overrideWidget;
+  }
+
+  static ScrcpyConfig handleOverrides(List<ScrcpyOverride> overrides, ScrcpyConfig config) {
+    var resultingConfig = config;
+
+    if (overrides.contains(ScrcpyOverride.record)) {
+      resultingConfig = resultingConfig.copyWith(isRecording: true);
+    }
+
+    if (overrides.contains(ScrcpyOverride.landscape)) {
+      final currentUserFlags = resultingConfig.additionalFlags;
+
+      resultingConfig = resultingConfig.copyWith(
+        additionalFlags: currentUserFlags.append('--orientation=270'),
+      );
+    }
+
+    if (overrides.contains(ScrcpyOverride.mute)) {
+      resultingConfig = resultingConfig.copyWith(scrcpyMode: ScrcpyMode.videoOnly);
+    }
+
+    return resultingConfig;
   }
 }
