@@ -83,11 +83,7 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
     );
   }
 
-  setVirtDisplayConfig(
-      {bool? disableDecorations,
-      String? dpi,
-      bool? preseveContent,
-      String? resolution}) {
+  setVirtDisplayConfig({bool? disableDecorations, String? dpi, bool? preseveContent, String? resolution}) {
     final current = state!.videoOptions.virtualDisplayOptions;
 
     state = state!.copyWith(
@@ -140,8 +136,7 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
     );
   }
 
-  setWindowConfig(
-      {bool? alwaysOntop, bool? noBorder, bool? noWindow, int? timeLimit}) {
+  setWindowConfig({bool? alwaysOntop, bool? noBorder, bool? noWindow, int? timeLimit}) {
     final current = state!.windowOptions;
     state = state!.copyWith(
       windowOptions: current.copyWith(
@@ -154,11 +149,7 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
   }
 
   setDeviceConfig(
-      {bool? noScreensaver,
-      bool? offScreenOnClose,
-      bool? showTouches,
-      bool? stayAwake,
-      bool? turnOffDisplay}) {
+      {bool? noScreensaver, bool? offScreenOnClose, bool? showTouches, bool? stayAwake, bool? turnOffDisplay}) {
     final current = state!.deviceOptions;
 
     state = state!.copyWith(
@@ -178,13 +169,10 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
   }
 }
 
-final configsProvider = NotifierProvider<ConfigsNotifier, List<ScrcpyConfig>>(
-    () => ConfigsNotifier());
+final configsProvider = NotifierProvider<ConfigsNotifier, List<ScrcpyConfig>>(() => ConfigsNotifier());
 
 final selectedConfigProvider = StateProvider<ScrcpyConfig?>((ref) => null);
-final configScreenConfig =
-    NotifierProvider<EditingConfigNotifier, ScrcpyConfig?>(
-        () => EditingConfigNotifier());
+final configScreenConfig = NotifierProvider<EditingConfigNotifier, ScrcpyConfig?>(() => EditingConfigNotifier());
 final configScreenShowInfo = StateProvider((ref) => false);
 
 class ConfigTagNotifier extends Notifier<List<ConfigTag>> {
@@ -216,25 +204,18 @@ class ConfigTagNotifier extends Notifier<List<ConfigTag>> {
   }
 
   clearTag() {
-    state = [
-      ...state.where(
-          (e) => e == ConfigTag.customConfig || e == ConfigTag.defaultConfig)
-    ];
+    state = [...state.where((e) => e == ConfigTag.customConfig || e == ConfigTag.defaultConfig)];
 
     _setSelectedConfig();
   }
 
   void _setSelectedConfig() {
     final allconfig = ref.read(configsProvider);
-    final f1 = allconfig.filterByAnyTag(state
-        .where(
-            (t) => t == ConfigTag.customConfig || t == ConfigTag.defaultConfig)
-        .toList());
+    final f1 = allconfig
+        .filterByAnyTag(state.where((t) => t == ConfigTag.customConfig || t == ConfigTag.defaultConfig).toList());
 
-    final f2 = f1.filterByAllTags(state
-        .where(
-            (t) => t != ConfigTag.customConfig || t != ConfigTag.defaultConfig)
-        .toList());
+    final f2 =
+        f1.filterByAllTags(state.where((t) => t != ConfigTag.customConfig || t != ConfigTag.defaultConfig).toList());
 
     if (f2.isNotEmpty) {
       final selectedConfig = ref.read(selectedConfigProvider);
@@ -247,24 +228,18 @@ class ConfigTagNotifier extends Notifier<List<ConfigTag>> {
   }
 }
 
-final configTags = NotifierProvider<ConfigTagNotifier, List<ConfigTag>>(
-    () => ConfigTagNotifier());
+final configTags = NotifierProvider<ConfigTagNotifier, List<ConfigTag>>(() => ConfigTagNotifier());
 
 class FilteredConfigNotifier extends Notifier<List<ScrcpyConfig>> {
   @override
   List<ScrcpyConfig> build() {
     final filters = ref.watch(configTags);
     final allconfigs = ref.watch(configsProvider);
-    final f1 = allconfigs.filterByAnyTag(filters
-        .where(
-            (f) => f == ConfigTag.customConfig || f == ConfigTag.defaultConfig)
-        .toList());
+    final f1 = allconfigs
+        .filterByAnyTag(filters.where((f) => f == ConfigTag.customConfig || f == ConfigTag.defaultConfig).toList());
 
     final f2 = f1
-        .filterByAllTags(filters
-            .where((f) =>
-                f != ConfigTag.customConfig || f != ConfigTag.defaultConfig)
-            .toList())
+        .filterByAllTags(filters.where((f) => f != ConfigTag.customConfig || f != ConfigTag.defaultConfig).toList())
         .toList();
 
     return f2;
@@ -272,7 +247,42 @@ class FilteredConfigNotifier extends Notifier<List<ScrcpyConfig>> {
 }
 
 final filteredConfigsProvider =
-    NotifierProvider<FilteredConfigNotifier, List<ScrcpyConfig>>(
-        () => FilteredConfigNotifier());
+    NotifierProvider<FilteredConfigNotifier, List<ScrcpyConfig>>(() => FilteredConfigNotifier());
 
 final controlPageConfigProvider = StateProvider<ScrcpyConfig?>((ref) => null);
+
+class ConfigOverrideNotifier extends Notifier<List<ScrcpyOverride>> {
+  @override
+  List<ScrcpyOverride> build() {
+    return [];
+  }
+
+  setOverride(List<ScrcpyOverride> overrides) {
+    state = overrides;
+  }
+
+  addOverride(ScrcpyOverride override) {
+    if (!state.contains(override)) {
+      state = [...state, override];
+    }
+  }
+
+  removeOverride(ScrcpyOverride override) {
+    state = [...state.where((o) => o != override)];
+  }
+
+  toggleOverride(ScrcpyOverride override) {
+    if (state.contains(override)) {
+      removeOverride(override);
+    } else {
+      addOverride(override);
+    }
+  }
+
+  clearOverride() {
+    state = [];
+  }
+}
+
+final configOverridesProvider =
+    NotifierProvider<ConfigOverrideNotifier, List<ScrcpyOverride>>(() => ConfigOverrideNotifier());
