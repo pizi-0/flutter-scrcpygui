@@ -1,10 +1,10 @@
-import 'package:awesome_extensions/awesome_extensions.dart'
-    show NumExtension, PaddingX;
+import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension, PaddingX;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_manager/config_manager.dart';
+import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/config_override.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/config_filter_button.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -50,8 +50,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
         children: [
           ConfigFilterButton(),
           Tooltip(
-            tooltip:
-                TooltipContainer(child: Text(el.configManagerLoc.title)).call,
+            tooltip: TooltipContainer(child: Text(el.configManagerLoc.title)).call,
             child: IconButton.ghost(
               icon: Icon(Icons.settings_rounded).iconSmall(),
               onPressed: () => context.go('/home/${ConfigManager.route}'),
@@ -73,9 +72,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
                 key: configDropdownKey,
                 onChanged: filteredConfigs.isEmpty
                     ? null
-                    : (value) => ref
-                        .read(selectedConfigProvider.notifier)
-                        .state = value as ScrcpyConfig,
+                    : (value) => ref.read(selectedConfigProvider.notifier).state = value as ScrcpyConfig,
                 filled: true,
                 placeholder: Text(el.configLoc.empty),
                 value: config,
@@ -83,20 +80,17 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
                   items: SelectItemList(
                     children: filteredConfigs
                         .map((conf) => SelectItemButton(
-                            value: conf,
-                            child: IntrinsicHeight(
-                                child: ConfigDropDownItem(config: conf))))
+                            value: conf, child: IntrinsicHeight(child: ConfigDropDownItem(config: conf))))
                         .toList(),
                   ),
                 ).call,
                 itemBuilder: (context, value) => Text(value.configName),
               ),
             ),
+            OverrideButton(),
             PrimaryButton(
               onPressed: loading ? null : _start,
-              child: loading
-                  ? const CircularProgressIndicator().iconLarge()
-                  : Text(el.configLoc.start),
+              child: loading ? const CircularProgressIndicator().iconLarge() : Text(el.configLoc.start),
             )
           ],
         )
@@ -114,9 +108,8 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
       showDialog(
         barrierDismissible: true,
         context: context,
-        builder: (context) => ErrorDialog(
-            title: el.noDeviceDialogLoc.title,
-            content: [Text(el.noDeviceDialogLoc.contentsNew)]),
+        builder: (context) =>
+            ErrorDialog(title: el.noDeviceDialogLoc.title, content: [Text(el.noDeviceDialogLoc.contentsNew)]),
       );
     }
   }
@@ -142,8 +135,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
     } else {
       if (selectedDevice == null) {
         if (ref.read(adbProvider).length == 1) {
-          ref.read(selectedDeviceProvider.notifier).state =
-              ref.read(adbProvider).first;
+          ref.read(selectedDeviceProvider.notifier).state = ref.read(adbProvider).first;
 
           _start();
         } else {
@@ -225,14 +217,10 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
                       Chip(
                         style: reorder ? ButtonStyle.primary() : null,
                         onPressed: _onReorderPressed,
-                        child: Text(!reorder
-                            ? el.buttonLabelLoc.reorder
-                            : el.buttonLabelLoc.save),
+                        child: Text(!reorder ? el.buttonLabelLoc.reorder : el.buttonLabelLoc.save),
                       ),
                       if (reorder)
-                        Chip(
-                            child: Text(el.buttonLabelLoc.cancel),
-                            onPressed: () => setState(() => reorder = false))
+                        Chip(child: Text(el.buttonLabelLoc.cancel), onPressed: () => setState(() => reorder = false))
                     ],
                   ),
                 ),
@@ -261,12 +249,9 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
     );
   }
 
-  Widget _reorderableConfigListTIle(
-      int index, List<ScrcpyConfig> filteredConfigs) {
+  Widget _reorderableConfigListTIle(int index, List<ScrcpyConfig> filteredConfigs) {
     return Column(
-      key: reorder
-          ? ValueKey(reorderList[index].id)
-          : ValueKey(filteredConfigs[index].id),
+      key: reorder ? ValueKey(reorderList[index].id) : ValueKey(filteredConfigs[index].id),
       spacing: 8,
       children: [
         Row(
@@ -278,15 +263,11 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
               child: FittedBox(
                 child: MouseRegion(
                   cursor: SystemMouseCursors.grab,
-                  child: ReorderableDragStartListener(
-                      index: index, child: Icon(Icons.drag_indicator_rounded)),
+                  child: ReorderableDragStartListener(index: index, child: Icon(Icons.drag_indicator_rounded)),
                 ),
               ),
             ),
-            Expanded(
-                child: ConfigListTile(
-                    conf:
-                        reorder ? reorderList[index] : filteredConfigs[index])),
+            Expanded(child: ConfigListTile(conf: reorder ? reorderList[index] : filteredConfigs[index])),
           ],
         ),
         if (reorder && index != reorderList.length - 1) const Divider(),
@@ -305,9 +286,8 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
       showDialog(
         barrierDismissible: true,
         context: context,
-        builder: (context) => ErrorDialog(
-            title: el.noDeviceDialogLoc.title,
-            content: [Text(el.noDeviceDialogLoc.contentsNew)]),
+        builder: (context) =>
+            ErrorDialog(title: el.noDeviceDialogLoc.title, content: [Text(el.noDeviceDialogLoc.contentsNew)]),
       );
     }
   }
@@ -336,8 +316,7 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
 class ConfigListTile extends ConsumerStatefulWidget {
   final ScrcpyConfig conf;
   final bool showStartButton;
-  const ConfigListTile(
-      {super.key, required this.conf, this.showStartButton = true});
+  const ConfigListTile({super.key, required this.conf, this.showStartButton = true});
 
   @override
   ConsumerState<ConfigListTile> createState() => _ConfigListTileState();
@@ -358,14 +337,11 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                   onPressed: loading
                       ? null
                       : () {
-                          ref.read(selectedConfigProvider.notifier).state =
-                              widget.conf;
+                          ref.read(selectedConfigProvider.notifier).state = widget.conf;
                           _start();
                         },
                   icon: loading
-                      ? SizedBox.square(
-                          dimension: 20,
-                          child: Center(child: CircularProgressIndicator()))
+                      ? SizedBox.square(dimension: 20, child: Center(child: CircularProgressIndicator()))
                       : const Icon(Icons.play_arrow_rounded),
                 ),
               ],
@@ -383,25 +359,21 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                 onPressed: () => _onDetailPressed(widget.conf),
                 icon: const Icon(Icons.info_rounded),
               ),
-              if (widget.conf.isRecording)
-                const VerticalDivider(indent: 10, endIndent: 10),
+              if (widget.conf.isRecording) const VerticalDivider(indent: 10, endIndent: 10),
               if (widget.conf.isRecording)
                 IconButton.ghost(
                   size: ButtonSize.small,
-                  onPressed: () =>
-                      DirectoryUtils.openFolder(widget.conf.savePath!),
+                  onPressed: () => DirectoryUtils.openFolder(widget.conf.savePath!),
                   icon: const Icon(Icons.folder),
                 ),
-              if (!defaultConfigs.contains(widget.conf))
-                const VerticalDivider(indent: 10, endIndent: 10),
+              if (!defaultConfigs.contains(widget.conf)) const VerticalDivider(indent: 10, endIndent: 10),
               if (!defaultConfigs.contains(widget.conf))
                 IconButton.ghost(
                   size: ButtonSize.small,
                   onPressed: () => _onEditPressed(widget.conf),
                   icon: const Icon(Icons.edit_rounded),
                 ),
-              if (!defaultConfigs.contains(widget.conf))
-                const VerticalDivider(indent: 10, endIndent: 10),
+              if (!defaultConfigs.contains(widget.conf)) const VerticalDivider(indent: 10, endIndent: 10),
               if (!defaultConfigs.contains(widget.conf))
                 IconButton.ghost(
                   size: ButtonSize.small,
@@ -436,8 +408,7 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
     } else {
       if (selectedDevice == null) {
         if (ref.read(adbProvider).length == 1) {
-          ref.read(selectedDeviceProvider.notifier).state =
-              ref.read(adbProvider).first;
+          ref.read(selectedDeviceProvider.notifier).state = ref.read(adbProvider).first;
 
           _start();
         } else {
