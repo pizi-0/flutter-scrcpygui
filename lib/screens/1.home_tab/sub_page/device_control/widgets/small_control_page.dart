@@ -14,6 +14,7 @@ import '../../../../../providers/config_provider.dart';
 import '../../../../../utils/const.dart';
 import '../../../../../utils/scrcpy_utils.dart';
 import '../../../../../widgets/custom_ui/pg_section_card.dart';
+import '../../../widgets/home/widgets/config_override.dart';
 import '../../../widgets/home/widgets/pinned_app_display.dart';
 
 class SmallControlPage extends ConsumerStatefulWidget {
@@ -41,6 +42,7 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
 
   @override
   Widget build(BuildContext context) {
+    final overrides = ref.watch(configOverridesProvider);
     final device = widget.device;
     final appsList = device.info?.appList ?? [];
     final selectedConfig = ref.watch(controlPageConfigProvider);
@@ -66,16 +68,24 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
             children: [
               ControlButtons(device: device),
               Expanded(
-                  child: PgSectionCardNoScroll(
-                      // expandContent: true,
-                      label: el.loungeLoc.pinnedApps.label,
-                      content: appConfigPairs.isEmpty
-                          ? Center(
-                              child: Text(el.loungeLoc.info.emptyPin)
-                                  .textSmall
-                                  .muted,
-                            )
-                          : PinnedAppDisplay(device: widget.device))),
+                child: PgSectionCardNoScroll(
+                  label: el.loungeLoc.pinnedApps.label,
+                  labelTrail: OverrideButton(
+                    leading: Text('Overrides').withPadding(left: 8),
+                    buttonVariance: overrides.isNotEmpty
+                        ? ButtonVariance.primary
+                        : ButtonVariance.ghost,
+                    buttonDensity: ButtonDensity.iconDense,
+                  ),
+                  expandContent: appConfigPairs.length > 12,
+                  content: appConfigPairs.isEmpty
+                      ? Center(
+                          child:
+                              Text(el.loungeLoc.info.emptyPin).textSmall.muted,
+                        )
+                      : PinnedAppDisplay(device: widget.device),
+                ),
+              ),
             ],
           ),
         ),
@@ -112,31 +122,34 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
                   ),
                 ),
               if (selectedApp != null && selectedConfig != null)
-                PrimaryButton(
-                  density: ButtonDensity.dense,
-                  onPressed: loading
-                      ? null
-                      : () async {
-                          loading = true;
-                          setState(() {});
-                          await ScrcpyUtils.newInstance(
-                            ref,
-                            selectedDevice: widget.device,
-                            selectedConfig: selectedConfig.copyWith(
-                              appOptions: (selectedConfig.appOptions)
-                                  .copyWith(selectedApp: selectedApp),
-                            ),
-                            customInstanceName:
-                                '${selectedApp!.name} (${selectedConfig.configName})',
-                          );
-
-                          if (mounted) {
-                            loading = false;
-                            setState(() {});
-                          }
-                        },
-                  child: Text(el.configLoc.start),
-                ),
+                ButtonGroup(children: [
+                  Tooltip(
+                    tooltip: TooltipContainer(
+                      child: Text('* Right click to start with overrides'),
+                    ).call,
+                    child: PrimaryButton(
+                      density: ButtonDensity.dense,
+                      onPressed: loading
+                          ? null
+                          : () => _start(selectedConfig: selectedConfig),
+                      onSecondaryTapUp: loading
+                          ? null
+                          : (details) => _start(
+                                selectedConfig: selectedConfig,
+                                withOverrides: overrides.isNotEmpty,
+                              ),
+                      onLongPressStart: loading
+                          ? null
+                          : (details) => _start(
+                                selectedConfig: selectedConfig,
+                                withOverrides: overrides.isNotEmpty,
+                              ),
+                      child: Text(
+                          '${el.configLoc.start}${overrides.isNotEmpty ? ' *' : ''}'),
+                    ),
+                  ),
+                  OverrideButton(),
+                ]),
             ],
           ),
           content: Column(
@@ -209,5 +222,35 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
         ),
       ],
     );
+  }
+
+  _start(
+      {required ScrcpyConfig selectedConfig,
+      bool withOverrides = false}) async {
+    loading = true;
+    setState(() {});
+
+    var config = selectedConfig;
+
+    if (withOverrides) {
+      final overridden = ScrcpyUtils.handleOverrides(
+          ref.read(configOverridesProvider), selectedConfig);
+
+      config = overridden;
+    }
+
+    await ScrcpyUtils.newInstance(
+      ref,
+      selectedDevice: widget.device,
+      selectedConfig: config.copyWith(
+        appOptions: (config.appOptions).copyWith(selectedApp: selectedApp),
+      ),
+      customInstanceName: '${selectedApp!.name} (${selectedConfig.configName})',
+    );
+
+    if (mounted) {
+      loading = false;
+      setState(() {});
+    }
   }
 }

@@ -212,6 +212,7 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
 
   @override
   Widget build(BuildContext context) {
+    final overrides = ref.watch(configOverridesProvider);
     final theme = Theme.of(context);
     final config = ref.watch(controlPageConfigProvider);
     final allConfigs = ref.watch(configsProvider);
@@ -246,6 +247,8 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
       )).call,
       child: ContextMenu(
         items: [
+          MenuLabel(child: Text(widget.app.name).xSmall().muted()),
+          MenuDivider(),
           if (config == null && !isPinned) ...[
             MenuLabel(
                 leading: Icon(
@@ -299,10 +302,24 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
             onPressed: (context) => _startScrcpy(
                 isPinned: isPinned,
                 devicePair: devicePair,
-                configForPinned: configForPinned!),
+                configForPinned: configForPinned),
             leading: Icon(Icons.play_arrow_rounded),
             child: Text(el.loungeLoc.appTile.contextMenu.forceClose),
           ),
+          if (overrides.isNotEmpty) ...[
+            MenuButton(
+              enabled:
+                  enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
+              onPressed: (context) => _startScrcpy(
+                isPinned: isPinned,
+                devicePair: devicePair,
+                configForPinned: configForPinned,
+                withOverrides: overrides.isNotEmpty,
+              ),
+              leading: Icon(Icons.play_arrow_rounded),
+              child: Text('Start with overrides'),
+            ),
+          ]
         ],
         child: Stack(
           fit: StackFit.expand,
@@ -313,7 +330,6 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
                 setState(() {});
               },
               style: isPinned ? ButtonStyle.secondary() : ButtonStyle.outline(),
-              // enabled: enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
               onPressed:
                   !enabled(isMissingConfig: isMissingConfig, isPinned: isPinned)
                       ? null
@@ -373,7 +389,8 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
   _startScrcpy(
       {required bool isPinned,
       required List<AppConfigPair> devicePair,
-      ScrcpyConfig? configForPinned}) async {
+      ScrcpyConfig? configForPinned,
+      bool withOverrides = false}) async {
     final config = ref.watch(controlPageConfigProvider);
 
     loading = true;
@@ -382,14 +399,29 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
     controlPageKeyboardListenerNode.requestFocus();
     final selectedConfig = isPinned ? configForPinned ?? config : config;
 
-    await ScrcpyUtils.newInstance(
-      widget.ref,
-      selectedConfig: selectedConfig!.copyWith(
-          appOptions: selectedConfig.appOptions
-              .copyWith(selectedApp: widget.app, forceClose: true)),
-      selectedDevice: widget.device,
-      customInstanceName: '${widget.app.name} (${selectedConfig.configName})',
-    );
+    if (withOverrides) {
+      final overrides = ref.read(configOverridesProvider);
+      final overridden =
+          ScrcpyUtils.handleOverrides(overrides, selectedConfig!);
+
+      await ScrcpyUtils.newInstance(
+        widget.ref,
+        selectedConfig: overridden.copyWith(
+            appOptions: selectedConfig.appOptions
+                .copyWith(selectedApp: widget.app, forceClose: true)),
+        selectedDevice: widget.device,
+        customInstanceName: '${widget.app.name} (${selectedConfig.configName})',
+      );
+    } else {
+      await ScrcpyUtils.newInstance(
+        widget.ref,
+        selectedConfig: selectedConfig!.copyWith(
+            appOptions: selectedConfig.appOptions
+                .copyWith(selectedApp: widget.app, forceClose: true)),
+        selectedDevice: widget.device,
+        customInstanceName: '${widget.app.name} (${selectedConfig.configName})',
+      );
+    }
 
     if (mounted) {
       loading = false;
