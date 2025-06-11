@@ -7,7 +7,15 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import '../../../../../providers/config_provider.dart';
 
 class OverrideButton extends ConsumerStatefulWidget {
-  const OverrideButton({super.key});
+  final AbstractButtonStyle buttonVariance;
+  final ButtonDensity buttonDensity;
+  final Widget? leading;
+
+  const OverrideButton(
+      {super.key,
+      this.leading,
+      this.buttonVariance = ButtonVariance.primary,
+      this.buttonDensity = ButtonDensity.compact});
 
   @override
   ConsumerState<OverrideButton> createState() => _OverrideButtonState();
@@ -17,8 +25,9 @@ class _OverrideButtonState extends ConsumerState<OverrideButton> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      variance: ButtonVariance.primary,
-      density: ButtonDensity.compact,
+      leading: widget.leading,
+      variance: widget.buttonVariance,
+      density: widget.buttonDensity,
       onPressed: () {
         showPopover(
           context: context,
@@ -54,7 +63,8 @@ class _OverrideConfigPopoverState extends ConsumerState<OverrideConfigPopover> {
 
     return ModalContainer(
       child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: appWidth / 2),
+        constraints:
+            BoxConstraints(maxWidth: appWidth / 2, maxHeight: appWidth),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
