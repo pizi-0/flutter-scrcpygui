@@ -71,7 +71,6 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
                 child: PgSectionCardNoScroll(
                   label: el.loungeLoc.pinnedApps.label,
                   labelTrail: OverrideButton(
-                    leading: Text('Overrides').withPadding(left: 8),
                     buttonVariance: overrides.isNotEmpty
                         ? ButtonVariance.primary
                         : ButtonVariance.ghost,
