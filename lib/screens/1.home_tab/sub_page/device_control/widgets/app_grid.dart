@@ -14,6 +14,7 @@ import '../../../../../providers/app_config_pair_provider.dart';
 import '../../../../../providers/config_provider.dart';
 import '../../../../../utils/scrcpy_utils.dart';
 import '../../../../../widgets/navigation_shell.dart';
+import '../../../widgets/home/widgets/config_override.dart';
 import '../device_control_page.dart';
 import 'big_control_page.dart';
 
@@ -73,10 +74,17 @@ class _AppGridState extends ConsumerState<AppGrid> {
         .toList();
 
     final size = MediaQuery.sizeOf(context);
+    final overrides = ref.watch(configOverridesProvider);
 
     return PgSectionCardNoScroll(
       constraints: BoxConstraints(maxWidth: (size.width - sidebarWidth) * 0.5),
       label: el.loungeLoc.launcher.label,
+      labelTrail: OverrideButton(
+        buttonVariance: overrides.isNotEmpty
+            ? ButtonVariance.primary
+            : ButtonVariance.ghost,
+        buttonDensity: ButtonDensity.iconDense,
+      ),
       expandContent: true,
       content: Column(
         spacing: 8,
