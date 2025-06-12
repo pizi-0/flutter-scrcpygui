@@ -2,6 +2,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/utils/app_icon_utils.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -302,6 +303,14 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
                 configForPinned: configForPinned!),
             leading: Icon(Icons.play_arrow_rounded),
             child: Text(el.loungeLoc.appTile.contextMenu.forceClose),
+          ),
+          MenuButton(
+            enabled:
+                enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
+            onPressed: (context) =>
+                IconScraper.getIconUrl(widget.app.packageName),
+            leading: Icon(Icons.play_arrow_rounded),
+            child: Text('get icon'),
           ),
         ],
         child: Stack(
