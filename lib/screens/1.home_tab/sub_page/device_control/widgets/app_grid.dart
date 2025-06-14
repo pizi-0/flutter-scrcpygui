@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -160,7 +162,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
                   SliverGrid.builder(
                     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent: 150,
-                      mainAxisExtent: 40,
+                      mainAxisExtent: 50,
                       mainAxisSpacing: 8,
                       crossAxisSpacing: 8,
                     ),
@@ -210,6 +212,41 @@ class AppGridTile extends ConsumerStatefulWidget {
 class _AppGridTileState extends ConsumerState<AppGridTile> {
   bool loading = false;
   bool hover = false;
+  File? _iconFile;
+  bool _isIconLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOrFetchIcon();
+  }
+
+  Future<void> _loadOrFetchIcon() async {
+    if (!mounted) return;
+    setState(() {
+      _isIconLoading = true;
+    });
+
+    File? existingIcon = await IconDb.getIconFile(widget.app.packageName);
+    if (existingIcon != null) {
+      if (mounted) {
+        setState(() {
+          _iconFile = existingIcon;
+          _isIconLoading = false;
+        });
+      }
+      return;
+    }
+
+    // If not found locally, try to fetch it
+    File? fetchedIcon = await IconDb.fetchAndSaveIcon(widget.app.packageName);
+    if (mounted) {
+      setState(() {
+        _iconFile = fetchedIcon; // Will be null if fetch failed
+        _isIconLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -307,10 +344,25 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
           MenuButton(
             enabled:
                 enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
-            onPressed: (context) =>
-                IconScraper.getIconUrl(widget.app.packageName),
-            leading: Icon(Icons.play_arrow_rounded),
-            child: Text('get icon'),
+            onPressed: (context) async {
+              controlPageKeyboardListenerNode.requestFocus();
+              if (mounted) {
+                setState(() {
+                  _iconFile = null;
+                  _isIconLoading = true;
+                });
+              }
+              File? fetchedIcon =
+                  await IconDb.fetchAndSaveIcon(widget.app.packageName);
+              if (mounted) {
+                setState(() {
+                  _iconFile = fetchedIcon;
+                  _isIconLoading = false;
+                });
+              }
+            },
+            leading: Icon(Icons.refresh_rounded),
+            child: Text('Refresh Icon'),
           ),
         ],
         child: Stack(
@@ -321,7 +373,9 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
                 hover = value;
                 setState(() {});
               },
-              style: isPinned ? ButtonStyle.secondary() : ButtonStyle.outline(),
+              style: isPinned
+                  ? ButtonStyle.secondary(density: ButtonDensity.compact)
+                  : ButtonStyle.outline(density: ButtonDensity.compact),
               // enabled: enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
               onPressed:
                   !enabled(isMissingConfig: isMissingConfig, isPinned: isPinned)
@@ -330,19 +384,49 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
                           isPinned: isPinned,
                           devicePair: devicePair,
                           configForPinned: configForPinned),
-              child: hover
-                  ? OverflowMarquee(
-                      duration: 2.seconds,
-                      delayDuration: 0.5.seconds,
-                      child: Text(
-                        widget.app.name,
-                      ).textAlignment(TextAlign.center),
-                    )
-                  : Text(
-                      widget.app.name,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                    ).textAlignment(TextAlign.center),
+              child: Stack(
+                children: [
+                  if (_isIconLoading) ...[
+                    const Center(
+                        child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator())),
+                  ] else if (_iconFile != null)
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: OutlinedContainer(
+                        child: Image.file(_iconFile!, fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) {
+                          return const SizedBox.shrink();
+                        }),
+                      ),
+                    ),
+                  Container(
+                    color: Colors.black.withAlpha(100),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: hover
+                          ? Center(
+                              child: OverflowMarquee(
+                                duration: 2.seconds,
+                                delayDuration: 0.5.seconds,
+                                child: Text(
+                                  widget.app.name,
+                                ).textAlignment(TextAlign.center),
+                              ),
+                            )
+                          : Center(
+                              child: Text(
+                                widget.app.name,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ).textAlignment(TextAlign.center),
+                            ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Align(
               alignment: Alignment.centerRight,
@@ -362,7 +446,7 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
                 child: Center(
                   child: CircularProgressIndicator(),
                 ),
-              ))
+              )),
           ],
         ),
       ),
