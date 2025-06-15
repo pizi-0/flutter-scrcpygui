@@ -2,11 +2,14 @@ import 'dart:io';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:path/path.dart' as p;
 import 'package:scrcpygui/utils/app_icon_utils.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 
 import '../../../../../db/db.dart';
 import '../../../../../models/adb_devices.dart';
@@ -161,17 +164,20 @@ class _AppGridState extends ConsumerState<AppGrid> {
                 if (filteredList.isNotEmpty)
                   SliverGrid.builder(
                     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 150,
-                      mainAxisExtent: 50,
-                      mainAxisSpacing: 8,
-                      crossAxisSpacing: 8,
+                      maxCrossAxisExtent: 80,
+                      mainAxisExtent: 80,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
                     ),
                     itemCount: filteredList.length,
                     itemBuilder: (context, index) {
                       final app = filteredList[index];
 
-                      return AppGridTile(
-                          ref: ref, app: app, device: widget.device);
+                      return AppGridIcon(
+                          key: ValueKey(app.packageName),
+                          ref: ref,
+                          app: app,
+                          device: widget.device);
                     },
                   )
               ],
@@ -352,6 +358,20 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
                   _isIconLoading = true;
                 });
               }
+
+              if (await IconDb.iconExists(widget.app.packageName)) {
+                final iconFile =
+                    await IconDb.getIconFile(widget.app.packageName);
+                if (mounted) {
+                  setState(() {
+                    _iconFile = iconFile;
+                    _isIconLoading = false;
+                  });
+                }
+
+                return;
+              }
+
               File? fetchedIcon =
                   await IconDb.fetchAndSaveIcon(widget.app.packageName);
               if (mounted) {
@@ -448,6 +468,365 @@ class _AppGridTileState extends ConsumerState<AppGridTile> {
                 ),
               )),
           ],
+        ),
+      ),
+    );
+  }
+
+  bool enabled({required bool isMissingConfig, required bool isPinned}) {
+    final config = ref.watch(controlPageConfigProvider);
+
+    if (isMissingConfig || loading || (!isPinned && config == null)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  _startScrcpy(
+      {required bool isPinned,
+      required List<AppConfigPair> devicePair,
+      ScrcpyConfig? configForPinned}) async {
+    final config = ref.watch(controlPageConfigProvider);
+
+    loading = true;
+    setState(() {});
+
+    controlPageKeyboardListenerNode.requestFocus();
+    final selectedConfig = isPinned ? configForPinned ?? config : config;
+
+    await ScrcpyUtils.newInstance(
+      widget.ref,
+      selectedConfig: selectedConfig!.copyWith(
+          appOptions: selectedConfig.appOptions
+              .copyWith(selectedApp: widget.app, forceClose: true)),
+      selectedDevice: widget.device,
+      customInstanceName: '${widget.app.name} (${selectedConfig.configName})',
+    );
+
+    if (mounted) {
+      loading = false;
+      setState(() {});
+    }
+  }
+}
+
+class AppGridIcon extends ConsumerStatefulWidget {
+  const AppGridIcon({
+    super.key,
+    required this.ref,
+    required this.device,
+    required this.app,
+  });
+
+  final WidgetRef ref;
+  final AdbDevices device;
+  final ScrcpyApp app;
+
+  @override
+  ConsumerState<AppGridIcon> createState() => _AppGridIconState();
+}
+
+class _AppGridIconState extends ConsumerState<AppGridIcon> {
+  bool loading = false;
+  bool hover = false;
+  bool _onDropHover = false;
+  File? _iconFile;
+  bool processingIcon = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadOrFetchIcon();
+  }
+
+  Future<void> _loadOrFetchIcon() async {
+    if (!mounted) return;
+
+    File? existingIcon = await IconDb.getIconFile(widget.app.packageName);
+    if (existingIcon != null) {
+      if (mounted) {
+        setState(() {
+          _iconFile = existingIcon;
+        });
+      }
+      return;
+    }
+
+    // If not found locally, try to fetch it
+    File? fetchedIcon = await IconDb.fetchAndSaveIcon(widget.app.packageName);
+    if (mounted) {
+      setState(() {
+        _iconFile = fetchedIcon;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final config = ref.watch(controlPageConfigProvider);
+    final allConfigs = ref.watch(configsProvider);
+    final devicePair = ref
+        .watch(appConfigPairProvider)
+        .where((p) => p.deviceId == widget.device.id)
+        .toList();
+
+    final isPinned = devicePair.where((p) => p.app == widget.app).isNotEmpty;
+
+    var configForPinned =
+        devicePair.firstWhereOrNull((p) => p.app == widget.app)?.config;
+
+    final isMissingConfig = isPinned &&
+        allConfigs.where((c) => c.id == configForPinned?.id).isEmpty;
+
+    if (!isMissingConfig) {
+      configForPinned =
+          allConfigs.firstWhereOrNull((c) => c.id == configForPinned?.id);
+    }
+
+    return DropRegion(
+      formats: [...Formats.standardFormats, Formats.png, Formats.jpeg],
+      hitTestBehavior: HitTestBehavior.opaque,
+      onDropOver: (p0) {
+        setState(() {
+          _onDropHover = true;
+        });
+
+        print(widget.app.name);
+
+        return p0.session.allowedOperations.firstOrNull ?? DropOperation.none;
+      },
+      onDropEnded: (p0) {
+        setState(() {
+          _onDropHover = false;
+        });
+
+        print('onDropEnded');
+      },
+      onDropEnter: (p0) {
+        print('onDropEnter');
+      },
+      onDropLeave: (p0) {
+        setState(() {
+          _onDropHover = false;
+        });
+
+        print('onDropExit');
+      },
+      onPerformDrop: (p0) async {
+        print('onPerformDrop');
+        setState(() {
+          _onDropHover = false;
+          processingIcon = true;
+        });
+
+        if (_iconFile != null) {
+          print('evicting cache');
+          await FileImage(_iconFile!).evict();
+          _iconFile = null;
+          setState(() {});
+        }
+
+        final icon = p0.session.items.first;
+
+        if (icon.canProvide(Formats.png) || icon.canProvide(Formats.jpeg)) {
+          print('png');
+          p0.session.items.first.dataReader?.getFile(
+            Formats.png,
+            (value) async {
+              final iconDir = await IconDb.getIconsDirectory();
+
+              final byte = await value.readAll();
+              final file =
+                  File(p.join(iconDir.path, '${widget.app.packageName}.png'));
+
+              print('writing file');
+              final icon = await file.writeAsBytes(byte, flush: true);
+
+              _iconFile = icon;
+            },
+          );
+        } else {
+          print('not png');
+        }
+
+        if (mounted) {
+          processingIcon = false;
+          setState(() {});
+        }
+      },
+      child: ContextMenu(
+        items: [
+          MenuButton(
+            leading: Icon(Icons.info_rounded),
+            subMenu: [
+              MenuLabel(child: Text('Package name').muted),
+              MenuButton(
+                leading: Icon(Icons.copy_rounded),
+                onPressed: (context) async {
+                  final cp = ClipboardData(text: widget.app.packageName);
+                  await Clipboard.setData(cp);
+                },
+                child: Text(widget.app.packageName),
+              ),
+              MenuDivider(),
+              MenuButton(
+                enabled: enabled(
+                    isMissingConfig: isMissingConfig, isPinned: isPinned),
+                onPressed: (context) async {
+                  controlPageKeyboardListenerNode.requestFocus();
+
+                  if (_iconFile != null) {
+                    await FileImage(_iconFile!).evict();
+                  }
+
+                  if (mounted) {
+                    setState(() {
+                      _iconFile = null;
+                    });
+                  }
+
+                  File? fetchedIcon =
+                      await IconDb.fetchAndSaveIcon(widget.app.packageName);
+
+                  if (fetchedIcon == null) {
+                    if (await IconDb.iconExists(widget.app.packageName)) {
+                      final file =
+                          await IconDb.getIconFile(widget.app.packageName);
+                      await file?.delete();
+                    }
+                  }
+
+                  if (mounted) {
+                    setState(() {
+                      _iconFile = fetchedIcon;
+                    });
+                  }
+                },
+                leading: Icon(Icons.refresh_rounded),
+                child: Text('Reset Icon'),
+              ),
+            ],
+            child: Text(widget.app.name),
+          ),
+          MenuDivider(),
+          if (config == null && !isPinned) ...[
+            MenuLabel(
+                leading: Icon(
+                  Icons.warning_rounded,
+                  color: theme.colorScheme.destructive,
+                ),
+                child: Text(el.loungeLoc.appTile.contextMenu.selectConfig)),
+            MenuDivider(),
+          ],
+          if (!isPinned)
+            MenuButton(
+              enabled: config != null,
+              onPressed: (context) async {
+                controlPageKeyboardListenerNode.requestFocus();
+                ref.read(appConfigPairProvider.notifier).addOrEditPair(
+                    AppConfigPair(
+                        deviceId: widget.device.id,
+                        app: widget.app,
+                        config: config!));
+
+                await Db.saveAppConfigPairs(ref.read(appConfigPairProvider));
+              },
+              leading: Icon(Icons.push_pin_rounded),
+              child: Text(el.loungeLoc.appTile.contextMenu
+                  .pin(config: config?.configName ?? '')),
+            ),
+          if (isPinned)
+            MenuButton(
+              enabled: config != null || isPinned,
+              onPressed: (context) async {
+                controlPageKeyboardListenerNode.requestFocus();
+                final config = devicePair
+                    .firstWhereOrNull((p) => p.app == widget.app)
+                    ?.config;
+
+                ref.read(appConfigPairProvider.notifier).removePair(
+                    AppConfigPair(
+                        deviceId: widget.device.id,
+                        app: widget.app,
+                        config: config!));
+
+                await Db.saveAppConfigPairs(ref.read(appConfigPairProvider));
+              },
+              leading: Icon(Icons.push_pin_rounded),
+              child: Text(el.loungeLoc.appTile.contextMenu.unpin),
+            ),
+          MenuDivider(),
+          MenuButton(
+            enabled:
+                enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
+            onPressed: (context) => _startScrcpy(
+                isPinned: isPinned,
+                devicePair: devicePair,
+                configForPinned: configForPinned!),
+            leading: Icon(Icons.play_arrow_rounded),
+            child: Text(el.loungeLoc.appTile.contextMenu.forceClose),
+          ),
+        ],
+        child: AnimatedScale(
+          duration: 200.milliseconds,
+          scale: _onDropHover ? 1.2 : 1,
+          child: Button(
+            onHover: (value) {
+              hover = value;
+              setState(() {});
+            },
+            enabled:
+                enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
+            style: _iconFile == null
+                ? ButtonStyle.outline(density: ButtonDensity.compact)
+                : ButtonStyle.ghost(density: ButtonDensity.compact),
+            onPressed: () => _startScrcpy(
+                isPinned: isPinned,
+                devicePair: devicePair,
+                configForPinned: configForPinned),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      Expanded(
+                        child: processingIcon
+                            ? Center(child: const CircularProgressIndicator())
+                            : _iconFile != null
+                                ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.file(
+                                      _iconFile!,
+                                      fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              SizedBox.shrink(),
+                                    ),
+                                  )
+                                : Center(
+                                    child: Text(
+                                      widget.app.name.substring(0, 2),
+                                    ),
+                                  ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 2.0),
+                        child: hover
+                            ? OverflowMarquee(child: Text(widget.app.name))
+                            : Text(
+                                widget.app.name,
+                                maxLines: 1,
+                              ).textAlignment(TextAlign.center).textSmall,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
