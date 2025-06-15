@@ -4,7 +4,9 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   encrypt_decrypt_plus
+  irondash_engine_context
   screen_retriever_linux
+  super_native_extensions
   tray_manager
   url_launcher_linux
   window_manager

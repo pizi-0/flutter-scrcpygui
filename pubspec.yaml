@@ -69,6 +69,7 @@ dependencies:
   shadcn_flutter: ^0.0.34
   shared_preferences: ^2.3.1
   string_extensions: ^0.7.2
+  super_drag_and_drop: ^0.9.1
   tray_manager: ^0.4.0
   url_launcher: ^6.3.0
   uuid: ^4.5.1
