@@ -36,7 +36,7 @@ class IconScraper {
 class IconDb {
   static const String _iconDirName = 'app_icons';
 
-  static Future<Directory> _getIconsDirectory() async {
+  static Future<Directory> getIconsDirectory() async {
     final supportDir = await getApplicationSupportDirectory();
     final iconsDir = Directory(p.join(supportDir.path, _iconDirName));
     if (!await iconsDir.exists()) {
@@ -51,7 +51,7 @@ class IconDb {
 
   static Future<File?> getIconFile(String packageIdentifier) async {
     try {
-      final iconsDir = await _getIconsDirectory();
+      final iconsDir = await getIconsDirectory();
       final iconFile =
           File(p.join(iconsDir.path, _getIconFileName(packageIdentifier)));
       if (await iconFile.exists()) {
@@ -78,7 +78,7 @@ class IconDb {
 
       final response = await http.get(Uri.parse(iconUrl));
       if (response.statusCode == 200) {
-        final iconsDir = await _getIconsDirectory();
+        final iconsDir = await getIconsDirectory();
         final iconFile =
             File(p.join(iconsDir.path, _getIconFileName(packageIdentifier)));
         await iconFile.writeAsBytes(response.bodyBytes);
