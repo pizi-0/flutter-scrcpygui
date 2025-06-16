@@ -276,3 +276,40 @@ final filteredConfigsProvider =
         () => FilteredConfigNotifier());
 
 final controlPageConfigProvider = StateProvider<ScrcpyConfig?>((ref) => null);
+
+class ConfigOverrideNotifier extends Notifier<List<ScrcpyOverride>> {
+  @override
+  List<ScrcpyOverride> build() {
+    return [];
+  }
+
+  setOverride(List<ScrcpyOverride> overrides) {
+    state = overrides;
+  }
+
+  addOverride(ScrcpyOverride override) {
+    if (!state.contains(override)) {
+      state = [...state, override];
+    }
+  }
+
+  removeOverride(ScrcpyOverride override) {
+    state = [...state.where((o) => o != override)];
+  }
+
+  toggleOverride(ScrcpyOverride override) {
+    if (state.contains(override)) {
+      removeOverride(override);
+    } else {
+      addOverride(override);
+    }
+  }
+
+  clearOverride() {
+    state = [];
+  }
+}
+
+final configOverridesProvider =
+    NotifierProvider<ConfigOverrideNotifier, List<ScrcpyOverride>>(
+        () => ConfigOverrideNotifier());

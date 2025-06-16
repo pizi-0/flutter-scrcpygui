@@ -68,3 +68,5 @@ enum AudioSource implements StringEnum {
   final String value, command;
   const AudioSource(this.value, this.command);
 }
+
+enum ScrcpyOverride { record, landscape, mute }

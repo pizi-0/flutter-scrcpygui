@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:path/path.dart' as p;
+import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/config_override_button.dart';
 import 'package:scrcpygui/utils/app_icon_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
@@ -56,6 +57,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
     final device = widget.device;
     final allConfigs = ref.watch(configsProvider);
     final config = ref.watch(controlPageConfigProvider);
+    final overrides = ref.watch(configOverridesProvider);
 
     final devicePairs = ref
         .watch(appConfigPairProvider)
@@ -99,6 +101,13 @@ class _AppGridState extends ConsumerState<AppGrid> {
     return PgSectionCardNoScroll(
       constraints: BoxConstraints(maxWidth: (size.width - sidebarWidth) * 0.5),
       label: el.loungeLoc.launcher.label,
+      labelTrail: OverrideButton(
+        leading: Text('Overrides'),
+        buttonVariance: overrides.isNotEmpty
+            ? ButtonVariance.secondary
+            : ButtonVariance.ghost,
+        buttonDensity: ButtonDensity.dense,
+      ),
       expandContent: true,
       content: Column(
         spacing: 8,
@@ -628,6 +637,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final overrides = ref.watch(configOverridesProvider);
     final config = ref.watch(controlPageConfigProvider);
     final allConfigs = ref.watch(configsProvider);
     final devicePair = ref
@@ -851,10 +861,23 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
             onPressed: (context) => _startScrcpy(
                 isPinned: isPinned,
                 devicePair: devicePair,
-                configForPinned: configForPinned!),
+                configForPinned: configForPinned),
             leading: Icon(Icons.play_arrow_rounded),
             child: Text(el.loungeLoc.appTile.contextMenu.forceClose),
           ),
+          if (overrides.isNotEmpty)
+            MenuButton(
+              enabled:
+                  enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
+              onPressed: (context) => _startScrcpy(
+                isPinned: isPinned,
+                devicePair: devicePair,
+                configForPinned: configForPinned,
+                withOverrides: overrides.isNotEmpty,
+              ),
+              leading: Icon(Icons.play_arrow_rounded),
+              child: Text('Start with overrides'),
+            ),
         ],
         child: AnimatedScale(
           duration: 200.milliseconds,
@@ -960,7 +983,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
   _startScrcpy(
       {required bool isPinned,
       required List<AppConfigPair> devicePair,
-      ScrcpyConfig? configForPinned}) async {
+      ScrcpyConfig? configForPinned,
+      bool withOverrides = false}) async {
     final config = ref.watch(controlPageConfigProvider);
 
     loading = true;
@@ -969,14 +993,29 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     controlPageKeyboardListenerNode.requestFocus();
     final selectedConfig = isPinned ? configForPinned ?? config : config;
 
-    await ScrcpyUtils.newInstance(
-      widget.ref,
-      selectedConfig: selectedConfig!.copyWith(
-          appOptions: selectedConfig.appOptions
-              .copyWith(selectedApp: widget.app, forceClose: true)),
-      selectedDevice: widget.device,
-      customInstanceName: '${widget.app.name} (${selectedConfig.configName})',
-    );
+    if (withOverrides) {
+      final overrides = ref.read(configOverridesProvider);
+      final overridden =
+          ScrcpyUtils.handleOverrides(overrides, selectedConfig!);
+
+      await ScrcpyUtils.newInstance(
+        widget.ref,
+        selectedConfig: overridden.copyWith(
+            appOptions: selectedConfig.appOptions
+                .copyWith(selectedApp: widget.app, forceClose: true)),
+        selectedDevice: widget.device,
+        customInstanceName: '${widget.app.name} (${selectedConfig.configName})',
+      );
+    } else {
+      await ScrcpyUtils.newInstance(
+        widget.ref,
+        selectedConfig: selectedConfig!.copyWith(
+            appOptions: selectedConfig.appOptions
+                .copyWith(selectedApp: widget.app, forceClose: true)),
+        selectedDevice: widget.device,
+        customInstanceName: '${widget.app.name} (${selectedConfig.configName})',
+      );
+    }
 
     if (mounted) {
       loading = false;

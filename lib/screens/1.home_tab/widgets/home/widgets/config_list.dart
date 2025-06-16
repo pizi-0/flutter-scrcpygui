@@ -22,6 +22,7 @@ import '../../../../../widgets/custom_ui/pg_select.dart' as pg;
 import '../../bottom_bar/widgets/config_combobox_item.dart';
 import '../../bottom_bar/widgets/config_delete_dialog.dart';
 import '../../bottom_bar/widgets/config_detail_dialog.dart';
+import 'config_override_button.dart';
 import 'connection_error_dialog.dart';
 
 final configDropdownKey = GlobalKey<pg.SelectState>();
@@ -40,6 +41,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
   @override
   Widget build(BuildContext context) {
     final config = ref.watch(selectedConfigProvider);
+    final overrides = ref.watch(configOverridesProvider);
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     final filteredConfigs = ref.watch(filteredConfigsProvider);
@@ -92,11 +94,26 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
                 itemBuilder: (context, value) => Text(value.configName),
               ),
             ),
-            PrimaryButton(
-              onPressed: loading ? null : _start,
-              child: loading
-                  ? const CircularProgressIndicator().iconLarge()
-                  : Text(el.configLoc.start),
+            ButtonGroup(
+              children: [
+                Tooltip(
+                  tooltip: TooltipContainer(
+                    child: Text('* Right click to start with overrides'),
+                  ).call,
+                  child: PrimaryButton(
+                    onPressed: loading ? null : _start,
+                    onSecondaryTapUp: (d) =>
+                        loading ? null : _start(withOverrides: true),
+                    onLongPressStart: (details) =>
+                        loading ? null : _start(withOverrides: true),
+                    child: loading
+                        ? const CircularProgressIndicator().iconLarge()
+                        : Text(
+                            '${el.configLoc.start}${overrides.isNotEmpty ? ' *' : ''}'),
+                  ),
+                ),
+                OverrideButton(),
+              ],
             )
           ],
         )
@@ -121,9 +138,10 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
     }
   }
 
-  _start() async {
+  _start({bool withOverrides = false}) async {
     final selectedDevice = ref.read(selectedDeviceProvider);
     final selectedConfig = ref.read(selectedConfigProvider);
+    final overrides = ref.read(configOverridesProvider);
     if (selectedConfig == null) {
       showDialog(
         context: context,
@@ -161,13 +179,28 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
       } else {
         loading = true;
         setState(() {});
-        await ScrcpyUtils.newInstance(
-          ref,
-          selectedConfig: selectedConfig,
-          customInstanceName: selectedConfig.appOptions.selectedApp != null
-              ? '${selectedConfig.appOptions.selectedApp!.name} (${selectedConfig.configName})'
-              : '',
-        );
+
+        if (withOverrides) {
+          final overridden =
+              ScrcpyUtils.handleOverrides(overrides, selectedConfig);
+
+          await ScrcpyUtils.newInstance(
+            ref,
+            selectedConfig: overridden,
+            customInstanceName: selectedConfig.appOptions.selectedApp != null
+                ? '${selectedConfig.appOptions.selectedApp!.name} (${selectedConfig.configName})'
+                : '',
+          );
+        } else {
+          await ScrcpyUtils.newInstance(
+            ref,
+            selectedConfig: selectedConfig,
+            customInstanceName: selectedConfig.appOptions.selectedApp != null
+                ? '${selectedConfig.appOptions.selectedApp!.name} (${selectedConfig.configName})'
+                : '',
+          );
+        }
+
         await Db.saveLastUsedConfig(selectedConfig);
 
         if (mounted) {

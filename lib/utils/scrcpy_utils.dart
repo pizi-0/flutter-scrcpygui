@@ -17,6 +17,7 @@ import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/command_runner.dart';
 
 import '../db/db.dart';
+import '../models/scrcpy_related/scrcpy_enum.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
 import '../widgets/config_override.dart';
 import 'adb_utils.dart';
@@ -272,5 +273,29 @@ class ScrcpyUtils {
     }
 
     return overrideWidget;
+  }
+
+  static ScrcpyConfig handleOverrides(
+      List<ScrcpyOverride> overrides, ScrcpyConfig config) {
+    var resultingConfig = config;
+
+    if (overrides.contains(ScrcpyOverride.record)) {
+      resultingConfig = resultingConfig.copyWith(isRecording: true);
+    }
+
+    if (overrides.contains(ScrcpyOverride.landscape)) {
+      final currentUserFlags = resultingConfig.additionalFlags;
+
+      resultingConfig = resultingConfig.copyWith(
+        additionalFlags: currentUserFlags.append('--orientation=270'),
+      );
+    }
+
+    if (overrides.contains(ScrcpyOverride.mute)) {
+      resultingConfig =
+          resultingConfig.copyWith(scrcpyMode: ScrcpyMode.videoOnly);
+    }
+
+    return resultingConfig;
   }
 }
