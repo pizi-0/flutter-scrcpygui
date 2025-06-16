@@ -51,6 +51,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final device = widget.device;
     final allConfigs = ref.watch(configsProvider);
     final config = ref.watch(controlPageConfigProvider);
@@ -70,9 +71,23 @@ class _AppGridState extends ConsumerState<AppGrid> {
     devicePairs.sort(
         (a, b) => a.app.name.toLowerCase().compareTo(b.app.name.toLowerCase()));
 
-    final finalList = [...devicePairs.map((p) => p.app), ...appsList];
+    final deviceAppslist = devicePairs.map((p) => p.app).toList();
+
+    final finalList = [...deviceAppslist, ...appsList];
 
     final filteredList = finalList
+        .where((app) => app.name
+            .toLowerCase()
+            .contains(appSearchController.text.toLowerCase()))
+        .toList();
+
+    final filteredDeviceAppslist = deviceAppslist
+        .where((app) => app.name
+            .toLowerCase()
+            .contains(appSearchController.text.toLowerCase()))
+        .toList();
+
+    final filteredAppslist = appsList
         .where((app) => app.name
             .toLowerCase()
             .contains(appSearchController.text.toLowerCase()))
@@ -161,17 +176,63 @@ class _AppGridState extends ConsumerState<AppGrid> {
                             .textSmall
                             .muted),
                   ),
-                if (filteredList.isNotEmpty)
+                if (filteredDeviceAppslist.isNotEmpty) ...[
+                  SliverToBoxAdapter(
+                    child: Container(
+                        margin: EdgeInsets.only(bottom: 8),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.muted,
+                          borderRadius: theme.borderRadiusSm,
+                        ),
+                        child: Text('Pinned').textSmall),
+                  ),
                   SliverGrid.builder(
                     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                       maxCrossAxisExtent: 80,
                       mainAxisExtent: 80,
-                      mainAxisSpacing: 12,
-                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
                     ),
-                    itemCount: filteredList.length,
+                    itemCount: filteredDeviceAppslist.length,
                     itemBuilder: (context, index) {
-                      final app = filteredList[index];
+                      final app = filteredDeviceAppslist[index];
+
+                      return AppGridIcon(
+                          key: ValueKey(app.packageName),
+                          ref: ref,
+                          app: app,
+                          device: widget.device);
+                    },
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  ),
+                ],
+                if (filteredAppslist.isNotEmpty) ...[
+                  if (deviceAppslist.isNotEmpty)
+                    SliverToBoxAdapter(
+                      child: Container(
+                          margin: EdgeInsets.only(bottom: 8),
+                          padding:
+                              EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                          decoration: BoxDecoration(
+                            color: theme.colorScheme.muted,
+                            borderRadius: theme.borderRadiusSm,
+                          ),
+                          child: Text('Apps').textSmall),
+                    ),
+                  SliverGrid.builder(
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 80,
+                      mainAxisExtent: 80,
+                      mainAxisSpacing: 10,
+                      crossAxisSpacing: 10,
+                    ),
+                    itemCount: filteredAppslist.length,
+                    itemBuilder: (context, index) {
+                      final app = filteredAppslist[index];
 
                       return AppGridIcon(
                           key: ValueKey(app.packageName),
@@ -180,6 +241,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
                           device: widget.device);
                     },
                   )
+                ]
               ],
             ),
           ),
@@ -586,14 +648,18 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     }
 
     return DropRegion(
-      formats: [...Formats.standardFormats, Formats.png, Formats.jpeg],
+      formats: [
+        ...Formats.standardFormats,
+        Formats.png,
+        Formats.jpeg,
+        Formats.ico,
+        Formats.webp
+      ],
       hitTestBehavior: HitTestBehavior.opaque,
       onDropOver: (p0) {
         setState(() {
           _onDropHover = true;
         });
-
-        print(widget.app.name);
 
         return p0.session.allowedOperations.firstOrNull ?? DropOperation.none;
       },
@@ -601,37 +667,31 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
         setState(() {
           _onDropHover = false;
         });
-
-        print('onDropEnded');
       },
-      onDropEnter: (p0) {
-        print('onDropEnter');
-      },
+      onDropEnter: (p0) {},
       onDropLeave: (p0) {
         setState(() {
           _onDropHover = false;
         });
-
-        print('onDropExit');
       },
       onPerformDrop: (p0) async {
-        print('onPerformDrop');
         setState(() {
           _onDropHover = false;
           processingIcon = true;
         });
 
-        if (_iconFile != null) {
-          print('evicting cache');
-          await FileImage(_iconFile!).evict();
-          _iconFile = null;
-          setState(() {});
-        }
-
         final icon = p0.session.items.first;
 
-        if (icon.canProvide(Formats.png) || icon.canProvide(Formats.jpeg)) {
-          print('png');
+        if (icon.canProvide(Formats.png) ||
+            icon.canProvide(Formats.jpeg) ||
+            icon.canProvide(Formats.ico) ||
+            icon.canProvide(Formats.webp)) {
+          if (_iconFile != null) {
+            await FileImage(_iconFile!).evict();
+            _iconFile = null;
+            setState(() {});
+          }
+
           p0.session.items.first.dataReader?.getFile(
             Formats.png,
             (value) async {
@@ -641,15 +701,12 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
               final file =
                   File(p.join(iconDir.path, '${widget.app.packageName}.png'));
 
-              print('writing file');
               final icon = await file.writeAsBytes(byte, flush: true);
 
               _iconFile = icon;
             },
           );
-        } else {
-          print('not png');
-        }
+        } else {}
 
         if (mounted) {
           processingIcon = false;
@@ -772,30 +829,31 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
         child: AnimatedScale(
           duration: 200.milliseconds,
           scale: _onDropHover ? 1.2 : 1,
-          child: Button(
-            onHover: (value) {
-              hover = value;
-              setState(() {});
-            },
-            enabled:
-                enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
-            style: _iconFile == null
-                ? ButtonStyle.outline(density: ButtonDensity.compact)
-                : ButtonStyle.ghost(density: ButtonDensity.compact),
-            onPressed: () => _startScrcpy(
-                isPinned: isPinned,
-                devicePair: devicePair,
-                configForPinned: configForPinned),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: Stack(
-                children: [
-                  Column(
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Button(
+                onHover: (value) {
+                  hover = value;
+                  setState(() {});
+                },
+                enabled: enabled(
+                    isMissingConfig: isMissingConfig, isPinned: isPinned),
+                style: _iconFile == null
+                    ? ButtonStyle.outline(density: ButtonDensity.compact)
+                    : ButtonStyle.ghost(density: ButtonDensity.compact),
+                onPressed: () => _startScrcpy(
+                    isPinned: isPinned,
+                    devicePair: devicePair,
+                    configForPinned: configForPinned),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Stack(
                     children: [
-                      Expanded(
-                        child: processingIcon
-                            ? Center(child: const CircularProgressIndicator())
-                            : _iconFile != null
+                      Column(
+                        children: [
+                          Expanded(
+                            child: _iconFile != null
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
                                     child: Image.file(
@@ -811,21 +869,47 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                                       widget.app.name.substring(0, 2),
                                     ),
                                   ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 2.0),
-                        child: hover
-                            ? OverflowMarquee(child: Text(widget.app.name))
-                            : Text(
-                                widget.app.name,
-                                maxLines: 1,
-                              ).textAlignment(TextAlign.center).textSmall,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: hover
+                                ? OverflowMarquee(child: Text(widget.app.name))
+                                : Text(
+                                    widget.app.name,
+                                    maxLines: 1,
+                                  ).textAlignment(TextAlign.center).textSmall,
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
+                ),
               ),
-            ),
+              if (isPinned)
+                Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Icon(
+                      Icons.star_rounded,
+                      color: Colors.amber,
+                    )),
+              if (!enabled(
+                  isMissingConfig: isMissingConfig, isPinned: isPinned))
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.black.withAlpha(200),
+                      borderRadius: theme.borderRadiusLg),
+                ),
+              if (loading || processingIcon)
+                Container(
+                  decoration: BoxDecoration(
+                      color: Colors.black.withAlpha(200),
+                      borderRadius: theme.borderRadiusLg),
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+            ],
           ),
         ),
       ),
