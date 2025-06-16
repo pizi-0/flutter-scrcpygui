@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:path/path.dart' as p;
 import 'package:scrcpygui/utils/app_icon_utils.dart';
+import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
@@ -706,7 +707,36 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
               _iconFile = icon;
             },
           );
-        } else {}
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: appWidth),
+              child: AlertDialog(
+                title: Text('Unsupported format'),
+                content: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    PgSectionCardNoScroll(
+                      label: 'Supported formats:',
+                      content: Text('png, jpeg, ico, webp'),
+                    ),
+                    PgSectionCardNoScroll(
+                      label: 'Detected format:',
+                      content: Text(
+                          p0.session.items.first.platformFormats.join(' ')),
+                    ),
+                  ],
+                ),
+                actions: [
+                  SecondaryButton(
+                      onPressed: () => context.pop(),
+                      child: Text(el.buttonLabelLoc.close))
+                ],
+              ),
+            ),
+          );
+        }
 
         if (mounted) {
           processingIcon = false;
