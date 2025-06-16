@@ -5,6 +5,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../models/adb_devices.dart';
 import '../../../../../models/scrcpy_related/scrcpy_info/scrcpy_app_list.dart';
+import '../../../../../utils/const.dart';
 
 class SmallControlPage extends ConsumerStatefulWidget {
   const SmallControlPage({
@@ -41,15 +42,18 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
       spacing: 8,
       children: [
         Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: 8,
-            children: [
-              ControlButtons(device: device),
-              Expanded(
-                child: AppGrid(device: device),
-              ),
-            ],
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: appWidth),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 8,
+              children: [
+                ControlButtons(device: device),
+                Expanded(
+                  child: AppGrid(device: device),
+                ),
+              ],
+            ),
           ),
         ),
       ],
