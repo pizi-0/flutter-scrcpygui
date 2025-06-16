@@ -903,7 +903,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                           Padding(
                             padding: const EdgeInsets.only(top: 8.0),
                             child: hover
-                                ? OverflowMarquee(child: Text(widget.app.name))
+                                ? OverflowMarquee(
+                                    child: Text(widget.app.name).textSmall)
                                 : Text(
                                     widget.app.name,
                                     maxLines: 1,
