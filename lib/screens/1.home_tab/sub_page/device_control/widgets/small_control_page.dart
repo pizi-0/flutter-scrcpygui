@@ -50,7 +50,7 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
               children: [
                 ControlButtons(device: device),
                 Expanded(
-                  child: AppGrid(device: device),
+                  child: AppGrid(device: device, persistentHeader: false),
                 ),
               ],
             ),
