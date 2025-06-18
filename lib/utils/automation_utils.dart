@@ -1,80 +1,53 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
-import 'package:scrcpygui/providers/bonsoir_devices.dart';
+import 'package:scrcpygui/providers/automation_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
-import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
-import 'package:string_extensions/string_extensions.dart';
 
 class AutomationUtils {
   static autoconnectRunner(WidgetRef ref) async {
     final connected = ref.read(adbProvider);
-    final bonsoirDevices = ref.read(bonsoirDeviceProvider);
     final workDir = ref.read(execDirProvider);
-    final task = ref
-        .read(savedAdbDevicesProvider)
-        .where((e) =>
-            (e.id.isIpv4 || e.id.contains(adbMdns)) &&
-            e.automationData != null &&
-            e.automationData!.actions
-                .where((a) => a.type == ActionType.autoconnect)
-                .isNotEmpty)
-        .toList();
+    final task = ref.read(autoConnectProvider);
 
     for (final t in task) {
-      if (t.id.contains(adbMdns)) {
-        if (bonsoirDevices.where((bd) => t.id.contains(bd.name)).isNotEmpty) {
-          if (!connected.contains(t)) {
-            AdbUtils.connectWithMdns(ref,
-                id: t.id.replaceAll('.$adbMdns', ''), from: 'autconnect');
-          }
-        }
-      }
-
-      if (t.id.isIpv4 || t.id.isIpv6) {
-        if (!connected.contains(t)) {
-          AdbUtils.connectWithIp(workDir, ipport: t.id);
-        }
+      if (connected.where((d) => d.id == t.deviceIp).isEmpty) {
+        AdbUtils.connectWithIp(workDir, ipport: t.deviceIp);
       }
     }
   }
 
   static Future<void> autoLaunchConfigRunner(WidgetRef ref) async {
     final connected = ref.read(adbProvider);
+    final allConfigs = ref.read(configsProvider);
 
-    final task = ref
-        .read(savedAdbDevicesProvider)
-        .where((auto) =>
-            auto.automationData?.actions
-                .where((act) => act.type == ActionType.launchConfig)
-                .isNotEmpty ??
-            false)
-        .toList();
+    final task = ref.read(autoLaunchProvider);
 
     for (final t in task) {
       final running = ref.read(scrcpyInstanceProvider);
-      if (connected.where((d) => d.id == t.id).isNotEmpty) {
-        if (running.where((inst) => inst.device.id == t.id).isEmpty) {
-          final configIdtoLaunch = t.automationData!.actions
-              .firstWhere((act) => act.type == ActionType.launchConfig)
-              .action;
+      if (connected.where((d) => d.id == t.deviceId).isNotEmpty) {
+        if (running.where((inst) => inst.device.id == t.deviceId).isEmpty) {
+          final configToLaunch =
+              allConfigs.firstWhereOrNull((c) => c.id == t.configId);
 
-          final config = ref
-              .read(configsProvider)
-              .firstWhere((conf) => conf.id == configIdtoLaunch);
+          final device = connected.firstWhereOrNull((d) => d.id == t.deviceId);
 
-          final hasApp = config.appOptions.selectedApp != null;
+          if (configToLaunch == null || device == null) {
+            continue;
+          }
+
+          final hasApp = configToLaunch.appOptions.selectedApp != null;
 
           ScrcpyUtils.newInstance(
             ref,
-            selectedDevice: t,
-            selectedConfig: config,
+            selectedDevice: device,
+            selectedConfig: configToLaunch,
             customInstanceName: hasApp
-                ? '${config.appOptions.selectedApp!.name} (${config.configName})'
+                ? '${configToLaunch.appOptions.selectedApp!.name} (${configToLaunch.configName})'
                 : '',
           );
         }

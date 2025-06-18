@@ -7,16 +7,15 @@ import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
-import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
-
+import '../../../../../../models/device_info_model.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
-import '../../../../../../providers/adb_provider.dart';
 import '../../../../../../providers/config_provider.dart';
 import '../../../../../../widgets/config_tiles.dart';
 
 class AudioConfig extends ConsumerStatefulWidget {
-  const AudioConfig({super.key});
+  final DeviceInfo info;
+  const AudioConfig({super.key, required this.info});
 
   @override
   ConsumerState<AudioConfig> createState() => _AudioConfigState();
@@ -44,19 +43,16 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig)!;
-    final selectedDevice = ref.watch(selectedDeviceProvider);
+    final info = widget.info;
 
     return PgSectionCard(
       label: el.audioSection.title,
       children: [
-        _buildAudioDuplicateOption(
-            context, selectedConfig, selectedDevice!.info!),
+        _buildAudioDuplicateOption(context, selectedConfig, info),
         const Divider(),
-        _buildAudioSourceSelector(
-            context, selectedConfig, selectedDevice.info!),
+        _buildAudioSourceSelector(context, selectedConfig, info),
         const Divider(),
-        _buildAudioFormatSelector(
-            context, selectedConfig, selectedDevice.info!),
+        _buildAudioFormatSelector(context, selectedConfig, info),
         const Divider(),
         _buildAudioBitrate(context),
       ],
@@ -64,7 +60,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
   }
 
   Widget _buildAudioDuplicateOption(
-      BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+      BuildContext context, ScrcpyConfig selectedConfig, DeviceInfo info) {
     final showInfo = ref.watch(configScreenShowInfo);
 
     return ConfigDropdownOthers(
@@ -107,7 +103,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
   }
 
   Widget _buildAudioSourceSelector(
-      BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+      BuildContext context, ScrcpyConfig selectedConfig, DeviceInfo info) {
     final showInfo = ref.watch(configScreenShowInfo);
     final scrcpyVersion = ref.watch(scrcpyVersionProvider);
 
@@ -160,7 +156,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
   }
 
   Widget _buildAudioFormatSelector(
-      BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+      BuildContext context, ScrcpyConfig selectedConfig, DeviceInfo info) {
     final showInfo = ref.watch(configScreenShowInfo);
 
     return Column(

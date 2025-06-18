@@ -1,7 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
+import 'package:scrcpygui/providers/device_info_provider.dart';
 
 class DevicePayload {
   final String name;
@@ -30,7 +33,10 @@ class DevicePayload {
 }
 
 extension DevicePayloader on AdbDevices {
-  DevicePayload toPayload() {
-    return DevicePayload(name: name ?? modelName, id: id);
+  DevicePayload toPayload(WidgetRef ref) {
+    final info =
+        ref.read(infoProvider).firstWhereOrNull((i) => i.serialNo == serialNo);
+
+    return DevicePayload(name: info?.deviceName ?? modelName, id: id);
   }
 }

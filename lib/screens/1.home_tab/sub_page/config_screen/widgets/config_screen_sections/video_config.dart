@@ -2,18 +2,19 @@ import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/models/device_info_model.dart';
 import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
-import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 
 import '../../../../../../db/db.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../../../../../providers/config_provider.dart';
+import '../../../../../../providers/device_info_provider.dart';
 import '../../../../../../providers/version_provider.dart';
 import '../../../../../../utils/adb_utils.dart';
 import '../../../../../../utils/command_runner.dart';
@@ -21,7 +22,8 @@ import '../../../../../../utils/const.dart';
 import '../../../../../../widgets/config_tiles.dart';
 
 class VideoConfig extends ConsumerStatefulWidget {
-  const VideoConfig({super.key});
+  final DeviceInfo info;
+  const VideoConfig({super.key, required this.info});
 
   @override
   ConsumerState<VideoConfig> createState() => _VideoConfigState();
@@ -74,13 +76,13 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig)!;
-    final selectedDevice = ref.watch(selectedDeviceProvider);
+    final info = widget.info;
 
     return PgSectionCard(
       label: el.videoSection.title,
       labelTrail: IconButton.ghost(
         density: ButtonDensity.dense,
-        onPressed: loading ? null : _onRefreshDisplay,
+        onPressed: loading ? null : () => _onRefreshDisplay(info),
         icon: loading
             ? SizedBox.square(
                 dimension: 20,
@@ -88,22 +90,21 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
             : Icon(Icons.refresh),
       ),
       children: [
-        _buildDisplaySelector(selectedConfig, selectedDevice!.info!),
+        _buildDisplaySelector(selectedConfig, info),
         const Divider(),
-        _buildVideoCodecNFormatSelector(
-            context, selectedConfig, selectedDevice.info!),
+        _buildVideoCodecNFormatSelector(context, selectedConfig, info),
         const Divider(),
         _buildVideoBitrate(context),
         const Divider(),
         _buildMaxFPS(selectedConfig),
         if (selectedConfig.videoOptions.displayId != 'new') const Divider(),
         if (selectedConfig.videoOptions.displayId != 'new')
-          _buildResolutionScale(selectedConfig, selectedDevice.info!),
+          _buildResolutionScale(selectedConfig, info),
       ],
     );
   }
 
-  _onRefreshDisplay() async {
+  _onRefreshDisplay(DeviceInfo info) async {
     loading = true;
     setState(() {});
 
@@ -116,17 +117,11 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
 
       final displays = getDisplays(res.stdout);
 
-      dev = dev.copyWith(
-          info: dev.info!.copyWith(
-              displays: displays
-                  .where((d) => (int.tryParse(d.id) ?? 11) < 10)
-                  .toList()));
+      final updatedInfo = info.copyWith(displays: displays);
 
-      ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
+      ref.read(infoProvider.notifier).addOrEditDeviceInfo(updatedInfo);
 
-      ref.read(selectedDeviceProvider.notifier).state = dev;
-
-      await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+      await Db.saveDeviceInfos(ref.read(infoProvider));
     } finally {
       loading = false;
       setState(() {});
@@ -165,7 +160,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     );
   }
 
-  Widget _buildDisplaySelector(ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+  Widget _buildDisplaySelector(ScrcpyConfig selectedConfig, DeviceInfo info) {
     final showInfo = ref.watch(configScreenShowInfo);
 
     final displays =
@@ -374,7 +369,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
         .setVirtDisplayConfig(preseveContent: !currentVdOptions.preseveContent);
   }
 
-  Widget _buildResolutionScale(ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+  Widget _buildResolutionScale(ScrcpyConfig selectedConfig, DeviceInfo info) {
     final showInfo = ref.watch(configScreenShowInfo);
 
     final displaySize = info.displays
@@ -426,7 +421,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   }
 
   Widget _buildVideoCodecNFormatSelector(
-      BuildContext context, ScrcpyConfig selectedConfig, ScrcpyInfo info) {
+      BuildContext context, ScrcpyConfig selectedConfig, DeviceInfo info) {
     final showInfo = ref.watch(configScreenShowInfo);
 
     return Column(

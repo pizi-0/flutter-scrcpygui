@@ -10,6 +10,7 @@ import 'package:scrcpygui/widgets/custom_ui/pg_subtitle.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../providers/adb_provider.dart';
+import '../../../../../../providers/device_info_provider.dart';
 import '../../../../../../providers/version_provider.dart';
 import '../../../../../../utils/command_runner.dart';
 
@@ -29,7 +30,11 @@ class AppConfigState extends ConsumerState<AppConfig> {
     final selectedConfig = ref.watch(configScreenConfig)!;
     final showInfo = ref.watch(configScreenShowInfo);
 
-    final appList = selectedDevice!.info?.appList ?? [];
+    final deviceInfo = ref
+        .watch(infoProvider)
+        .firstWhere((info) => info.serialNo == selectedDevice!.serialNo);
+
+    final appList = deviceInfo.appList;
 
     appList
         .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
@@ -139,19 +144,20 @@ class AppConfigState extends ConsumerState<AppConfig> {
 
     var dev = ref.read(selectedDeviceProvider)!;
     final workDir = ref.read(execDirProvider);
+    var deviceInfo = ref
+        .read(infoProvider)
+        .firstWhere((info) => info.serialNo == dev.serialNo);
 
     final res = await CommandRunner.runScrcpyCommand(workDir, dev,
         args: ['--list-apps']);
 
     final applist = getAppsList(res.stdout);
 
-    dev = dev.copyWith(info: dev.info!.copyWith(appList: applist));
+    deviceInfo = deviceInfo.copyWith(appList: applist);
 
-    ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
+    ref.read(infoProvider.notifier).addOrEditDeviceInfo(deviceInfo);
 
-    ref.read(selectedDeviceProvider.notifier).state = dev;
-
-    await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+    await Db.saveDeviceInfos(ref.read(infoProvider));
 
     loading = false;
     setState(() {});

@@ -4,9 +4,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/adb_devices.dart';
@@ -19,7 +20,6 @@ import 'package:scrcpygui/utils/command_runner.dart';
 import '../db/db.dart';
 import '../models/scrcpy_related/scrcpy_enum.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
-import '../widgets/config_override.dart';
 import 'adb_utils.dart';
 import 'scrcpy_command.dart';
 
@@ -79,13 +79,17 @@ class ScrcpyUtils {
     final workDir = ref.read(execDirProvider);
     final runningInstance = ref.read(scrcpyInstanceProvider);
 
-    final d = ref.watch(savedAdbDevicesProvider).firstWhere(
-        (d) => d.id == selectedDevice.id,
-        orElse: () => selectedDevice);
+    final deviceInfo = ref
+        .read(infoProvider)
+        .firstWhereOrNull((info) => info.serialNo == selectedDevice.serialNo);
+
+    final isWireless = selectedDevice.id.contains(adbMdns) ||
+        selectedDevice.id.isIpv4 ||
+        selectedDevice.id.isIpv6;
 
     List<String> comm = [];
     String customName =
-        '[${d.name?.toUpperCase() ?? d.modelName}] ${customInstanceName == '' ? selectedConfig.configName : customInstanceName}';
+        '[${isWireless ? 'ᯤ' : '♆'}] [${deviceInfo?.deviceName.toUpperCase() ?? selectedDevice.modelName}] ${customInstanceName == '' ? selectedConfig.configName : customInstanceName}';
 
     if (runningInstance.where((r) => r.instanceName == customName).isNotEmpty) {
       for (int i = 1; i < 100; i++) {
@@ -100,7 +104,7 @@ class ScrcpyUtils {
       }
     }
 
-    comm = ScrcpyCommand.buildCommand(ref, selectedConfig, d,
+    comm = ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice,
         customName: '${isTest ? '[TEST] ' : ''}$customName');
 
     final process = await CommandRunner.startScrcpyCommand(
@@ -113,7 +117,7 @@ class ScrcpyUtils {
     logger.i('Scrcpy started: ${process.pid}');
 
     final instance = ScrcpyRunningInstance(
-      device: d,
+      device: selectedDevice,
       config: selectedConfig,
       scrcpyPID: process.pid.toString(),
       process: process,
@@ -148,35 +152,22 @@ class ScrcpyUtils {
       String customInstanceName = ''}) async {
     AdbDevices device = selectedDevice ?? ref.read(selectedDeviceProvider)!;
 
-    if (device.info == null) {
-      final info =
-          await AdbUtils.getScrcpyDetailsFor(ref.read(execDirProvider), device);
-      device = device.copyWith(info: info);
+    final deviceInfo = ref
+        .read(infoProvider)
+        .firstWhereOrNull((info) => info.serialNo == device.serialNo);
 
-      ref.read(savedAdbDevicesProvider.notifier).addEditDevices(device);
-      ref.read(selectedDeviceProvider.notifier).state = device;
-      await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+    if (deviceInfo == null) {
+      final info =
+          await AdbUtils.getDeviceInfoFor(ref.read(execDirProvider), device);
+
+      ref.read(infoProvider.notifier).addOrEditDeviceInfo(info);
+      await Db.saveDeviceInfos(ref.read(infoProvider));
     }
 
-    // final checkResult =
-    //     await checkForIncompatibleFlags(ref, selectedConfig, device);
-
-    // bool proceed = checkResult.isEmpty;
-
-    // if (!proceed) {
-    //   proceed = (await showDialog(
-    //         context: ref.context,
-    //         builder: (context) => OverrideDialog(overrideWidget: checkResult),
-    //       )) ??
-    //       false;
-    // }
-
-    // if (proceed) {
     final inst = await _startServer(ref, device, selectedConfig,
         isTest: isTest, customInstanceName: customInstanceName);
 
     ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
-    // }
   }
 
   static Future<void> killServer(ScrcpyRunningInstance instance,
@@ -216,64 +207,64 @@ class ScrcpyUtils {
     return res;
   }
 
-  static Future<List<Widget>> checkForIncompatibleFlags(WidgetRef ref,
-      ScrcpyConfig selectedConfig, AdbDevices selectedDevice) async {
-    // List<FlagCheckResult> result = [];
-    List<Widget> overrideWidget = [];
+  // static Future<List<Widget>> checkForIncompatibleFlags(WidgetRef ref,
+  //     ScrcpyConfig selectedConfig, AdbDevices selectedDevice) async {
+  //   // List<FlagCheckResult> result = [];
+  //   List<Widget> overrideWidget = [];
 
-    bool display = selectedDevice.info!.displays
-            .where(
-                (d) => d.id == selectedConfig.videoOptions.displayId.toString())
-            .isEmpty &&
-        selectedConfig.videoOptions.displayId != 'new';
+  //   bool display = selectedDevice.info!.displays
+  //           .where(
+  //               (d) => d.id == selectedConfig.videoOptions.displayId.toString())
+  //           .isEmpty &&
+  //       selectedConfig.videoOptions.displayId != 'new';
 
-    bool videoCodec = selectedDevice.info!.videoEncoders
-        .where((enc) => enc.codec == selectedConfig.videoOptions.videoCodec)
-        .isEmpty;
+  //   bool videoCodec = selectedDevice.info!.videoEncoders
+  //       .where((enc) => enc.codec == selectedConfig.videoOptions.videoCodec)
+  //       .isEmpty;
 
-    bool videoEncoder = selectedConfig.videoOptions.videoEncoder == 'default'
-        ? false
-        : selectedDevice.info!.videoEncoders
-            .where((ve) =>
-                ve.encoder.contains(selectedConfig.videoOptions.videoEncoder))
-            .isEmpty;
+  //   bool videoEncoder = selectedConfig.videoOptions.videoEncoder == 'default'
+  //       ? false
+  //       : selectedDevice.info!.videoEncoders
+  //           .where((ve) =>
+  //               ve.encoder.contains(selectedConfig.videoOptions.videoEncoder))
+  //           .isEmpty;
 
-    bool duplicateAudio = selectedConfig.audioOptions.duplicateAudio &&
-        int.parse(selectedDevice.info!.buildVersion) < 13;
+  //   bool duplicateAudio = selectedConfig.audioOptions.duplicateAudio &&
+  //       int.parse(selectedDevice.info!.buildVersion) < 13;
 
-    bool audioCodec = selectedDevice.info!.audioEncoder
-        .where((enc) => enc.codec == selectedConfig.audioOptions.audioCodec)
-        .isEmpty;
+  //   bool audioCodec = selectedDevice.info!.audioEncoder
+  //       .where((enc) => enc.codec == selectedConfig.audioOptions.audioCodec)
+  //       .isEmpty;
 
-    bool audioEncoder = selectedConfig.audioOptions.audioEncoder == 'default'
-        ? false
-        : selectedDevice.info!.audioEncoder
-            .where((ae) =>
-                ae.encoder.contains(selectedConfig.audioOptions.audioEncoder))
-            .isEmpty;
+  //   bool audioEncoder = selectedConfig.audioOptions.audioEncoder == 'default'
+  //       ? false
+  //       : selectedDevice.info!.audioEncoder
+  //           .where((ae) =>
+  //               ae.encoder.contains(selectedConfig.audioOptions.audioEncoder))
+  //           .isEmpty;
 
-    if (display || videoCodec || videoEncoder) {
-      overrideWidget.add(VideoOptionsOverride(
-        display: display,
-        codec: videoCodec,
-        encoder: videoEncoder,
-      ));
-    }
+  //   if (display || videoCodec || videoEncoder) {
+  //     overrideWidget.add(VideoOptionsOverride(
+  //       display: display,
+  //       codec: videoCodec,
+  //       encoder: videoEncoder,
+  //     ));
+  //   }
 
-    if (!duplicateAudio || !audioEncoder || !audioCodec) {
-      overrideWidget.add(AudioOptionsOverride(
-        duplicateAudio: !duplicateAudio,
-        audioCodec: !audioCodec,
-        audioEncoder: !audioEncoder,
-      ));
-    }
+  //   if (!duplicateAudio || !audioEncoder || !audioCodec) {
+  //     overrideWidget.add(AudioOptionsOverride(
+  //       duplicateAudio: !duplicateAudio,
+  //       audioCodec: !audioCodec,
+  //       audioEncoder: !audioEncoder,
+  //     ));
+  //   }
 
-    if (overrideWidget.isNotEmpty) {
-      ref.read(configOverrideProvider.notifier).state = selectedConfig;
-    }
+  //   if (overrideWidget.isNotEmpty) {
+  //     ref.read(configOverrideProvider.notifier).state = selectedConfig;
+  //   }
 
-    return overrideWidget;
-  }
+  //   return overrideWidget;
+  // }
 
   static ScrcpyConfig handleOverrides(
       List<ScrcpyOverride> overrides, ScrcpyConfig config) {

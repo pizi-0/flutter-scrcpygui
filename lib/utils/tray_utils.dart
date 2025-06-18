@@ -2,8 +2,10 @@
 
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
@@ -39,6 +41,7 @@ class TrayUtils {
     final connected = ref.read(adbProvider);
     final configs = ref.read(configsProvider);
     final running = ref.read(scrcpyInstanceProvider);
+    final info = ref.read(infoProvider);
 
     bool windowVisible = await windowManager.isVisible();
 
@@ -65,11 +68,14 @@ class TrayUtils {
         MenuItem.separator(),
         MenuItem(label: 'New instance:', disabled: true),
         ...connected.map((device) {
+          final deviceInfo =
+              info.firstWhereOrNull((info) => info.serialNo == device.serialNo);
+
           return MenuItem.submenu(
             key: device.id,
             label: device.id.isIpv4 || device.id.contains(adbMdns)
-                ? '${device.name?.toUpperCase() ?? device.id} (WiFi)'
-                : '${device.name?.toUpperCase() ?? device.id} (USB)',
+                ? '[ᯤ] ${deviceInfo?.deviceName.toUpperCase() ?? device.id}'
+                : '[♆] ${deviceInfo?.deviceName.toUpperCase() ?? device.id}',
             sublabel: 'Config',
             submenu: Menu(
               items: configs

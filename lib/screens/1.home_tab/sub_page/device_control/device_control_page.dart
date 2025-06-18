@@ -1,16 +1,19 @@
 import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
+import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
+import '../../../../providers/device_info_provider.dart';
 import 'widgets/big_control_page.dart';
 import 'widgets/small_control_page.dart';
 
@@ -33,8 +36,15 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final connected = ref.watch(adbProvider);
     final device = widget.device;
     final isWireless = device.id.isIpv4 || device.id.contains(adbMdns);
+
+    final deviceInfo = ref
+        .watch(infoProvider)
+        .firstWhereOrNull((info) => info.serialNo == device.serialNo);
+
+    final stillConnected = connected.where((c) => c.id == device.id).isNotEmpty;
 
     return KeyboardListener(
       focusNode: controlPageKeyboardListenerNode,
@@ -73,31 +83,35 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
                             size: 22,
                           )
                         : Icon(Icons.usb_rounded)),
-                TextSpan(text: ' ${device.name ?? device.modelName}')
+                TextSpan(text: ' ${deviceInfo?.deviceName ?? device.modelName}')
               ],
             ),
           ),
-          scaffoldBody: ResponsiveBuilder(
-            builder: (context, sizingInfo) {
-              double sidebarWidth = 52;
+          scaffoldBody: stillConnected
+              ? ResponsiveBuilder(
+                  builder: (context, sizingInfo) {
+                    double sidebarWidth = 52;
 
-              if (sizingInfo.isTablet || sizingInfo.isDesktop) {
-                sidebarWidth = AppUtils.findSidebarWidth();
-              }
+                    if (sizingInfo.isTablet || sizingInfo.isDesktop) {
+                      sidebarWidth = AppUtils.findSidebarWidth();
+                    }
 
-              if (sizingInfo.isMobile) {
-                sidebarWidth = 52;
-              }
-              bool wrapped = sizingInfo.screenSize.width >=
-                  ((appWidth * 2) + sidebarWidth + 40);
+                    if (sizingInfo.isMobile) {
+                      sidebarWidth = 52;
+                    }
+                    bool wrapped = sizingInfo.screenSize.width >=
+                        ((appWidth * 2) + sidebarWidth + 40);
 
-              if (!wrapped) {
-                return SmallControlPage(device: device);
-              } else {
-                return BigControlPage2(device: device);
-              }
-            },
-          ),
+                    if (!wrapped) {
+                      return SmallControlPage(device: device);
+                    } else {
+                      return BigControlPage2(device: device);
+                    }
+                  },
+                )
+              : Center(
+                  child: Text('Device disconnected'),
+                ),
         ),
       ),
     );

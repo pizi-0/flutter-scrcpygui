@@ -14,6 +14,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/utils/server_utils_ws.dart';
@@ -155,7 +156,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
       }
     });
 
-    ref.read(savedAdbDevicesProvider.notifier).listenSelf(
+    ref.read(infoProvider.notifier).listenSelf(
       (previous, next) async {
         await TrayUtils.initTray(ref, context);
       },

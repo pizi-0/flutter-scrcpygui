@@ -3,7 +3,6 @@
 import 'dart:io';
 
 import 'package:logger/logger.dart';
-import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/app_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/device_options.dart';
@@ -210,8 +209,6 @@ final defaultSettings = AppSettings(
   looks: defaultTheme,
   behaviour: defaultAppBehaviour,
 );
-
-final defaultAutomationData = AutomationData(actions: []);
 
 const scrcpyLatestUrl =
     'https://api.github.com/repos/Genymobile/scrcpy/releases/latest';

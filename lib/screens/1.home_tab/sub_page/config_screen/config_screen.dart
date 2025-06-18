@@ -2,6 +2,7 @@
 
 import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
@@ -25,6 +26,7 @@ import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../providers/adb_provider.dart';
+import '../../../../providers/device_info_provider.dart';
 import '../../../../utils/const.dart';
 import 'widgets/close_dialog.dart';
 import 'widgets/config_screen_sections/config_rename.dart';
@@ -47,14 +49,15 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
 
   @override
   void initState() {
+    dev = ref.read(selectedDeviceProvider)!;
     oldConfig = ref.read(configScreenConfig)!;
     final selectedDevice = ref.read(selectedDeviceProvider)!;
     final config = ref.read(configScreenConfig);
     final workDir = ref.read(execDirProvider);
 
-    dev = ref.read(savedAdbDevicesProvider).firstWhere(
-        (d) => d.id == selectedDevice.id,
-        orElse: () => selectedDevice);
+    final deviceInfo = ref
+        .read(infoProvider)
+        .firstWhereOrNull((info) => info.serialNo == selectedDevice.serialNo);
 
     namecontroller = TextEditingController(text: config!.configName);
 
@@ -63,16 +66,12 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((a) async {
-      if (dev.info == null) {
-        final info = await AdbUtils.getScrcpyDetailsFor(workDir, dev);
-        dev = dev.copyWith(info: info);
+      if (deviceInfo == null) {
+        final info = await AdbUtils.getDeviceInfoFor(workDir, dev);
 
-        ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
-        ref.read(selectedDeviceProvider.notifier).state = dev;
+        ref.read(infoProvider.notifier).addOrEditDeviceInfo(info);
 
-        final newsaved = ref.read(savedAdbDevicesProvider);
-
-        await Db.saveAdbDevice(newsaved);
+        await Db.saveDeviceInfos(ref.read(infoProvider));
         setState(() {});
       }
     });
@@ -145,6 +144,10 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
     final showInfo = ref.watch(configScreenShowInfo);
     final selectedDevice = ref.watch(selectedDeviceProvider);
 
+    final deviceInfo = ref
+        .watch(infoProvider)
+        .firstWhereOrNull((info) => info.serialNo == selectedDevice?.serialNo);
+
     final isEditing =
         allConfigs.where((c) => c.id == selectedConfig.id).isNotEmpty;
 
@@ -196,7 +199,6 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
               ),
             ),
         ],
-        showLoading: dev.info == null,
         appBarTrailing: [
           Checkbox(
             leading: Text(el.buttonLabelLoc.info),
@@ -224,20 +226,42 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
                   child: Text(el.configScreenLoc.connectionLost),
                 )
               ]
-            : [
-                if (isEditing) RenameConfig(oldConfig: oldConfig),
-                const SizedBox(width: appWidth, child: ModeConfig()),
-                if (selectedConfig.scrcpyMode != ScrcpyMode.audioOnly)
-                  const SizedBox(width: appWidth, child: VideoConfig()),
-                if (selectedConfig.scrcpyMode != ScrcpyMode.videoOnly)
-                  const SizedBox(width: appWidth, child: AudioConfig()),
-                const SizedBox(width: appWidth, child: AppConfig()),
-                const SizedBox(width: appWidth, child: DeviceConfig()),
-                const SizedBox(width: appWidth, child: WindowConfig()),
-                const SizedBox(width: appWidth, child: AdditionalFlagsConfig()),
-                const PreviewAndTest(),
-                const SizedBox(height: 20),
-              ],
+            : deviceInfo == null
+                ? [
+                    SizedBox(
+                      width: MediaQuery.sizeOf(context).width,
+                      height: MediaQuery.sizeOf(context).height - 110,
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 8,
+                          children: [
+                            CircularProgressIndicator(),
+                            Text('Getting info').textSmall.muted,
+                          ],
+                        ),
+                      ),
+                    )
+                  ]
+                : [
+                    if (isEditing) RenameConfig(oldConfig: oldConfig),
+                    const SizedBox(width: appWidth, child: ModeConfig()),
+                    if (selectedConfig.scrcpyMode != ScrcpyMode.audioOnly)
+                      SizedBox(
+                          width: appWidth,
+                          child: VideoConfig(info: deviceInfo)),
+                    if (selectedConfig.scrcpyMode != ScrcpyMode.videoOnly)
+                      SizedBox(
+                          width: appWidth,
+                          child: AudioConfig(info: deviceInfo)),
+                    const SizedBox(width: appWidth, child: AppConfig()),
+                    const SizedBox(width: appWidth, child: DeviceConfig()),
+                    const SizedBox(width: appWidth, child: WindowConfig()),
+                    const SizedBox(
+                        width: appWidth, child: AdditionalFlagsConfig()),
+                    const PreviewAndTest(),
+                    const SizedBox(height: 20),
+                  ],
       ),
     );
   }

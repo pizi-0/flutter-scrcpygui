@@ -171,7 +171,7 @@ class ServerUtilsWs {
             ServerPayload(
                 type: ServerPayloadType.devices,
                 payload:
-                    jsonEncode(devices.map((d) => d.toPayload()).toList())),
+                    jsonEncode(devices.map((d) => d.toPayload(ref)).toList())),
             ServerPayload(
                 type: ServerPayloadType.configs,
                 payload:
@@ -224,7 +224,7 @@ class ServerUtilsWs {
             authd.socket.write(
               '${ServerPayload(
                 type: ServerPayloadType.devices,
-                payload: jsonEncode(next.map((e) => e.toPayload()).toList()),
+                payload: jsonEncode(next.map((e) => e.toPayload(ref)).toList()),
               ).toJson()}\n',
             );
           }

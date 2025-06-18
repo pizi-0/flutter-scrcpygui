@@ -2,9 +2,11 @@
 
 import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
 import 'package:scrcpygui/widgets/disconnect_dialog.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -40,21 +42,32 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
     final theme = Theme.of(context);
     final selectedDevice = ref.watch(selectedDeviceProvider);
     final runningInstances = ref.watch(scrcpyInstanceProvider);
-    final deviceInstance = runningInstances.where((i) => i.device.id == widget.device.id).toList();
+    final deviceInstance =
+        runningInstances.where((i) => i.device.id == widget.device.id).toList();
 
     final isSelected = selectedDevice == widget.device;
     final hasRunningInstance = deviceInstance.isNotEmpty;
-    final isWireless = widget.device.id.isIpv4 || widget.device.id.isIpv6 || widget.device.id.contains(adbMdns);
+    final isWireless = widget.device.id.isIpv4 ||
+        widget.device.id.isIpv6 ||
+        widget.device.id.contains(adbMdns);
+
+    final deviceInfo = ref
+        .watch(infoProvider)
+        .firstWhereOrNull((info) => info.serialNo == widget.device.serialNo);
 
     final contextMenu = [
       MenuLabel(
-        child: Text(el.deviceTileLoc.runningInstances(count: '${deviceInstance.length}')).xSmall().muted(),
+        child: Text(el.deviceTileLoc
+                .runningInstances(count: '${deviceInstance.length}'))
+            .xSmall()
+            .muted(),
       ),
       MenuButton(
         enabled: hasRunningInstance,
         leading: const Icon(Icons.close_rounded),
         subMenu: [
-          MenuLabel(child: Text(el.deviceTileLoc.context.scrcpy).xSmall().muted()),
+          MenuLabel(
+              child: Text(el.deviceTileLoc.context.scrcpy).xSmall().muted()),
           ...deviceInstance.map(
             (inst) => MenuButton(
               child: Text(inst.instanceName),
@@ -93,13 +106,16 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
             items: contextMenu,
             child: GhostButton(
               density: ButtonDensity.dense,
-              onPressed: () => ref.read(selectedDeviceProvider.notifier).state = widget.device,
+              onPressed: () => ref.read(selectedDeviceProvider.notifier).state =
+                  widget.device,
               child: Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: PgListTile(
                   key: ValueKey(widget.device.id),
-                  leading: isWireless ? const Icon(Icons.wifi) : const Icon(Icons.usb),
-                  title: widget.device.name ?? widget.device.modelName,
+                  leading: isWireless
+                      ? const Icon(Icons.wifi)
+                      : const Icon(Icons.usb),
+                  title: deviceInfo?.deviceName ?? widget.device.modelName,
                   subtitle: widget.device.id,
                   showSubtitle: true,
                   showSubtitleLeading: false,
@@ -117,14 +133,15 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                             Text('( ${deviceInstance.length} )').xSmall()
                           ],
                         ),
-                      if (widget.device.info != null)
-                        IconButton.ghost(
-                          icon: Icon(Icons.apps),
-                          onPressed: () => context.push('/home/device-control', extra: widget.device),
-                        ),
+                      IconButton.ghost(
+                        icon: Icon(Icons.apps),
+                        onPressed: () => context.push('/home/device-control',
+                            extra: widget.device),
+                      ),
                       IconButton.ghost(
                         icon: const Icon(Icons.settings),
-                        onPressed: () => context.push('/home/device-settings/${widget.device.id}'),
+                        onPressed: () => context
+                            .push('/home/device-settings/${widget.device.id}'),
                       )
                     ],
                   ),
@@ -138,7 +155,8 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
               from: 15,
               animate: isSelected,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 20),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 2.0, vertical: 20),
                 child: Container(
                   width: 5,
                   decoration: BoxDecoration(
@@ -184,7 +202,10 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
       }
     } on Exception catch (e) {
       debugPrint(e.toString());
-      showToast(showDuration: 1.5.seconds, context: context, builder: (context, overlay) => Text(el.statusLoc.failed));
+      showToast(
+          showDuration: 1.5.seconds,
+          context: context,
+          builder: (context, overlay) => Text(el.statusLoc.failed));
     }
 
     if (mounted) {
@@ -209,7 +230,10 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
       }
     } on Exception catch (e) {
       debugPrint(e.toString());
-      showToast(showDuration: 1.5.seconds, context: context, builder: (context, overlay) => Text(el.statusLoc.failed));
+      showToast(
+          showDuration: 1.5.seconds,
+          context: context,
+          builder: (context, overlay) => Text(el.statusLoc.failed));
     }
 
     if (mounted) {

@@ -1,10 +1,15 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_control/widgets/control_buttons.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../../../../db/db.dart';
 import '../../../../../models/adb_devices.dart';
+import '../../../../../providers/device_info_provider.dart';
+import '../../../../../providers/version_provider.dart';
+import '../../../../../utils/adb_utils.dart';
 import '../../../../../utils/const.dart';
 import 'app_grid.dart';
 import 'instance_manager.dart';
@@ -32,29 +37,66 @@ class _BigControlPage2State extends ConsumerState<BigControlPage2> {
         }
       },
     );
+    final deviceInfo = ref
+        .read(infoProvider)
+        .firstWhereOrNull((info) => info.serialNo == widget.device.serialNo);
+
+    WidgetsBinding.instance.addPostFrameCallback((t) {
+      if (deviceInfo == null) {
+        _getInfo();
+      }
+    });
+  }
+
+  _getInfo() async {
+    try {
+      final workDir = ref.read(execDirProvider);
+      final info = await AdbUtils.getDeviceInfoFor(workDir, widget.device);
+      ref.read(infoProvider.notifier).addOrEditDeviceInfo(info);
+
+      await Db.saveDeviceInfos(ref.read(infoProvider));
+    } on Exception catch (e) {
+      logger.e(e);
+      // ignore: use_build_context_synchronously
+      context.pop();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final device = widget.device;
+    final deviceInfo = ref
+        .watch(infoProvider)
+        .firstWhereOrNull((info) => info.serialNo == device.serialNo);
 
-    return Row(
-      spacing: 16,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: appWidth - 50),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 8,
-            children: [
-              ControlButtons(device: device),
-              Expanded(child: DeviceRunningInstances(device: device)),
-            ],
+    if (deviceInfo == null) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 8,
+        children: [
+          CircularProgressIndicator(),
+          Text('Getting info').textSmall.muted,
+        ],
+      );
+    } else {
+      return Row(
+        spacing: 16,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: appWidth - 50),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 8,
+              children: [
+                ControlButtons(device: device),
+                Expanded(child: DeviceRunningInstances(device: device)),
+              ],
+            ),
           ),
-        ),
-        AppGrid(device: device),
-      ],
-    );
+          AppGrid(device: device),
+        ],
+      );
+    }
   }
 }

@@ -1,8 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
-import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -36,9 +37,11 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
         .watch(scrcpyInstanceProvider)
         .where((inst) => inst.device == widget.device);
 
-    final device = ref.watch(savedAdbDevicesProvider).firstWhere(
-        (d) => d.id == widget.device.id,
-        orElse: () => widget.device);
+    final info = ref
+        .read(infoProvider)
+        .firstWhereOrNull((i) => i.serialNo == widget.device.serialNo);
+
+    final device = widget.device;
 
     return loading
         ? const Center(
@@ -58,7 +61,7 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
         : AlertDialog(
             title: Text(
               el.disconnectDialogLoc.title(
-                  name: device.name?.toUpperCase() ??
+                  name: info?.deviceName.toUpperCase() ??
                       device.modelName.toUpperCase()),
             ),
             content: ConstrainedBox(
@@ -74,7 +77,7 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
                       padding: EdgeInsets.all(16),
                       child: PgListTile(
                         title: el.disconnectDialogLoc.hasRunning.label(
-                            name: device.name?.toUpperCase() ??
+                            name: info?.deviceName.toUpperCase() ??
                                 device.modelName.toUpperCase(),
                             count: '${runningInstance.length}'),
                         subtitle: el.disconnectDialogLoc.hasRunning.info,

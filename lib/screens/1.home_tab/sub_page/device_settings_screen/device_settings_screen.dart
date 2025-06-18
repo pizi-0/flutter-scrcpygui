@@ -1,12 +1,15 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/automation.dart';
+import 'package:scrcpygui/providers/automation_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
@@ -35,7 +38,7 @@ class DeviceSettingsScreen extends ConsumerStatefulWidget {
 
 class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   late AdbDevices dev;
-  late String ddValue;
+  String? autoLaunchConfigId;
   late TextEditingController namecontroller;
   ScrollController scrollController = ScrollController();
   bool loading = false;
@@ -45,20 +48,25 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   void initState() {
     dev = ref.read(adbProvider).firstWhere((d) => d.id == widget.id);
 
-    namecontroller = TextEditingController(text: dev.name ?? dev.modelName);
+    final deviceInfo = ref
+        .read(infoProvider)
+        .firstWhereOrNull((info) => info.serialNo == dev.serialNo);
 
-    ddValue = dev.automationData?.actions
-            .firstWhere((a) => a.type == ActionType.launchConfig,
-                orElse: () => AutomationAction(type: null))
-            .action ??
-        DO_NOTHING;
+    final autoLaunch = ref
+        .read(autoLaunchProvider)
+        .firstWhereOrNull((a) => a.deviceId == dev.id);
+
+    autoLaunchConfigId = autoLaunch?.configId;
+
+    namecontroller =
+        TextEditingController(text: deviceInfo?.deviceName ?? dev.modelName);
 
     textBox.addListener(_onLoseFocus);
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((a) async {
-      if (dev.info == null) {
-        _getScrcpyInfo();
+      if (deviceInfo == null) {
+        _getDeviceInfo();
       }
     });
   }
@@ -74,16 +82,19 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   Widget build(BuildContext context) {
     final showInfo = ref.watch(deviceSettingsShowInfo);
     final allconfigs = ref.watch(configsProvider);
-    final isWireless =
-        dev.id.isIpv4 || dev.id.isIpv6 || dev.id.contains(adbMdns);
 
-    final autoConnect = (dev.automationData?.actions
-                .where((a) => a.type == ActionType.autoconnect) ??
-            [])
+    final autoConnect = ref
+        .watch(autoConnectProvider)
+        .where((a) => a.deviceIp == dev.id)
         .isNotEmpty;
 
+    final deviceInfo = ref
+        .watch(infoProvider)
+        .firstWhereOrNull((info) => info.serialNo == dev.serialNo);
+
     return PgScaffold(
-      title: '${el.deviceSettingsLoc.title} / ${dev.name}',
+      title:
+          '${el.deviceSettingsLoc.title} / ${deviceInfo?.deviceName ?? dev.modelName}',
       onBack: () => context.pop(),
       children: [
         PgSectionCard(
@@ -97,27 +108,29 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
               child: SizedBox(
                 width: 180,
                 child: TextField(
+                  enabled: !loading,
                   filled: true,
                   focusNode: textBox,
-                  placeholder: Text(dev.name ?? dev.modelName),
+                  placeholder: Text(deviceInfo?.deviceName ?? dev.modelName),
                   controller: namecontroller,
                   onSubmitted: _onTextBoxSubmit,
                 ),
               ),
             ),
-            if (isWireless) const Divider(),
-            if (isWireless)
+            if (dev.id.isIpv4 || dev.id.isIpv6) const Divider(),
+            if (dev.id.isIpv4 || dev.id.isIpv6)
               ConfigCustom(
-                onPressed: () => _onAutoConnectToggled(),
+                onPressed: () => _onAutoConnectToggled(autoConnect),
                 title: el.deviceSettingsLoc.autoConnect.label,
                 subtitle: el.deviceSettingsLoc.autoConnect.info,
                 showinfo: showInfo,
                 childExpand: false,
                 child: Checkbox(
+                  enabled: !loading,
                   state: autoConnect
                       ? CheckboxState.checked
                       : CheckboxState.unchecked,
-                  onChanged: (val) => _onAutoConnectToggled(),
+                  onChanged: (val) => _onAutoConnectToggled(autoConnect),
                 ),
               ),
             const Divider(),
@@ -127,6 +140,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
               subtitle: el.deviceSettingsLoc.onConnected.info,
               showinfo: showInfo,
               child: Select(
+                enabled: !loading,
                 filled: true,
                 placeholder: Text(el.deviceSettingsLoc.doNothing),
                 itemBuilder: (context, value) => Text(
@@ -136,7 +150,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                           .configName
                       : el.deviceSettingsLoc.doNothing,
                 ),
-                value: ddValue,
+                value: autoLaunchConfigId,
                 onChanged: _onConnectConfig,
                 popup: SelectPopup(
                   items: SelectItemList(children: [
@@ -156,10 +170,10 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
           label: el.deviceSettingsLoc.scrcpyInfo.label,
           labelTrail: IconButton.ghost(
             density: ButtonDensity.dense,
-            onPressed: _getScrcpyInfo,
+            onPressed: _getDeviceInfo,
             icon: const Icon(Icons.refresh),
           ),
-          children: loading || dev.info == null
+          children: loading || deviceInfo == null
               ? [
                   const Center(
                     child: CircularProgressIndicator(),
@@ -176,17 +190,17 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                   // const Divider(),
                   PgListTile(
                       title: el.deviceSettingsLoc.scrcpyInfo
-                          .version(version: dev.info!.buildVersion)),
+                          .version(version: deviceInfo.buildVersion)),
                   Accordion(
                     items: [
                       AccordionItem(
                         trigger: AccordionTrigger(
-                          child: Text(el.deviceSettingsLoc.scrcpyInfo
-                              .displays(count: '${dev.info!.displays.length}')),
+                          child: Text(el.deviceSettingsLoc.scrcpyInfo.displays(
+                              count: '${deviceInfo.displays.length}')),
                         ),
                         content: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: dev.info!.displays
+                          children: deviceInfo.displays
                               .map((d) => Text('- ${d.toString()}'))
                               .toList(),
                         ),
@@ -194,11 +208,11 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                       AccordionItem(
                         trigger: AccordionTrigger(
                           child: Text(el.deviceSettingsLoc.scrcpyInfo
-                              .cameras(count: '${dev.info!.cameras.length}')),
+                              .cameras(count: '${deviceInfo.cameras.length}')),
                         ),
                         content: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: dev.info!.cameras
+                          children: deviceInfo.cameras
                               .map((c) => Text('- ${c.toString()}'))
                               .toList(),
                         ),
@@ -206,10 +220,10 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                       AccordionItem(
                         trigger: AccordionTrigger(
                           child: Text(el.deviceSettingsLoc.scrcpyInfo.videoEnc(
-                              count: '${dev.info!.videoEncoders.length}')),
+                              count: '${deviceInfo.videoEncoders.length}')),
                         ),
                         content: Accordion(
-                          items: dev.info!.videoEncoders
+                          items: deviceInfo.videoEncoders
                               .map((c) => AccordionItem(
                                     trigger: AccordionTrigger(
                                       child: Text(c.codec).li(),
@@ -229,10 +243,10 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
                       AccordionItem(
                         trigger: AccordionTrigger(
                           child: Text(el.deviceSettingsLoc.scrcpyInfo.audioEnc(
-                              count: '${dev.info!.audioEncoder.length}')),
+                              count: '${deviceInfo.audioEncoder.length}')),
                         ),
                         content: Accordion(
-                          items: dev.info!.audioEncoder
+                          items: deviceInfo.audioEncoder
                               .map((c) => AccordionItem(
                                     trigger: AccordionTrigger(
                                         child: Text(c.codec).li()),
@@ -255,16 +269,26 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
     );
   }
 
-  _getScrcpyInfo() async {
+  _getDeviceInfo() async {
     final selectedDevice = ref.read(selectedDeviceProvider);
     loading = true;
     setState(() {});
 
+    final deviceInfo = ref
+        .read(infoProvider)
+        .firstWhereOrNull((info) => info.serialNo == dev.serialNo);
+
     final info =
-        await AdbUtils.getScrcpyDetailsFor(ref.read(execDirProvider), dev);
-    dev = dev.copyWith(info: info);
-    ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
-    await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+        await AdbUtils.getDeviceInfoFor(ref.read(execDirProvider), dev);
+
+    if (deviceInfo == null) {
+      ref.read(infoProvider.notifier).addOrEditDeviceInfo(info);
+    } else {
+      final updatedInfo = info.copyWith(deviceName: deviceInfo.deviceName);
+      ref.read(infoProvider.notifier).addOrEditDeviceInfo(updatedInfo);
+    }
+
+    await Db.saveDeviceInfos(ref.read(infoProvider));
 
     if (selectedDevice != null) {
       if (selectedDevice.id == dev.id) {
@@ -277,68 +301,64 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   }
 
   void _onConnectConfig(value) async {
-    List<AutomationAction> currentAutomation =
-        dev.automationData?.actions ?? [];
+    final autoLaunchNotifier = ref.read(autoLaunchProvider.notifier);
 
-    if (ddValue == DO_NOTHING) {
-      currentAutomation
-          .add(AutomationAction(type: ActionType.launchConfig, action: value));
+    if (value != DO_NOTHING) {
+      if (autoLaunchConfigId == null) {
+        autoLaunchNotifier
+            .add(ConfigAutomation(deviceId: dev.id, configId: value));
+      } else {
+        autoLaunchNotifier.remove(dev.id);
+        autoLaunchNotifier
+            .add(ConfigAutomation(deviceId: dev.id, configId: value));
+      }
 
-      dev = dev.copyWith(
-          automationData: AutomationData(actions: currentAutomation));
+      autoLaunchConfigId = value;
     } else {
-      currentAutomation.removeWhere((e) => e.type == ActionType.launchConfig);
-      dev = dev.copyWith(
-          automationData: AutomationData(actions: currentAutomation));
+      autoLaunchNotifier.remove(dev.id);
+      autoLaunchConfigId = null;
     }
 
-    ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
-    await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
-
-    ddValue = value;
+    await Db.saveAutoLaunch(ref.read(autoLaunchProvider));
     setState(() {});
   }
 
-  // void _toAllCaps(value) {
-  //   namecontroller.value = TextEditingValue(
-  //     text: value.toUpperCase(),
-  //     selection: namecontroller.selection,
-  //   );
-  // }
-
   void _onTextBoxSubmit(value) async {
-    dev = dev.copyWith(name: value);
-    ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
+    final deviceInfo = ref
+        .read(infoProvider)
+        .firstWhere((info) => info.serialNo == dev.serialNo);
+
+    final updatedInfo =
+        deviceInfo.copyWith(deviceName: namecontroller.text.trim());
+
+    ref.read(infoProvider.notifier).addOrEditDeviceInfo(updatedInfo);
     textBox.unfocus();
-    await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+    await Db.saveDeviceInfos(ref.read(infoProvider));
   }
 
-  void _onAutoConnectToggled() async {
-    final autoConnect = (dev.automationData?.actions
-                .where((a) => a.type == ActionType.autoconnect) ??
-            [])
-        .isNotEmpty;
-
-    List<AutomationAction> currentAutomation =
-        dev.automationData?.actions ?? [];
+  void _onAutoConnectToggled(bool autoConnect) async {
+    final autoConnectNotifier = ref.read(autoConnectProvider.notifier);
 
     if (autoConnect) {
-      currentAutomation.remove(AutomationAction(type: ActionType.autoconnect));
+      autoConnectNotifier.remove(dev.id);
     } else {
-      currentAutomation.add(AutomationAction(type: ActionType.autoconnect));
+      if (dev.id.isIpv4 || dev.id.isIpv6) {
+        autoConnectNotifier.add(ConnectAutomation(deviceIp: dev.id));
+      }
     }
-    dev = dev.copyWith(
-        automationData: AutomationData(actions: currentAutomation));
 
-    ref.read(savedAdbDevicesProvider.notifier).addEditDevices(dev);
-    await Db.saveAdbDevice(ref.read(savedAdbDevicesProvider));
+    await Db.saveAutoConnect(ref.read(autoConnectProvider));
 
     setState(() {});
   }
 
   _onLoseFocus() {
     if (!textBox.hasFocus) {
-      namecontroller = TextEditingController(text: dev.name ?? dev.modelName);
+      final deviceInfo = ref
+          .read(infoProvider)
+          .firstWhereOrNull((info) => info.serialNo == dev.serialNo);
+      namecontroller =
+          TextEditingController(text: deviceInfo?.deviceName ?? dev.modelName);
       setState(() {});
     }
   }

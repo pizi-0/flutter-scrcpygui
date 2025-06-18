@@ -23,3 +23,9 @@ const PKEY_APP_CONFIG_PAIR = 'app-config-pair';
 const PKEY_COMPANION_SERVER_SETTINGS = 'companion-server-settings';
 
 const PKEY_LAST_WIN_SIZE = 'last-win-size';
+
+const PKEY_DEVICE_INFOS = 'device-infos';
+
+const PKEY_AUTO_CONNECT = 'auto-connect';
+
+const PKEY_AUTO_LAUNCH = 'auto-launch';

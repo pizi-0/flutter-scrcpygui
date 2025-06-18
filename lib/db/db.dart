@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/app_config_pair.dart';
+import 'package:scrcpygui/models/automation.dart';
+import 'package:scrcpygui/models/device_info_model.dart';
 import 'package:scrcpygui/models/settings_model/companion_server_settings.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,7 +45,8 @@ class Db {
 
   static saveWinSize(Size size) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString(PKEY_LAST_WIN_SIZE, jsonEncode({'width': size.width, 'height': size.height}));
+    prefs.setString(PKEY_LAST_WIN_SIZE,
+        jsonEncode({'width': size.width, 'height': size.height}));
   }
 
   static Future<Size> getWinSize() async {
@@ -64,7 +67,8 @@ class Db {
 
   static Future<void> saveAdbDevice(List<AdbDevices> dev) async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList(PKEY_SAVED_DEVICES, dev.map((e) => e.toJson()).toList());
+    prefs.setStringList(
+        PKEY_SAVED_DEVICES, dev.map((e) => e.toJson()).toList());
     // prefs.remove(PKEY_SAVED_DEVICES);
   }
 
@@ -78,14 +82,35 @@ class Db {
 
   static Future<void> saveWirelessHistory(List<String> devs) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setStringList(PKEY_WIRELESS_DEVICE_HX, devs.map((d) => d).toList());
+    await prefs.setStringList(
+        PKEY_WIRELESS_DEVICE_HX, devs.map((d) => d).toList());
   }
 
   static Future<List<String>> getWirelessHistory() async {
     final prefs = await SharedPreferences.getInstance();
-    List<String> historyStr = prefs.getStringList(PKEY_WIRELESS_DEVICE_HX) ?? [];
+    List<String> historyStr =
+        prefs.getStringList(PKEY_WIRELESS_DEVICE_HX) ?? [];
 
     return historyStr;
+  }
+
+  /*
+  Device Info DB
+  */
+
+  static Future<void> saveDeviceInfos(List<DeviceInfo> infos) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList(
+        PKEY_DEVICE_INFOS, infos.map((e) => e.toJson()).toList());
+    // prefs.remove(PKEY_SAVED_DEVICES);
+  }
+
+  static Future<List<DeviceInfo>> getDeviceInfos() async {
+    final prefs = await SharedPreferences.getInstance();
+    // prefs.remove(PKEY_SAVED_DEVICES);
+    final jsons = prefs.getStringList(PKEY_DEVICE_INFOS) ?? [];
+
+    return jsons.map((e) => DeviceInfo.fromJson(e)).toList();
   }
 
   /*
@@ -153,7 +178,8 @@ class Db {
   static Future<void> saveAppConfigPairs(List<AppConfigPair> pairList) async {
     final prefs = await SharedPreferences.getInstance();
 
-    prefs.setStringList(PKEY_APP_CONFIG_PAIR, pairList.map((pair) => pair.toJson()).toList());
+    prefs.setStringList(
+        PKEY_APP_CONFIG_PAIR, pairList.map((pair) => pair.toJson()).toList());
   }
 
   /*
@@ -176,5 +202,40 @@ class Db {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setString(PKEY_COMPANION_SERVER_SETTINGS, settings.toJson());
+  }
+
+  /*
+  Automation DB
+  */
+
+  static Future<List<ConnectAutomation>> getAutoConnect() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.remove(PKEY_AUTO_CONNECT);
+
+    return (prefs.getStringList(PKEY_AUTO_CONNECT) ?? [])
+        .map((e) => ConnectAutomation.fromJson(e))
+        .toList();
+  }
+
+  static Future<List<ConfigAutomation>> getAutoLaunch() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    return (prefs.getStringList(PKEY_AUTO_LAUNCH) ?? [])
+        .map((e) => ConfigAutomation.fromJson(e))
+        .toList();
+  }
+
+  static Future<void> saveAutoConnect(List<ConnectAutomation> list) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setStringList(
+        PKEY_AUTO_CONNECT, list.map((e) => e.toJson()).toList());
+  }
+
+  static Future<void> saveAutoLaunch(List<ConfigAutomation> list) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setStringList(PKEY_AUTO_LAUNCH, list.map((e) => e.toJson()).toList());
   }
 }

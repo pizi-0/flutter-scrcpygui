@@ -3,9 +3,9 @@ import 'package:bonsoir/bonsoir.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import '../../../models/adb_devices.dart';
 import '../../../providers/adb_provider.dart';
 import '../../../providers/bonsoir_devices.dart';
 import '../../../providers/settings_provider.dart';
@@ -72,23 +72,21 @@ class _BdTileState extends ConsumerState<BdTile> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final savedDevices = ref.watch(savedAdbDevicesProvider);
-    final connectedDevices = ref.watch(adbProvider);
-    AdbDevices? device;
-    final bd = widget.bonsoirDevice;
-    final isSaved =
-        savedDevices.where((e) => e.id.contains(bd.name)).isNotEmpty;
 
-    if (isSaved) {
-      device = savedDevices.firstWhere((e) => e.id.contains(bd.name));
-    }
+    final bd = widget.bonsoirDevice;
+    final deviceInfo = ref
+        .read(infoProvider)
+        .firstWhereOrNull((i) => bd.name.contains(i.serialNo));
+
+    final connectedDevices = ref.watch(adbProvider);
+    final isSaved = deviceInfo != null;
 
     bool connected =
         connectedDevices.where((e) => e.id.contains(bd.name)).isNotEmpty;
     return GhostButton(
       onPressed: () async => await _connectMdns(bd),
       child: PgListTile(
-        title: '${bd.name} ${isSaved ? '[${device!.name!}]' : ''}',
+        title: '${bd.name} ${isSaved ? '[${deviceInfo.deviceName}]' : ''}',
         titleOverflow: true,
         // showSubtitle: true,
         showSubtitleLeading: false,

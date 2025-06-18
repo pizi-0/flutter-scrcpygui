@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/models/device_info_model.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/result/wireless_connect_result.dart';
@@ -72,6 +73,45 @@ class AdbUtils {
 
     return ScrcpyInfo(
       device: dev,
+      buildVersion: buildVersion.stdout.toString().trim(),
+      cameras: cameraInfo,
+      displays: displayInfo,
+      videoEncoders: videoEncoderInfo,
+      audioEncoder: audioEncoderInfo,
+      appList: appsList,
+    );
+  }
+
+  static Future<DeviceInfo> getDeviceInfoFor(
+      String workDir, AdbDevices dev) async {
+    final buildVersion = await CommandRunner.runAdbCommand(workDir, args: [
+      '-s',
+      dev.id,
+      'shell',
+      'getprop',
+      'ro.product.build.version.release'
+    ]);
+
+    final info = await CommandRunner.runScrcpyCommand(
+      workDir,
+      dev,
+      args: [
+        '--list-encoders',
+        '--list-displays',
+        '--list-cameras',
+        '--list-apps'
+      ],
+    );
+
+    final cameraInfo = _getCameraInfo(info.stdout);
+    final videoEncoderInfo = _getVideoEncoders(info.stdout);
+    final audioEncoderInfo = _getAudioEncoders(info.stdout);
+    final displayInfo = getDisplays(info.stdout);
+    final appsList = getAppsList(info.stdout);
+
+    return DeviceInfo(
+      serialNo: dev.serialNo,
+      deviceName: dev.modelName,
       buildVersion: buildVersion.stdout.toString().trim(),
       cameras: cameraInfo,
       displays: displayInfo,
@@ -395,21 +435,21 @@ Future<List<AdbDevices>> getAdbInfos(String workDir,
                 Platform.isWindows ? '$workDir\\adb.exe' : eadb,
                 ['-s', id, 'shell', 'getprop', 'ro.product.model'],
                 workingDirectory: workDir)
-            .timeout(10.seconds,
+            .timeout(20.seconds,
                 onTimeout: () =>
                     ProcessResult(pid, 124, 'timed-out', 'timed-out'));
 
         modelName = modelNameRes.stdout.toString().trim();
       }
 
-      if (id.contains(':')) {
+      if (id.contains(':') || id.contains(adbMdns)) {
         //get serial no if status != offline or unauth
         if (status) {
           final serialNoRes = await Process.run(
                   Platform.isWindows ? '$workDir\\adb.exe' : eadb,
                   ['-s', id, 'shell', 'getprop', 'ro.boot.serialno'],
                   workingDirectory: workDir)
-              .timeout(2.seconds,
+              .timeout(20.seconds,
                   onTimeout: () =>
                       ProcessResult(pid, exitCode, '', 'timed-out'));
 

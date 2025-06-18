@@ -82,7 +82,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     final allConfigs = ref.watch(configsProvider);
     final devicePair = ref
         .watch(appConfigPairProvider)
-        .where((p) => p.deviceId == widget.device.id)
+        .where((p) => p.deviceId == widget.device.serialNo)
         .toList();
 
     final isPinned = devicePair.where((p) => p.app == widget.app).isNotEmpty;
@@ -317,7 +317,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
             controlPageKeyboardListenerNode.requestFocus();
             ref.read(appConfigPairProvider.notifier).addOrEditPair(
                 AppConfigPair(
-                    deviceId: widget.device.id,
+                    deviceId: widget.device.serialNo,
                     app: widget.app,
                     config: config!));
 
@@ -336,7 +336,9 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                 devicePair.firstWhereOrNull((p) => p.app == widget.app)?.config;
 
             ref.read(appConfigPairProvider.notifier).removePair(AppConfigPair(
-                deviceId: widget.device.id, app: widget.app, config: config!));
+                deviceId: widget.device.serialNo,
+                app: widget.app,
+                config: config!));
 
             await Db.saveAppConfigPairs(ref.read(appConfigPairProvider));
           },

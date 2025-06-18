@@ -2,13 +2,18 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/config_override_button.dart';
+import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../../../../db/db.dart';
 import '../../../../../models/adb_devices.dart';
 import '../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../providers/app_config_pair_provider.dart';
 import '../../../../../providers/config_provider.dart';
+import '../../../../../providers/device_info_provider.dart';
+import '../../../../../providers/version_provider.dart';
+import '../../../../../utils/command_runner.dart';
 import '../../../../../widgets/navigation_shell.dart';
 import '../device_control_page.dart';
 import 'app_grid_icon.dart';
@@ -28,6 +33,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
   TextEditingController appSearchController = TextEditingController();
   ScrollController appScrollController = ScrollController();
   double sidebarWidth = 52;
+  bool gettingApp = false;
 
   @override
   void initState() {
@@ -54,10 +60,14 @@ class _AppGridState extends ConsumerState<AppGrid> {
 
     final devicePairs = ref
         .watch(appConfigPairProvider)
-        .where((p) => p.deviceId == device.id)
+        .where((p) => p.deviceId == device.serialNo)
         .toList();
 
-    final appsList = (device.info?.appList ?? [])
+    final deviceInfo = ref
+        .watch(infoProvider)
+        .firstWhere((info) => info.serialNo == device.serialNo);
+
+    final appsList = deviceInfo.appList
         .where((app) => devicePairs.where((dp) => dp.app == app).isEmpty)
         .toList();
 
@@ -94,6 +104,12 @@ class _AppGridState extends ConsumerState<AppGrid> {
     return PgSectionCardNoScroll(
       constraints: BoxConstraints(maxWidth: (size.width - sidebarWidth) * 0.5),
       label: el.loungeLoc.launcher.label,
+      labelButton: IconButton.ghost(
+        enabled: !gettingApp,
+        onPressed: _onRefreshApp,
+        density: ButtonDensity.iconDense,
+        icon: Icon(Icons.refresh_rounded),
+      ),
       labelTrail: OverrideButton(
         leading: Text('Overrides'),
         buttonVariance: overrides.isNotEmpty
@@ -110,100 +126,129 @@ class _AppGridState extends ConsumerState<AppGrid> {
             Divider()
           ],
           Expanded(
-            child: CustomScrollView(
-              controller: appScrollController,
-              slivers: [
-                if (!widget.persistentHeader) ...[
-                  SliverToBoxAdapter(
-                    child: Column(
-                      spacing: 8,
-                      children: [
-                        _buildHeader(config, allConfigs),
-                        Divider(),
-                        SizedBox.shrink()
-                      ],
-                    ),
-                  )
-                ],
-                if (filteredList.isEmpty)
-                  SliverFillRemaining(
-                    child: Center(
-                        child: Text(el.loungeLoc.info.emptySearch)
-                            .textSmall
-                            .muted),
-                  ),
-                if (filteredDeviceAppslist.isNotEmpty) ...[
-                  SliverToBoxAdapter(
-                    child: Container(
-                        margin: EdgeInsets.only(bottom: 8),
-                        padding:
-                            EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-                        decoration: BoxDecoration(
-                          color: theme.colorScheme.muted,
-                          borderRadius: theme.borderRadiusSm,
-                        ),
-                        child: Text('Pinned').textSmall),
-                  ),
-                  SliverGrid.builder(
-                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 80,
-                      mainAxisExtent: 80,
-                      mainAxisSpacing: 8,
-                      crossAxisSpacing: 8,
-                    ),
-                    itemCount: filteredDeviceAppslist.length,
-                    itemBuilder: (context, index) {
-                      final app = filteredDeviceAppslist[index];
-
-                      return AppGridIcon(
-                          key: ValueKey(app.packageName),
-                          ref: ref,
-                          app: app,
-                          device: widget.device);
-                    },
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  ),
-                ],
-                if (filteredAppslist.isNotEmpty) ...[
-                  if (deviceAppslist.isNotEmpty)
-                    SliverToBoxAdapter(
-                      child: Container(
-                          margin: EdgeInsets.only(bottom: 8),
-                          padding:
-                              EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-                          decoration: BoxDecoration(
-                            color: theme.colorScheme.muted,
-                            borderRadius: theme.borderRadiusSm,
+            child: gettingApp
+                ? const Center(child: CircularProgressIndicator())
+                : CustomScrollView(
+                    controller: appScrollController,
+                    slivers: [
+                      if (!widget.persistentHeader) ...[
+                        SliverToBoxAdapter(
+                          child: Column(
+                            spacing: 8,
+                            children: [
+                              _buildHeader(config, allConfigs),
+                              Divider(),
+                              SizedBox.shrink()
+                            ],
                           ),
-                          child: Text('Apps').textSmall),
-                    ),
-                  SliverGrid.builder(
-                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 80,
-                      mainAxisExtent: 80,
-                      mainAxisSpacing: 8,
-                      crossAxisSpacing: 8,
-                    ),
-                    itemCount: filteredAppslist.length,
-                    itemBuilder: (context, index) {
-                      final app = filteredAppslist[index];
+                        )
+                      ],
+                      if (filteredList.isEmpty)
+                        SliverFillRemaining(
+                          child: Center(
+                              child: Text(el.loungeLoc.info.emptySearch)
+                                  .textSmall
+                                  .muted),
+                        ),
+                      if (filteredDeviceAppslist.isNotEmpty) ...[
+                        SliverToBoxAdapter(
+                          child: Container(
+                              margin: EdgeInsets.only(bottom: 8),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.muted,
+                                borderRadius: theme.borderRadiusSm,
+                              ),
+                              child: Text('Pinned').textSmall),
+                        ),
+                        SliverGrid.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 80,
+                            mainAxisExtent: 80,
+                            mainAxisSpacing: 8,
+                            crossAxisSpacing: 8,
+                          ),
+                          itemCount: filteredDeviceAppslist.length,
+                          itemBuilder: (context, index) {
+                            final app = filteredDeviceAppslist[index];
 
-                      return AppGridIcon(
-                          key: ValueKey(app.packageName),
-                          ref: ref,
-                          app: app,
-                          device: widget.device);
-                    },
-                  )
-                ]
-              ],
-            ),
+                            return AppGridIcon(
+                                key: ValueKey(app.packageName),
+                                ref: ref,
+                                app: app,
+                                device: widget.device);
+                          },
+                        ),
+                        SliverPadding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        ),
+                      ],
+                      if (filteredAppslist.isNotEmpty) ...[
+                        if (deviceAppslist.isNotEmpty)
+                          SliverToBoxAdapter(
+                            child: Container(
+                                margin: EdgeInsets.only(bottom: 8),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 4, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: theme.colorScheme.muted,
+                                  borderRadius: theme.borderRadiusSm,
+                                ),
+                                child: Text('Apps').textSmall),
+                          ),
+                        SliverGrid.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 80,
+                            mainAxisExtent: 80,
+                            mainAxisSpacing: 8,
+                            crossAxisSpacing: 8,
+                          ),
+                          itemCount: filteredAppslist.length,
+                          itemBuilder: (context, index) {
+                            final app = filteredAppslist[index];
+
+                            return AppGridIcon(
+                                key: ValueKey(app.packageName),
+                                ref: ref,
+                                app: app,
+                                device: widget.device);
+                          },
+                        )
+                      ]
+                    ],
+                  ),
           ),
         ],
       ),
     );
+  }
+
+  _onRefreshApp() async {
+    gettingApp = true;
+    setState(() {});
+
+    var dev = widget.device;
+    final workDir = ref.read(execDirProvider);
+    var deviceInfo = ref
+        .read(infoProvider)
+        .firstWhere((info) => info.serialNo == dev.serialNo);
+
+    final res = await CommandRunner.runScrcpyCommand(workDir, dev,
+        args: ['--list-apps']);
+
+    final applist = getAppsList(res.stdout);
+
+    deviceInfo = deviceInfo.copyWith(appList: applist);
+
+    ref.read(infoProvider.notifier).addOrEditDeviceInfo(deviceInfo);
+
+    await Db.saveDeviceInfos(ref.read(infoProvider));
+
+    gettingApp = false;
+    setState(() {});
   }
 
   Row _buildHeader(ScrcpyConfig? config, List<ScrcpyConfig> allConfigs) {
