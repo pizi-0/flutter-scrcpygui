@@ -147,6 +147,21 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                     isPinned: isPinned,
                     devicePair: devicePair,
                     configForPinned: configForPinned),
+                onLongPressStart: (details) => _startScrcpy(
+                    isPinned: isPinned,
+                    devicePair: devicePair,
+                    forceClose: true,
+                    configForPinned: configForPinned),
+                onTertiaryTapUp: config == null
+                    ? null
+                    : (details) => _startScrcpy(
+                        isPinned: isPinned,
+                        devicePair: devicePair,
+                        configForPinned: config),
+                onTertiaryLongPress: () => _startScrcpy(
+                    isPinned: isPinned,
+                    devicePair: devicePair,
+                    configForPinned: config),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Stack(
@@ -386,7 +401,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                 ),
               ]
             : null,
-        onPressed: isPinned && config != null
+        onPressed: !isPinned && config == null
             ? null
             : (context) => _startScrcpy(
                 isPinned: isPinned,
