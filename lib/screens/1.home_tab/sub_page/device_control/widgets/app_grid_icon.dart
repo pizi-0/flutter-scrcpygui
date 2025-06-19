@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/providers/app_grid_settings_provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 import 'package:path/path.dart' as p;
@@ -79,6 +80,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     final theme = Theme.of(context);
     final overrides = ref.watch(configOverridesProvider);
     final config = ref.watch(controlPageConfigProvider);
+    final gridSettings = ref.watch(appGridSettingsProvider);
     final allConfigs = ref.watch(configsProvider);
     final devicePair = ref
         .watch(appConfigPairProvider)
@@ -186,18 +188,19 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                                     ),
                                   ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: hover
-                                ? OverflowMarquee(
-                                    child: Text(widget.app.name).fontSize(12))
-                                : Text(
-                                    widget.app.name,
-                                    maxLines: 1,
-                                  )
-                                    .textAlignment(TextAlign.center)
-                                    .fontSize(12),
-                          ),
+                          if (!gridSettings.hideName)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 8.0),
+                              child: hover
+                                  ? OverflowMarquee(
+                                      child: Text(widget.app.name).fontSize(12))
+                                  : Text(
+                                      widget.app.name,
+                                      maxLines: 1,
+                                    )
+                                      .textAlignment(TextAlign.center)
+                                      .fontSize(12),
+                            ),
                         ],
                       ),
                     ],

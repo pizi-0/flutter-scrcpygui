@@ -10,6 +10,7 @@ import '../../../../../db/db.dart';
 import '../../../../../models/adb_devices.dart';
 import '../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../providers/app_config_pair_provider.dart';
+import '../../../../../providers/app_grid_settings_provider.dart';
 import '../../../../../providers/config_provider.dart';
 import '../../../../../providers/device_info_provider.dart';
 import '../../../../../providers/version_provider.dart';
@@ -57,6 +58,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
     final allConfigs = ref.watch(configsProvider);
     final config = ref.watch(controlPageConfigProvider);
     final overrides = ref.watch(configOverridesProvider);
+    final gridSettings = ref.watch(appGridSettingsProvider);
 
     final devicePairs = ref
         .watch(appConfigPairProvider)
@@ -79,24 +81,24 @@ class _AppGridState extends ConsumerState<AppGrid> {
 
     final deviceAppslist = devicePairs.map((p) => p.app).toList();
 
-    final finalList = [...deviceAppslist, ...appsList];
-
-    final filteredList = finalList
-        .where((app) => app.name
-            .toLowerCase()
-            .contains(appSearchController.text.toLowerCase()))
-        .toList();
-
     final filteredDeviceAppslist = deviceAppslist
-        .where((app) => app.name
-            .toLowerCase()
-            .contains(appSearchController.text.toLowerCase()))
+        .where((app) =>
+            app.name
+                .toLowerCase()
+                .contains(appSearchController.text.toLowerCase()) ||
+            app.packageName
+                .toLowerCase()
+                .contains(appSearchController.text.toLowerCase()))
         .toList();
 
     final filteredAppslist = appsList
-        .where((app) => app.name
-            .toLowerCase()
-            .contains(appSearchController.text.toLowerCase()))
+        .where((app) =>
+            app.name
+                .toLowerCase()
+                .contains(appSearchController.text.toLowerCase()) ||
+            app.packageName
+                .toLowerCase()
+                .contains(appSearchController.text.toLowerCase()))
         .toList();
 
     final size = MediaQuery.sizeOf(context);
@@ -143,7 +145,8 @@ class _AppGridState extends ConsumerState<AppGrid> {
                           ),
                         )
                       ],
-                      if (filteredList.isEmpty)
+                      if (filteredAppslist.isEmpty &&
+                          filteredDeviceAppslist.isEmpty)
                         SliverFillRemaining(
                           child: Center(
                               child: Text(el.loungeLoc.info.emptySearch)
@@ -165,8 +168,8 @@ class _AppGridState extends ConsumerState<AppGrid> {
                         SliverGrid.builder(
                           gridDelegate:
                               SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 80,
-                            mainAxisExtent: 80,
+                            maxCrossAxisExtent: gridSettings.gridExtent,
+                            mainAxisExtent: gridSettings.gridExtent,
                             mainAxisSpacing: 8,
                             crossAxisSpacing: 8,
                           ),
@@ -201,8 +204,8 @@ class _AppGridState extends ConsumerState<AppGrid> {
                         SliverGrid.builder(
                           gridDelegate:
                               SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 80,
-                            mainAxisExtent: 80,
+                            maxCrossAxisExtent: gridSettings.gridExtent,
+                            mainAxisExtent: gridSettings.gridExtent,
                             mainAxisSpacing: 8,
                             crossAxisSpacing: 8,
                           ),
@@ -251,66 +254,136 @@ class _AppGridState extends ConsumerState<AppGrid> {
     setState(() {});
   }
 
-  Row _buildHeader(ScrcpyConfig? config, List<ScrcpyConfig> allConfigs) {
-    return Row(
+  Widget _buildHeader(ScrcpyConfig? config, List<ScrcpyConfig> allConfigs) {
+    final gridSettings = ref.watch(appGridSettingsProvider);
+    final gridSettingsNotifier = ref.read(appGridSettingsProvider.notifier);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
       spacing: 8,
       children: [
-        Expanded(
-          child: Select<ScrcpyConfig>(
-            filled: true,
-            placeholder: OverflowMarquee(
-                duration: 2.seconds,
-                delayDuration: 0.5.seconds,
-                child: Text(el.loungeLoc.placeholders.config)),
-            value: config,
-            onChanged: (value) {
-              ref.read(controlPageConfigProvider.notifier).state = value;
-            },
-            popup: SelectPopup(
-              items: SelectItemList(
-                  children: allConfigs
-                      .where((c) => !c.windowOptions.noWindow)
-                      .map((c) => SelectItemButton(
-                          value: c,
-                          child: OverflowMarquee(
-                              duration: 3.seconds,
-                              delayDuration: 0.5.seconds,
-                              child: Text(c.configName))))
-                      .toList()),
-            ).call,
-            itemBuilder: (context, value) => OverflowMarquee(
-                duration: 2.seconds,
-                delayDuration: 0.5.seconds,
-                child: Text(value.configName)),
-          ),
-        ),
-        Expanded(
-          child: TextField(
-            padding: EdgeInsets.all(7),
-            filled: true,
-            placeholder: Text(el.loungeLoc.placeholders.search),
-            focusNode: searchBoxFocusNode,
-            controller: appSearchController,
-            onChanged: (value) => setState(() {}),
-            features: [
-              if (appSearchController.text.isEmpty)
-                InputFeature.leading(Icon(Icons.search_rounded)),
-              if (appSearchController.text.isNotEmpty)
-                InputFeature.trailing(IconButton(
-                    variance: ButtonVariance.link,
-                    onPressed: () {
-                      appSearchController.clear();
-                      controlPageKeyboardListenerNode.requestFocus();
+        Row(
+          spacing: 8,
+          children: [
+            Expanded(
+              child: Select<ScrcpyConfig>(
+                filled: true,
+                placeholder: OverflowMarquee(
+                    duration: 2.seconds,
+                    delayDuration: 0.5.seconds,
+                    child: Text(el.loungeLoc.placeholders.config)),
+                value: config,
+                onChanged: (value) {
+                  ref.read(controlPageConfigProvider.notifier).state = value;
+                  ref
+                      .read(appGridSettingsProvider.notifier)
+                      .setLastUsedConfig(value?.id);
+                  Db.saveAppGridSettings(ref.read(appGridSettingsProvider));
+                },
+                popup: SelectPopup(
+                  items: SelectItemList(
+                      children: allConfigs
+                          .where((c) => !c.windowOptions.noWindow)
+                          .map((c) => SelectItemButton(
+                              value: c,
+                              child: OverflowMarquee(
+                                  duration: 3.seconds,
+                                  delayDuration: 0.5.seconds,
+                                  child: Text(c.configName))))
+                          .toList()),
+                ).call,
+                itemBuilder: (context, value) => OverflowMarquee(
+                    duration: 2.seconds,
+                    delayDuration: 0.5.seconds,
+                    child: Text(value.configName)),
+              ),
+            ),
+            Expanded(
+              child: TextField(
+                padding: EdgeInsets.all(7),
+                filled: true,
+                placeholder: Text(el.loungeLoc.placeholders.search),
+                focusNode: searchBoxFocusNode,
+                controller: appSearchController,
+                onChanged: (value) => setState(() {}),
+                features: [
+                  if (appSearchController.text.isEmpty)
+                    InputFeature.leading(Icon(Icons.search_rounded)),
+                  if (appSearchController.text.isNotEmpty)
+                    InputFeature.trailing(IconButton(
+                        variance: ButtonVariance.link,
+                        onPressed: () {
+                          appSearchController.clear();
+                          controlPageKeyboardListenerNode.requestFocus();
 
-                      setState(() {});
-                    },
-                    density: ButtonDensity.compact,
-                    icon: Icon(Icons.close_rounded)))
-            ],
-            onSubmitted: (value) {
-              controlPageKeyboardListenerNode.requestFocus();
-            },
-          ),
+                          setState(() {});
+                        },
+                        density: ButtonDensity.compact,
+                        icon: Icon(Icons.close_rounded)))
+                ],
+                onSubmitted: (value) {
+                  controlPageKeyboardListenerNode.requestFocus();
+                },
+              ),
+            )
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          spacing: 8,
+          children: [
+            Checkbox(
+              leading: Text('Hide app name'),
+              state: gridSettings.hideName
+                  ? CheckboxState.checked
+                  : CheckboxState.unchecked,
+              onChanged: (value) {
+                gridSettingsNotifier.toggleHideName();
+                Db.saveAppGridSettings(ref.read(appGridSettingsProvider));
+              },
+            ),
+            ButtonGroup(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.zoom_out_rounded),
+                  density: ButtonDensity.iconDense,
+                  onPressed: gridSettings.gridExtent == 50
+                      ? null
+                      : () {
+                          gridSettingsNotifier
+                              .modifyExtent(gridSettings.gridExtent - 5);
+                          Db.saveAppGridSettings(
+                              ref.read(appGridSettingsProvider));
+                        },
+                  variance: ButtonStyle.outline(),
+                ),
+                IconButton(
+                  icon: Icon(Icons.refresh_rounded),
+                  density: ButtonDensity.iconDense,
+                  onPressed: gridSettings.gridExtent == 80
+                      ? null
+                      : () {
+                          gridSettingsNotifier.modifyExtent(80);
+                          Db.saveAppGridSettings(
+                              ref.read(appGridSettingsProvider));
+                        },
+                  variance: ButtonStyle.outline(),
+                ),
+                IconButton(
+                  icon: Icon(Icons.zoom_in_rounded),
+                  density: ButtonDensity.iconDense,
+                  variance: ButtonStyle.outline(),
+                  onPressed: gridSettings.gridExtent == 110
+                      ? null
+                      : () {
+                          gridSettingsNotifier
+                              .modifyExtent(gridSettings.gridExtent + 5);
+                          Db.saveAppGridSettings(
+                              ref.read(appGridSettingsProvider));
+                        },
+                ),
+              ],
+            ),
+          ],
         )
       ],
     );

@@ -2,10 +2,12 @@
 
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
+import 'package:scrcpygui/providers/app_grid_settings_provider.dart';
 import 'package:scrcpygui/providers/server_settings_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
@@ -113,6 +115,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     final autoLaunches = await Db.getAutoLaunch();
     ref.read(autoLaunchProvider.notifier).setList(autoLaunches);
+
+    final appGridSettings = await Db.getAppGridSettings();
+    ref.read(appGridSettingsProvider.notifier).setSettings(appGridSettings);
+
+    if (appGridSettings.lastUsedConfig != null) {
+      final controlPageConfig = allConfigs.firstWhereOrNull(
+          (conf) => conf.id == appGridSettings.lastUsedConfig);
+
+      if (controlPageConfig != null) {
+        ref.read(controlPageConfigProvider.notifier).state = controlPageConfig;
+      }
+    }
 
     final end = DateTime.now().millisecondsSinceEpoch;
 

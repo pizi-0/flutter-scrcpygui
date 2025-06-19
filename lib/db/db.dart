@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/app_config_pair.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/models/device_info_model.dart';
+import 'package:scrcpygui/models/settings_model/app_grid_settings.dart';
 import 'package:scrcpygui/models/settings_model/companion_server_settings.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -237,5 +238,27 @@ class Db {
     final prefs = await SharedPreferences.getInstance();
 
     prefs.setStringList(PKEY_AUTO_LAUNCH, list.map((e) => e.toJson()).toList());
+  }
+
+  /*
+  App grid settings DB
+  */
+
+  static Future<void> saveAppGridSettings(AppGridSettings settings) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setString(PKEY_APPGRID_SETTINGS, settings.toJson());
+  }
+
+  static Future<AppGridSettings> getAppGridSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final res = prefs.getString(PKEY_APPGRID_SETTINGS);
+
+    if (res == null) {
+      return AppGridSettings(gridExtent: 80, hideName: false);
+    } else {
+      return AppGridSettings.fromJson(res);
+    }
   }
 }
