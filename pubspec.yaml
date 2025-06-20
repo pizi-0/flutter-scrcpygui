@@ -39,8 +39,8 @@ dependencies:
   device_info_plus: ^11.3.3
   dio: ^5.7.0
   easiest_localization: ^2.0.1
-  encrypt_decrypt_plus: ^1.7.0
-  file_picker: ^9.0.2
+  encrypt_decrypt_plus: ^2.0.0
+  file_picker: ^10.2.0
   flex_color_picker: ^3.5.1
   flutter:
     sdk: flutter
@@ -48,14 +48,14 @@ dependencies:
   flutter_riverpod: ^2.5.1
   flutter_single_instance: ^1.2.3
   fpdart: ^1.1.1
-  go_router: ^14.8.0
-  go_transitions: ^0.7.1
+  go_router: ^15.2.3
+  go_transitions: ^0.8.1
   google_fonts: ^6.2.1
   hexcolor: ^3.0.1
   html: ^0.15.6
   http: ^1.4.0
   hugeicons: ^0.0.7
-  intl: ^0.19.0
+  intl: ^0.20.2
   keymap: ^0.0.92
   localization:
     path: ./localization
@@ -70,10 +70,10 @@ dependencies:
   shared_preferences: ^2.3.1
   string_extensions: ^0.7.2
   super_drag_and_drop: ^0.9.1
-  tray_manager: ^0.4.0
+  tray_manager: ^0.5.0
   url_launcher: ^6.3.0
   uuid: ^4.5.1
-  window_manager: ^0.4.3
+  window_manager: ^0.5.0
 
 dev_dependencies:
 
@@ -82,7 +82,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
   msix: ^3.16.8
