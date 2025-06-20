@@ -1,3 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:async';
 import 'dart:io';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
@@ -6,6 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/app_grid_settings_provider.dart';
+import 'package:scrcpygui/providers/missing_icon_provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 import 'package:path/path.dart' as p;
@@ -27,12 +31,10 @@ import '../device_control_page.dart';
 class AppGridIcon extends ConsumerStatefulWidget {
   const AppGridIcon({
     super.key,
-    required this.ref,
     required this.device,
     required this.app,
   });
 
-  final WidgetRef ref;
   final AdbDevices device;
   final ScrcpyApp app;
 
@@ -56,8 +58,14 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
   Future<void> _loadOrFetchIcon() async {
     if (!mounted) return;
 
+    final noIconApps = ref.read(missingIconProvider);
     File? existingIcon = await IconDb.getIconFile(widget.app.packageName);
+    File? fetchedIcon;
+
     if (existingIcon != null) {
+      if (noIconApps.contains(widget.app)) {
+        ref.read(missingIconProvider.notifier).removeApp(widget.app);
+      }
       if (mounted) {
         setState(() {
           _iconFile = existingIcon;
@@ -67,7 +75,13 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     }
 
     // If not found locally, try to fetch it
-    File? fetchedIcon = await IconDb.fetchAndSaveIcon(widget.app.packageName);
+    if (!noIconApps.contains(widget.app)) {
+      fetchedIcon = await IconDb.fetchAndSaveIcon(widget.app.packageName);
+      if (fetchedIcon == null) {
+        ref.read(missingIconProvider.notifier).addApp(widget.app);
+      }
+    }
+
     if (mounted) {
       setState(() {
         _iconFile = fetchedIcon;
@@ -103,6 +117,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     return DropRegion(
       formats: [
         ...Formats.standardFormats,
+        Formats.webp,
         Formats.png,
         Formats.ico,
       ],
@@ -175,6 +190,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
                                     child: Image.file(
+                                      key: UniqueKey(),
                                       _iconFile!,
                                       fit: BoxFit.cover,
                                       errorBuilder:
@@ -305,9 +321,13 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
               }
 
               if (mounted) {
-                setState(() {
-                  _iconFile = fetchedIcon;
-                });
+                _iconFile = fetchedIcon;
+
+                if (_iconFile == null) {
+                  ref.read(missingIconProvider.notifier).addApp(widget.app);
+                }
+
+                setState(() {});
               }
             },
             leading: Icon(Icons.refresh_rounded),
@@ -430,7 +450,29 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     ];
   }
 
+  Future<Uint8List?>? readFile(DropItem item, FileFormat format) {
+    final c = Completer<Uint8List?>();
+    final progress = item.dataReader?.getFile(format, (file) async {
+      try {
+        final all = await file.readAll();
+        c.complete(all);
+      } catch (e) {
+        c.completeError(e);
+      }
+    }, onError: (e) {
+      c.completeError(e);
+    });
+    if (progress == null) {
+      c.complete(null);
+    }
+
+    return c.future;
+  }
+
   Future<void> _onPerformDrop(PerformDropEvent event) async {
+    File? imageFile;
+    final iconDir = await IconDb.getIconsDirectory();
+
     setState(() {
       _onDropHover = false;
       processingIcon = true;
@@ -438,43 +480,40 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
 
     final icon = event.session.items.first;
 
-    if (icon.canProvide(Formats.png) || icon.canProvide(Formats.ico)) {
-      if (_iconFile != null) {
-        await FileImage(_iconFile!).evict();
-        _iconFile = null;
-        setState(() {});
+    final supportedImageFormats = [
+      Formats.webp,
+      Formats.png,
+      Formats.ico,
+    ];
+
+    for (final format in supportedImageFormats) {
+      final c = Completer<File?>();
+      if (icon.canProvide(format)) {
+        final byte = await readFile(icon, format);
+
+        if (byte == null) {
+          continue;
+        }
+
+        final file =
+            File(p.join(iconDir.path, '${widget.app.packageName}.png'));
+        final finalFile = await file.writeAsBytes(byte, flush: true);
+        c.complete(finalFile);
+        imageFile = finalFile;
+
+        if (_iconFile != null) {
+          await FileImage(_iconFile!).evict();
+          _iconFile = null;
+        }
+        _iconFile = imageFile;
+        if (ref.read(missingIconProvider).contains(widget.app)) {
+          ref.read(missingIconProvider.notifier).removeApp(widget.app);
+        }
+        break;
       }
+    }
 
-      event.session.items.first.dataReader?.getFile(
-        Formats.png,
-        (value) async {
-          final iconDir = await IconDb.getIconsDirectory();
-
-          final byte = await value.readAll();
-          final file =
-              File(p.join(iconDir.path, '${widget.app.packageName}.png'));
-
-          final icon = await file.writeAsBytes(byte, flush: true);
-
-          _iconFile = icon;
-        },
-      );
-
-      event.session.items.first.dataReader?.getFile(
-        Formats.ico,
-        (value) async {
-          final iconDir = await IconDb.getIconsDirectory();
-
-          final byte = await value.readAll();
-          final file =
-              File(p.join(iconDir.path, '${widget.app.packageName}.png'));
-
-          final icon = await file.writeAsBytes(byte, flush: true);
-
-          _iconFile = icon;
-        },
-      );
-    } else {
+    if (imageFile == null) {
       showDialog(
         context: context,
         builder: (context) => ConstrainedBox(
@@ -486,7 +525,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
               children: [
                 PgSectionCardNoScroll(
                   label: 'Supported formats:',
-                  content: Text('png, ico'),
+                  content: Text('webp, png, ico'),
                 ),
                 PgSectionCardNoScroll(
                   label: 'Detected format:',
@@ -505,10 +544,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
       );
     }
 
-    if (mounted) {
-      processingIcon = false;
-      setState(() {});
-    }
+    processingIcon = false;
+    setState(() {});
   }
 
   bool enabled({required bool isMissingConfig, required bool isPinned}) {
@@ -541,7 +578,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
           ScrcpyUtils.handleOverrides(overrides, selectedConfig!);
 
       await ScrcpyUtils.newInstance(
-        widget.ref,
+        ref,
         selectedConfig: overridden.copyWith(
             appOptions: selectedConfig.appOptions
                 .copyWith(selectedApp: widget.app, forceClose: forceClose)),
@@ -550,7 +587,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
       );
     } else {
       await ScrcpyUtils.newInstance(
-        widget.ref,
+        ref,
         selectedConfig: selectedConfig!.copyWith(
             appOptions: selectedConfig.appOptions
                 .copyWith(selectedApp: widget.app, forceClose: forceClose)),
