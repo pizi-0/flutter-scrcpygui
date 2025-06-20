@@ -144,7 +144,7 @@ class _ConfigScreenCloseDialogState
     );
   }
 
-  _submitEdit() async {
+  Future<void> _submitEdit() async {
     final selectedConfig = ref.read(configScreenConfig)!;
 
     var currentConfig = selectedConfig;

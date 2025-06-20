@@ -34,7 +34,7 @@ class ServerUtilsWs {
   ServerSocket? serverSocket;
   Set<AuthdClient> authenticatedSockets = {};
 
-  _bindServer(WidgetRef ref) async {
+  Future<void> _bindServer(WidgetRef ref) async {
     try {
       final deviceIp = await _getDeviceIp();
 
@@ -63,7 +63,7 @@ class ServerUtilsWs {
     }
   }
 
-  _onData(WidgetRef ref, Socket socket) {
+  void _onData(WidgetRef ref, Socket socket) {
     final clientAddress = socket.remoteAddress.address;
     logger.i('Client connected: $clientAddress');
     final blocklist = ref.read(companionServerProvider).blocklist;
@@ -116,7 +116,7 @@ class ServerUtilsWs {
     );
   }
 
-  _handleRequest(WidgetRef ref,
+  Future<void> _handleRequest(WidgetRef ref,
       {required Socket socket, required ClientPayload payload}) async {
     try {
       await payload.toAction(ref);
@@ -203,7 +203,7 @@ class ServerUtilsWs {
     }
   }
 
-  startServer(WidgetRef ref) async {
+  Future<void> startServer(WidgetRef ref) async {
     try {
       await _bindServer(ref);
 
@@ -294,7 +294,7 @@ class ServerUtilsWs {
     }
   }
 
-  stopServer(WidgetRef ref) async {
+  Future<void> stopServer(WidgetRef ref) async {
     try {
       await serverSocket!.close();
 

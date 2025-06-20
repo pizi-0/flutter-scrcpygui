@@ -178,7 +178,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
     ).clipRRect();
   }
 
-  _toWireless() async {
+  Future<void> _toWireless() async {
     loading = true;
     setState(() {});
 
@@ -214,7 +214,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
     }
   }
 
-  _disconnectWireless() async {
+  Future<void> _disconnectWireless() async {
     loading = true;
     setState(() {});
 
@@ -242,7 +242,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
     }
   }
 
-  _killRunning(List<ScrcpyRunningInstance> instances) async {
+  Future<void> _killRunning(List<ScrcpyRunningInstance> instances) async {
     try {
       for (final instance in instances) {
         await ScrcpyUtils.killServer(instance);

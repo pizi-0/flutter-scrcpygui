@@ -8,17 +8,17 @@ class AppConfigPairsNotifier extends Notifier<List<AppConfigPair>> {
     return [];
   }
 
-  setPairs(List<AppConfigPair> pairs) {
+  void setPairs(List<AppConfigPair> pairs) {
     state = pairs;
   }
 
-  addOrEditPair(AppConfigPair pair) {
+  void addOrEditPair(AppConfigPair pair) {
     if (!state.contains(pair)) {
       state = [...state, pair];
     }
   }
 
-  removePair(AppConfigPair pair) {
+  void removePair(AppConfigPair pair) {
     state = [...state.where((p) => p != pair)];
   }
 }

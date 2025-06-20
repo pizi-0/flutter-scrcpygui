@@ -43,7 +43,7 @@ class _RenameConfigState extends ConsumerState<RenameConfig> {
     super.dispose();
   }
 
-  _onFocusLost() {
+  void _onFocusLost() {
     if (!node.hasFocus && nameExist || controller.text.isEmpty) {
       controller.text = widget.oldConfig.configName.trim();
       ref

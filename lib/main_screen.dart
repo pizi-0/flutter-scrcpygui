@@ -141,7 +141,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
     );
   }
 
-  _init() async {
+  Future<void> _init() async {
     final companionSettings = ref.read(companionServerProvider);
 
     await windowManager.setPreventClose(true);

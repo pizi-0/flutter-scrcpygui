@@ -11,38 +11,38 @@ class CompanionServerNotifier extends Notifier<CompanionServerSettings> {
     return defaultCompanionServerSettings.copyWith(secret: Uuid().v4());
   }
 
-  setSettings(CompanionServerSettings settings) {
+  void setSettings(CompanionServerSettings settings) {
     state = settings;
   }
 
-  setServerName(String name) {
+  void setServerName(String name) {
     state = state.copyWith(name: name);
   }
 
-  setSecret(String secret) {
+  void setSecret(String secret) {
     state = state.copyWith(secret: secret);
   }
 
-  setEndpoint(String endpoint) {
+  void setEndpoint(String endpoint) {
     state = state.copyWith(endpoint: endpoint);
   }
 
-  setPort(String port) {
+  void setPort(String port) {
     state = state.copyWith(port: port);
   }
 
-  setStartOnLaunch() {
+  void setStartOnLaunch() {
     final current = state.startOnLaunch;
     state = state.copyWith(startOnLaunch: !current);
   }
 
-  addToBlocklist(BlockedClient client) {
+  void addToBlocklist(BlockedClient client) {
     final current = state.blocklist;
     state = state
         .copyWith(blocklist: [...current.where((c) => c != client), client]);
   }
 
-  removeFromBlocklist(BlockedClient client) {
+  void removeFromBlocklist(BlockedClient client) {
     final current = state.blocklist;
     state = state.copyWith(blocklist: [...current.where((c) => c != client)]);
   }

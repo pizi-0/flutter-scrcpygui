@@ -52,7 +52,7 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
     super.dispose();
   }
 
-  _getInfo() async {
+  Future<void> _getInfo() async {
     try {
       final workDir = ref.read(execDirProvider);
       final info = await AdbUtils.getDeviceInfoFor(workDir, widget.device);

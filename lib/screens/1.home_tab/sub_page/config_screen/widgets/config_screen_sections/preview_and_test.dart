@@ -39,7 +39,7 @@ class _PreviewAndTestState extends ConsumerState<PreviewAndTest> {
     super.dispose();
   }
 
-  _isStillRunning() async {
+  Future<void> _isStillRunning() async {
     if (mounted) {
       final res = await ScrcpyUtils.getRunningScrcpy(ref.read(appPidProvider));
       if (ref.read(testInstanceProvider) != null) {
@@ -162,7 +162,7 @@ class _CopyButtonState extends State<CopyButton> {
   Timer? timer;
   bool copied = false;
 
-  _startTimer() {
+  void _startTimer() {
     copied = true;
     setState(() {});
     timer = Timer(500.milliseconds, () {

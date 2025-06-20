@@ -78,7 +78,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
     );
   }
 
-  _onDetailPressed() {
+  void _onDetailPressed() {
     configDropdownKey.currentState?.closePopup();
     showDialog(
       context: context,
@@ -87,7 +87,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
     );
   }
 
-  _onRemoveConfigPressed() async {
+  Future<void> _onRemoveConfigPressed() async {
     configDropdownKey.currentState?.closePopup();
     await showDialog(
       context: context,
@@ -96,7 +96,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
     );
   }
 
-  _onEditPressed(ScrcpyConfig config) {
+  void _onEditPressed(ScrcpyConfig config) {
     ref.read(selectedConfigProvider.notifier).state = config;
     configDropdownKey.currentState?.closePopup();
 

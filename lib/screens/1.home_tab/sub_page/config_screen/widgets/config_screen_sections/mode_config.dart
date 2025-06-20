@@ -42,7 +42,7 @@ class _ModeConfigState extends ConsumerState<ModeConfig> {
   }
 }
 
-_audioFormat(ScrcpyConfig? selectedConfig) {
+AudioFormat _audioFormat(ScrcpyConfig? selectedConfig) {
   switch (selectedConfig?.audioOptions.audioCodec) {
     case 'aac':
       return AudioFormat.aac;

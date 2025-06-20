@@ -135,7 +135,7 @@ class AppUtils {
     }
   }
 
-  static findSidebarWidth() {
+  static double findSidebarWidth() {
     final box = sidebarKey.currentContext?.findRenderObject();
 
     if (box != null) {

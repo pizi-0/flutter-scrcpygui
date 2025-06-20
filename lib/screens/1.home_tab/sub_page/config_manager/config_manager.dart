@@ -146,7 +146,7 @@ class _ConfigManagerState extends ConsumerState<ConfigManager> {
     );
   }
 
-  _onReorderPressed() async {
+  Future<void> _onReorderPressed() async {
     if (!reorder) {
       ref.read(configTags.notifier).clearTag();
 

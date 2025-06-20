@@ -30,7 +30,7 @@ class _ControlButtonsState extends ConsumerState<ControlButtons> {
     );
   }
 
-  _buttonList() {
+  List<Widget> _buttonList() {
     final workDir = ref.read(execDirProvider);
     return [
       DestructiveButton(

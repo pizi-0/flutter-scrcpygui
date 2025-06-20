@@ -13,15 +13,15 @@ class ConfigsNotifier extends Notifier<List<ScrcpyConfig>> {
     return [];
   }
 
-  addConfig(ScrcpyConfig config) {
+  void addConfig(ScrcpyConfig config) {
     state = [...state, config];
   }
 
-  removeConfig(ScrcpyConfig config) {
+  void removeConfig(ScrcpyConfig config) {
     state = [...state.where((c) => c != config)];
   }
 
-  overwriteConfig(ScrcpyConfig oldConfig, ScrcpyConfig newConfig) {
+  void overwriteConfig(ScrcpyConfig oldConfig, ScrcpyConfig newConfig) {
     final newState = state;
 
     final index = newState.indexOf(oldConfig);
@@ -39,15 +39,16 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
     return null;
   }
 
-  setConfig(ScrcpyConfig config) {
+  void setConfig(ScrcpyConfig config) {
     state = config;
   }
 
-  setName(String newName) {
+  void setName(String newName) {
     state = state!.copyWith(configName: newName);
   }
 
-  setModeConfig({ScrcpyMode? scrcpyMode, bool? isRecording, String? savePath}) {
+  void setModeConfig(
+      {ScrcpyMode? scrcpyMode, bool? isRecording, String? savePath}) {
     state = state!.copyWith(
       scrcpyMode: scrcpyMode ?? state!.scrcpyMode,
       isRecording: isRecording ?? state!.isRecording,
@@ -55,7 +56,7 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
     );
   }
 
-  setVideoConfig(
+  void setVideoConfig(
       {String? displayId,
       double? maxFPS,
       double? resolutionScale,
@@ -83,7 +84,7 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
     );
   }
 
-  setVirtDisplayConfig(
+  void setVirtDisplayConfig(
       {bool? disableDecorations,
       String? dpi,
       bool? preseveContent,
@@ -102,7 +103,7 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
     );
   }
 
-  setAudioConfig(
+  void setAudioConfig(
       {int? audioBitrate,
       String? audioCodec,
       String? audioEncoder,
@@ -128,7 +129,8 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
     );
   }
 
-  setAppConfig({bool? forceClose, ScrcpyApp? selectedApp, bool reset = false}) {
+  void setAppConfig(
+      {bool? forceClose, ScrcpyApp? selectedApp, bool reset = false}) {
     final current = state!.appOptions;
     state = state!.copyWith(
       appOptions: reset
@@ -140,7 +142,7 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
     );
   }
 
-  setWindowConfig(
+  void setWindowConfig(
       {bool? alwaysOntop, bool? noBorder, bool? noWindow, int? timeLimit}) {
     final current = state!.windowOptions;
     state = state!.copyWith(
@@ -153,7 +155,7 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
     );
   }
 
-  setDeviceConfig(
+  void setDeviceConfig(
       {bool? noScreensaver,
       bool? offScreenOnClose,
       bool? showTouches,
@@ -172,7 +174,7 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
     );
   }
 
-  setAdditionalFlags({String? additionalFlags}) {
+  void setAdditionalFlags({String? additionalFlags}) {
     final current = state!.additionalFlags;
     state = state!.copyWith(additionalFlags: additionalFlags ?? current);
   }
@@ -193,7 +195,7 @@ class ConfigTagNotifier extends Notifier<List<ConfigTag>> {
     return [];
   }
 
-  addTag(ConfigTag tag) {
+  void addTag(ConfigTag tag) {
     if (!state.contains(tag)) {
       state = [...state, tag];
 
@@ -201,13 +203,13 @@ class ConfigTagNotifier extends Notifier<List<ConfigTag>> {
     }
   }
 
-  removeTag(ConfigTag tag) {
+  void removeTag(ConfigTag tag) {
     state = [...state.where((t) => t != tag)];
 
     _setSelectedConfig();
   }
 
-  toggleTag(ConfigTag tag) {
+  void toggleTag(ConfigTag tag) {
     if (state.contains(tag)) {
       removeTag(tag);
     } else {
@@ -215,7 +217,7 @@ class ConfigTagNotifier extends Notifier<List<ConfigTag>> {
     }
   }
 
-  clearTag() {
+  void clearTag() {
     state = [
       ...state.where(
           (e) => e == ConfigTag.customConfig || e == ConfigTag.defaultConfig)
@@ -283,21 +285,21 @@ class ConfigOverrideNotifier extends Notifier<List<ScrcpyOverride>> {
     return [];
   }
 
-  setOverride(List<ScrcpyOverride> overrides) {
+  void setOverride(List<ScrcpyOverride> overrides) {
     state = overrides;
   }
 
-  addOverride(ScrcpyOverride override) {
+  void addOverride(ScrcpyOverride override) {
     if (!state.contains(override)) {
       state = [...state, override];
     }
   }
 
-  removeOverride(ScrcpyOverride override) {
+  void removeOverride(ScrcpyOverride override) {
     state = [...state.where((o) => o != override)];
   }
 
-  toggleOverride(ScrcpyOverride override) {
+  void toggleOverride(ScrcpyOverride override) {
     if (state.contains(override)) {
       removeOverride(override);
     } else {
@@ -305,7 +307,7 @@ class ConfigOverrideNotifier extends Notifier<List<ScrcpyOverride>> {
     }
   }
 
-  clearOverride() {
+  void clearOverride() {
     state = [];
   }
 }

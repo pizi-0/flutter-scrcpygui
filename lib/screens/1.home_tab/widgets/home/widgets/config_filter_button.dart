@@ -225,7 +225,7 @@ class TagChip extends ConsumerWidget {
     );
   }
 
-  getTooltip(String label) {
+  String getTooltip(String label) {
     switch (label.toLowerCase()) {
       case 'mir':
         return el.modeSection.mainMode.mirror;

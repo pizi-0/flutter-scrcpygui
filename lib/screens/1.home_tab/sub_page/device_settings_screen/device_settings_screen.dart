@@ -269,7 +269,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
     );
   }
 
-  _getDeviceInfo() async {
+  Future<void> _getDeviceInfo() async {
     final selectedDevice = ref.read(selectedDeviceProvider);
     loading = true;
     setState(() {});
@@ -300,8 +300,12 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
     setState(() {});
   }
 
-  void _onConnectConfig(value) async {
+  void _onConnectConfig(String? value) async {
     final autoLaunchNotifier = ref.read(autoLaunchProvider.notifier);
+
+    if (value == null) {
+      return;
+    }
 
     if (value != DO_NOTHING) {
       if (autoLaunchConfigId == null) {
@@ -323,7 +327,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
     setState(() {});
   }
 
-  void _onTextBoxSubmit(value) async {
+  void _onTextBoxSubmit(String value) async {
     final deviceInfo = ref
         .read(infoProvider)
         .firstWhere((info) => info.serialNo == dev.serialNo);
@@ -352,7 +356,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
     setState(() {});
   }
 
-  _onLoseFocus() {
+  void _onLoseFocus() {
     if (!textBox.hasFocus) {
       final deviceInfo = ref
           .read(infoProvider)

@@ -111,7 +111,7 @@ class _BdTileState extends ConsumerState<BdTile> {
     );
   }
 
-  _connectMdns(BonsoirService bd) async {
+  Future<void> _connectMdns(BonsoirService bd) async {
     loading = true;
     setState(() {});
     final res =

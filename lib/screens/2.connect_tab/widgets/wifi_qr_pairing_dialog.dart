@@ -102,7 +102,7 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
     );
   }
 
-  _pair(Stream<BonsoirDiscoveryEvent> stream) async {
+  Future<void> _pair(Stream<BonsoirDiscoveryEvent> stream) async {
     late String pairRes;
 
     final toPair = (await stream.firstWhere(

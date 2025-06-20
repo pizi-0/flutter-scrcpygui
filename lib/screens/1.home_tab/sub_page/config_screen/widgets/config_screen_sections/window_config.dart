@@ -119,7 +119,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
     );
   }
 
-  _toggleWindow() {
+  void _toggleWindow() {
     final config = ref.read(configScreenConfig);
     final noWindow = config!.windowOptions.noWindow;
     final scrcpyVersion = ref.read(scrcpyVersionProvider);
@@ -138,14 +138,14 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
     }
   }
 
-  _toggleBorder() {
+  void _toggleBorder() {
     final config = ref.read(configScreenConfig);
     final noBorder = config!.windowOptions.noBorder;
 
     ref.read(configScreenConfig.notifier).setWindowConfig(noBorder: !noBorder);
   }
 
-  _toggleOntop() {
+  void _toggleOntop() {
     final config = ref.read(configScreenConfig);
     final alwaysOntop = config!.windowOptions.alwaysOntop;
 
@@ -154,7 +154,7 @@ class _WindowConfigState extends ConsumerState<WindowConfig> {
         .setWindowConfig(alwaysOntop: !alwaysOntop);
   }
 
-  _setTimeLimit(value) {
+  void _setTimeLimit(String value) {
     if (value.isEmpty) {
       ref.read(configScreenConfig.notifier).setWindowConfig(timeLimit: 0);
 

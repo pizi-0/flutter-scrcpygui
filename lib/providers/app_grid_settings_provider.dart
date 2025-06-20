@@ -6,19 +6,19 @@ class AppGridSettingsNotifier extends StateNotifier<AppGridSettings> {
     super.state = AppGridSettings(gridExtent: 80, hideName: false);
   }
 
-  setSettings(AppGridSettings settings) {
+  void setSettings(AppGridSettings settings) {
     state = settings;
   }
 
-  modifyExtent(double extent) {
+  void modifyExtent(double extent) {
     state = state.copyWith(gridExtent: extent);
   }
 
-  toggleHideName() {
+  void toggleHideName() {
     state = state.copyWith(hideName: !state.hideName);
   }
 
-  setLastUsedConfig(String? configId) {
+  void setLastUsedConfig(String? configId) {
     if (configId != null) {
       state = state.copyWith(lastUsedConfig: configId);
     }

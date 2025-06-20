@@ -521,7 +521,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     }
   }
 
-  _startScrcpy(
+  Future<void> _startScrcpy(
       {required bool isPinned,
       required List<AppConfigPair> devicePair,
       ScrcpyConfig? configForPinned,

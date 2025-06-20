@@ -8,21 +8,21 @@ class DeviceInfoNotifier extends Notifier<List<DeviceInfo>> {
     return [];
   }
 
-  setDevicesInfo(List<DeviceInfo> devicesInfo) {
+  void setDevicesInfo(List<DeviceInfo> devicesInfo) {
     state = devicesInfo;
   }
 
-  _addDeviceInfo(DeviceInfo deviceInfo) {
+  void _addDeviceInfo(DeviceInfo deviceInfo) {
     if (state.where((infos) => infos.serialNo == deviceInfo.serialNo).isEmpty) {
       state = [...state, deviceInfo];
     }
   }
 
-  removeDeviceInfo(DeviceInfo deviceInfo) {
+  void removeDeviceInfo(DeviceInfo deviceInfo) {
     state = [...state.where((info) => info.serialNo != deviceInfo.serialNo)];
   }
 
-  addOrEditDeviceInfo(DeviceInfo deviceInfo) {
+  void addOrEditDeviceInfo(DeviceInfo deviceInfo) {
     removeDeviceInfo(deviceInfo);
     _addDeviceInfo(deviceInfo);
   }

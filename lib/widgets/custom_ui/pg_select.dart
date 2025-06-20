@@ -131,7 +131,7 @@ class SelectState<T> extends State<Select<T>>
     super.dispose();
   }
 
-  closePopup() {
+  void closePopup() {
     _popoverController.close();
   }
 

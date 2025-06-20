@@ -164,7 +164,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
     );
   }
 
-  _onClose(bool wifi, bool instance) async {
+  Future<void> _onClose(bool wifi, bool instance) async {
     await windowManager.setPreventClose(true);
     setState(() {
       loading = true;
@@ -192,7 +192,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
 
       final strays = await AdbUtils.getScrcpyServerPIDs();
       if (strays.isNotEmpty) {
-        await ScrcpyUtils.killStrays(strays, ProcessSignal.sigterm);
+        ScrcpyUtils.killStrays(strays, ProcessSignal.sigterm);
       }
     }
 

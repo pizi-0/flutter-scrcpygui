@@ -114,7 +114,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
   //   }
   // }
 
-  _saveConfig() async {
+  Future<void> _saveConfig() async {
     showDialog(
       barrierColor: Colors.black.withValues(alpha: 0.9),
       context: context,
@@ -266,7 +266,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
     );
   }
 
-  _onFocusLost() {
+  void _onFocusLost() {
     namecontroller.text = ref.read(configScreenConfig)!.configName;
     setState(() {});
   }

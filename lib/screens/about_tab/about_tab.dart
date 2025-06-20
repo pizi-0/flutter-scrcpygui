@@ -33,7 +33,7 @@ class _AboutTabState extends ConsumerState<AboutTab> {
     });
   }
 
-  _getLatest() async {
+  Future<void> _getLatest() async {
     loading = true;
     setState(() {});
 

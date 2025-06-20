@@ -129,7 +129,7 @@ class AppConfigState extends ConsumerState<AppConfig> {
     );
   }
 
-  _onForceCloseCheck() {
+  void _onForceCloseCheck() {
     final config = ref.read(configScreenConfig);
     var currentAppOption = config!.appOptions;
 
@@ -138,7 +138,7 @@ class AppConfigState extends ConsumerState<AppConfig> {
         .setAppConfig(forceClose: !currentAppOption.forceClose);
   }
 
-  _onRefreshApp() async {
+  Future<void> _onRefreshApp() async {
     loading = true;
     setState(() {});
 

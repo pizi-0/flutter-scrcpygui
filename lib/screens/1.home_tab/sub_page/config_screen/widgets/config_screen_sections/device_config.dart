@@ -128,7 +128,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
     );
   }
 
-  _toggleStayAwake() {
+  void _toggleStayAwake() {
     final config = ref.read(configScreenConfig)!;
     final stayAwake = config.deviceOptions.stayAwake;
     ref
@@ -136,7 +136,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
         .setDeviceConfig(stayAwake: !stayAwake);
   }
 
-  _toggleShowTouches() {
+  void _toggleShowTouches() {
     final config = ref.read(configScreenConfig)!;
     final showTouches = config.deviceOptions.showTouches;
     ref
@@ -144,7 +144,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
         .setDeviceConfig(showTouches: !showTouches);
   }
 
-  _toggleTurnOffDisplay() {
+  void _toggleTurnOffDisplay() {
     final config = ref.read(configScreenConfig)!;
     final turnOffDisplay = config.deviceOptions.turnOffDisplay;
 
@@ -153,7 +153,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
         .setDeviceConfig(turnOffDisplay: !turnOffDisplay);
   }
 
-  _toggleOffScreenOnClose() {
+  void _toggleOffScreenOnClose() {
     final config = ref.read(configScreenConfig)!;
     final offScreenOnClose = config.deviceOptions.offScreenOnClose;
 
@@ -162,7 +162,7 @@ class _DeviceConfigState extends ConsumerState<DeviceConfig> {
         );
   }
 
-  _toggleScreenSaver() {
+  void _toggleScreenSaver() {
     final config = ref.read(configScreenConfig)!;
     final noScreensaver = config.deviceOptions.noScreensaver;
 

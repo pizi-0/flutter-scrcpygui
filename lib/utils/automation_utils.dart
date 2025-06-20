@@ -9,7 +9,7 @@ import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 
 class AutomationUtils {
-  static autoconnectRunner(WidgetRef ref) async {
+  static Future<void> autoconnectRunner(WidgetRef ref) async {
     final connected = ref.read(adbProvider);
     final workDir = ref.read(execDirProvider);
     final task = ref.read(autoConnectProvider);

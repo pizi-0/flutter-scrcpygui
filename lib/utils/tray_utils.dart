@@ -37,7 +37,7 @@ class TrayUtils {
     }
   }
 
-  static trayMenu(WidgetRef ref, BuildContext context) async {
+  static Future<Menu> trayMenu(WidgetRef ref, BuildContext context) async {
     final connected = ref.read(adbProvider);
     final configs = ref.read(configsProvider);
     final running = ref.read(scrcpyInstanceProvider);

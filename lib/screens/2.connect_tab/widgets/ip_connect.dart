@@ -102,7 +102,7 @@ class _IPConnectState extends ConsumerState<IPConnect>
     });
   }
 
-  _connect(String ipport) async {
+  Future<void> _connect(String ipport) async {
     loading = true;
     setState(() {});
 

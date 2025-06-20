@@ -163,7 +163,7 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
     );
   }
 
-  _toggleRememberWinSize() async {
+  Future<void> _toggleRememberWinSize() async {
     ref.read(settingsProvider.notifier).changeRememberWinSize();
     await Db.saveAppSettings(ref.read(settingsProvider));
   }

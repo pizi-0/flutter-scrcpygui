@@ -265,7 +265,7 @@ class _AudioConfigState extends ConsumerState<AudioConfig> {
     }
   }
 
-  _onFormatSelected(AudioFormat? value) {
+  void _onFormatSelected(AudioFormat? value) {
     if (value == AudioFormat.wav) {
       ref.read(configScreenConfig.notifier).setAudioConfig(audioCodec: 'raw');
     }

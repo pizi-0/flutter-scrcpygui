@@ -128,12 +128,12 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
     );
   }
 
-  _toggleOldScheme() async {
+  Future<void> _toggleOldScheme() async {
     ref.read(settingsProvider.notifier).toggleOldScheme();
     await Db.saveAppSettings(ref.read(settingsProvider));
   }
 
-  _onRadiusChange(double value) async {
+  Future<void> _onRadiusChange(double value) async {
     ref.read(settingsProvider.notifier).changeCornerRadius(value);
     await Db.saveAppSettings(ref.read(settingsProvider));
   }

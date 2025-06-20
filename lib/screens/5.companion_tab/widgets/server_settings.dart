@@ -212,7 +212,7 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
     );
   }
 
-  _toggleServer(bool isServerRunning) async {
+  Future<void> _toggleServer(bool isServerRunning) async {
     final companionSettingsNotifier =
         ref.read(companionServerProvider.notifier);
 
@@ -282,7 +282,7 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
     }
   }
 
-  _toggleAutoStart() async {
+  Future<void> _toggleAutoStart() async {
     final companionSettingsNotifier =
         ref.read(companionServerProvider.notifier);
 

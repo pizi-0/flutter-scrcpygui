@@ -48,7 +48,7 @@ class _BigControlPage2State extends ConsumerState<BigControlPage2> {
     });
   }
 
-  _getInfo() async {
+  Future<void> _getInfo() async {
     try {
       final workDir = ref.read(execDirProvider);
       final info = await AdbUtils.getDeviceInfoFor(workDir, widget.device);

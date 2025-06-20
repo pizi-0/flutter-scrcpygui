@@ -6,17 +6,17 @@ class AutoConnectNotifier extends StateNotifier<List<ConnectAutomation>> {
     super.state = [];
   }
 
-  setList(List<ConnectAutomation> autoConnects) {
+  void setList(List<ConnectAutomation> autoConnects) {
     state = autoConnects;
   }
 
-  add(ConnectAutomation data) {
+  void add(ConnectAutomation data) {
     if (!state.contains(data)) {
       state = [...state, data];
     }
   }
 
-  remove(String deviceId) {
+  void remove(String deviceId) {
     state = [...state.where((e) => e.deviceIp != deviceId)];
   }
 }
@@ -26,17 +26,17 @@ class AutoLaunchNotifier extends StateNotifier<List<ConfigAutomation>> {
     super.state = [];
   }
 
-  setList(List<ConfigAutomation> autoLaunches) {
+  void setList(List<ConfigAutomation> autoLaunches) {
     state = autoLaunches;
   }
 
-  add(ConfigAutomation data) {
+  void add(ConfigAutomation data) {
     if (!state.contains(data)) {
       state = [...state, data];
     }
   }
 
-  remove(String deviceId) {
+  void remove(String deviceId) {
     state = [...state.where((e) => e.deviceId != deviceId)];
   }
 }

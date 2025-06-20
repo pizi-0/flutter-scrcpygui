@@ -39,7 +39,7 @@ class ClientPayload {
     }
   }
 
-  _startScrcpy(WidgetRef ref, String json) async {
+  Future<void> _startScrcpy(WidgetRef ref, String json) async {
     final deviceId = jsonDecode(json)['deviceId'];
     final configId = jsonDecode(json)['configId'];
 
@@ -61,7 +61,7 @@ class ClientPayload {
         selectedConfig: config, selectedDevice: device);
   }
 
-  _startAppConfigPair(WidgetRef ref, String json) async {
+  Future<void> _startAppConfigPair(WidgetRef ref, String json) async {
     final hash = jsonDecode(json)['hash'];
     if (hash == null) {
       throw Exception('Missing hash');
@@ -91,7 +91,7 @@ class ClientPayload {
     );
   }
 
-  _killScrcpy(WidgetRef ref, String json) async {
+  Future<void> _killScrcpy(WidgetRef ref, String json) async {
     final pid = jsonDecode(json)['pid'];
     if (pid == null) {
       throw Exception('Missing pid');
@@ -107,7 +107,7 @@ class ClientPayload {
     await ScrcpyUtils.killServer(instance);
   }
 
-  _connectDevice(WidgetRef ref, String json) async {
+  Future<void> _connectDevice(WidgetRef ref, String json) async {
     final ip = jsonDecode(json)['ip'];
     if (ip == null) {
       throw Exception('Missing ip');
@@ -121,7 +121,7 @@ class ClientPayload {
     }
   }
 
-  _disconnectDevice(WidgetRef ref, String json) async {
+  Future<void> _disconnectDevice(WidgetRef ref, String json) async {
     final deviceId = jsonDecode(json)['deviceId'];
     if (deviceId == null) {
       throw Exception('Missing deviceId');

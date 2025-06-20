@@ -66,7 +66,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
     });
   }
 
-  _checkForUpdate() async {
+  Future<void> _checkForUpdate() async {
     checkingForUpdate = true;
     setState(() {});
 

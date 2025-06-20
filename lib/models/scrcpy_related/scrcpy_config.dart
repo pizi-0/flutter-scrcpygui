@@ -45,7 +45,7 @@ class ScrcpyConfig {
     tags = getTags();
   }
 
-  getTags() {
+  List<ConfigTag> getTags() {
     List<ConfigTag> tags = [];
     if (isRecording) {
       tags.add(ConfigTag.recording);

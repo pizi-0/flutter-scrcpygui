@@ -7,7 +7,7 @@ class BonsoirNotifier extends Notifier<List<BonsoirService>> {
     return [];
   }
 
-  addService(BonsoirService service) {
+  void addService(BonsoirService service) {
     final newstate = state;
 
     newstate.removeWhere((e) => e.name == service.name);
@@ -16,7 +16,7 @@ class BonsoirNotifier extends Notifier<List<BonsoirService>> {
     state = [...newstate];
   }
 
-  removeService(BonsoirService service) {
+  void removeService(BonsoirService service) {
     final newstate = state;
 
     newstate.removeWhere((e) => e.name == service.name);
@@ -35,7 +35,7 @@ class BonsoirPairingNotifier extends Notifier<List<BonsoirService>> {
     return [];
   }
 
-  addService(BonsoirService service) {
+  void addService(BonsoirService service) {
     final newstate = state;
 
     newstate.removeWhere((e) => e.name == service.name);
@@ -44,7 +44,7 @@ class BonsoirPairingNotifier extends Notifier<List<BonsoirService>> {
     state = [...newstate];
   }
 
-  removeService(BonsoirService service) {
+  void removeService(BonsoirService service) {
     final newstate = state;
 
     newstate.removeWhere((e) => e.name == service.name);

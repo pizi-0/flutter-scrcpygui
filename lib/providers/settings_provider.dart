@@ -11,52 +11,52 @@ class SettingsNotifier extends Notifier<AppSettings> {
     return defaultSettings;
   }
 
-  setSettings(AppSettings settings) {
+  void setSettings(AppSettings settings) {
     state = settings;
   }
 
-  changeThememode(ThemeMode mode) {
+  void changeThememode(ThemeMode mode) {
     var currentLooks = state.looks;
     state = state.copyWith(looks: currentLooks.copyWith(themeMode: mode));
   }
 
-  changeColorScheme(ColorSchemesWithName scheme) {
+  void changeColorScheme(ColorSchemesWithName scheme) {
     var currentLooks = state.looks;
     state = state.copyWith(looks: currentLooks.copyWith(scheme: scheme));
   }
 
-  toggleOldScheme() {
+  void toggleOldScheme() {
     var currentLooks = state.looks;
     state = state.copyWith(
         looks: currentLooks.copyWith(useOldScheme: !currentLooks.useOldScheme));
   }
 
-  changeTintLevel(double tintLevel) {
+  void changeTintLevel(double tintLevel) {
     var currentLooks = state.looks;
     state = state.copyWith(
         looks: currentLooks.copyWith(accentTintLevel: tintLevel));
   }
 
-  changeCornerRadius(double radius) {
+  void changeCornerRadius(double radius) {
     var currentLooks = state.looks;
     state = state.copyWith(looks: currentLooks.copyWith(widgetRadius: radius));
   }
 
-  changeMinimizeBehaviour(MinimizeAction behaviour) {
+  void changeMinimizeBehaviour(MinimizeAction behaviour) {
     var currentBehaviour = state.behaviour;
 
     state = state.copyWith(
         behaviour: currentBehaviour.copyWith(minimizeAction: behaviour));
   }
 
-  changeLanguage(String languageCode) {
+  void changeLanguage(String languageCode) {
     var currentBehaviour = state.behaviour;
 
     state = state.copyWith(
         behaviour: currentBehaviour.copyWith(languageCode: languageCode));
   }
 
-  changeHideConfig() {
+  void changeHideConfig() {
     var currentBehaviour = state.behaviour;
 
     state = state.copyWith(
@@ -64,7 +64,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
             hideDefaultConfig: !state.behaviour.hideDefaultConfig));
   }
 
-  changeRememberWinSize() {
+  void changeRememberWinSize() {
     var currentBehaviour = state.behaviour;
 
     state = state.copyWith(

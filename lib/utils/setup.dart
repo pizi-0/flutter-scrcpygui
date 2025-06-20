@@ -41,7 +41,7 @@ class SetupUtils {
           "$macAppDir/Frameworks/App.framework/Versions/A/Resources/flutter_assets/assets/exec/mac-apple")
       .listSync();
 
-  static initScrcpy(WidgetRef ref) async {
+  static Future<void> initScrcpy(WidgetRef ref) async {
     try {
       String scrcpyVersion = await getCurrentScrcpyVersion();
 

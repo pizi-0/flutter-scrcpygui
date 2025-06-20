@@ -67,7 +67,7 @@ class ScrcpyUtils {
     return pids;
   }
 
-  static killStrays(List<String> pids, ProcessSignal signal) {
+  static void killStrays(List<String> pids, ProcessSignal signal) {
     for (var p in pids) {
       Process.killPid(p.toInt()!, signal);
     }

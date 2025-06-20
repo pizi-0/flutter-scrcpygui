@@ -121,7 +121,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
     );
   }
 
-  _onNewConfigPressed() {
+  void _onNewConfigPressed() {
     final selectedDevice = ref.read(selectedDeviceProvider);
     if (selectedDevice != null) {
       final newconfig = newConfig.copyWith(id: const Uuid().v4());
@@ -138,7 +138,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
     }
   }
 
-  _start({bool withOverrides = false}) async {
+  Future<void> _start({bool withOverrides = false}) async {
     final selectedDevice = ref.read(selectedDeviceProvider);
     final selectedConfig = ref.read(selectedConfigProvider);
     final overrides = ref.read(configOverridesProvider);
@@ -333,7 +333,7 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
     );
   }
 
-  _onNewConfigPressed() {
+  void _onNewConfigPressed() {
     final selectedDevice = ref.read(selectedDeviceProvider);
     if (selectedDevice != null) {
       final newconfig = newConfig.copyWith(id: const Uuid().v4());
@@ -350,7 +350,7 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
     }
   }
 
-  _onReorderPressed() async {
+  Future<void> _onReorderPressed() async {
     if (!reorder) {
       ref.read(configTags.notifier).clearTag();
 
@@ -453,7 +453,7 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
     );
   }
 
-  _start() async {
+  Future<void> _start() async {
     final selectedDevice = ref.read(selectedDeviceProvider);
     final selectedConfig = ref.read(selectedConfigProvider);
     if (selectedConfig == null) {
@@ -504,7 +504,7 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
     }
   }
 
-  _onDetailPressed(ScrcpyConfig config) {
+  void _onDetailPressed(ScrcpyConfig config) {
     configDropdownKey.currentState?.closePopup();
     showDialog(
       context: context,
@@ -513,7 +513,7 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
     );
   }
 
-  _onRemoveConfigPressed(ScrcpyConfig config) async {
+  Future<void> _onRemoveConfigPressed(ScrcpyConfig config) async {
     configDropdownKey.currentState?.closePopup();
     await showDialog(
       context: context,
@@ -522,7 +522,7 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
     );
   }
 
-  _onEditPressed(ScrcpyConfig config) {
+  void _onEditPressed(ScrcpyConfig config) {
     ref.read(selectedConfigProvider.notifier).state = config;
     configDropdownKey.currentState?.closePopup();
 

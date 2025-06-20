@@ -12,19 +12,19 @@ class ScrcpyInstanceNotifier extends Notifier<List<ScrcpyRunningInstance>> {
     return [];
   }
 
-  addInstance(ScrcpyRunningInstance inst) {
+  void addInstance(ScrcpyRunningInstance inst) {
     if (!state.contains(inst)) {
       state = [...state, inst];
     }
   }
 
-  removeInstance(ScrcpyRunningInstance inst) {
+  void removeInstance(ScrcpyRunningInstance inst) {
     if (state.contains(inst)) {
       state = state.where((i) => i != inst).toList();
     }
   }
 
-  removeAll() {
+  void removeAll() {
     state = [];
   }
 }
@@ -43,11 +43,11 @@ class InstalledScrcpyNotifier extends Notifier<List<InstalledScrcpy>> {
     return [];
   }
 
-  setInstalled(List<InstalledScrcpy> installed) {
+  void setInstalled(List<InstalledScrcpy> installed) {
     state = installed;
   }
 
-  addVersion(InstalledScrcpy version) {
+  void addVersion(InstalledScrcpy version) {
     var newstate = [...state];
     newstate.addIfNotExist(version);
 

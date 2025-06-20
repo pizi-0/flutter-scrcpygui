@@ -104,7 +104,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     );
   }
 
-  _onRefreshDisplay(DeviceInfo info) async {
+  Future<void> _onRefreshDisplay(DeviceInfo info) async {
     loading = true;
     setState(() {});
 
@@ -338,19 +338,19 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
     );
   }
 
-  _onVdResolutionChanged(value) {
+  void _onVdResolutionChanged(String value) {
     ref
         .read(configScreenConfig.notifier)
         .setVirtDisplayConfig(resolution: value.isEmpty ? DEFAULT : value);
   }
 
-  _onVdDpiChanged(value) {
+  void _onVdDpiChanged(String value) {
     ref
         .read(configScreenConfig.notifier)
         .setVirtDisplayConfig(dpi: value.isEmpty ? DEFAULT : value);
   }
 
-  _onVdDisableDecoChanged() {
+  void _onVdDisableDecoChanged() {
     final selectedConfig = ref.read(configScreenConfig)!;
 
     var currentVdOptions = selectedConfig.videoOptions.virtualDisplayOptions;
@@ -359,7 +359,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
         disableDecorations: !currentVdOptions.disableDecorations);
   }
 
-  _onVdDestroyContentChanged() {
+  void _onVdDestroyContentChanged() {
     final selectedConfig = ref.read(configScreenConfig)!;
 
     var currentVdOptions = selectedConfig.videoOptions.virtualDisplayOptions;

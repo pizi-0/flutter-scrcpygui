@@ -229,7 +229,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
     );
   }
 
-  _onRefreshApp() async {
+  Future<void> _onRefreshApp() async {
     gettingApp = true;
     setState(() {});
 
@@ -389,7 +389,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
     );
   }
 
-  _findSidebarWidth() {
+  double _findSidebarWidth() {
     final box = sidebarKey.currentContext?.findRenderObject();
 
     if (box != null) {

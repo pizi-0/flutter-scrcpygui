@@ -44,7 +44,7 @@ class Db {
     prefs.remove(key);
   }
 
-  static saveWinSize(Size size) async {
+  static Future<void> saveWinSize(Size size) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(PKEY_LAST_WIN_SIZE,
         jsonEncode({'width': size.width, 'height': size.height}));
@@ -199,7 +199,8 @@ class Db {
     }
   }
 
-  static saveCompanionServerSettings(CompanionServerSettings settings) async {
+  static Future<void> saveCompanionServerSettings(
+      CompanionServerSettings settings) async {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setString(PKEY_COMPANION_SERVER_SETTINGS, settings.toJson());

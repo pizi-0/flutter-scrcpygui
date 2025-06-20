@@ -41,7 +41,7 @@ class DirectoryUtils {
     return dir;
   }
 
-  static openFolder(String p) async {
+  static Future<void> openFolder(String p) async {
     Uri folder = Uri.file(p, windows: Platform.isWindows);
 
     await launchUrl(folder);
