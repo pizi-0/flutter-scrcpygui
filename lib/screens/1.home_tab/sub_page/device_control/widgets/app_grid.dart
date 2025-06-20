@@ -13,6 +13,7 @@ import '../../../../../providers/app_config_pair_provider.dart';
 import '../../../../../providers/app_grid_settings_provider.dart';
 import '../../../../../providers/config_provider.dart';
 import '../../../../../providers/device_info_provider.dart';
+import '../../../../../providers/missing_icon_provider.dart';
 import '../../../../../providers/version_provider.dart';
 import '../../../../../utils/command_runner.dart';
 import '../../../../../widgets/navigation_shell.dart';
@@ -35,6 +36,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
   ScrollController appScrollController = ScrollController();
   double sidebarWidth = 52;
   bool gettingApp = false;
+  bool showMissingIcon = false;
 
   @override
   void initState() {
@@ -103,6 +105,12 @@ class _AppGridState extends ConsumerState<AppGrid> {
 
     final size = MediaQuery.sizeOf(context);
 
+    final missingIcons = ref.watch(missingIconProvider);
+
+    if (missingIcons.isEmpty) {
+      showMissingIcon = false;
+    }
+
     return PgSectionCardNoScroll(
       constraints: BoxConstraints(maxWidth: (size.width - sidebarWidth) * 0.5),
       label: el.loungeLoc.launcher.label,
@@ -153,7 +161,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
                                   .textSmall
                                   .muted),
                         ),
-                      if (filteredDeviceAppslist.isNotEmpty) ...[
+                      if (showMissingIcon) ...[
                         SliverToBoxAdapter(
                           child: Container(
                               margin: EdgeInsets.only(bottom: 8),
@@ -163,7 +171,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
                                 color: theme.colorScheme.muted,
                                 borderRadius: theme.borderRadiusSm,
                               ),
-                              child: Text('Pinned').textSmall),
+                              child: Text('Missing icon').textSmall),
                         ),
                         SliverGrid.builder(
                           gridDelegate:
@@ -173,23 +181,18 @@ class _AppGridState extends ConsumerState<AppGrid> {
                             mainAxisSpacing: 8,
                             crossAxisSpacing: 8,
                           ),
-                          itemCount: filteredDeviceAppslist.length,
+                          itemCount: missingIcons.length,
                           itemBuilder: (context, index) {
-                            final app = filteredDeviceAppslist[index];
+                            final app = missingIcons[index];
 
                             return AppGridIcon(
                                 key: ValueKey(app.packageName),
-                                ref: ref,
                                 app: app,
                                 device: widget.device);
                           },
-                        ),
-                        SliverPadding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        ),
-                      ],
-                      if (filteredAppslist.isNotEmpty) ...[
-                        if (deviceAppslist.isNotEmpty)
+                        )
+                      ] else ...[
+                        if (filteredDeviceAppslist.isNotEmpty) ...[
                           SliverToBoxAdapter(
                             child: Container(
                                 margin: EdgeInsets.only(bottom: 8),
@@ -199,27 +202,62 @@ class _AppGridState extends ConsumerState<AppGrid> {
                                   color: theme.colorScheme.muted,
                                   borderRadius: theme.borderRadiusSm,
                                 ),
-                                child: Text('Apps').textSmall),
+                                child: Text('Pinned').textSmall),
                           ),
-                        SliverGrid.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: gridSettings.gridExtent,
-                            mainAxisExtent: gridSettings.gridExtent,
-                            mainAxisSpacing: 8,
-                            crossAxisSpacing: 8,
-                          ),
-                          itemCount: filteredAppslist.length,
-                          itemBuilder: (context, index) {
-                            final app = filteredAppslist[index];
+                          SliverGrid.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: gridSettings.gridExtent,
+                              mainAxisExtent: gridSettings.gridExtent,
+                              mainAxisSpacing: 8,
+                              crossAxisSpacing: 8,
+                            ),
+                            itemCount: filteredDeviceAppslist.length,
+                            itemBuilder: (context, index) {
+                              final app = filteredDeviceAppslist[index];
 
-                            return AppGridIcon(
-                                key: ValueKey(app.packageName),
-                                ref: ref,
-                                app: app,
-                                device: widget.device);
-                          },
-                        )
+                              return AppGridIcon(
+                                  key: ValueKey(app.packageName),
+                                  app: app,
+                                  device: widget.device);
+                            },
+                          ),
+                          SliverPadding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          ),
+                        ],
+                        if (filteredAppslist.isNotEmpty) ...[
+                          if (deviceAppslist.isNotEmpty)
+                            SliverToBoxAdapter(
+                              child: Container(
+                                  margin: EdgeInsets.only(bottom: 8),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    color: theme.colorScheme.muted,
+                                    borderRadius: theme.borderRadiusSm,
+                                  ),
+                                  child: Text('Apps').textSmall),
+                            ),
+                          SliverGrid.builder(
+                            gridDelegate:
+                                SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: gridSettings.gridExtent,
+                              mainAxisExtent: gridSettings.gridExtent,
+                              mainAxisSpacing: 8,
+                              crossAxisSpacing: 8,
+                            ),
+                            itemCount: filteredAppslist.length,
+                            itemBuilder: (context, index) {
+                              final app = filteredAppslist[index];
+
+                              return AppGridIcon(
+                                  key: ValueKey(app.packageName),
+                                  app: app,
+                                  device: widget.device);
+                            },
+                          )
+                        ]
                       ]
                     ],
                   ),
@@ -257,6 +295,8 @@ class _AppGridState extends ConsumerState<AppGrid> {
   Widget _buildHeader(ScrcpyConfig? config, List<ScrcpyConfig> allConfigs) {
     final gridSettings = ref.watch(appGridSettingsProvider);
     final gridSettingsNotifier = ref.read(appGridSettingsProvider.notifier);
+    final missingIcons = ref.watch(missingIconProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       spacing: 8,
@@ -331,6 +371,14 @@ class _AppGridState extends ConsumerState<AppGrid> {
           mainAxisAlignment: MainAxisAlignment.end,
           spacing: 8,
           children: [
+            if (missingIcons.isNotEmpty)
+              Toggle(
+                  value: showMissingIcon,
+                  onChanged: (value) => setState(() {
+                        showMissingIcon = value;
+                      }),
+                  child: Text('Missing icon (${missingIcons.length})')),
+            Spacer(),
             Checkbox(
               leading: Text('Hide app name'),
               state: gridSettings.hideName
