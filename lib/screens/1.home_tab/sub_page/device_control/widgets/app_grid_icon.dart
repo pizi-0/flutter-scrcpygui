@@ -488,66 +488,92 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
       processingIcon = true;
     });
 
-    final icon = event.session.items.first;
+    try {
+      final icon = event.session.items.first;
 
-    for (final format in imageFormats) {
-      if (icon.canProvide(format)) {
-        final byte = await readFile(icon, format);
+      for (final format in imageFormats) {
+        if (icon.canProvide(format)) {
+          final byte = await readFile(icon, format);
 
-        if (byte == null) {
-          continue;
+          if (byte == null) {
+            continue;
+          }
+
+          final String packageName = widget.app.packageName;
+          final String path = p.join(iconDir.path, '$packageName.png');
+
+          imageFile = await ImageUtils.byteToPngFile(byte, path, maxSize: 256);
+          if (_iconFile != null) {
+            await FileImage(_iconFile!).evict();
+            _iconFile = null;
+          }
+          _iconFile = imageFile;
+          if (ref.read(missingIconProvider).contains(widget.app)) {
+            ref.read(missingIconProvider.notifier).removeApp(widget.app);
+          }
+          break;
         }
-
-        final String packageName = widget.app.packageName;
-        final String path = p.join(iconDir.path, '$packageName.png');
-
-        imageFile = await ImageUtils.byteToPngFile(byte, path, maxSize: 256);
-        if (_iconFile != null) {
-          await FileImage(_iconFile!).evict();
-          _iconFile = null;
-        }
-        _iconFile = imageFile;
-        if (ref.read(missingIconProvider).contains(widget.app)) {
-          ref.read(missingIconProvider.notifier).removeApp(widget.app);
-        }
-        break;
       }
-    }
 
-    if (imageFile == null) {
-      showDialog(
-        context: context,
-        builder: (context) => ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: appWidth),
-          child: AlertDialog(
-            title: Text('Unsupported format'),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                PgSectionCardNoScroll(
-                  label: 'Supported formats:',
-                  content: Text(
-                      imageFormats.map((e) => e.providerFormat).join(', ')),
-                ),
-                PgSectionCardNoScroll(
-                  label: 'Detected format:',
-                  content:
-                      Text(event.session.items.first.platformFormats.join(' ')),
-                ),
+      if (imageFile == null) {
+        showDialog(
+          context: context,
+          builder: (context) => ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: appWidth),
+            child: AlertDialog(
+              title: Text('Unsupported format'),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  PgSectionCardNoScroll(
+                    label: 'Supported formats:',
+                    content: Text(
+                        imageFormats.map((e) => e.providerFormat).join(', ')),
+                  ),
+                  PgSectionCardNoScroll(
+                    label: 'Detected format:',
+                    content: Text(
+                        event.session.items.first.platformFormats.join(' ')),
+                  ),
+                ],
+              ),
+              actions: [
+                SecondaryButton(
+                    onPressed: () => context.pop(),
+                    child: Text(el.buttonLabelLoc.close))
               ],
             ),
-            actions: [
-              SecondaryButton(
-                  onPressed: () => context.pop(),
-                  child: Text(el.buttonLabelLoc.close))
-            ],
           ),
-        ),
-      );
+        );
+      }
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) => ConstrainedBox(
+                constraints:
+                    BoxConstraints(maxWidth: appWidth, minWidth: appWidth),
+                child: AlertDialog(
+                  title: Text(el.statusLoc.error),
+                  content: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(e.toString()),
+                    ],
+                  ),
+                  actions: [
+                    SecondaryButton(
+                      onPressed: context.pop,
+                      child: Text(el.buttonLabelLoc.close),
+                    )
+                  ],
+                ),
+              ));
+    } finally {
+      if (mounted) {
+        processingIcon = false;
+        setState(() {});
+      }
     }
-
-    processingIcon = false;
-    setState(() {});
   }
 
   bool enabled({required bool isMissingConfig, required bool isPinned}) {
