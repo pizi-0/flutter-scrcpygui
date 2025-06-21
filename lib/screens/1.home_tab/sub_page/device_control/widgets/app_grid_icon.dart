@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/app_grid_settings_provider.dart';
 import 'package:scrcpygui/providers/missing_icon_provider.dart';
+import 'package:scrcpygui/utils/image_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:super_drag_and_drop/super_drag_and_drop.dart';
 import 'package:path/path.dart' as p;
@@ -48,6 +49,15 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
   bool _onDropHover = false;
   File? _iconFile;
   bool processingIcon = false;
+  List<FileFormat> imageFormats = [
+    Formats.webp,
+    Formats.png,
+    Formats.ico,
+    Formats.jpeg,
+    Formats.tiff,
+    Formats.bmp,
+    Formats.svg,
+  ];
 
   @override
   void initState() {
@@ -76,6 +86,9 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
 
     // If not found locally, try to fetch it
     if (!noIconApps.contains(widget.app)) {
+      setState(() {
+        processingIcon = true;
+      });
       fetchedIcon = await IconDb.fetchAndSaveIcon(widget.app.packageName);
       if (fetchedIcon == null) {
         ref.read(missingIconProvider.notifier).addApp(widget.app);
@@ -85,6 +98,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     if (mounted) {
       setState(() {
         _iconFile = fetchedIcon;
+        processingIcon = false;
       });
     }
   }
@@ -115,12 +129,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     }
 
     return DropRegion(
-      formats: [
-        ...Formats.standardFormats,
-        Formats.webp,
-        Formats.png,
-        Formats.ico,
-      ],
+      formats: [...Formats.standardFormats, ...imageFormats],
       hitTestBehavior: HitTestBehavior.opaque,
       onDropOver: (p0) {
         setState(() {
@@ -452,7 +461,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
 
   Future<Uint8List?>? readFile(DropItem item, FileFormat format) {
     final c = Completer<Uint8List?>();
-    final progress = item.dataReader?.getFile(format, (file) async {
+    final progress = item.dataReader?.getFile(format, allowVirtualFiles: false,
+        (file) async {
       try {
         final all = await file.readAll();
         c.complete(all);
@@ -480,14 +490,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
 
     final icon = event.session.items.first;
 
-    final supportedImageFormats = [
-      Formats.webp,
-      Formats.png,
-      Formats.ico,
-    ];
-
-    for (final format in supportedImageFormats) {
-      final c = Completer<File?>();
+    for (final format in imageFormats) {
       if (icon.canProvide(format)) {
         final byte = await readFile(icon, format);
 
@@ -495,12 +498,10 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
           continue;
         }
 
-        final file =
-            File(p.join(iconDir.path, '${widget.app.packageName}.png'));
-        final finalFile = await file.writeAsBytes(byte, flush: true);
-        c.complete(finalFile);
-        imageFile = finalFile;
+        final String packageName = widget.app.packageName;
+        final String path = p.join(iconDir.path, '$packageName.png');
 
+        imageFile = await ImageUtils.byteToPngFile(byte, path, maxSize: 256);
         if (_iconFile != null) {
           await FileImage(_iconFile!).evict();
           _iconFile = null;
@@ -525,7 +526,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
               children: [
                 PgSectionCardNoScroll(
                   label: 'Supported formats:',
-                  content: Text('webp, png, ico'),
+                  content: Text(
+                      imageFormats.map((e) => e.providerFormat).join(', ')),
                 ),
                 PgSectionCardNoScroll(
                   label: 'Detected format:',
