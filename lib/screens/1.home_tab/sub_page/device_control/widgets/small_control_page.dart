@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -31,6 +32,7 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
   ScrcpyApp? selectedApp;
   bool loading = false;
   ScrollController scrollController = ScrollController();
+  double controlsHeight = 107.7;
 
   @override
   void initState() {
@@ -38,6 +40,26 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
     final deviceInfo = ref
         .read(infoProvider)
         .firstWhereOrNull((info) => info.serialNo == widget.device.serialNo);
+
+    scrollController.addListener(
+      () {
+        if (scrollController.offset >
+                scrollController.position.maxScrollExtent / 3 &&
+            controlsHeight != 0) {
+          controlsHeight = 0;
+          setState(() {});
+        }
+
+        if (scrollController.offset <
+                scrollController.position.maxScrollExtent / 3 &&
+            controlsHeight != 107.7) {
+          if (controlsHeight != 107.7) {
+            controlsHeight = 107.7;
+            setState(() {});
+          }
+        }
+      },
+    );
 
     WidgetsBinding.instance.addPostFrameCallback((t) {
       if (deviceInfo == null) {
@@ -99,9 +121,17 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 spacing: 8,
                 children: [
-                  ControlButtons(device: device),
+                  AnimatedContainer(
+                    duration: 200.milliseconds,
+                    height: controlsHeight,
+                    child: ControlButtons(device: device),
+                  ),
                   Expanded(
-                    child: AppGrid(device: device, persistentHeader: false),
+                    child: AppGrid(
+                      device: device,
+                      persistentHeader: false,
+                      scrollController: scrollController,
+                    ),
                   ),
                 ],
               ),
