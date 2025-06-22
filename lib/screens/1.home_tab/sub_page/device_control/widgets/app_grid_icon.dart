@@ -110,16 +110,22 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     final config = ref.watch(controlPageConfigProvider);
     final gridSettings = ref.watch(appGridSettingsProvider);
     final allConfigs = ref.watch(configsProvider);
-    final devicePair = ref.watch(appConfigPairProvider).where((p) => p.deviceId == widget.device.serialNo).toList();
+    final devicePair = ref
+        .watch(appConfigPairProvider)
+        .where((p) => p.deviceId == widget.device.serialNo)
+        .toList();
 
     final isPinned = devicePair.where((p) => p.app == widget.app).isNotEmpty;
 
-    var configForPinned = devicePair.firstWhereOrNull((p) => p.app == widget.app)?.config;
+    var configForPinned =
+        devicePair.firstWhereOrNull((p) => p.app == widget.app)?.config;
 
-    final isMissingConfig = isPinned && allConfigs.where((c) => c.id == configForPinned?.id).isEmpty;
+    final isMissingConfig = isPinned &&
+        allConfigs.where((c) => c.id == configForPinned?.id).isEmpty;
 
     if (!isMissingConfig) {
-      configForPinned = allConfigs.firstWhereOrNull((c) => c.id == configForPinned?.id);
+      configForPinned =
+          allConfigs.firstWhereOrNull((c) => c.id == configForPinned?.id);
     }
 
     return DropRegion(
@@ -145,7 +151,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
       },
       onPerformDrop: _onPerformDrop,
       child: ContextMenu(
-        items: _buildContextMenu(isMissingConfig, isPinned, config, theme, devicePair, configForPinned, overrides),
+        items: _buildContextMenu(isMissingConfig, isPinned, config, theme,
+            devicePair, configForPinned, overrides),
         child: AnimatedScale(
           duration: 200.milliseconds,
           scale: _onDropHover ? 1.2 : 1,
@@ -157,19 +164,30 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                   hover = value;
                   setState(() {});
                 },
-                enabled: enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
+                enabled: enabled(
+                    isMissingConfig: isMissingConfig, isPinned: isPinned),
                 style: _iconFile == null
                     ? ButtonStyle.outline(density: ButtonDensity.compact)
                     : ButtonStyle.ghost(density: ButtonDensity.compact),
-                onPressed: () =>
-                    _startScrcpy(isPinned: isPinned, devicePair: devicePair, configForPinned: configForPinned),
+                onPressed: () => _startScrcpy(
+                    isPinned: isPinned,
+                    devicePair: devicePair,
+                    configForPinned: configForPinned),
                 onLongPressStart: (details) => _startScrcpy(
-                    isPinned: isPinned, devicePair: devicePair, forceClose: true, configForPinned: configForPinned),
+                    isPinned: isPinned,
+                    devicePair: devicePair,
+                    forceClose: true,
+                    configForPinned: configForPinned),
                 onTertiaryTapUp: config == null
                     ? null
-                    : (details) => _startScrcpy(isPinned: isPinned, devicePair: devicePair, configForPinned: config),
-                onTertiaryLongPress: () =>
-                    _startScrcpy(isPinned: isPinned, devicePair: devicePair, configForPinned: config),
+                    : (details) => _startScrcpy(
+                        isPinned: isPinned,
+                        devicePair: devicePair,
+                        configForPinned: config),
+                onTertiaryLongPress: () => _startScrcpy(
+                    isPinned: isPinned,
+                    devicePair: devicePair,
+                    configForPinned: config),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Stack(
@@ -184,7 +202,9 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                                       key: UniqueKey(),
                                       _iconFile!,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) => SizedBox.shrink(),
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              SizedBox.shrink(),
                                     ),
                                   )
                                 : Center(
@@ -197,11 +217,14 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                             Padding(
                               padding: const EdgeInsets.only(top: 8.0),
                               child: hover
-                                  ? OverflowMarquee(child: Text(widget.app.name).fontSize(12))
+                                  ? OverflowMarquee(
+                                      child: Text(widget.app.name).fontSize(12))
                                   : Text(
                                       widget.app.name,
                                       maxLines: 1,
-                                    ).textAlignment(TextAlign.center).fontSize(12),
+                                    )
+                                      .textAlignment(TextAlign.center)
+                                      .fontSize(12),
                             ),
                         ],
                       ),
@@ -214,18 +237,26 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                     top: 0,
                     right: 0,
                     child: Tooltip(
-                      tooltip: TooltipContainer(child: Text('On ${configForPinned?.configName}')).call,
+                      tooltip: TooltipContainer(
+                              child: Text('On ${configForPinned?.configName}'))
+                          .call,
                       child: Icon(
                         Icons.star_rounded,
                         color: Colors.amber,
                       ),
                     )),
-              if (!enabled(isMissingConfig: isMissingConfig, isPinned: isPinned))
+              if (!enabled(
+                  isMissingConfig: isMissingConfig, isPinned: isPinned))
                 Container(
-                  decoration: BoxDecoration(color: Colors.black.withAlpha(200), borderRadius: theme.borderRadiusLg),
+                  decoration: BoxDecoration(
+                      color: Colors.black.withAlpha(200),
+                      borderRadius: theme.borderRadiusLg),
                   child: isMissingConfig
                       ? Tooltip(
-                          tooltip: TooltipContainer(child: Text('Missing config: ${configForPinned?.configName}')).call,
+                          tooltip: TooltipContainer(
+                                  child: Text(
+                                      'Missing config: ${configForPinned?.configName}'))
+                              .call,
                           child: Icon(
                             Icons.warning_rounded,
                             color: theme.colorScheme.destructive,
@@ -236,7 +267,9 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                 ),
               if (loading || processingIcon)
                 Container(
-                  decoration: BoxDecoration(color: Colors.black.withAlpha(200), borderRadius: theme.borderRadiusLg),
+                  decoration: BoxDecoration(
+                      color: Colors.black.withAlpha(200),
+                      borderRadius: theme.borderRadiusLg),
                   child: Center(
                     child: CircularProgressIndicator(),
                   ),
@@ -248,8 +281,14 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     );
   }
 
-  List<MenuItem> _buildContextMenu(bool isMissingConfig, bool isPinned, ScrcpyConfig? config, ThemeData theme,
-      List<AppConfigPair> devicePair, ScrcpyConfig? configForPinned, List<ScrcpyOverride> overrides) {
+  List<MenuItem> _buildContextMenu(
+      bool isMissingConfig,
+      bool isPinned,
+      ScrcpyConfig? config,
+      ThemeData theme,
+      List<AppConfigPair> devicePair,
+      ScrcpyConfig? configForPinned,
+      List<ScrcpyOverride> overrides) {
     return [
       MenuButton(
         leading: Icon(Icons.info_rounded),
@@ -265,7 +304,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
           ),
           MenuDivider(),
           MenuButton(
-            enabled: enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
+            enabled:
+                enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
             onPressed: (context) async {
               controlPageKeyboardListenerNode.requestFocus();
 
@@ -279,7 +319,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                 });
               }
 
-              File? fetchedIcon = await IconDb.fetchAndSaveIcon(widget.app.packageName);
+              File? fetchedIcon =
+                  await IconDb.fetchAndSaveIcon(widget.app.packageName);
 
               if (fetchedIcon == null) {
                 if (await IconDb.iconExists(widget.app.packageName)) {
@@ -302,7 +343,9 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
             child: Text('Reset Icon'),
           ),
         ],
-        child: isPinned ? Text('${widget.app.name} (${configForPinned?.configName})') : Text(widget.app.name),
+        child: isPinned
+            ? Text('${widget.app.name} (${configForPinned?.configName})')
+            : Text(widget.app.name),
       ),
       MenuDivider(),
       if (config == null && !isPinned) ...[
@@ -319,25 +362,30 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
           enabled: config != null,
           onPressed: (context) async {
             controlPageKeyboardListenerNode.requestFocus();
-            ref
-                .read(appConfigPairProvider.notifier)
-                .addOrEditPair(AppConfigPair(deviceId: widget.device.serialNo, app: widget.app, config: config!));
+            ref.read(appConfigPairProvider.notifier).addOrEditPair(
+                AppConfigPair(
+                    deviceId: widget.device.serialNo,
+                    app: widget.app,
+                    config: config!));
 
             await Db.saveAppConfigPairs(ref.read(appConfigPairProvider));
           },
           leading: Icon(Icons.push_pin_rounded),
-          child: Text(el.loungeLoc.appTile.contextMenu.pin(config: config?.configName ?? '')),
+          child: Text(el.loungeLoc.appTile.contextMenu
+              .pin(config: config?.configName ?? '')),
         ),
       if (isPinned)
         MenuButton(
           enabled: config != null || isPinned,
           onPressed: (context) async {
             controlPageKeyboardListenerNode.requestFocus();
-            final config = devicePair.firstWhereOrNull((p) => p.app == widget.app)?.config;
+            final config =
+                devicePair.firstWhereOrNull((p) => p.app == widget.app)?.config;
 
-            ref
-                .read(appConfigPairProvider.notifier)
-                .removePair(AppConfigPair(deviceId: widget.device.serialNo, app: widget.app, config: config!));
+            ref.read(appConfigPairProvider.notifier).removePair(AppConfigPair(
+                deviceId: widget.device.serialNo,
+                app: widget.app,
+                config: config!));
 
             await Db.saveAppConfigPairs(ref.read(appConfigPairProvider));
           },
@@ -348,8 +396,12 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
       MenuLabel(child: Text('Start').muted),
       if (isPinned && config != null && configForPinned?.id != config.id)
         MenuButton(
-          enabled: enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
-          onPressed: (context) => _startScrcpy(isPinned: isPinned, devicePair: devicePair, configForPinned: config),
+          enabled:
+              enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
+          onPressed: (context) => _startScrcpy(
+              isPinned: isPinned,
+              devicePair: devicePair,
+              configForPinned: config),
           leading: Icon(Icons.play_arrow_rounded),
           child: Text('Start on: ${config.configName}'),
         ),
@@ -358,16 +410,24 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
         subMenu: isPinned && config != null && configForPinned?.id != config.id
             ? [
                 MenuButton(
-                  enabled: enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
+                  enabled: enabled(
+                      isMissingConfig: isMissingConfig, isPinned: isPinned),
                   onPressed: (context) => _startScrcpy(
-                      isPinned: isPinned, devicePair: devicePair, forceClose: true, configForPinned: configForPinned),
+                      isPinned: isPinned,
+                      devicePair: devicePair,
+                      forceClose: true,
+                      configForPinned: configForPinned),
                   leading: Icon(Icons.play_arrow_rounded),
                   child: Text('On: ${configForPinned?.configName}'),
                 ),
                 MenuButton(
-                  enabled: enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
+                  enabled: enabled(
+                      isMissingConfig: isMissingConfig, isPinned: isPinned),
                   onPressed: (context) => _startScrcpy(
-                      isPinned: isPinned, devicePair: devicePair, forceClose: true, configForPinned: config),
+                      isPinned: isPinned,
+                      devicePair: devicePair,
+                      forceClose: true,
+                      configForPinned: config),
                   leading: Icon(Icons.play_arrow_rounded),
                   child: Text('On: ${config.configName}'),
                 ),
@@ -376,13 +436,17 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
         onPressed: !isPinned && config == null
             ? null
             : (context) => _startScrcpy(
-                isPinned: isPinned, devicePair: devicePair, forceClose: true, configForPinned: configForPinned),
+                isPinned: isPinned,
+                devicePair: devicePair,
+                forceClose: true,
+                configForPinned: configForPinned),
         leading: Icon(Icons.play_arrow_rounded),
         child: Text(el.loungeLoc.appTile.contextMenu.forceClose),
       ),
       if (overrides.isNotEmpty)
         MenuButton(
-          enabled: enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
+          enabled:
+              enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
           onPressed: (context) => _startScrcpy(
             isPinned: isPinned,
             devicePair: devicePair,
@@ -395,9 +459,11 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     ];
   }
 
-  Future<Uint8List?>? readFile(DropItem item, FileFormat format) {
+  Future<Uint8List?>? readFile(DropItem item, FileFormat format,
+      {bool allowVirtualFiles = false}) {
     final c = Completer<Uint8List?>();
-    final progress = item.dataReader?.getFile(format, allowVirtualFiles: false, (file) async {
+    final progress = item.dataReader
+        ?.getFile(format, allowVirtualFiles: allowVirtualFiles, (file) async {
       try {
         final all = await file.readAll();
         c.complete(all);
@@ -428,9 +494,14 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
 
       for (final format in imageFormats) {
         if (icon.canProvide(format)) {
-          final byte = await readFile(icon, format);
+          final fromWeb = icon.canProvide(Formats.uri);
+          final isChromium =
+              icon.platformFormats.toString().contains('chromium');
 
-          if (byte == null) {
+          final byte = await readFile(icon, format,
+              allowVirtualFiles: !fromWeb || isChromium);
+
+          if (byte == null || byte.isEmpty) {
             continue;
           }
 
@@ -462,15 +533,21 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                 children: [
                   PgSectionCardNoScroll(
                     label: 'Supported formats:',
-                    content: Text(imageFormats.map((e) => e.providerFormat).join(', ')),
+                    content: Text(
+                        imageFormats.map((e) => e.providerFormat).join(', ')),
                   ),
                   PgSectionCardNoScroll(
                     label: 'Detected format:',
-                    content: Text(event.session.items.first.platformFormats.join(' ')),
+                    content: Text(
+                        event.session.items.first.platformFormats.join(', ')),
                   ),
                 ],
               ),
-              actions: [SecondaryButton(onPressed: () => context.pop(), child: Text(el.buttonLabelLoc.close))],
+              actions: [
+                SecondaryButton(
+                    onPressed: () => context.pop(),
+                    child: Text(el.buttonLabelLoc.close))
+              ],
             ),
           ),
         );
@@ -479,7 +556,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
       showDialog(
           context: context,
           builder: (context) => ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: appWidth, minWidth: appWidth),
+                constraints:
+                    BoxConstraints(maxWidth: appWidth, minWidth: appWidth),
                 child: AlertDialog(
                   title: Text(el.statusLoc.error),
                   content: Column(
@@ -530,20 +608,23 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
 
     if (withOverrides) {
       final overrides = ref.read(configOverridesProvider);
-      final overridden = ScrcpyUtils.handleOverrides(overrides, selectedConfig!);
+      final overridden =
+          ScrcpyUtils.handleOverrides(overrides, selectedConfig!);
 
       await ScrcpyUtils.newInstance(
         ref,
         selectedConfig: overridden.copyWith(
-            appOptions: selectedConfig.appOptions.copyWith(selectedApp: widget.app, forceClose: forceClose)),
+            appOptions: selectedConfig.appOptions
+                .copyWith(selectedApp: widget.app, forceClose: forceClose)),
         selectedDevice: widget.device,
         customInstanceName: '${widget.app.name} (${selectedConfig.configName})',
       );
     } else {
       await ScrcpyUtils.newInstance(
         ref,
-        selectedConfig: selectedConfig!
-            .copyWith(appOptions: selectedConfig.appOptions.copyWith(selectedApp: widget.app, forceClose: forceClose)),
+        selectedConfig: selectedConfig!.copyWith(
+            appOptions: selectedConfig.appOptions
+                .copyWith(selectedApp: widget.app, forceClose: forceClose)),
         selectedDevice: widget.device,
         customInstanceName: '${widget.app.name} (${selectedConfig.configName})',
       );
