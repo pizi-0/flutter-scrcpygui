@@ -24,8 +24,12 @@ import 'big_control_page.dart';
 class AppGrid extends ConsumerStatefulWidget {
   final AdbDevices device;
   final bool persistentHeader;
+  final ScrollController? scrollController;
   const AppGrid(
-      {super.key, required this.device, this.persistentHeader = true});
+      {super.key,
+      required this.device,
+      this.persistentHeader = true,
+      this.scrollController});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AppGridState();
@@ -139,7 +143,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
             child: gettingApp
                 ? const Center(child: CircularProgressIndicator())
                 : CustomScrollView(
-                    controller: appScrollController,
+                    controller: widget.scrollController ?? appScrollController,
                     slivers: [
                       if (!widget.persistentHeader) ...[
                         SliverToBoxAdapter(
@@ -373,6 +377,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
           children: [
             if (missingIcons.isNotEmpty)
               Toggle(
+                  style: ButtonStyle.ghost(density: ButtonDensity.dense),
                   value: showMissingIcon,
                   onChanged: (value) => setState(() {
                         showMissingIcon = value;
