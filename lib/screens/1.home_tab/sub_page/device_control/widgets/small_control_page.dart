@@ -32,7 +32,7 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
   ScrcpyApp? selectedApp;
   bool loading = false;
   ScrollController scrollController = ScrollController();
-  double controlsHeight = 107.7;
+  double controlsHeight = 109.3;
 
   @override
   void initState() {
@@ -52,9 +52,9 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
 
         if (scrollController.offset <
                 scrollController.position.maxScrollExtent / 3 &&
-            controlsHeight != 107.7) {
-          if (controlsHeight != 107.7) {
-            controlsHeight = 107.7;
+            controlsHeight != 109.3) {
+          if (controlsHeight != 109.3) {
+            controlsHeight = 109.3;
             setState(() {});
           }
         }
