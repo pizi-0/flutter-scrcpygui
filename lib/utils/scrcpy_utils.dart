@@ -89,7 +89,7 @@ class ScrcpyUtils {
 
     List<String> comm = [];
     String customName =
-        '[${isWireless ? 'ᯤ' : '♆'}] [${deviceInfo?.deviceName.toUpperCase() ?? selectedDevice.modelName}] ${customInstanceName == '' ? selectedConfig.configName : customInstanceName}';
+        '[${isWireless ? 'WiFi' : 'USB'}] [${deviceInfo?.deviceName.toUpperCase() ?? selectedDevice.modelName}] ${customInstanceName == '' ? selectedConfig.configName : customInstanceName}';
 
     if (runningInstance.where((r) => r.instanceName == customName).isNotEmpty) {
       for (int i = 1; i < 100; i++) {

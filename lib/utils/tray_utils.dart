@@ -74,8 +74,8 @@ class TrayUtils {
           return MenuItem.submenu(
             key: device.id,
             label: device.id.isIpv4 || device.id.contains(adbMdns)
-                ? '[ᯤ] ${deviceInfo?.deviceName.toUpperCase() ?? device.id}'
-                : '[♆] ${deviceInfo?.deviceName.toUpperCase() ?? device.id}',
+                ? '[WiFi] ${deviceInfo?.deviceName.toUpperCase() ?? device.id}'
+                : '[USB] ${deviceInfo?.deviceName.toUpperCase() ?? device.id}',
             sublabel: 'Config',
             submenu: Menu(
               items: configs
