@@ -236,7 +236,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                     right: 0,
                     child: Tooltip(
                       tooltip: TooltipContainer(
-                              child: Text('On ${configForPinned?.configName}'))
+                              child: Text(el.loungeLoc.tooltip.onConfig(
+                                  config: configForPinned?.configName ?? '')))
                           .call,
                       child: Icon(
                         Icons.star_rounded,
@@ -252,8 +253,10 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                   child: isMissingConfig
                       ? Tooltip(
                           tooltip: TooltipContainer(
-                                  child: Text(
-                                      'Missing config: ${configForPinned?.configName}'))
+                                  child: Text(el.loungeLoc.tooltip
+                                      .missingConfig(
+                                          config: configForPinned?.configName ??
+                                              '')))
                               .call,
                           child: Icon(
                             Icons.warning_rounded,
@@ -291,7 +294,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
       MenuButton(
         leading: Icon(Icons.info_rounded),
         subMenu: [
-          MenuLabel(child: Text('Package name').muted),
+          MenuLabel(
+              child: Text(el.loungeLoc.appTile.contextMenu.packageName).muted),
           MenuButton(
             leading: Icon(Icons.copy_rounded),
             onPressed: (context) async {
@@ -338,7 +342,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
               }
             },
             leading: Icon(Icons.refresh_rounded),
-            child: Text('Reset Icon'),
+            child: Text(el.loungeLoc.appTile.contextMenu.resetIcon),
           ),
         ],
         child: isPinned
@@ -391,7 +395,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
           child: Text(el.loungeLoc.appTile.contextMenu.unpin),
         ),
       MenuDivider(),
-      MenuLabel(child: Text('Start').muted),
+      MenuLabel(child: Text(el.configLoc.start).muted),
       if (isPinned && config != null && configForPinned?.id != config.id)
         MenuButton(
           enabled:
@@ -401,7 +405,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
               devicePair: devicePair,
               configForPinned: config),
           leading: Icon(Icons.play_arrow_rounded),
-          child: Text('Start on: ${config.configName}'),
+          child: Text(el.loungeLoc.appTile.contextMenu
+              .startOn(config: config.configName)),
         ),
       MenuButton(
         enabled: enabled(isMissingConfig: isMissingConfig, isPinned: isPinned),
@@ -416,7 +421,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                       forceClose: true,
                       configForPinned: configForPinned),
                   leading: Icon(Icons.play_arrow_rounded),
-                  child: Text('On: ${configForPinned?.configName}'),
+                  child: Text(el.loungeLoc.tooltip
+                      .onConfig(config: configForPinned?.configName ?? '')),
                 ),
                 MenuButton(
                   enabled: enabled(
@@ -427,7 +433,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                       forceClose: true,
                       configForPinned: config),
                   leading: Icon(Icons.play_arrow_rounded),
-                  child: Text('On: ${config.configName}'),
+                  child: Text(
+                      el.loungeLoc.tooltip.onConfig(config: config.configName)),
                 ),
               ]
             : null,
@@ -452,7 +459,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
             withOverrides: overrides.isNotEmpty,
           ),
           leading: Icon(Icons.play_arrow_rounded),
-          child: Text('Start with overrides'),
+          child: Text(el.loungeLoc.appTile.contextMenu.withOverrides),
         ),
     ];
   }

@@ -29,7 +29,16 @@ lounge_loc:
       pin: Anclar en ${config}
       unpin: Desanclar
       force_close: Forzar cierre y iniciar
+      and_start: En ${config}
       select_config: Selecciona una configuración primero
+      start_on: Iniciar en ${config}
+      with_overrides: Iniciar con modificaciones
+      package_name: Nombre del paquete
+      reset_icon: Restablecer icono
+    sections:
+      pinned: Ancladas
+      apps: Aplicaciones
+    missing_icon: Iconos faltantes (${count})
   placeholders:
     config: Seleccionar configuración
     app: Seleccionar aplicación
@@ -38,6 +47,8 @@ lounge_loc:
     missing_config: "Configuración faltante: ${config}"
     pin: Anclar par aplicación/configuración
     on_config: "En: ${config}"
+    hide_app_name: Ocultar nombre de la aplicación
+    show_app_name: Mostrar nombre de la aplicación
   info:
     empty_search: No se encontraron aplicaciones
     empty_pin: No hay aplicaciones ancladas

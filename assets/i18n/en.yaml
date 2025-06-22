@@ -30,7 +30,16 @@ lounge_loc:
       pin: Pin on ${config}
       unpin: Unpin
       force_close: Force close & start
+      and_start: On ${config}
       select_config: Select a config first
+      start_on: Start on ${config}
+      with_overrides: Start with overrides
+      package_name: Package name
+      reset_icon: Reset icon
+    sections:
+      pinned: Pinned
+      apps: Apps
+    missing_icon: Missing icons (${count})
   placeholders:
     config: Select config
     app: Select app
@@ -39,6 +48,8 @@ lounge_loc:
     missing_config: "Missing config: ${config}"
     pin: Pin app/config pair
     on_config: "On: ${config}"
+    hide_app_name: Hide app name
+    show_app_name: Show app name
   info:
     empty_search: No apps found
     empty_pin: No pinned apps

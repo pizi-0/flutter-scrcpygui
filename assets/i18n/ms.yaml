@@ -29,7 +29,16 @@ lounge_loc:
       pin: Pin pada ${config}
       unpin: Buang pin
       force_close: Paksa tutup & mula
+      and_start: Pada ${config}
       select_config: Pilih konfigurasi dahulu
+      start_on: Mula pada ${config}
+      with_overrides: Mula dengan pengubahsuaian
+      package_name: Nama pakej
+      reset_icon: Set semula ikon
+    sections:
+      pinned: Disemat
+      apps: Aplikasi
+    missing_icon: Tiada ikon (${count})
   placeholders:
     config: Pilih konfigurasi
     app: Pilih aplikasi
@@ -38,6 +47,8 @@ lounge_loc:
     missing_config: "Konfigurasi tiada: ${config}"
     pin: Pin pasangan aplikasi/konfigurasi
     on_config: "Pada: ${config}"
+    hide_app_name: Sembunyikan nama aplikasi
+    show_app_name: Tunjukkan nama aplikasi
   info:
     empty_search: Tiada aplikasi ditemui
     empty_pin: Tiada aplikasi yang di pin

@@ -29,7 +29,16 @@ lounge_loc:
       pin: Blocca su ${config}
       unpin: Sblocca
       force_close: Forza chiusura e avvia
+      and_start: Su ${config}
       select_config: Seleziona prima una configurazione
+      start_on: Avvia su ${config}
+      with_overrides: Avvia con override
+      package_name: Nome pacchetto
+      reset_icon: Reimposta icona
+    sections:
+      pinned: Bloccate
+      apps: App
+    missing_icon: Icone mancanti (${count})
   placeholders:
     config: Seleziona configurazione
     app: Seleziona app
@@ -38,6 +47,8 @@ lounge_loc:
     missing_config: "Configurazione mancante: ${config}"
     pin: Blocca coppia app/configurazione
     on_config: "Su: ${config}"
+    hide_app_name: Nascondi nome app
+    show_app_name: Mostra nome app
   info:
     empty_search: Nessuna app trovata
     empty_pin: Nessuna app bloccata

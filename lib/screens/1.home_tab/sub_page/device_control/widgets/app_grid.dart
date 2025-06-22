@@ -125,7 +125,6 @@ class _AppGridState extends ConsumerState<AppGrid> {
         icon: Icon(Icons.refresh_rounded),
       ),
       labelTrail: OverrideButton(
-        leading: Text('Overrides'),
         buttonVariance: overrides.isNotEmpty
             ? ButtonVariance.secondary
             : ButtonVariance.ghost,
@@ -175,7 +174,9 @@ class _AppGridState extends ConsumerState<AppGrid> {
                                 color: theme.colorScheme.muted,
                                 borderRadius: theme.borderRadiusSm,
                               ),
-                              child: Text('Missing icon').textSmall),
+                              child: Text(el.loungeLoc.appTile.missingIcon(
+                                      count: '${missingIcons.length}'))
+                                  .textSmall),
                         ),
                         SliverGrid.builder(
                           gridDelegate:
@@ -206,7 +207,9 @@ class _AppGridState extends ConsumerState<AppGrid> {
                                   color: theme.colorScheme.muted,
                                   borderRadius: theme.borderRadiusSm,
                                 ),
-                                child: Text('Pinned').textSmall),
+                                child:
+                                    Text(el.loungeLoc.appTile.sections.pinned)
+                                        .textSmall),
                           ),
                           SliverGrid.builder(
                             gridDelegate:
@@ -241,7 +244,9 @@ class _AppGridState extends ConsumerState<AppGrid> {
                                     color: theme.colorScheme.muted,
                                     borderRadius: theme.borderRadiusSm,
                                   ),
-                                  child: Text('Apps').textSmall),
+                                  child:
+                                      Text(el.loungeLoc.appTile.sections.apps)
+                                          .textSmall),
                             ),
                           SliverGrid.builder(
                             gridDelegate:
@@ -377,22 +382,30 @@ class _AppGridState extends ConsumerState<AppGrid> {
           children: [
             if (missingIcons.isNotEmpty)
               Toggle(
-                  style: ButtonStyle.ghost(density: ButtonDensity.dense),
-                  value: showMissingIcon,
-                  onChanged: (value) => setState(() {
-                        showMissingIcon = value;
-                      }),
-                  child: Text('Missing icon (${missingIcons.length})')),
+                style: ButtonStyle.ghost(density: ButtonDensity.dense),
+                value: showMissingIcon,
+                onChanged: (value) => setState(() {
+                  showMissingIcon = value;
+                }),
+                child: showMissingIcon
+                    ? Text(el.loungeLoc.appTile.sections.apps)
+                    : Text(el.loungeLoc.appTile
+                        .missingIcon(count: '${missingIcons.length}')),
+              ),
             Spacer(),
-            Checkbox(
-              leading: Text('Hide app name'),
-              state: gridSettings.hideName
-                  ? CheckboxState.checked
-                  : CheckboxState.unchecked,
-              onChanged: (value) {
-                gridSettingsNotifier.toggleHideName();
-                Db.saveAppGridSettings(ref.read(appGridSettingsProvider));
-              },
+            Tooltip(
+              tooltip: TooltipContainer(
+                      child: gridSettings.hideName
+                          ? Text(el.loungeLoc.tooltip.showAppName)
+                          : Text(el.loungeLoc.tooltip.hideAppName))
+                  .call,
+              child: Toggle(
+                  style: ButtonStyle.ghost(density: ButtonDensity.dense),
+                  value: gridSettings.hideName,
+                  onChanged: (value) => gridSettingsNotifier.toggleHideName(),
+                  child: gridSettings.hideName
+                      ? Icon(Icons.visibility_off_rounded).iconSmall()
+                      : Icon(Icons.visibility_rounded).iconSmall()),
             ),
             ButtonGroup(
               children: [
