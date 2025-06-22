@@ -54,9 +54,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     Formats.tiff,
     Formats.png,
     Formats.ico,
-    Formats.jpeg,
-    Formats.bmp,
-    Formats.svg,
+    Formats.jpeg
   ];
 
   @override
@@ -498,8 +496,11 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
           final isChromium =
               icon.platformFormats.toString().contains('chromium');
 
+          final windowsWorkaround = !fromWeb || isChromium;
+
           final byte = await readFile(icon, format,
-              allowVirtualFiles: !fromWeb || isChromium);
+              allowVirtualFiles:
+                  Platform.isWindows ? windowsWorkaround : false);
 
           if (byte == null || byte.isEmpty) {
             continue;
@@ -533,8 +534,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                 children: [
                   PgSectionCardNoScroll(
                     label: 'Supported formats:',
-                    content: Text(
-                        imageFormats.map((e) => e.providerFormat).join(', ')),
+                    content: Text('webp, tiff, png, ico, jpeg'),
                   ),
                   PgSectionCardNoScroll(
                     label: 'Detected format:',
