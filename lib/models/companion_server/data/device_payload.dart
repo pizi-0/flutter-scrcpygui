@@ -9,13 +9,15 @@ import 'package:scrcpygui/providers/device_info_provider.dart';
 class DevicePayload {
   final String name;
   final String id;
+  final String serialNo;
 
-  DevicePayload({required this.name, required this.id});
+  DevicePayload({required this.name, required this.id, required this.serialNo});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'name': name,
       'id': id,
+      'serialNo': serialNo,
     };
   }
 
@@ -23,6 +25,7 @@ class DevicePayload {
     return DevicePayload(
       name: map['name'] as String,
       id: map['id'] as String,
+      serialNo: map['serialNo'] as String,
     );
   }
 
@@ -37,6 +40,7 @@ extension DevicePayloader on AdbDevices {
     final info =
         ref.read(infoProvider).firstWhereOrNull((i) => i.serialNo == serialNo);
 
-    return DevicePayload(name: info?.deviceName ?? modelName, id: id);
+    return DevicePayload(
+        name: info?.deviceName ?? modelName, id: id, serialNo: serialNo);
   }
 }

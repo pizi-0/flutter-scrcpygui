@@ -63,6 +63,8 @@ class ClientPayload {
 
   Future<void> _startAppConfigPair(WidgetRef ref, String json) async {
     final hash = jsonDecode(json)['hash'];
+    final deviceId = jsonDecode(json)['deviceId'];
+
     if (hash == null) {
       throw Exception('Missing hash');
     }
@@ -77,7 +79,8 @@ class ClientPayload {
 
     final device = ref
         .read(adbProvider)
-        .firstWhereOrNull((device) => device.id == pair.deviceId);
+        .firstWhereOrNull((device) => device.id == deviceId);
+
     if (device == null) {
       throw Exception('Device not found');
     }
