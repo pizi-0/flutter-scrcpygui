@@ -34,7 +34,8 @@
 ### Video Demo
 
 <!-- Add a link to your video demo here if you have one -->
-<!-- [Watch the Video Demo](link-to-your-video) -->
+* [v0.9.40 - Video demo](https://youtu.be/y-2TdCh-nfg)
+* [v1.2.0 - New app launcher demo](https://youtu.be/_7CimVn0VoA)
 
 ### Screenshots
 
@@ -65,7 +66,7 @@ Here's a summary of the build process (see [doc/build.md](doc/build.md) for full
 
 ### Prerequisites
 
-*   **Flutter:** Version 3.29.0 (recommended to use [fvm](https://fvm.app/documentation/getting-started/installation) for version management).
+*   **Flutter:** Version 3.32.4 (recommended to use [fvm](https://fvm.app/documentation/getting-started/installation) for version management).
 *   **Desktop Development Requirements:** Ensure you have the necessary Flutter dependencies for desktop development.
 *   **Tray Manager (Linux):**
     *   `ayatana-appindicator3-0.1` or `appindicator3-0.1`
@@ -78,7 +79,7 @@ Here's a summary of the build process (see [doc/build.md](doc/build.md) for full
 ```bash
 git clone https://github.com/pizi-0/flutter-scrcpygui.git
 cd flutter-scrcpygui
-fvm install 3.29.0
-fvm use 3.29.0
+fvm install 3.32.4
+fvm use 3.32.4
 fvm flutter pub get
-fvm flutter build linux/windows --release
+fvm flutter build linux/windows/mac --release

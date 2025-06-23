@@ -1,7 +1,7 @@
 # Build scrcpygui
 
 ## Requirements
-- flutter 3.29.0, use [fvm](https://fvm.app/documentation/getting-started/installation) to install specific version, and the associated flutter requirements for desktop development
+- flutter 3.32.4, use [fvm](https://fvm.app/documentation/getting-started/installation) to install specific version, and the associated flutter requirements for desktop development
 - requirements for [tray_manager](https://pub.dev/packages/tray_manager#quick-start) plugin (linux)
     - linux: 
     ayatana-appindicator3-0.1 or appindicator3-0.1
@@ -15,10 +15,10 @@
 ```bash
 git clone https://github.com/pizi-0/flutter-scrcpygui.git
 cd flutter-scrcpygui
-fvm install 3.29.0
-fvm use 3.29.0
+fvm install 3.32.4
+fvm use 3.32.4
 fvm flutter pub get
-fvm flutter build linux/windows --release
+fvm flutter build linux/windows/mac --release
 ```
 
 ## Built exec location
@@ -28,4 +28,9 @@ build/linux/x64/release/bundle
 ```
 - windows
 ```
+build\windows\x64\runner\release
+```
+- mac
+```
+build/macos/Build/Products/Release/Scrcpy GUI.app
 ```
