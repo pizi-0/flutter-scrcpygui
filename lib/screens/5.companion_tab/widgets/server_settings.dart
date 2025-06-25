@@ -1,18 +1,23 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:encrypt_decrypt_plus/encrypt_decrypt/xor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:scrcpygui/utils/ip_comparison_extensions.dart';
 import 'package:scrcpygui/utils/server_utils_ws.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:string_extensions/string_extensions.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../db/db.dart';
 import '../../../providers/companion_server_state_provider.dart';
 import '../../../providers/server_settings_provider.dart';
 import '../../../utils/const.dart';
+import '../../../utils/ipv4_input_formatter.dart';
 import '../../../widgets/config_tiles.dart';
 import '../../../widgets/custom_ui/pg_section_card.dart';
 
@@ -27,9 +32,12 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
   bool obscurePass = true;
   bool showBlocked = false;
   TextEditingController nameController = TextEditingController();
+  TextEditingController ipController = TextEditingController();
   TextEditingController portController = TextEditingController();
   TextEditingController secretController = TextEditingController();
   final serverUtils = ServerUtilsWs();
+  List<NetworkInterface> interfaces = [];
+  List<String> _currentSuggestions = [];
 
   @override
   void initState() {
@@ -69,6 +77,28 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
           .read(companionServerProvider.notifier)
           .setSecret(secretController.text);
     });
+
+    WidgetsBinding.instance.addPostFrameCallback((t) async {
+      await _setIp();
+      setState(() {});
+    });
+  }
+
+  Future<void> _setIp() async {
+    interfaces = await getInterfaces();
+    final savedEndpoint = ref.read(companionServerProvider).endpoint;
+
+    if (savedEndpoint != '' && savedEndpoint.isIpv4) {
+      final closest = savedEndpoint.findClosest(
+          interfaces.map((e) => e.addresses.first.address).toList());
+
+      if (closest != null) {
+        ipController.text = closest;
+      }
+    } else {
+      ipController.text =
+          interfaces.firstOrNull?.addresses.firstOrNull?.address ?? '0.0.0.0';
+    }
   }
 
   @override
@@ -106,6 +136,21 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
                   isServerRunning ? el.statusLoc.running : el.statusLoc.stopped)
               .textColor(isServerRunning ? Colors.green : Colors.red)
               .textSmall,
+        ),
+        Divider(),
+        ConfigCustom(
+          title: 'Server endpoint',
+          dimTitle: false,
+          child: AutoComplete(
+            suggestions: _currentSuggestions,
+            child: TextField(
+              inputFormatters: [IPv4InputFormatter()],
+              enabled: !isServerRunning,
+              onChanged: _updateSuggestions,
+              controller: ipController,
+              filled: !isServerRunning,
+            ),
+          ),
         ),
         Divider(),
         ConfigCustom(
@@ -249,7 +294,18 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
       if (!agree) return;
 
       try {
-        await serverUtils.startServer(ref);
+        if (ipController.text.isEmpty) {
+          throw Exception('Endpoint cannot be empty.');
+        }
+
+        if (!ipController.text.isIpv4) {
+          throw Exception('Invalid endpoint.');
+        }
+
+        await serverUtils.startServer(ref,
+            ipAddress: ipController.text.isNotEmpty && ipController.text.isIpv4
+                ? InternetAddress(ipController.text)
+                : null);
         final port = ref.read(companionServerStateProvider).port;
 
         companionSettingsNotifier.setPort(port);
@@ -288,5 +344,22 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
 
     companionSettingsNotifier.setStartOnLaunch();
     await Db.saveCompanionServerSettings(ref.read(companionServerProvider));
+  }
+
+  void _updateSuggestions(String value) {
+    String? currentWord = ipController.currentWord;
+    if (currentWord == null || currentWord.isEmpty) {
+      setState(() {
+        _currentSuggestions = [];
+      });
+      return;
+    }
+    setState(() {
+      _currentSuggestions = interfaces
+          .map((i) => i.addresses.first.address)
+          .where((element) =>
+              element.toLowerCase().contains(currentWord.toLowerCase()))
+          .toList();
+    });
   }
 }

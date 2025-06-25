@@ -34,9 +34,9 @@ class ServerUtilsWs {
   ServerSocket? serverSocket;
   Set<AuthdClient> authenticatedSockets = {};
 
-  Future<void> _bindServer(WidgetRef ref) async {
+  Future<void> _bindServer(WidgetRef ref, {InternetAddress? ipAddress}) async {
     try {
-      final deviceIp = await _getDeviceIp();
+      final deviceIp = ipAddress ?? await _getDeviceIp();
 
       final companionSettings = ref.read(companionServerProvider);
 
@@ -203,9 +203,9 @@ class ServerUtilsWs {
     }
   }
 
-  Future<void> startServer(WidgetRef ref) async {
+  Future<void> startServer(WidgetRef ref, {InternetAddress? ipAddress}) async {
     try {
-      await _bindServer(ref);
+      await _bindServer(ref, ipAddress: ipAddress);
 
       serverSocket!.listen(
         (socket) => _onData(ref, socket),
@@ -320,7 +320,13 @@ Future<InternetAddress> _getDeviceIp() async {
   List<NetworkInterface> interfaces =
       await NetworkInterface.list(type: InternetAddressType.IPv4);
 
+  final virtNetwork = ['vmnet', 'virtual'];
+
   for (final interface in interfaces) {
+    if (interface.name.toLowerCase().containsAny(virtNetwork)) {
+      continue;
+    }
+
     for (final address in interface.addresses) {
       if (address.type == InternetAddressType.IPv4 && !address.isLinkLocal) {
         logger.i('Device IP: ${address.address}');
@@ -330,4 +336,15 @@ Future<InternetAddress> _getDeviceIp() async {
   }
 
   throw Exception('No IPv4 address found');
+}
+
+Future<List<NetworkInterface>> getInterfaces() async {
+  List<NetworkInterface> interfaces =
+      await NetworkInterface.list(type: InternetAddressType.IPv4);
+
+  final virtNetwork = ['vmnet', 'virtual'];
+
+  return interfaces
+      .where((i) => !i.name.toLowerCase().containsAny(virtNetwork))
+      .toList();
 }
