@@ -2,6 +2,7 @@ import 'package:awesome_extensions/awesome_extensions.dart' show PaddingX;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/utils/const.dart';
+import 'package:scrcpygui/utils/directory_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../providers/config_provider.dart';
@@ -98,7 +99,18 @@ class _OverrideConfigPopoverState extends ConsumerState<OverrideConfigPopover> {
                   ),
                   onPressed: () =>
                       overrideNotifier.toggleOverride(ScrcpyOverride.record),
-                  child: Text('Record'),
+                  child: Row(
+                    spacing: 8,
+                    children: [
+                      Text('Record'),
+                      IconButton.ghost(
+                        density: ButtonDensity.compact,
+                        onPressed: () =>
+                            DirectoryUtils.openFolder(defaultRecord.savePath!),
+                        icon: Icon(Icons.folder_open_rounded).iconSmall(),
+                      ),
+                    ],
+                  ),
                 ),
                 // SecondaryButton(
                 //   trailing: Checkbox(
