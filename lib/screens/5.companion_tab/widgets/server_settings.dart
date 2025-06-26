@@ -104,6 +104,7 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
   @override
   void dispose() {
     nameController.dispose();
+    ipController.dispose();
     portController.dispose();
     secretController.dispose();
     super.dispose();
@@ -139,7 +140,18 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
         ),
         Divider(),
         ConfigCustom(
-          title: 'Server endpoint',
+          title: el.companionLoc.server.name.label,
+          dimTitle: false,
+          child: TextField(
+            enabled: !isServerRunning,
+            controller: nameController,
+            filled: !isServerRunning,
+            placeholder: Text(el.companionLoc.server.name.info),
+          ),
+        ),
+        Divider(),
+        ConfigCustom(
+          title: el.companionLoc.server.endpoint.label,
           dimTitle: false,
           child: AutoComplete(
             suggestions: _currentSuggestions,
@@ -150,17 +162,6 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
               controller: ipController,
               filled: !isServerRunning,
             ),
-          ),
-        ),
-        Divider(),
-        ConfigCustom(
-          title: el.companionLoc.server.name.label,
-          dimTitle: false,
-          child: TextField(
-            enabled: !isServerRunning,
-            controller: nameController,
-            filled: !isServerRunning,
-            placeholder: Text(el.companionLoc.server.name.info),
           ),
         ),
         Divider(),
@@ -228,8 +229,6 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
                 child: Column(
                   spacing: 8,
                   children: [
-                    Text('Endpoint: ${serverState.ip}:${serverState.port}\n')
-                        .textSmall,
                     Text(el.companionLoc.qr)
                         .textAlignment(TextAlign.center)
                         .textSmall
