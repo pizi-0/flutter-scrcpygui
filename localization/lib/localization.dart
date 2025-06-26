@@ -6739,6 +6739,7 @@ class CompanionLocServer {
   const CompanionLocServer({
     required this.label,
     required this.status,
+    required this.endpoint,
     required this.name,
     required this.port,
     required this.secret,
@@ -6748,6 +6749,8 @@ class CompanionLocServer {
     return CompanionLocServer(
       label: (json['label'] ?? '').toString(),
       status: (json['status'] ?? '').toString(),
+      endpoint: CompanionLocServerEndpoint.fromJson(
+          (json['endpoint'] as Map).cast<String, dynamic>()),
       name: CompanionLocServerName.fromJson(
           (json['name'] as Map).cast<String, dynamic>()),
       port: CompanionLocServerPort.fromJson(
@@ -6760,6 +6763,8 @@ class CompanionLocServer {
   }
   final String label;
   final String status;
+  final CompanionLocServerEndpoint endpoint;
+
   final CompanionLocServerName name;
 
   final CompanionLocServerPort port;
@@ -6771,10 +6776,52 @@ class CompanionLocServer {
   Map<String, Object> get _content => {
         r'''label''': label,
         r'''status''': status,
+        r'''endpoint''': endpoint,
         r'''name''': name,
         r'''port''': port,
         r'''secret''': secret,
         r'''auto_start''': autoStart,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class CompanionLocServerEndpoint {
+  const CompanionLocServerEndpoint({
+    required this.label,
+  });
+  factory CompanionLocServerEndpoint.fromJson(Map<String, dynamic> json) {
+    return CompanionLocServerEndpoint(
+      label: (json['label'] ?? '').toString(),
+    );
+  }
+  final String label;
+  Map<String, Object> get _content => {
+        r'''label''': label,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -8691,6 +8738,9 @@ LocalizationMessages get en => LocalizationMessages(
         server: CompanionLocServer(
           label: 'Setup server',
           status: 'Status',
+          endpoint: CompanionLocServerEndpoint(
+            label: 'Server endpoint',
+          ),
           name: CompanionLocServerName(
             label: 'Server name',
             info: 'Default: Scrcpy GUI',
@@ -9355,6 +9405,9 @@ LocalizationMessages get es => LocalizationMessages(
         server: CompanionLocServer(
           label: 'Configurar servidor',
           status: 'Estado',
+          endpoint: CompanionLocServerEndpoint(
+            label: 'Endpoint del servidor',
+          ),
           name: CompanionLocServerName(
             label: 'Nombre del servidor',
             info: 'Predeterminado: Scrcpy GUI',
@@ -10015,6 +10068,9 @@ LocalizationMessages get it => LocalizationMessages(
         server: CompanionLocServer(
           label: 'Configura server',
           status: 'Stato',
+          endpoint: CompanionLocServerEndpoint(
+            label: 'Endpoint del server',
+          ),
           name: CompanionLocServerName(
             label: 'Nome del server',
             info: 'Predefinito: Scrcpy GUI',
@@ -10674,6 +10730,9 @@ LocalizationMessages get ms => LocalizationMessages(
         server: CompanionLocServer(
           label: 'Konfigurasi server',
           status: 'Status',
+          endpoint: CompanionLocServerEndpoint(
+            label: 'Titik akhir pelayan',
+          ),
           name: CompanionLocServerName(
             label: 'Nama server',
             info: 'Lalai: Scrcpy GUI',

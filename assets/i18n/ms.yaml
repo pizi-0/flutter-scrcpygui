@@ -435,6 +435,8 @@ companion_loc:
   server:
     label: Konfigurasi server
     status: Status
+    endpoint:
+      label: Titik akhir pelayan
     name: 
       label: Nama server
       info: 'Lalai: Scrcpy GUI'

@@ -435,6 +435,8 @@ companion_loc:
   server:
     label: Configura server
     status: Stato
+    endpoint:
+      label: Endpoint del server
     name: 
       label: Nome del server
       info: 'Predefinito: Scrcpy GUI'
