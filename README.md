@@ -10,6 +10,16 @@
 
 **Scrcpy GUI** simplifies the process of using Scrcpy, allowing you to control your Android device from your computer with ease. It provides a clean and intuitive interface, eliminating the need to memorize complex command-line arguments.
 
+## ⬇️ Get the App
+
+### [Latest Releases](https://github.com/pizi-0/flutter-scrcpygui/releases)
+
+Download the latest pre-built binaries from the releases page.
+
+### Build from Source
+
+For those who prefer to build from source, follow the instructions in the [Build Guide](doc/build.md).
+
 ## ✨ Key Features
 
 *   **Effortless Scrcpy Setup:** Easily configure and launch Scrcpy with a few clicks.
@@ -50,15 +60,6 @@
 | Config Small                       | Config Big                        |
 | <img src="https://github.com/pizi-0/img-collection/blob/main/flutter-scrcpygui/7.config-small.jpg?raw=true" alt="Config Small" width="400"/> | <img src="https://github.com/pizi-0/img-collection/blob/main/flutter-scrcpygui/8.config-big.jpg?raw=true" alt="Config Big" width="400"/> |
 
-## ⬇️ Get the App
-
-### [Latest Releases](https://github.com/pizi-0/flutter-scrcpygui/releases)
-
-Download the latest pre-built binaries from the releases page.
-
-### Build from Source
-
-For those who prefer to build from source, follow the instructions in the [Build Guide](doc/build.md).
 
 ## 🛠️ Building from Source
 
@@ -83,3 +84,7 @@ fvm install 3.32.4
 fvm use 3.32.4
 fvm flutter pub get
 fvm flutter build linux/windows/mac --release
+```
+
+## Credits
+* [scrcpy](https://github.com/Genymobile/scrcpy)
