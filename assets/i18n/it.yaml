@@ -532,6 +532,7 @@ status_loc:
   copied: Copiato
   running: In esecuzione
   stopped: Fermato
+  getting_info: Recupero informazioni
   
 # common
 common_loc:

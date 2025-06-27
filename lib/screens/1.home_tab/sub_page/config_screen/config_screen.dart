@@ -237,7 +237,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
                           spacing: 8,
                           children: [
                             CircularProgressIndicator(),
-                            Text('Getting info').textSmall.muted,
+                            Text(el.statusLoc.gettingInfo).textSmall.muted,
                           ],
                         ),
                       ),

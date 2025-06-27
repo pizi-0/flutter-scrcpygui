@@ -533,6 +533,7 @@ status_loc:
   copied: Disalin
   running: Sedang berjalan
   stopped: Dihentikan
+  getting_info: Mendapatkan maklumat
 
 # common
 common_loc:

@@ -1,6 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_control/widgets/control_buttons.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -75,7 +76,7 @@ class _BigControlPage2State extends ConsumerState<BigControlPage2> {
         spacing: 8,
         children: [
           CircularProgressIndicator(),
-          Text('Getting info').textSmall.muted,
+          Text(el.statusLoc.gettingInfo).textSmall.muted,
         ],
       );
     } else {

@@ -7675,6 +7675,7 @@ class StatusLoc {
     required this.copied,
     required this.running,
     required this.stopped,
+    required this.gettingInfo,
   });
   factory StatusLoc.fromJson(Map<String, dynamic> json) {
     return StatusLoc(
@@ -7686,6 +7687,7 @@ class StatusLoc {
       copied: (json['copied'] ?? '').toString(),
       running: (json['running'] ?? '').toString(),
       stopped: (json['stopped'] ?? '').toString(),
+      gettingInfo: (json['getting_info'] ?? '').toString(),
     );
   }
   final String failed;
@@ -7696,6 +7698,7 @@ class StatusLoc {
   final String copied;
   final String running;
   final String stopped;
+  final String gettingInfo;
   Map<String, Object> get _content => {
         r'''failed''': failed,
         r'''unauth''': unauth,
@@ -7705,6 +7708,7 @@ class StatusLoc {
         r'''copied''': copied,
         r'''running''': running,
         r'''stopped''': stopped,
+        r'''getting_info''': gettingInfo,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -8836,6 +8840,7 @@ LocalizationMessages get en => LocalizationMessages(
         copied: 'Copied',
         running: 'Running',
         stopped: 'Stopped',
+        gettingInfo: 'Getting info',
       ),
       commonLoc: CommonLoc(
         default$: 'Default',
@@ -9503,6 +9508,7 @@ LocalizationMessages get es => LocalizationMessages(
         copied: 'Copiado',
         running: 'En ejecución',
         stopped: 'Detenido',
+        gettingInfo: 'Obteniendo información',
       ),
       commonLoc: CommonLoc(
         default$: 'Predeterminado',
@@ -10166,6 +10172,7 @@ LocalizationMessages get it => LocalizationMessages(
         copied: 'Copiato',
         running: 'In esecuzione',
         stopped: 'Fermato',
+        gettingInfo: 'Recupero informazioni',
       ),
       commonLoc: CommonLoc(
         default$: 'Predefinito',
@@ -10828,6 +10835,7 @@ LocalizationMessages get ms => LocalizationMessages(
         copied: 'Disalin',
         running: 'Sedang berjalan',
         stopped: 'Dihentikan',
+        gettingInfo: 'Mendapatkan maklumat',
       ),
       commonLoc: CommonLoc(
         default$: 'Lalai',

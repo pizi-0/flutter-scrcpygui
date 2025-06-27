@@ -556,6 +556,7 @@ status_loc:
   copied: Copied
   running: Running
   stopped: Stopped
+  getting_info: Getting info
 
 # common
 common_loc:
