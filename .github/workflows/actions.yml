@@ -23,33 +23,51 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.6.2
         with: 
-          name: artifacts
+          name: mac-artifacts
           path: build/macos/Build/Products/Release/macos.tar.gz
-  # linux: 
-  #   runs-on: ubuntu-22.04
-  #   steps:
-  #     - name: Clone repository
-  #       uses: actions/checkout@v4
-  #     - name: Set up Flutter
-  #       uses: subosito/flutter-action@v2
-  #       with:
-  #         channel: stable
-  #         flutter-version: 3.32.4
-  #     - run: sudo apt-get install libayatana-appindicator3-dev   
-  #     - run: flutter pub get
-  #     - run: flutter build linux --release
-  # windows: 
-  #   runs-on: windows-latest
-  #   steps:
-  #     - name: Clone repository
-  #       uses: actions/checkout@v4
-  #     - name: Set up Flutter
-  #       uses: subosito/flutter-action@v2
-  #       with:
-  #         channel: stable
-  #         flutter-version: 3.32.4
-  #     - run: flutter pub get
-  #     - run: flutter build windows --release
+  linux: 
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.32.4
+      - run: sudo apt-get install libayatana-appindicator3-dev   
+      - run: flutter pub get
+      - run: flutter build linux --release
+      - name: Compress build
+        run: |
+          cd build/linux/x64/release/
+          tar -czf linux.tar.gz bundle
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4.6.2
+        with: 
+          name: linux-artifacts
+          path: build/linux/x64/release/linux.tar.gz
+  windows: 
+    runs-on: windows-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.32.4
+      - run: flutter pub get
+      - run: flutter build windows --release
+      - name: Compress build
+        run: |
+          cd build\windows\x64\runner\
+          tar -czf win.tar.gz Release
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4.6.2
+        with: 
+          name: win-artifacts
+          path: build\windows\x64\runner\win.tar.gz
     
 
 
