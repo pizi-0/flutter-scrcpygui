@@ -21,7 +21,7 @@ jobs:
           cd build/macos/Build/Products/Release/
           tar -czf macos.tar.gz Scrcpy\ GUI.app
       - name: Upload artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4.6.2
         with: 
           name: artifacts
           path: build/macos/Build/Products/Release/macos.tar.gz
