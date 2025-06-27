@@ -16,31 +16,40 @@ jobs:
           flutter-version: 3.32.4
       - run: flutter pub get
       - run: flutter build macos --release
-  linux: 
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Clone repository
-        uses: actions/checkout@v4
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version: 3.32.4
-      - run: sudo apt-get install libayatana-appindicator3-dev   
-      - run: flutter pub get
-      - run: flutter build linux --release
-  windows: 
-    runs-on: windows-latest
-    steps:
-      - name: Clone repository
-        uses: actions/checkout@v4
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version: 3.32.4
-      - run: flutter pub get
-      - run: flutter build windows --release
+      - name: Compress build
+        run: |
+          cd build/macos/Build/Products/Release/
+          tar -czf macos.tar.gz Scrcpy\ GUI.app
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with: 
+          name: artifacts
+          path: build/macos/Build/Products/Release/macos.tar.gz
+  # linux: 
+  #   runs-on: ubuntu-22.04
+  #   steps:
+  #     - name: Clone repository
+  #       uses: actions/checkout@v4
+  #     - name: Set up Flutter
+  #       uses: subosito/flutter-action@v2
+  #       with:
+  #         channel: stable
+  #         flutter-version: 3.32.4
+  #     - run: sudo apt-get install libayatana-appindicator3-dev   
+  #     - run: flutter pub get
+  #     - run: flutter build linux --release
+  # windows: 
+  #   runs-on: windows-latest
+  #   steps:
+  #     - name: Clone repository
+  #       uses: actions/checkout@v4
+  #     - name: Set up Flutter
+  #       uses: subosito/flutter-action@v2
+  #       with:
+  #         channel: stable
+  #         flutter-version: 3.32.4
+  #     - run: flutter pub get
+  #     - run: flutter build windows --release
     
 
 
