@@ -148,15 +148,19 @@ class ConnectedDevices extends ConsumerWidget {
                 ],
               ),
             ),
-          SliverList.separated(
+          SliverList.builder(
             itemCount: connected.length,
-            separatorBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Divider(),
-            ),
             itemBuilder: (context, index) {
               final device = connected[index];
-              return DeviceTile(device: device);
+              return Column(
+                children: [
+                  DeviceTile(device: device),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Divider(),
+                  ),
+                ],
+              );
             },
           )
         ],
