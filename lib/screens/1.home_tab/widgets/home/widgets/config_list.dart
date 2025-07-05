@@ -1,16 +1,21 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart'
     show NumExtension, PaddingX;
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_manager/config_manager.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/config_filter_button.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:string_extensions/string_extensions.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../db/db.dart';
+import '../../../../../models/config_list_screen_state.dart';
 import '../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../providers/adb_provider.dart';
 import '../../../../../providers/config_provider.dart';
@@ -222,7 +227,6 @@ class ConfigListBig extends ConsumerStatefulWidget {
 
 class ConfigListBigState extends ConsumerState<ConfigListBig> {
   bool loading = false;
-  bool reorder = false;
 
   List<ScrcpyConfig> reorderList = [];
 
@@ -230,12 +234,14 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
   Widget build(BuildContext context) {
     final filteredConfigs = ref.watch(filteredConfigsProvider);
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
+    final reorder = ref.watch(configListStateProvider).reorder;
 
     reorderList = [...filteredConfigs];
 
     return PgSectionCardNoScroll(
       label: el.configLoc.label(count: '${filteredConfigs.length}'),
       expandContent: true,
+      cardPadding: EdgeInsets.all(0),
       labelTrail: IconButton.ghost(
         density: ButtonDensity.dense,
         icon: const Icon(Icons.add),
@@ -243,55 +249,35 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
         onPressed: _onNewConfigPressed,
       ),
       content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 8,
         children: [
-          Column(
-            spacing: 8,
-            children: [
-              ConfigFilterButtonBig(disable: reorder),
-              Padding(
-                padding: const EdgeInsets.only(top: 4.0, bottom: 4),
-                child: Row(
-                  spacing: 8,
-                  children: [
-                    Chip(
-                      style: reorder ? ButtonStyle.primary() : null,
-                      onPressed: _onReorderPressed,
-                      child: Text(!reorder
-                          ? el.buttonLabelLoc.reorder
-                          : el.buttonLabelLoc.save),
-                    ),
-                    if (reorder)
-                      Chip(
-                          child: Text(el.buttonLabelLoc.cancel),
-                          onPressed: () => setState(() => reorder = false))
-                  ],
-                ),
-              ),
-              Divider(),
-            ],
-          ),
+          ConfigListHeader(reordered: reorderList),
           Expanded(
-            child: CustomScrollView(
-              physics: NeverScrollableScrollPhysics(),
-              slivers: [
-                SliverFillRemaining(
-                  child: ReorderableList(
-                    itemBuilder: (context, index) {
-                      return _reorderableConfigListTIle(index, filteredConfigs);
-                    },
-                    itemCount:
-                        reorder ? reorderList.length : filteredConfigs.length,
-                    onReorder: (oldIndex, newIndex) {
-                      if (oldIndex < newIndex) {
-                        newIndex -= 1;
-                      }
-                      final item = reorderList.removeAt(oldIndex);
-                      reorderList.insert(newIndex, item);
-                    },
-                  ),
-                )
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CustomScrollView(
+                physics: NeverScrollableScrollPhysics(),
+                slivers: [
+                  SliverFillRemaining(
+                    child: ReorderableList(
+                      itemBuilder: (context, index) {
+                        return _reorderableConfigListTIle(
+                            index, filteredConfigs);
+                      },
+                      itemCount:
+                          reorder ? reorderList.length : filteredConfigs.length,
+                      onReorder: (oldIndex, newIndex) {
+                        if (oldIndex < newIndex) {
+                          newIndex -= 1;
+                        }
+                        final item = reorderList.removeAt(oldIndex);
+                        reorderList.insert(newIndex, item);
+                      },
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ],
@@ -301,6 +287,8 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
 
   Widget _reorderableConfigListTIle(
       int index, List<ScrcpyConfig> filteredConfigs) {
+    final reorder = ref.watch(configListStateProvider).reorder;
+
     return Column(
       key: reorder
           ? ValueKey(reorderList[index].id)
@@ -349,25 +337,154 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
       );
     }
   }
+}
 
-  Future<void> _onReorderPressed() async {
-    if (!reorder) {
-      ref.read(configTags.notifier).clearTag();
+class ConfigListHeader extends ConsumerStatefulWidget {
+  final List<ScrcpyConfig> reordered;
+  const ConfigListHeader({
+    super.key,
+    this.reordered = const [],
+  });
 
-      reorder = true;
-    } else {
-      for (final conf in reorderList) {
-        ref.read(configsProvider.notifier).removeConfig(conf);
-        ref.read(configsProvider.notifier).addConfig(conf);
-      }
-      reorderList.clear();
+  @override
+  ConsumerState<ConfigListHeader> createState() => _ConfigListState();
+}
 
-      await Db.saveConfigs(ref.read(configsProvider));
+class _ConfigListState extends ConsumerState<ConfigListHeader> {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final tags = ref.watch(configTags);
+    final headerState = ref.watch(configListStateProvider);
+    final overrides = ref.watch(configOverridesProvider);
 
-      reorder = false;
+    return Container(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: theme.colorScheme.border,
+          ),
+        ),
+        color: theme.colorScheme.border.withAlpha(50),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: headerState.isOpen ? 8 : 0,
+          children: [
+            ButtonGroup(
+              children: [
+                Button(
+                  style: headerState.filtering
+                      ? ButtonStyle.primary(density: ButtonDensity.dense)
+                      : ButtonStyle.secondary(density: ButtonDensity.dense),
+                  onPressed: () {
+                    ref.read(configListStateProvider.notifier).state =
+                        headerState.copyWith(
+                            filtering: !headerState.filtering,
+                            reorder: false,
+                            override: false);
+                  },
+                  onSecondaryTapUp: (details) =>
+                      ref.read(configTags.notifier).clearTag(),
+                  child: tags.isNotEmpty
+                      ? Text('Filter (${tags.length})')
+                      : Text('Filter'),
+                ),
+                Button(
+                  style: headerState.reorder
+                      ? ButtonStyle.primary(density: ButtonDensity.dense)
+                      : ButtonStyle.secondary(density: ButtonDensity.dense),
+                  onPressed: () {
+                    ref.read(configListStateProvider.notifier).state =
+                        headerState.copyWith(
+                            filtering: false,
+                            reorder: !headerState.reorder,
+                            override: false);
+
+                    ref.read(configTags.notifier).clearTag();
+                  },
+                  child: Text(el.buttonLabelLoc.reorder),
+                ),
+                Button(
+                  style: headerState.override
+                      ? ButtonStyle.primary(density: ButtonDensity.dense)
+                      : ButtonStyle.secondary(density: ButtonDensity.dense),
+                  onPressed: () {
+                    ref.read(configListStateProvider.notifier).state =
+                        headerState.copyWith(
+                            filtering: false,
+                            reorder: false,
+                            override: !headerState.override);
+                  },
+                  onSecondaryTapUp: (details) {
+                    ref.read(configOverridesProvider.notifier).clearOverride();
+                  },
+                  child: overrides.isEmpty
+                      ? Text('Override')
+                      : Text('Override (${overrides.length})'),
+                ),
+              ],
+            ),
+            if (headerState.isOpen)
+              ZoomIn(duration: 200.milliseconds, child: Divider()),
+            AnimatedContainer(
+              duration: 200.milliseconds,
+              height: headerState.isOpen ? 25 : 0,
+              child: AnimatedSwitcher(
+                duration: 200.milliseconds,
+                child: _switcherChild(),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _switcherChild() {
+    final headerState = ref.watch(configListStateProvider);
+    final configs = ref.watch(configsProvider);
+
+    switch (headerState) {
+      case ConfigListState(filtering: true):
+        return ConfigFilterButtonBig(key: const ValueKey('filter'));
+      case ConfigListState(reorder: true):
+        return Row(
+          key: const ValueKey('reorder'),
+          spacing: 8,
+          children: [
+            Chip(
+              style: ButtonStyle.destructiveIcon(),
+              child: Icon(Icons.close_rounded).iconSmall(),
+              onPressed: () => ref
+                  .read(configListStateProvider.notifier)
+                  .state = headerState.copyWith(reorder: false),
+            ),
+            Chip(
+              style: ButtonStyle.primary(),
+              onPressed: () async {
+                for (final conf in widget.reordered) {
+                  ref.read(configsProvider.notifier).removeConfig(conf);
+                  ref.read(configsProvider.notifier).addConfig(conf);
+                }
+
+                ref
+                    .read(configListStateProvider.notifier)
+                    .update((state) => state.copyWith(reorder: false));
+
+                await Db.saveConfigs(ref.read(configsProvider));
+              },
+              child: Text(el.buttonLabelLoc.save).small,
+            ),
+          ],
+        );
+      case ConfigListState(override: true):
+        return OverrideWidgets();
+      default:
+        return const SizedBox.shrink(key: ValueKey('empty'));
     }
-
-    setState(() {});
   }
 }
 
@@ -548,5 +665,46 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
       ref.read(configScreenConfig.notifier).setConfig(config);
       context.push('/home/config-settings');
     }
+  }
+}
+
+class OverrideWidgets extends ConsumerStatefulWidget {
+  const OverrideWidgets({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _OverrideWidgetsState();
+}
+
+class _OverrideWidgetsState extends ConsumerState<OverrideWidgets> {
+  @override
+  Widget build(BuildContext context) {
+    final overrides = ref.watch(configOverridesProvider);
+
+    return Row(
+      spacing: 4,
+      children: [
+        Chip(
+          style: overrides.isNotEmpty
+              ? ButtonStyle.destructiveIcon()
+              : ButtonStyle.secondary(),
+          onPressed: overrides.isEmpty
+              ? null
+              : () =>
+                  ref.read(configOverridesProvider.notifier).clearOverride(),
+          child: Icon(overrides.isEmpty ? BootstrapIcons.gear : Icons.clear)
+              .iconSmall(),
+        ),
+        Gap(0, crossAxisExtent: 4),
+        ...ScrcpyOverride.values.map(
+          (e) => Chip(
+            style: overrides.contains(e) ? ButtonStyle.primary() : null,
+            onPressed: () =>
+                ref.read(configOverridesProvider.notifier).toggleOverride(e),
+            child: Text(e.name.capitalize).small,
+          ),
+        )
+      ],
+    );
   }
 }
