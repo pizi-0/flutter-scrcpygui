@@ -69,21 +69,26 @@ jobs:
       - name: Build application
         run: flutter build ${{ matrix.platform }} --release
 
-      - name: Compress Artifact for Windows
+      - name: Upload Windows Artifact
         if: matrix.platform == 'windows'
-        run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath build\windows-build.zip
-
-      - name: Compress Artifact for Linux
-        if: matrix.platform == 'linux'
-        run: (cd build/linux/x64/release/bundle && zip -r ../../../../linux-build.zip *)
-
-      - name: Compress Artifact for macOS
-        if: matrix.platform == 'macos'
-        run: (cd build/macos/Build/Products/Release && zip -r ../../../../macos-build.zip "Scrcpy GUI.app")
-
-      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.platform }}-build
-          path: build/${{ matrix.platform }}-build.zip
+          name: windows-build
+          path: build/windows/x64/runner/Release/
+          if-no-files-found: error
+
+      - name: Upload Linux Artifact
+        if: matrix.platform == 'linux'
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: build/linux/x64/release/bundle/
+          if-no-files-found: error
+
+      - name: Upload macOS Artifact
+        if: matrix.platform == 'macos'
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-build
+          path: build/macos/Build/Products/Release/Scrcpy GUI.app
           if-no-files-found: error
