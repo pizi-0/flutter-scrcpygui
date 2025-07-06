@@ -177,7 +177,19 @@ class ScrcpyUtils {
     }
 
     if (Platform.isWindows) {
-      Process.run('taskkill', ['/pid', instance.scrcpyPID, '/t', '/f']);
+      // necessary as taskkill seems to unable to kill console app
+      // give out this when running only taskkill: SUCCESS: Sent termination signal to the process with PID $instance.scrcpyPID
+      final res =
+          await Process.run('taskkill', ['/pid', instance.scrcpyPID, '/t']);
+
+      final regex = RegExp(r"\d+");
+      final pid = regex
+          .allMatches(res.stderr.toString())
+          .map((match) => int.parse(match.group(0)!))
+          .toList()[2]
+          .toString();
+
+      await Process.run('taskkill', ['/pid', pid, '/f']);
     }
   }
 
