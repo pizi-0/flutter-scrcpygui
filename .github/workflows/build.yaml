@@ -1,0 +1,91 @@
+name: Build Platform-Specific Artifacts
+
+on:
+  push:
+    branches: [ "dev" ]
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  build:
+    strategy:
+      # This matrix builds the app on all three major desktop platforms
+      matrix:
+        os: [windows-latest, ubuntu-22.04, macos-latest]
+        include:
+          - os: windows-latest
+            platform: windows
+          - os: ubuntu-22.04
+            platform: linux
+          - os: macos-latest
+            platform: macos
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: 3.32.4
+          cache: true
+
+      - name: Prepare pubspec.yaml for Windows
+        if: matrix.platform == 'windows'
+        shell: pwsh
+        run: |
+          (Get-Content pubspec.yaml) | ForEach-Object {
+            $_ -replace '    - assets/exec/linux/', '#    - assets/exec/linux/' `
+               -replace '    - assets/exec/mac-intel/', '#    - assets/exec/mac-intel/' `
+               -replace '    - assets/exec/mac-apple/', '#    - assets/exec/mac-apple/'
+          } | Set-Content pubspec.yaml
+          echo "--- Modified pubspec.yaml for Windows build ---"
+          type pubspec.yaml
+
+      - name: Prepare pubspec.yaml for Linux
+        if: matrix.platform == 'linux'
+        run: |
+          sed -i -e 's|    - assets/exec/windows/|#   - assets/exec/windows/|' \
+                 -e 's|    - assets/exec/mac-intel/|#   - assets/exec/mac-intel/|' \
+                 -e 's|    - assets/exec/mac-apple/|#   - assets/exec/mac-apple/|' pubspec.yaml
+          echo "--- Modified pubspec.yaml for Linux build ---"
+          cat pubspec.yaml
+
+      - name: Prepare pubspec.yaml for macOS
+        if: matrix.platform == 'macos'
+        run: |
+          sed -i '' -e 's|    - assets/exec/windows/|#   - assets/exec/windows/|' \
+                    -e 's|    - assets/exec/linux/|#   - assets/exec/linux/|' pubspec.yaml
+          echo "--- Modified pubspec.yaml for macOS build ---"
+          cat pubspec.yaml
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build application
+        run: flutter build ${{ matrix.platform }} --release
+
+      - name: Compress Artifact for Windows
+        if: matrix.platform == 'windows'
+        run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath build\windows-build.zip
+
+      - name: Compress Artifact for Linux
+        if: matrix.platform == 'linux'
+        run: (cd build/linux/x64/release/bundle && zip -r ../../../../linux-build.zip *)
+
+      - name: Compress Artifact for macOS
+        if: matrix.platform == 'macos'
+        run: (cd build/macos/Build/Products/Release && zip -r ../../../../macos-build.zip "Scrcpy GUI.app")
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}-build
+          path: |
+            build/windows-build.zip
+            build/linux-build.zip
+            build/macos-build.zip
+          if-no-files-found: error
