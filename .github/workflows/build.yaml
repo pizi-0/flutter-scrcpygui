@@ -85,8 +85,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.platform }}-build
-          path: |
-            build/windows-build.zip
-            build/linux-build.zip
-            build/macos-build.zip
+          path: build/${{ matrix.platform }}-build.zip
           if-no-files-found: error
