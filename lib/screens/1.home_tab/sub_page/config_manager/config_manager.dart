@@ -10,7 +10,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../db/db.dart';
 import '../../../../providers/config_provider.dart';
-import '../../widgets/home/widgets/config_list.dart';
+import '../../widgets/home/widgets/config_list/config_list_tile.dart';
 
 class ConfigManager extends ConsumerStatefulWidget {
   static const String route = 'config-manager';
