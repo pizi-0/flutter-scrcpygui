@@ -315,10 +315,19 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
 
   void _onNewConfigPressed() {
     final selectedDevice = ref.read(selectedDeviceProvider);
-    if (selectedDevice != null) {
-      final newconfig = newConfig.copyWith(id: const Uuid().v4());
-      ref.read(configScreenConfig.notifier).setConfig(newconfig);
-      context.push('/home/config-settings');
+    final allDevices = ref.read(adbProvider);
+
+    if (allDevices.isNotEmpty) {
+      if (selectedDevice != null) {
+        final newconfig = newConfig.copyWith(id: const Uuid().v4());
+        ref.read(configScreenConfig.notifier).setConfig(newconfig);
+        context.push('/home/config-settings');
+      } else {
+        ref.read(selectedDeviceProvider.notifier).state = allDevices.first;
+        if (mounted) {
+          _onNewConfigPressed();
+        }
+      }
     } else {
       showDialog(
         barrierDismissible: true,
