@@ -182,16 +182,12 @@ class ScrcpyUtils {
       final res =
           await Process.run('taskkill', ['/pid', instance.scrcpyPID, '/t']);
 
-      final pid = res.stderr
-          .toString()
-          .splitLines()
-          .where((e) => e.toLowerCase().contains('pid'))
-          .toList()[1]
-          .removeLetters
-          .removeSpecial
-          .trimAll!
-          .split(' ')
-          .first;
+      final regex = RegExp(r"\d+");
+      final pid = regex
+          .allMatches(res.stderr.toString())
+          .map((match) => int.parse(match.group(0)!))
+          .toList()[2]
+          .toString();
 
       await Process.run('taskkill', ['/pid', pid, '/f']);
     }
