@@ -46,24 +46,6 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                     ? HomeSmall()
                     : HomeBig(),
               );
-
-              // double sidebarWidth = 52;
-
-              // if (sizingInfo.isTablet || sizingInfo.isDesktop) {
-              //   sidebarWidth = AppUtils.findSidebarWidth();
-              // }
-
-              // if (sizingInfo.isMobile) {
-              //   sidebarWidth = 52;
-              // }
-              // bool wrapped = sizingInfo.screenSize.width >=
-              //     ((appWidth * 2) + sidebarWidth + 40);
-
-              // if (!wrapped) {
-              //   return HomeSmall();
-              // } else {
-              //   return HomeBig();
-              // }
             },
           ),
         );
