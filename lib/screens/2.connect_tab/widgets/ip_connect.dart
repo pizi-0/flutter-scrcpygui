@@ -1,10 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
-import 'package:collection/collection.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
-import 'package:responsive_builder/responsive_builder.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -13,8 +12,6 @@ import '../../../db/db.dart';
 import '../../../providers/adb_provider.dart';
 import '../../../providers/settings_provider.dart';
 import '../../../utils/adb_utils.dart';
-import '../../../widgets/custom_ui/pg_list_tile.dart';
-import '../../../widgets/custom_ui/pg_section_card.dart';
 import '../../1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
 
 class IPConnect extends ConsumerStatefulWidget {
@@ -32,74 +29,33 @@ class _IPConnectState extends ConsumerState<IPConnect>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final ipHistory = ref.watch(ipHistoryProvider);
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
-    return ResponsiveBuilder(builder: (context, size) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 8,
-        children: [
-          Row(
-            spacing: 8,
-            children: [
-              Expanded(
-                child: AutoComplete(
-                  suggestions: ipHistory,
-                  child: TextField(
-                    filled: true,
-                    placeholder: Text(
-                        'Ip:port(${el.commonLoc.default$.toLowerCase()}=5555)'),
-                    controller: widget.controller,
-                    onSubmitted: (value) => _connect(widget.controller.text),
-                  ),
-                ),
-              ),
-              loading
-                  ? const CircularProgressIndicator()
-                  : PrimaryButton(
-                      onPressed: loading
-                          ? null
-                          : () => _connect(widget.controller.text),
-                      child: Text(el.connectLoc.withIp.connect),
-                    ),
+    return Row(
+      spacing: 8,
+      children: [
+        Expanded(
+          child: TextField(
+            filled: true,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'[0-9.:]')),
+              FilteringTextInputFormatter.deny('..')
             ],
+            placeholder:
+                Text('Ip:port(${el.commonLoc.default$.toLowerCase()}=5555)'),
+            controller: widget.controller,
+            onSubmitted: (value) => _connect(widget.controller.text),
           ),
-          if (size.isDesktop && ipHistory.isNotEmpty) const Divider(),
-          if (size.isDesktop && ipHistory.isNotEmpty)
-            Label(child: Text(el.ipHistoryLoc.title).small()),
-          if (size.isDesktop && ipHistory.isNotEmpty)
-            PgSectionCard(
-              children: ipHistory
-                  .mapIndexed(
-                    (index, ip) => Column(
-                      spacing: 8,
-                      children: [
-                        PgListTile(
-                          title: ip,
-                          trailing: Row(
-                            children: [
-                              IconButton.ghost(
-                                onPressed: () => widget.controller.text = ip,
-                                icon: Icon(Icons.edit_rounded),
-                              ),
-                              IconButton.ghost(
-                                enabled: !loading,
-                                onPressed: () => _connect(ip),
-                                icon: Icon(Icons.link),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (index != ipHistory.length - 1) const Divider()
-                      ],
-                    ),
-                  )
-                  .toList(),
-            )
-        ],
-      );
-    });
+        ),
+        loading
+            ? const CircularProgressIndicator()
+            : PrimaryButton(
+                onPressed:
+                    loading ? null : () => _connect(widget.controller.text),
+                child: Text(el.connectLoc.withIp.connect),
+              ),
+      ],
+    );
   }
 
   Future<void> _connect(String ipport) async {
