@@ -12,6 +12,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/bonsoir_devices.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/2.connect_tab/widgets/wifi_qr_pairing_dialog.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_column.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
@@ -42,7 +43,7 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return PgScaffoldCustom(
-      title: Text(el.connectLoc.title),
+      title: Text(el.connectLoc.title).bold.underline,
       appBarTrailing: [
         IconButton.ghost(
           icon: const Padding(
@@ -154,87 +155,80 @@ class ConnectTabBig extends ConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: 8,
       children: [
-        Expanded(
-          child: Align(
-            alignment: Alignment.topRight,
-            child: PgSectionCardNoScroll(
-              label: el.connectLoc.withIp.label,
-              expandContent: true,
-              content: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                spacing: 8,
-                children: [
-                  IPConnect(controller: ipInput),
-                  Divider(),
-                  Container(
-                      margin: EdgeInsets.only(bottom: 8),
-                      padding:
-                          EdgeInsets.symmetric(vertical: 4, horizontal: 14),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.muted,
-                        borderRadius: theme.borderRadiusSm,
-                      ),
-                      child: Text(el.ipHistoryLoc.title).textSmall),
-                  Expanded(
-                    child: CustomScrollView(
-                      slivers: [
-                        SliverList.builder(
-                          itemCount: ipHistory.length,
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                spacing: 8,
-                                children: [
-                                  Basic(
-                                    title: Text(ipHistory[index]),
-                                    trailing: Row(
-                                      spacing: 8,
-                                      children: [
-                                        GhostButton(
-                                          density: ButtonDensity.iconDense,
-                                          onPressed: () {
-                                            ipInput.text = ipHistory[index];
-                                          },
-                                          child: Icon(Icons.edit_rounded),
-                                        ),
-                                        GhostButton(
-                                          density: ButtonDensity.iconDense,
-                                          onPressed: () {
-                                            ipInput.text = ipHistory[index];
-                                          },
-                                          child: Icon(Icons.link_rounded),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Divider()
-                                ],
-                              ),
-                            );
-                          },
-                        )
-                      ],
+        LeftColumn(
+          child: PgSectionCardNoScroll(
+            label: el.connectLoc.withIp.label,
+            expandContent: true,
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 8,
+              children: [
+                IPConnect(controller: ipInput),
+                Divider(),
+                Container(
+                    margin: EdgeInsets.only(bottom: 8),
+                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 14),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.muted,
+                      borderRadius: theme.borderRadiusSm,
                     ),
+                    child: Text(el.ipHistoryLoc.title).textSmall),
+                Expanded(
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverList.builder(
+                        itemCount: ipHistory.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              spacing: 8,
+                              children: [
+                                Basic(
+                                  title: Text(ipHistory[index]),
+                                  trailing: Row(
+                                    spacing: 8,
+                                    children: [
+                                      GhostButton(
+                                        density: ButtonDensity.iconDense,
+                                        onPressed: () {
+                                          ipInput.text = ipHistory[index];
+                                        },
+                                        child: Icon(Icons.edit_rounded),
+                                      ),
+                                      GhostButton(
+                                        density: ButtonDensity.iconDense,
+                                        onPressed: () {
+                                          ipInput.text = ipHistory[index];
+                                        },
+                                        child: Icon(Icons.link_rounded),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Divider()
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
-        Expanded(
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: PgSectionCardNoScroll(
-              label: el.connectLoc.withMdns
-                  .label(count: '${bonsoirDevices.length}'),
-              labelTrail: CircularProgressIndicator(
-                duration: 1000.milliseconds,
-              ),
-              expandContent: true,
-              content: BonsoirResults(),
+        RightColumn(
+          child: PgSectionCardNoScroll(
+            label:
+                el.connectLoc.withMdns.label(count: '${bonsoirDevices.length}'),
+            labelTrail: CircularProgressIndicator(
+              duration: 1000.milliseconds,
             ),
+            expandContent: true,
+            content: BonsoirResults(),
           ),
         ),
       ],
