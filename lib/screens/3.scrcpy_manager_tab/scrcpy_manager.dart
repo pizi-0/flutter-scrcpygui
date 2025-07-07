@@ -3,6 +3,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/screens/3.scrcpy_manager_tab/widgets/download_update_widget.dart';
@@ -14,6 +15,7 @@ import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../models/installed_scrcpy.dart';
 import '../../providers/settings_provider.dart';
 
 class ScrcpyManagerTab extends ConsumerStatefulWidget {
@@ -122,7 +124,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
     final scrcpyDir = ref.watch(execDirProvider);
     final installed = ref.watch(installedScrcpyProvider);
 
-    return PgScaffold(
+    return PgScaffoldCustom(
       appBarTrailing: [
         IconButton.ghost(
           icon: Padding(
@@ -140,7 +142,54 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
           },
         ),
       ],
-      title: el.scrcpyManagerLoc.title,
+      title: Text(el.scrcpyManagerLoc.title).bold().underline,
+      scaffoldBody: ResponsiveBuilder(
+        builder: (context, sizeInfo) {
+          return AnimatedSwitcher(
+            duration: 200.milliseconds,
+            child: sizeInfo.isMobile || sizeInfo.isTablet
+                ? ManagerTabSmall(
+                    latest: latest,
+                    installed: installed,
+                    scrcpyVersion: scrcpyVersion,
+                    scrcpyDir: scrcpyDir,
+                    checkingForUpdate: checkingForUpdate,
+                  )
+                : ManagerTabBig(
+                    latest: latest,
+                    installed: installed,
+                    scrcpyVersion: scrcpyVersion,
+                    scrcpyDir: scrcpyDir,
+                    checkingForUpdate: checkingForUpdate,
+                  ),
+          );
+        },
+      ),
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}
+
+class ManagerTabSmall extends ConsumerWidget {
+  final String latest;
+  final List<InstalledScrcpy> installed;
+  final String scrcpyVersion;
+  final String scrcpyDir;
+  final bool checkingForUpdate;
+
+  const ManagerTabSmall(
+      {super.key,
+      required this.latest,
+      required this.installed,
+      required this.scrcpyVersion,
+      required this.scrcpyDir,
+      required this.checkingForUpdate});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(
       children: [
         PgSectionCard(
           label: el.scrcpyManagerLoc.current.label,
@@ -235,7 +284,134 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
       ],
     );
   }
+}
+
+class ManagerTabBig extends ConsumerWidget {
+  final String latest;
+  final List<InstalledScrcpy> installed;
+  final String scrcpyVersion;
+  final String scrcpyDir;
+  final bool checkingForUpdate;
+
+  const ManagerTabBig(
+      {super.key,
+      required this.latest,
+      required this.installed,
+      required this.scrcpyVersion,
+      required this.scrcpyDir,
+      required this.checkingForUpdate});
 
   @override
-  bool get wantKeepAlive => true;
+  Widget build(BuildContext context, WidgetRef ref) {
+    bool hasLatest = !checkingForUpdate &&
+        latest != scrcpyVersion &&
+        installed.where((i) => i.version == latest).isEmpty;
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      spacing: 8,
+      children: [
+        Expanded(
+          child: Align(
+            alignment: hasLatest ? Alignment.topRight : Alignment.topCenter,
+            child: PgSectionCard(
+              label: el.scrcpyManagerLoc.current.label,
+              children: [
+                installed.length > 1
+                    ? ConfigCustom(
+                        dimTitle: false,
+                        title: latest == scrcpyVersion
+                            ? '${el.scrcpyManagerLoc.current.inUse} (${el.statusLoc.latest})'
+                            : el.scrcpyManagerLoc.current.inUse,
+                        child: Select(
+                          filled: true,
+                          value: installed.firstWhere(
+                              (ins) => ins.version == scrcpyVersion),
+                          onChanged: (value) async {
+                            await SetupUtils.saveCurrentScrcpyVersion(
+                                value!.version);
+                            ref.read(execDirProvider.notifier).state =
+                                value.path;
+                            ref.read(scrcpyVersionProvider.notifier).state =
+                                value.version;
+                          },
+                          popup: SelectPopup(
+                            items: SelectItemList(
+                                children: installed
+                                    .map((ins) => SelectItemButton(
+                                          value: ins,
+                                          child: Text(ins.version ==
+                                                  BUNDLED_VERSION
+                                              ? '${ins.version} (${el.commonLoc.bundled})'
+                                              : ins.version),
+                                        ))
+                                    .toList()),
+                          ).call,
+                          itemBuilder: (context, value) => Text(value.version),
+                        ),
+                      )
+                    : ConfigCustom(
+                        dimTitle: false,
+                        padRight: 8,
+                        childBackgroundColor: Colors.transparent,
+                        title: el.scrcpyManagerLoc.current.inUse,
+                        childExpand: false,
+                        child: Text('v$scrcpyVersion').small(),
+                      ),
+                const Divider(),
+                ConfigCustom(
+                  dimTitle: false,
+                  childBackgroundColor: Colors.transparent,
+                  title: el.scrcpyManagerLoc.exec.label,
+                  subtitle: el.scrcpyManagerLoc.exec.info,
+                  showinfo: true,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        variance: ButtonVariance.ghost,
+                        icon: const Padding(
+                          padding: EdgeInsets.all(3.0),
+                          child: Icon(Icons.folder),
+                        ),
+                        onPressed: () async {
+                          await DirectoryUtils.openFolder(
+                              scrcpyDir.split(scrcpyVersion).first);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (hasLatest)
+          Expanded(
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: PgSectionCard(
+                label: el.scrcpyManagerLoc.updater.label,
+                children: [
+                  ConfigCustom(
+                    dimTitle: false,
+                    padRight: 6,
+                    childBackgroundColor: Colors.transparent,
+                    title: el.scrcpyManagerLoc.updater.newVersion,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text('v$latest').textSmall,
+                      ],
+                    ),
+                  ),
+                  const Divider(),
+                  const DownloadUpdate(),
+                ],
+              ),
+            ),
+          ),
+      ],
+    );
+  }
 }
