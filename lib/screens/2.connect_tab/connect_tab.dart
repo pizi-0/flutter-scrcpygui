@@ -233,7 +233,7 @@ class ConnectTabBig extends ConsumerWidget {
                 duration: 1000.milliseconds,
               ),
               expandContent: true,
-              content: CustomScrollView(),
+              content: BonsoirResults(),
             ),
           ),
         ),
