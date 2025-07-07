@@ -32,13 +32,17 @@ class PgScaffold extends ConsumerWidget {
       loadingProgressIndeterminate: showLoading,
       headers: [
         ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: kToolbarHeight + 5, minHeight: kToolbarHeight + 5),
+          constraints: const BoxConstraints(
+              maxHeight: kToolbarHeight + 5, minHeight: kToolbarHeight + 5),
           child: AppBar(
             leading: leading ??
                 [
                   IconButton.ghost(
                     onPressed: onBack,
-                    icon: Icon(Icons.arrow_back, color: onBack == null ? theme.colorScheme.background : null),
+                    icon: Icon(Icons.arrow_back,
+                        color: onBack == null
+                            ? theme.colorScheme.background
+                            : null),
                   ),
                 ],
             trailing: appBarTrailing ??
@@ -54,7 +58,10 @@ class PgScaffold extends ConsumerWidget {
             padding: const EdgeInsets.all(8),
             title: Row(
               children: [
-                Expanded(child: Center(child: FittedBox(child: Text(title).xLarge().bold().underline()))),
+                Expanded(
+                    child: Center(
+                        child: FittedBox(
+                            child: Text(title).xLarge().bold().underline()))),
               ],
             ),
             // backgroundColor: theme.colorScheme.muted,
@@ -72,8 +79,8 @@ class PgScaffold extends ConsumerWidget {
                 child: wrap
                     ? Wrap(
                         alignment: WrapAlignment.center,
-                        spacing: 16,
-                        runSpacing: 16,
+                        spacing: 8,
+                        runSpacing: 8,
                         children: children,
                       )
                     : Column(
@@ -116,13 +123,17 @@ class PgScaffoldCustom extends ConsumerWidget {
       loadingProgressIndeterminate: showLoading,
       headers: [
         ConstrainedBox(
-          constraints: const BoxConstraints(maxHeight: kToolbarHeight + 5, minHeight: kToolbarHeight + 5),
+          constraints: const BoxConstraints(
+              maxHeight: kToolbarHeight + 5, minHeight: kToolbarHeight + 5),
           child: AppBar(
             leading: leading ??
                 [
                   IconButton.ghost(
                     onPressed: onBack,
-                    icon: Icon(Icons.arrow_back, color: onBack == null ? theme.colorScheme.background : null),
+                    icon: Icon(Icons.arrow_back,
+                        color: onBack == null
+                            ? theme.colorScheme.background
+                            : null),
                   ),
                 ],
             trailing: appBarTrailing ??
