@@ -40,7 +40,7 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
         color: theme.colorScheme.border.withAlpha(50),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: headerState.isOpen ? 8 : 0,

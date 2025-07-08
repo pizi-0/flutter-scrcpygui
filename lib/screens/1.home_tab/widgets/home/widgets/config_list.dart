@@ -247,30 +247,26 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
         children: [
           ConfigListHeader(reordered: reorderList),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CustomScrollView(
-                physics: NeverScrollableScrollPhysics(),
-                slivers: [
-                  SliverFillRemaining(
-                    child: ReorderableList(
-                      itemBuilder: (context, index) {
-                        return _reorderableConfigListTIle(
-                            index, filteredConfigs);
-                      },
-                      itemCount:
-                          reorder ? reorderList.length : filteredConfigs.length,
-                      onReorder: (oldIndex, newIndex) {
-                        if (oldIndex < newIndex) {
-                          newIndex -= 1;
-                        }
-                        final item = reorderList.removeAt(oldIndex);
-                        reorderList.insert(newIndex, item);
-                      },
-                    ),
-                  )
-                ],
-              ),
+            child: CustomScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              slivers: [
+                SliverFillRemaining(
+                  child: ReorderableList(
+                    itemBuilder: (context, index) {
+                      return _reorderableConfigListTIle(index, filteredConfigs);
+                    },
+                    itemCount:
+                        reorder ? reorderList.length : filteredConfigs.length,
+                    onReorder: (oldIndex, newIndex) {
+                      if (oldIndex < newIndex) {
+                        newIndex -= 1;
+                      }
+                      final item = reorderList.removeAt(oldIndex);
+                      reorderList.insert(newIndex, item);
+                    },
+                  ),
+                )
+              ],
             ),
           ),
         ],
@@ -288,27 +284,35 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
           : ValueKey(filteredConfigs[index].id),
       spacing: 8,
       children: [
-        Row(
-          spacing: reorder ? 8 : 0,
-          children: [
-            AnimatedContainer(
-              duration: 100.milliseconds,
-              width: reorder ? 20 : 0,
-              child: FittedBox(
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.grab,
-                  child: ReorderableDragStartListener(
-                      index: index, child: Icon(Icons.drag_indicator_rounded)),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            spacing: reorder ? 8 : 0,
+            children: [
+              AnimatedContainer(
+                duration: 100.milliseconds,
+                width: reorder ? 20 : 0,
+                child: FittedBox(
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.grab,
+                    child: ReorderableDragStartListener(
+                        index: index,
+                        child: Icon(Icons.drag_indicator_rounded)),
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-                child: ConfigListTile(
-                    conf:
-                        reorder ? reorderList[index] : filteredConfigs[index])),
-          ],
+              Expanded(
+                  child: ConfigListTile(
+                      conf: reorder
+                          ? reorderList[index]
+                          : filteredConfigs[index])),
+            ],
+          ),
         ),
-        const Divider()
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: const Divider(),
+        )
       ],
     );
   }
