@@ -185,14 +185,12 @@ class DeviceSettingsSmall extends ConsumerWidget {
 }
 
 class DeviceSettingsBig extends ConsumerWidget {
-  final bool expandContent;
   final AdbDevices device;
   final TextEditingController namecontroller;
   final bool loading;
   final FocusNode textBox;
   const DeviceSettingsBig({
     super.key,
-    this.expandContent = false,
     required this.loading,
     required this.namecontroller,
     required this.textBox,

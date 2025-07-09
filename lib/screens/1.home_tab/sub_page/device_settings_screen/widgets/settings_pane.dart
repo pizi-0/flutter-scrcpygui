@@ -68,6 +68,7 @@ class _SettingsPaneState extends ConsumerState<SettingsPane> {
                         _autoConnectToggle(autoConnect, showInfo),
                       const Divider(),
                       _onConnectedSelect(showInfo, loading, allconfigs),
+                      const Divider(),
                     ],
                   ),
                 )
