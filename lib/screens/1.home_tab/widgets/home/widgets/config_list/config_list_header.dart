@@ -1,4 +1,3 @@
-import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
@@ -99,16 +98,22 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
                 ),
               ],
             ),
-            if (headerState.isOpen)
-              ZoomIn(duration: 200.milliseconds, child: Divider()),
-            AnimatedContainer(
+            AnimatedSize(
               duration: 200.milliseconds,
-              height: headerState.isOpen ? 25 : 0,
-              child: AnimatedSwitcher(
-                duration: 200.milliseconds,
-                child: _switcherChild(),
+              child: SizedBox(
+                height: headerState.isOpen ? null : 0,
+                child: Column(
+                  spacing: 8,
+                  children: [
+                    Divider(),
+                    AnimatedSwitcher(
+                      duration: 200.milliseconds,
+                      child: _switcherChild(),
+                    ),
+                  ],
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),

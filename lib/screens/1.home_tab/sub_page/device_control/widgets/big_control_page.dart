@@ -81,9 +81,8 @@ class _BigControlPage2State extends ConsumerState<BigControlPage2> {
         ],
       );
     } else {
-      return ConstrainedBox(
-        constraints:
-            BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.8),
+      return AnimatedSize(
+        duration: 200.milliseconds,
         child: Row(
           spacing: 8,
           children: [
