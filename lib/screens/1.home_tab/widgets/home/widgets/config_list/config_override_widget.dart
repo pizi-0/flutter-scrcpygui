@@ -1,6 +1,8 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/utils/const.dart';
+import 'package:scrcpygui/utils/directory_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:string_extensions/string_extensions.dart';
 
 import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../../../../../providers/config_provider.dart';
@@ -38,10 +40,41 @@ class _OverrideWidgetsState extends ConsumerState<OverrideWidgets> {
             style: overrides.contains(e) ? ButtonStyle.primary() : null,
             onPressed: () =>
                 ref.read(configOverridesProvider.notifier).toggleOverride(e),
+            trailing: _overrideChipTrailing(e, overrides.contains(e)),
             child: Text(e.name.capitalize).small,
           ),
         )
       ],
     );
+  }
+
+  Widget? _overrideChipTrailing(ScrcpyOverride e, bool selected) {
+    final theme = Theme.of(context);
+
+    switch (e) {
+      case ScrcpyOverride.record:
+        return Tooltip(
+          tooltip: TooltipContainer(child: Text('Open folder')).call,
+          child: IconButton(
+            variance: ButtonStyle.link(),
+            density: ButtonDensity.compact,
+            onPressed: () => DirectoryUtils.openFolder(defaultRecord.savePath!),
+            icon: Icon(
+              Icons.folder_open_rounded,
+              color: selected ? theme.colorScheme.primaryForeground : null,
+            ).iconSmall(),
+          ),
+        );
+
+      case ScrcpyOverride.landscape:
+        return Tooltip(
+          tooltip:
+              TooltipContainer(child: Text('For virtual display only')).call,
+          child: Icon(Icons.info_outline_rounded).iconSmall(),
+        );
+
+      default:
+        return null;
+    }
   }
 }
