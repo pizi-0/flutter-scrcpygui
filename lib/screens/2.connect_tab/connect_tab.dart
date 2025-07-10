@@ -180,7 +180,8 @@ class ConnectTabBig extends ConsumerWidget {
                         itemCount: ipHistory.length,
                         itemBuilder: (context, index) {
                           return Padding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 4),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               spacing: 8,
@@ -222,6 +223,7 @@ class ConnectTabBig extends ConsumerWidget {
         ),
         RightColumn(
           child: PgSectionCardNoScroll(
+            cardPadding: EdgeInsets.fromLTRB(16, 8, 16, 16),
             label:
                 el.connectLoc.withMdns.label(count: '${bonsoirDevices.length}'),
             labelTrail: CircularProgressIndicator(

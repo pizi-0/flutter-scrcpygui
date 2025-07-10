@@ -32,10 +32,10 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
         if (sizingInformation.isMobile || sizingInformation.isTablet) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: 8,
+            spacing: 4,
             children: [
               ...bonsoirDevices.mapIndexed((index, dev) => Column(
-                    spacing: 8,
+                    spacing: 4,
                     children: [
                       BdTile(bonsoirDevice: dev),
                       if (index != bonsoirDevices.length - 1) const Divider()
