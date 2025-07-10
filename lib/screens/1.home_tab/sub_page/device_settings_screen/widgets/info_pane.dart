@@ -146,8 +146,11 @@ class _InfoPaneState extends ConsumerState<InfoPane> {
                 Accordion(
                   items: deviceInfo.videoEncoders
                       .map((c) => AccordionItem(
-                            trigger: AccordionTrigger(
-                              child: Text(c.codec).li(),
+                            trigger: ComponentTheme(
+                              data: AccordionTheme(padding: 8),
+                              child: AccordionTrigger(
+                                child: Text(c.codec).li(),
+                              ),
                             ),
                             content: OutlinedContainer(
                               backgroundColor: theme.colorScheme.accent,
@@ -181,8 +184,10 @@ class _InfoPaneState extends ConsumerState<InfoPane> {
                   Accordion(
                     items: deviceInfo.audioEncoder
                         .map((c) => AccordionItem(
-                              trigger:
-                                  AccordionTrigger(child: Text(c.codec).li()),
+                              trigger: ComponentTheme(
+                                  data: AccordionTheme(padding: 8),
+                                  child: AccordionTrigger(
+                                      child: Text(c.codec).li())),
                               content: OutlinedContainer(
                                 backgroundColor: theme.colorScheme.accent,
                                 padding: EdgeInsets.all(8),
