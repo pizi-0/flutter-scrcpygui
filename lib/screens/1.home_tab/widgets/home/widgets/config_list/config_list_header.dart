@@ -1,6 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../db/db.dart';
@@ -40,81 +41,73 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
       ),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: headerState.isOpen ? 8 : 0,
-          children: [
-            ButtonGroup(
-              children: [
-                Button(
-                  style: headerState.filtering
-                      ? ButtonStyle.primary(density: ButtonDensity.dense)
-                      : ButtonStyle.secondary(density: ButtonDensity.dense),
-                  onPressed: () {
-                    ref.read(configListStateProvider.notifier).state =
-                        headerState.copyWith(
-                            filtering: !headerState.filtering,
-                            reorder: false,
-                            override: false);
-                  },
-                  onSecondaryTapUp: (details) =>
-                      ref.read(configTags.notifier).clearTag(),
-                  child: tags.isNotEmpty
-                      ? Text('Filter (${tags.length})')
-                      : Text('Filter'),
-                ),
-                Button(
-                  style: headerState.reorder
-                      ? ButtonStyle.primary(density: ButtonDensity.dense)
-                      : ButtonStyle.secondary(density: ButtonDensity.dense),
-                  onPressed: () {
-                    ref.read(configListStateProvider.notifier).state =
-                        headerState.copyWith(
-                            filtering: false,
-                            reorder: !headerState.reorder,
-                            override: false);
-
-                    ref.read(configTags.notifier).clearTag();
-                  },
-                  child: Text(el.buttonLabelLoc.reorder),
-                ),
-                Button(
-                  style: headerState.override
-                      ? ButtonStyle.primary(density: ButtonDensity.dense)
-                      : ButtonStyle.secondary(density: ButtonDensity.dense),
-                  onPressed: () {
-                    ref.read(configListStateProvider.notifier).state =
-                        headerState.copyWith(
-                            filtering: false,
-                            reorder: false,
-                            override: !headerState.override);
-                  },
-                  onSecondaryTapUp: (details) {
-                    ref.read(configOverridesProvider.notifier).clearOverride();
-                  },
-                  child: overrides.isEmpty
-                      ? Text('Override')
-                      : Text('Override (${overrides.length})'),
-                ),
-              ],
-            ),
-            AnimatedSize(
-              duration: 200.milliseconds,
-              child: SizedBox(
-                height: headerState.isOpen ? null : 0,
-                child: Column(
-                  spacing: 8,
-                  children: [
-                    Divider(),
-                    AnimatedSwitcher(
-                      duration: 200.milliseconds,
-                      child: _switcherChild(),
-                    ),
-                  ],
-                ),
+        child: PgExpandable(
+          expand: headerState.isOpen,
+          title: ButtonGroup(
+            children: [
+              Button(
+                style: headerState.filtering
+                    ? ButtonStyle.primary(density: ButtonDensity.dense)
+                    : ButtonStyle.secondary(density: ButtonDensity.dense),
+                onPressed: () {
+                  ref.read(configListStateProvider.notifier).state =
+                      headerState.copyWith(
+                          filtering: !headerState.filtering,
+                          reorder: false,
+                          override: false);
+                },
+                onSecondaryTapUp: (details) =>
+                    ref.read(configTags.notifier).clearTag(),
+                child: tags.isNotEmpty
+                    ? Text('Filter (${tags.length})')
+                    : Text('Filter'),
               ),
-            ),
-          ],
+              Button(
+                style: headerState.reorder
+                    ? ButtonStyle.primary(density: ButtonDensity.dense)
+                    : ButtonStyle.secondary(density: ButtonDensity.dense),
+                onPressed: () {
+                  ref.read(configListStateProvider.notifier).state =
+                      headerState.copyWith(
+                          filtering: false,
+                          reorder: !headerState.reorder,
+                          override: false);
+
+                  ref.read(configTags.notifier).clearTag();
+                },
+                child: Text(el.buttonLabelLoc.reorder),
+              ),
+              Button(
+                style: headerState.override
+                    ? ButtonStyle.primary(density: ButtonDensity.dense)
+                    : ButtonStyle.secondary(density: ButtonDensity.dense),
+                onPressed: () {
+                  ref.read(configListStateProvider.notifier).state =
+                      headerState.copyWith(
+                          filtering: false,
+                          reorder: false,
+                          override: !headerState.override);
+                },
+                onSecondaryTapUp: (details) {
+                  ref.read(configOverridesProvider.notifier).clearOverride();
+                },
+                child: overrides.isEmpty
+                    ? Text('Override')
+                    : Text('Override (${overrides.length})'),
+              ),
+            ],
+          ),
+          child: Column(
+            spacing: 8,
+            children: [
+              SizedBox(),
+              Divider(),
+              AnimatedSwitcher(
+                duration: 200.milliseconds,
+                child: _switcherChild(),
+              ),
+            ],
+          ),
         ),
       ),
     );
