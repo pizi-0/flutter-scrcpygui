@@ -125,7 +125,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
                     child: loading
                         ? const CircularProgressIndicator().iconLarge()
                         : Text(
-                            '${el.configLoc.start}${overrides.isNotEmpty ? ' *' : ''}'),
+                            '${el.configLoc.start}${overrides.isNotEmpty && widget.showOverrideButton ? ' *' : ''}'),
                   ),
                 ),
                 if (widget.showOverrideButton) OverrideButton(),
