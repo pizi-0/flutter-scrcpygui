@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_control/widgets/control_buttons.dart';
+import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/config_list.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_column.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -95,6 +96,10 @@ class _BigControlPage2State extends ConsumerState<BigControlPage2> {
                 children: [
                   ControlButtons(device: device),
                   Expanded(child: DeviceRunningInstances(device: device)),
+                  ConfigListSmall(
+                    showOverrideButton: false,
+                    showConfigManagerButton: false,
+                  ),
                 ],
               ),
             ),

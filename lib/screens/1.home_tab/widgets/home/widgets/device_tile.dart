@@ -135,8 +135,13 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                         ),
                       IconButton.ghost(
                         icon: Icon(Icons.apps),
-                        onPressed: () => context.push('/home/device-control',
-                            extra: widget.device),
+                        onPressed: () {
+                          ref.read(selectedDeviceProvider.notifier).state =
+                              widget.device;
+
+                          context.push('/home/device-control',
+                              extra: widget.device);
+                        },
                       ),
                       IconButton.ghost(
                         icon: const Icon(Icons.settings),

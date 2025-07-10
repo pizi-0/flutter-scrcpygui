@@ -27,7 +27,17 @@ final configDropdownKey = GlobalKey<pg.SelectState>();
 
 // for isMobile
 class ConfigListSmall extends ConsumerStatefulWidget {
-  const ConfigListSmall({super.key});
+  final bool showCreateButton;
+  final bool showConfigManagerButton;
+  final bool showConfigFilterButton;
+  final bool showOverrideButton;
+
+  const ConfigListSmall(
+      {super.key,
+      this.showOverrideButton = true,
+      this.showConfigManagerButton = true,
+      this.showConfigFilterButton = true,
+      this.showCreateButton = true});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => ConfigListSmallState();
@@ -49,14 +59,15 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
       labelButton: Row(
         children: [
           ConfigFilterButton(),
-          Tooltip(
-            tooltip:
-                TooltipContainer(child: Text(el.configManagerLoc.title)).call,
-            child: IconButton.ghost(
-              icon: Icon(Icons.settings_rounded).iconSmall(),
-              onPressed: () => context.go('/home/${ConfigManager.route}'),
-            ),
-          )
+          if (widget.showConfigManagerButton)
+            Tooltip(
+              tooltip:
+                  TooltipContainer(child: Text(el.configManagerLoc.title)).call,
+              child: IconButton.ghost(
+                icon: Icon(Icons.settings_rounded).iconSmall(),
+                onPressed: () => context.go('/home/${ConfigManager.route}'),
+              ),
+            )
         ],
       ),
       labelTrail: IconButton.ghost(
@@ -70,6 +81,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
           children: [
             Expanded(
               child: pg.Select(
+                popupWidthConstraint: PopoverConstraint.intrinsic,
                 key: configDropdownKey,
                 onChanged: filteredConfigs.isEmpty
                     ? null
@@ -79,7 +91,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
                 filled: true,
                 placeholder: Text(el.configLoc.empty),
                 value: config,
-                popup: SelectPopup(
+                popup: SelectPopup.noVirtualization(
                   items: SelectItemList(
                     children: filteredConfigs
                         .map((conf) => SelectItemButton(
@@ -95,22 +107,28 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
             ButtonGroup(
               children: [
                 Tooltip(
-                  tooltip: TooltipContainer(
-                    child: Text('* Right click to start with overrides'),
-                  ).call,
+                  tooltip: widget.showOverrideButton
+                      ? TooltipContainer(
+                          child: Text('* Right click to start with overrides'),
+                        ).call
+                      : (context) => SizedBox.shrink(),
                   child: PrimaryButton(
                     onPressed: loading ? null : _start,
                     onSecondaryTapUp: (d) =>
-                        loading ? null : _start(withOverrides: true),
+                        loading || !widget.showOverrideButton
+                            ? null
+                            : _start(withOverrides: true),
                     onLongPressStart: (details) =>
-                        loading ? null : _start(withOverrides: true),
+                        loading || !widget.showOverrideButton
+                            ? null
+                            : _start(withOverrides: true),
                     child: loading
                         ? const CircularProgressIndicator().iconLarge()
                         : Text(
                             '${el.configLoc.start}${overrides.isNotEmpty ? ' *' : ''}'),
                   ),
                 ),
-                OverrideButton(),
+                if (widget.showOverrideButton) OverrideButton(),
               ],
             )
           ],
