@@ -50,9 +50,9 @@ class CommandRunner {
   }
 
   static Future<Process> startScrcpyCommand(String workDir, AdbDevices device,
-      {List<String> args = const []}) async {
+      {List<String> args = const [], Map<String, String>? env}) async {
     final scrcpyPath = _getExecutablePath(workDir, 'scrcpy');
     return Process.start(scrcpyPath, ['-s', device.id, ...args],
-        workingDirectory: workDir);
+        workingDirectory: workDir, environment: env);
   }
 }

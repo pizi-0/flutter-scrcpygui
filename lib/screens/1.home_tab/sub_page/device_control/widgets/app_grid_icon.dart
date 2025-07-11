@@ -612,29 +612,30 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
 
     controlPageKeyboardListenerNode.requestFocus();
     final selectedConfig = isPinned ? configForPinned ?? config : config;
+    final icon = await IconDb.getIconFile(widget.app.packageName);
 
     if (withOverrides) {
       final overrides = ref.read(configOverridesProvider);
       final overridden =
           ScrcpyUtils.handleOverrides(ref, overrides, selectedConfig!);
 
-      await ScrcpyUtils.newInstance(
-        ref,
-        selectedConfig: overridden.copyWith(
-            appOptions: selectedConfig.appOptions
-                .copyWith(selectedApp: widget.app, forceClose: forceClose)),
-        selectedDevice: widget.device,
-        customInstanceName: '${widget.app.name} (${selectedConfig.configName})',
-      );
+      await ScrcpyUtils.newInstance(ref,
+          selectedConfig: overridden.copyWith(
+              appOptions: selectedConfig.appOptions
+                  .copyWith(selectedApp: widget.app, forceClose: forceClose)),
+          selectedDevice: widget.device,
+          customInstanceName:
+              '${widget.app.name} (${selectedConfig.configName})',
+          env: icon != null ? {'SCRCPY_ICON_PATH': icon.path} : null);
     } else {
-      await ScrcpyUtils.newInstance(
-        ref,
-        selectedConfig: selectedConfig!.copyWith(
-            appOptions: selectedConfig.appOptions
-                .copyWith(selectedApp: widget.app, forceClose: forceClose)),
-        selectedDevice: widget.device,
-        customInstanceName: '${widget.app.name} (${selectedConfig.configName})',
-      );
+      await ScrcpyUtils.newInstance(ref,
+          selectedConfig: selectedConfig!.copyWith(
+              appOptions: selectedConfig.appOptions
+                  .copyWith(selectedApp: widget.app, forceClose: forceClose)),
+          selectedDevice: widget.device,
+          customInstanceName:
+              '${widget.app.name} (${selectedConfig.configName})',
+          env: icon != null ? {'SCRCPY_ICON_PATH': icon.path} : null);
     }
 
     if (mounted) {

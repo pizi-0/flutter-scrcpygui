@@ -76,7 +76,9 @@ class ScrcpyUtils {
 
   static Future<ScrcpyRunningInstance> _startServer(
       WidgetRef ref, AdbDevices selectedDevice, ScrcpyConfig selectedConfig,
-      {bool isTest = true, String customInstanceName = ''}) async {
+      {bool isTest = true,
+      String customInstanceName = '',
+      Map<String, String>? env}) async {
     final workDir = ref.read(execDirProvider);
     final runningInstance = ref.read(scrcpyInstanceProvider);
 
@@ -110,7 +112,7 @@ class ScrcpyUtils {
 
     final process = await CommandRunner.startScrcpyCommand(
         workDir, selectedDevice,
-        args: comm);
+        args: comm, env: env);
     await Future.delayed(500.milliseconds);
 
     final now = DateTime.now();
@@ -150,7 +152,8 @@ class ScrcpyUtils {
       {AdbDevices? selectedDevice,
       required ScrcpyConfig selectedConfig,
       bool isTest = false,
-      String customInstanceName = ''}) async {
+      String customInstanceName = '',
+      Map<String, String>? env}) async {
     AdbDevices device = selectedDevice ?? ref.read(selectedDeviceProvider)!;
 
     final deviceInfo = ref
@@ -166,7 +169,7 @@ class ScrcpyUtils {
     }
 
     final inst = await _startServer(ref, device, selectedConfig,
-        isTest: isTest, customInstanceName: customInstanceName);
+        isTest: isTest, customInstanceName: customInstanceName, env: env);
 
     ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
   }
