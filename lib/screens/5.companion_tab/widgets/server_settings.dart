@@ -22,7 +22,8 @@ import '../../../widgets/config_tiles.dart';
 import '../../../widgets/custom_ui/pg_section_card.dart';
 
 class ServerSettings extends ConsumerStatefulWidget {
-  const ServerSettings({super.key});
+  final bool expandContent;
+  const ServerSettings({super.key, this.expandContent = false});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ServerSettingsState();
@@ -117,7 +118,8 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
 
     final isServerRunning = serverState.isRunning;
 
-    return PgSectionCard(
+    return PgSectionCardNoScroll(
+      cardPadding: EdgeInsets.all(0),
       label: el.companionLoc.server.label,
       labelTrail: Button(
           style: ButtonStyle.ghost(density: ButtonDensity.dense),
@@ -128,131 +130,141 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
           child: isServerRunning
               ? Text(el.buttonLabelLoc.stop)
               : Text(el.configLoc.start)),
-      children: [
-        ConfigCustom(
-          title: el.companionLoc.server.status,
-          dimTitle: false,
-          childExpand: false,
-          child: Text(
-                  isServerRunning ? el.statusLoc.running : el.statusLoc.stopped)
-              .textColor(isServerRunning ? Colors.green : Colors.red)
-              .textSmall,
-        ),
-        Divider(),
-        ConfigCustom(
-          title: el.companionLoc.server.name.label,
-          dimTitle: false,
-          child: TextField(
-            enabled: !isServerRunning,
-            controller: nameController,
-            filled: !isServerRunning,
-            placeholder: Text(el.companionLoc.server.name.info),
-          ),
-        ),
-        Divider(),
-        ConfigCustom(
-          title: el.companionLoc.server.endpoint.label,
-          dimTitle: false,
-          child: AutoComplete(
-            suggestions: _currentSuggestions,
-            child: TextField(
-              inputFormatters: [IPv4InputFormatter()],
-              enabled: !isServerRunning,
-              onChanged: _updateSuggestions,
-              controller: ipController,
-              filled: !isServerRunning,
-            ),
-          ),
-        ),
-        Divider(),
-        ConfigCustom(
-          title: el.companionLoc.server.port.label,
-          dimTitle: false,
-          child: TextField(
-            enabled: !isServerRunning,
-            controller: portController,
-            filled: !isServerRunning,
-            placeholder: Text(el.companionLoc.server.port.info),
-          ),
-        ),
-        Divider(),
-        ConfigCustom(
-          title: el.companionLoc.server.secret.label,
-          dimTitle: false,
-          child: TextField(
-            enabled: !isServerRunning,
-            controller: secretController,
-            obscureText: obscurePass,
-            filled: !isServerRunning,
-            features: [
-              InputFeature.trailing(IconButton.ghost(
-                density: ButtonDensity.iconDense,
-                icon: Icon(obscurePass
-                        ? Icons.visibility_off_rounded
-                        : Icons.visibility_rounded)
-                    .iconXSmall(),
-                onPressed: () {
-                  setState(() {
-                    obscurePass = !obscurePass;
-                  });
-                },
-              ))
-            ],
-          ),
-        ),
-        Divider(),
-        ConfigCustom(
-          title: el.companionLoc.server.autoStart.label,
-          childExpand: false,
-          onPressed: _toggleAutoStart,
-          child: Checkbox(
-            state: companionSettings.startOnLaunch
-                ? CheckboxState.checked
-                : CheckboxState.unchecked,
-            onChanged: (v) => _toggleAutoStart(),
-          ),
-        ),
-        if (isServerRunning) Divider(),
-        if (isServerRunning)
-          Row(
-            spacing: 10,
+      expandContent: widget.expandContent,
+      content: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            spacing: 8,
             children: [
-              SizedBox.square(
-                dimension: 150,
-                child: QrImageView(
-                  data: XOR().xorEncode(companionSettings.toQrJson()),
-                  backgroundColor: Colors.white,
-                  padding: EdgeInsets.all(4),
+              ConfigCustom(
+                title: el.companionLoc.server.status,
+                dimTitle: false,
+                childExpand: false,
+                child: Text(isServerRunning
+                        ? el.statusLoc.running
+                        : el.statusLoc.stopped)
+                    .textColor(isServerRunning ? Colors.green : Colors.red)
+                    .textSmall,
+              ),
+              Divider(),
+              ConfigCustom(
+                title: el.companionLoc.server.name.label,
+                dimTitle: false,
+                child: TextField(
+                  enabled: !isServerRunning,
+                  controller: nameController,
+                  filled: !isServerRunning,
+                  placeholder: Text(el.companionLoc.server.name.info),
                 ),
               ),
-              Expanded(
-                child: Column(
-                  spacing: 8,
-                  children: [
-                    Text(el.companionLoc.qr)
-                        .textAlignment(TextAlign.center)
-                        .textSmall
-                        .muted,
-                    Tooltip(
-                      tooltip: TooltipContainer(
-                              child: Text(
-                                  'https://github.com/pizi-0/flutter_scrcpygui_companion'))
-                          .call,
-                      child: OutlineButton(
-                        leading: Icon(BootstrapIcons.github).iconSmall(),
-                        onPressed: () {
-                          launchUrl(Uri.parse(
-                              'https://github.com/pizi-0/flutter_scrcpygui_companion'));
-                        },
-                        child: Text('Github'),
-                      ),
-                    )
+              Divider(),
+              ConfigCustom(
+                title: el.companionLoc.server.endpoint.label,
+                dimTitle: false,
+                child: AutoComplete(
+                  suggestions: _currentSuggestions,
+                  child: TextField(
+                    inputFormatters: [IPv4InputFormatter()],
+                    enabled: !isServerRunning,
+                    onChanged: _updateSuggestions,
+                    controller: ipController,
+                    filled: !isServerRunning,
+                  ),
+                ),
+              ),
+              Divider(),
+              ConfigCustom(
+                title: el.companionLoc.server.port.label,
+                dimTitle: false,
+                child: TextField(
+                  enabled: !isServerRunning,
+                  controller: portController,
+                  filled: !isServerRunning,
+                  placeholder: Text(el.companionLoc.server.port.info),
+                ),
+              ),
+              Divider(),
+              ConfigCustom(
+                title: el.companionLoc.server.secret.label,
+                dimTitle: false,
+                child: TextField(
+                  enabled: !isServerRunning,
+                  controller: secretController,
+                  obscureText: obscurePass,
+                  filled: !isServerRunning,
+                  features: [
+                    InputFeature.trailing(IconButton.ghost(
+                      density: ButtonDensity.iconDense,
+                      icon: Icon(obscurePass
+                              ? Icons.visibility_off_rounded
+                              : Icons.visibility_rounded)
+                          .iconXSmall(),
+                      onPressed: () {
+                        setState(() {
+                          obscurePass = !obscurePass;
+                        });
+                      },
+                    ))
                   ],
                 ),
               ),
+              Divider(),
+              ConfigCustom(
+                title: el.companionLoc.server.autoStart.label,
+                childExpand: false,
+                onPressed: _toggleAutoStart,
+                child: Checkbox(
+                  state: companionSettings.startOnLaunch
+                      ? CheckboxState.checked
+                      : CheckboxState.unchecked,
+                  onChanged: (v) => _toggleAutoStart(),
+                ),
+              ),
+              if (isServerRunning) Divider(),
+              if (isServerRunning)
+                Row(
+                  spacing: 10,
+                  children: [
+                    SizedBox.square(
+                      dimension: 150,
+                      child: QrImageView(
+                        data: XOR().xorEncode(companionSettings.toQrJson()),
+                        backgroundColor: Colors.white,
+                        padding: EdgeInsets.all(4),
+                      ),
+                    ),
+                    Expanded(
+                      child: Column(
+                        spacing: 8,
+                        children: [
+                          Text(el.companionLoc.qr)
+                              .textAlignment(TextAlign.center)
+                              .textSmall
+                              .muted,
+                          Tooltip(
+                            tooltip: TooltipContainer(
+                                    child: Text(
+                                        'https://github.com/pizi-0/flutter_scrcpygui_companion'))
+                                .call,
+                            child: OutlineButton(
+                              leading: Icon(BootstrapIcons.github).iconSmall(),
+                              onPressed: () {
+                                launchUrl(Uri.parse(
+                                    'https://github.com/pizi-0/flutter_scrcpygui_companion'));
+                              },
+                              child: Text('Github'),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                )
             ],
-          )
-      ],
+          ),
+        ),
+      ),
     );
   }
 

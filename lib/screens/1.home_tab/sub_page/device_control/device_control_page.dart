@@ -7,7 +7,6 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
-import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -90,23 +89,12 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
           scaffoldBody: stillConnected
               ? ResponsiveBuilder(
                   builder: (context, sizingInfo) {
-                    double sidebarWidth = 52;
-
-                    if (sizingInfo.isTablet || sizingInfo.isDesktop) {
-                      sidebarWidth = AppUtils.findSidebarWidth();
-                    }
-
-                    if (sizingInfo.isMobile) {
-                      sidebarWidth = 52;
-                    }
-                    bool wrapped = sizingInfo.screenSize.width >=
-                        ((appWidth * 2) + sidebarWidth + 40);
-
-                    if (!wrapped) {
-                      return SmallControlPage(device: device);
-                    } else {
-                      return BigControlPage2(device: device);
-                    }
+                    return AnimatedSwitcher(
+                      duration: 200.milliseconds,
+                      child: sizingInfo.isMobile || sizingInfo.isTablet
+                          ? SmallControlPage(device: device)
+                          : BigControlPage2(device: device),
+                    );
                   },
                 )
               : Center(

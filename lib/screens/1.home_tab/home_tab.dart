@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
@@ -6,12 +7,11 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/device_tile.dart';
-import 'package:scrcpygui/utils/app_utils.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_column.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import '../../utils/const.dart';
 import 'widgets/home/widgets/config_list.dart';
 
 class HomeTab extends ConsumerStatefulWidget {
@@ -40,23 +40,12 @@ class _HomeTabState extends ConsumerState<HomeTab> {
           title: Text(el.homeLoc.title).xLarge.bold.underline,
           scaffoldBody: ResponsiveBuilder(
             builder: (context, sizingInfo) {
-              double sidebarWidth = 52;
-
-              if (sizingInfo.isTablet || sizingInfo.isDesktop) {
-                sidebarWidth = AppUtils.findSidebarWidth();
-              }
-
-              if (sizingInfo.isMobile) {
-                sidebarWidth = 52;
-              }
-              bool wrapped = sizingInfo.screenSize.width >=
-                  ((appWidth * 2) + sidebarWidth + 40);
-
-              if (!wrapped) {
-                return HomeSmall();
-              } else {
-                return HomeBig();
-              }
+              return AnimatedSwitcher(
+                duration: 200.milliseconds,
+                child: sizingInfo.isMobile || sizingInfo.isTablet
+                    ? HomeSmall()
+                    : HomeBig(),
+              );
             },
           ),
         );
@@ -103,10 +92,10 @@ class HomeBig extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
-      spacing: 16,
+      spacing: 8,
       children: [
-        ConnectedDevices(),
-        ConfigListBig(),
+        LeftColumn(child: ConnectedDevices()),
+        RightColumn(child: ConfigListBig()),
       ],
     );
   }
@@ -148,15 +137,19 @@ class ConnectedDevices extends ConsumerWidget {
                 ],
               ),
             ),
-          SliverList.separated(
+          SliverList.builder(
             itemCount: connected.length,
-            separatorBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Divider(),
-            ),
             itemBuilder: (context, index) {
               final device = connected[index];
-              return DeviceTile(device: device);
+              return Column(
+                children: [
+                  DeviceTile(device: device),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Divider(),
+                  ),
+                ],
+              );
             },
           )
         ],

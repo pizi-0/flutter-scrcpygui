@@ -3,6 +3,7 @@ import 'package:bonsoir/bonsoir.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:responsive_builder/responsive_builder.dart';
 import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -26,34 +27,81 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
     final bonsoirDevices = ref.watch(bonsoirDeviceProvider);
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: 8,
-      children: [
-        ...bonsoirDevices.mapIndexed((index, dev) => Column(
-              spacing: 8,
-              children: [
-                BdTile(bonsoirDevice: dev),
-                if (index != bonsoirDevices.length - 1) const Divider()
-              ],
-            )),
-        if (bonsoirDevices.isNotEmpty) const Divider(),
-        Label(
-          leading: const Icon(Icons.info).muted().iconSmall(),
-          child: Column(
+    return ResponsiveBuilder(
+      builder: (context, sizingInformation) {
+        if (sizingInformation.isMobile || sizingInformation.isTablet) {
+          return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
+            spacing: 4,
             children: [
-              Row(
-                children: [
-                  Text(el.connectLoc.withMdns.info.i1).muted().xSmall(),
-                ],
+              ...bonsoirDevices.mapIndexed((index, dev) => Column(
+                    spacing: 4,
+                    children: [
+                      BdTile(bonsoirDevice: dev),
+                      if (index != bonsoirDevices.length - 1) const Divider()
+                    ],
+                  )),
+              if (bonsoirDevices.isNotEmpty) const Divider(),
+              InfoLabel()
+            ],
+          );
+        } else {
+          return Column(
+            children: [
+              Expanded(
+                child: CustomScrollView(
+                  slivers: [
+                    if (bonsoirDevices.isEmpty)
+                      SliverFillRemaining(
+                        child: Center(
+                          child: Text('No devices found').textSmall.muted,
+                        ),
+                      ),
+                    if (bonsoirDevices.isNotEmpty)
+                      SliverList.builder(
+                        itemCount: bonsoirDevices.length,
+                        itemBuilder: (context, index) {
+                          final bd = bonsoirDevices[index];
+
+                          return Column(
+                            children: [BdTile(bonsoirDevice: bd), Divider()],
+                          );
+                        },
+                      )
+                  ],
+                ),
               ),
-              Text(el.connectLoc.withMdns.info.i2).muted().xSmall(),
-              Text(el.connectLoc.withMdns.info.i3).muted().xSmall(),
+              Divider(),
+              InfoLabel(),
+            ],
+          );
+        }
+      },
+    );
+  }
+}
+
+class InfoLabel extends StatelessWidget {
+  const InfoLabel({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Label(
+      leading: const Icon(Icons.info).muted().iconSmall(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Text(el.connectLoc.withMdns.info.i1).muted().xSmall(),
             ],
           ),
-        )
-      ],
+          Text(el.connectLoc.withMdns.info.i2).muted().xSmall(),
+          Text(el.connectLoc.withMdns.info.i3).muted().xSmall(),
+        ],
+      ),
     );
   }
 }

@@ -32,6 +32,7 @@ class _DeviceRunningInstancesState
         .toList();
 
     return PgSectionCardNoScroll(
+        cardPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         label:
             el.loungeLoc.running.label(count: deviceInstance.length.toString()),
         labelTrail: deviceInstance.isNotEmpty
@@ -78,16 +79,18 @@ class _DeviceRunningInstancesState
                     ),
                   )
                 ] else ...[
-                  SliverList.separated(
-                    separatorBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Divider(),
-                    ),
+                  SliverList.builder(
                     itemCount: deviceInstance.length,
                     itemBuilder: (context, index) {
                       final instance = deviceInstance[index];
-
-                      return InstanceListTile(instance: instance);
+                      return Column(
+                        spacing: 4,
+                        children: [
+                          InstanceListTile(instance: instance),
+                          Divider(),
+                          SizedBox()
+                        ],
+                      );
                     },
                   )
                 ],

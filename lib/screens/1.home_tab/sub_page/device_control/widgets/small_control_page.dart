@@ -45,15 +45,13 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
     scrollController.addListener(
       () {
         if (scrollController.offset >
-                scrollController.position.maxScrollExtent / 3 &&
+                scrollController.position.maxScrollExtent / 5 &&
             controlsHeight != 0) {
           controlsHeight = 0;
           setState(() {});
         }
 
-        if (scrollController.offset <
-                scrollController.position.maxScrollExtent / 3 &&
-            controlsHeight != 109.3) {
+        if (scrollController.offset == 0 && controlsHeight != 109.3) {
           if (controlsHeight != 109.3) {
             controlsHeight = 109.3;
             setState(() {});
@@ -125,7 +123,14 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
                   AnimatedContainer(
                     duration: 200.milliseconds,
                     height: controlsHeight,
-                    child: ControlButtons(device: device),
+                    child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context)
+                          .copyWith(scrollbars: false),
+                      child: SingleChildScrollView(
+                        physics: NeverScrollableScrollPhysics(),
+                        child: ControlButtons(device: device),
+                      ),
+                    ),
                   ),
                   Expanded(
                     child: AppGrid(

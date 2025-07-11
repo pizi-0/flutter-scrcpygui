@@ -3,6 +3,7 @@ import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config_tags.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:string_extensions/string_extensions.dart';
 
 class ConfigFilterButton extends ConsumerStatefulWidget {
   const ConfigFilterButton({super.key});
@@ -220,7 +221,7 @@ class TagChip extends ConsumerWidget {
             ref.read(configTags.notifier).removeTag(ConfigTag.audioOnly);
           }
         },
-        child: Text(tag.label.substring(0, 3).toUpperCase()).xSmall,
+        child: Text(tag.label.substring(0, 3).capitalize).small,
       ),
     );
   }

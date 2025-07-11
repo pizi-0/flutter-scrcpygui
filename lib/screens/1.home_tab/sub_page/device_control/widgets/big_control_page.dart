@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_control/widgets/control_buttons.dart';
+import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/config_list.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_column.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../db/db.dart';
@@ -80,23 +82,31 @@ class _BigControlPage2State extends ConsumerState<BigControlPage2> {
         ],
       );
     } else {
-      return Row(
-        spacing: 16,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: appWidth - 50),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 8,
-              children: [
-                ControlButtons(device: device),
-                Expanded(child: DeviceRunningInstances(device: device)),
-              ],
+      return AnimatedSize(
+        duration: 200.milliseconds,
+        child: Row(
+          spacing: 8,
+          children: [
+            LeftColumn(
+              shouldAlign: false,
+              flex: 3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                spacing: 8,
+                children: [
+                  ControlButtons(device: device),
+                  Expanded(child: DeviceRunningInstances(device: device)),
+                  ConfigListSmall(
+                    showOverrideButton: false,
+                    showConfigManagerButton: false,
+                  ),
+                ],
+              ),
             ),
-          ),
-          AppGrid(device: device),
-        ],
+            RightColumn(
+                shouldAlign: false, flex: 5, child: AppGrid(device: device)),
+          ],
+        ),
       );
     }
   }

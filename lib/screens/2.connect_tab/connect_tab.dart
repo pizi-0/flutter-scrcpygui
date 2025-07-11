@@ -12,6 +12,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/bonsoir_devices.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/screens/2.connect_tab/widgets/wifi_qr_pairing_dialog.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_column.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
@@ -39,11 +40,10 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
 
   @override
   Widget build(BuildContext context) {
-    final bonsoirDevices = ref.watch(bonsoirDeviceProvider);
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
-    return PgScaffold(
-      title: el.connectLoc.title,
+    return PgScaffoldCustom(
+      title: Text(el.connectLoc.title).bold.underline,
       appBarTrailing: [
         IconButton.ghost(
           icon: const Padding(
@@ -90,26 +90,42 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
           },
         ),
       ],
+      scaffoldBody: ResponsiveBuilder(
+        builder: (context, sizeInfo) {
+          return AnimatedSwitcher(
+            duration: 200.milliseconds,
+            child: sizeInfo.isMobile || sizeInfo.isTablet
+                ? ConnectTabSmall(ipInput: ipInput)
+                : ConnectTabBig(ipInput: ipInput),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ConnectTabSmall extends ConsumerWidget {
+  final TextEditingController ipInput;
+  const ConnectTabSmall({super.key, required this.ipInput});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ipHistory = ref.watch(ipHistoryProvider);
+    final bonsoirDevices = ref.watch(bonsoirDeviceProvider);
+
+    return Column(
       children: [
-        ResponsiveBuilder(
-          builder: (context, size) {
-            final ipHistory = ref.watch(ipHistoryProvider);
-            return PgSectionCard(
-              label: el.connectLoc.withIp.label,
-              labelTrail: IconButton.ghost(
-                onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) => IPHistoryDialog(controller: ipInput),
-                ),
-                icon: Icon(Icons.history_rounded),
-                leading: Text(el.ipHistoryLoc.title),
-              ).showIf(
-                  (size.isMobile || size.isTablet) && ipHistory.isNotEmpty),
-              children: [
-                IPConnect(controller: ipInput),
-              ],
-            );
-          },
+        PgSectionCard(
+          label: el.connectLoc.withIp.label,
+          labelTrail: IconButton.ghost(
+            onPressed: () => showDialog(
+              context: context,
+              builder: (context) => IPHistoryDialog(controller: ipInput),
+            ),
+            icon: Icon(Icons.history_rounded),
+            leading: Text(el.ipHistoryLoc.title),
+          ).showIf(ipHistory.isNotEmpty),
+          children: [IPConnect(controller: ipInput)],
         ),
         PgSectionCard(
           cardPadding: const EdgeInsets.all(8),
@@ -120,6 +136,103 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
             BonsoirResults(),
           ],
         )
+      ],
+    );
+  }
+}
+
+class ConnectTabBig extends ConsumerWidget {
+  final TextEditingController ipInput;
+  const ConnectTabBig({super.key, required this.ipInput});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bonsoirDevices = ref.watch(bonsoirDeviceProvider);
+    final ipHistory = ref.watch(ipHistoryProvider);
+    final theme = Theme.of(context);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      spacing: 8,
+      children: [
+        LeftColumn(
+          child: PgSectionCardNoScroll(
+            label: el.connectLoc.withIp.label,
+            expandContent: true,
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: 8,
+              children: [
+                IPConnect(controller: ipInput),
+                Divider(),
+                Container(
+                    margin: EdgeInsets.only(bottom: 8),
+                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 14),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.muted,
+                      borderRadius: theme.borderRadiusSm,
+                    ),
+                    child: Text(el.ipHistoryLoc.title).textSmall),
+                Expanded(
+                  child: CustomScrollView(
+                    slivers: [
+                      SliverList.builder(
+                        itemCount: ipHistory.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 4),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              spacing: 8,
+                              children: [
+                                Basic(
+                                  title: Text(ipHistory[index]),
+                                  trailing: Row(
+                                    spacing: 8,
+                                    children: [
+                                      GhostButton(
+                                        density: ButtonDensity.iconDense,
+                                        onPressed: () {
+                                          ipInput.text = ipHistory[index];
+                                        },
+                                        child: Icon(Icons.edit_rounded),
+                                      ),
+                                      GhostButton(
+                                        density: ButtonDensity.iconDense,
+                                        onPressed: () {
+                                          ipInput.text = ipHistory[index];
+                                        },
+                                        child: Icon(Icons.link_rounded),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Divider()
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        RightColumn(
+          child: PgSectionCardNoScroll(
+            cardPadding: EdgeInsets.fromLTRB(16, 8, 16, 16),
+            label:
+                el.connectLoc.withMdns.label(count: '${bonsoirDevices.length}'),
+            labelTrail: CircularProgressIndicator(
+              duration: 1000.milliseconds,
+            ),
+            expandContent: true,
+            content: BonsoirResults(),
+          ),
+        ),
       ],
     );
   }

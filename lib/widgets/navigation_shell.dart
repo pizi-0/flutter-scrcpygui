@@ -1,12 +1,15 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:animate_do/animate_do.dart';
-import 'package:awesome_extensions/awesome_extensions.dart' show StyledText, PaddingX, NumExtension;
+import 'package:awesome_extensions/awesome_extensions.dart'
+    show StyledText, PaddingX, NumExtension;
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:responsive_builder/responsive_builder.dart';
+import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/main_screen.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
@@ -45,7 +48,8 @@ class NavigationShellState extends ConsumerState<NavigationShell> {
             children: [
               Row(
                 children: [
-                  if (sizeInfo.isDesktop || sizeInfo.isTablet) const AppSideBar(),
+                  if (sizeInfo.isDesktop || sizeInfo.isTablet)
+                    const AppSideBar(),
                   if (sizeInfo.isMobile) const Gap(52),
                   Expanded(
                     child: AnimatedBranchContainer(
@@ -94,8 +98,10 @@ class TitleBar extends ConsumerWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (Platform.isMacOS) TitleBarButton(),
-          if (Platform.isMacOS) VerticalDivider(indent: 16, endIndent: 16),
+          if (Platform.isMacOS) ...[
+            TitleBarButton(),
+            VerticalDivider(indent: 16, endIndent: 16),
+          ],
           Expanded(
             child: DragToMoveArea(
               child: Row(
@@ -108,13 +114,32 @@ class TitleBar extends ConsumerWidget {
                     width: 20,
                   ).paddingOnly(left: 3),
                   Text('Scrcpy GUI ($appversion)').fontSize(12),
-                  const Text('by pizi-0').fontSize(8).underline().paddingOnly(top: 4.5),
+                  const Text('by pizi-0')
+                      .fontSize(8)
+                      .underline()
+                      .paddingOnly(top: 4.5),
                 ],
               ).paddingOnly(left: 8),
             ),
           ),
-          if (!Platform.isMacOS) VerticalDivider(indent: 16, endIndent: 16),
-          if (!Platform.isMacOS) const TitleBarButton()
+          IconButton.ghost(
+            icon: theme.brightness == Brightness.dark
+                ? const Icon(Icons.light_mode_rounded, color: Colors.yellow)
+                : const Icon(Icons.dark_mode_rounded, color: Colors.yellow),
+            onPressed: () async {
+              ref.read(settingsProvider.notifier).changeThememode(
+                    theme.brightness == Brightness.dark
+                        ? ThemeMode.light
+                        : ThemeMode.dark,
+                  );
+
+              await Db.saveAppSettings(ref.read(settingsProvider));
+            },
+          ),
+          if (!Platform.isMacOS) ...[
+            VerticalDivider(indent: 16, endIndent: 16),
+            const TitleBarButton()
+          ]
         ],
       ),
     );
@@ -123,7 +148,8 @@ class TitleBar extends ConsumerWidget {
 
 class AnimatedBranchContainer extends ConsumerWidget {
   /// Creates a AnimatedBranchContainer
-  const AnimatedBranchContainer({super.key, required this.currentIndex, required this.children});
+  const AnimatedBranchContainer(
+      {super.key, required this.currentIndex, required this.children});
 
   /// The index (in [children]) of the branch Navigator to display.
   final int currentIndex;
@@ -173,7 +199,8 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return TapRegion(
-      onTapOutside: (event) => ref.read(appSideBarStateProvider.notifier).state = false,
+      onTapOutside: (event) =>
+          ref.read(appSideBarStateProvider.notifier).state = false,
       child: ResponsiveBuilder(builder: (context, sizingInfo) {
         final shouldExpand = sizingInfo.isTablet || sizingInfo.isDesktop;
 
@@ -194,11 +221,14 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
               labelPosition: NavigationLabelPosition.end,
               labelType: NavigationLabelType.expanded,
               padding: EdgeInsets.all(8),
-              onSelected: (value) => ref.read(mainScreenPage.notifier).state = value,
+              onSelected: (value) =>
+                  ref.read(mainScreenPage.notifier).state = value,
               children: [
                 NavigationButton(
                   alignment: Alignment.centerLeft,
-                  onPressed: () => ref.read(appSideBarStateProvider.notifier).update((state) => !state),
+                  onPressed: () => ref
+                      .read(appSideBarStateProvider.notifier)
+                      .update((state) => !state),
                   label: const Text('Menu'),
                   child: const Icon(Icons.menu),
                 ),
