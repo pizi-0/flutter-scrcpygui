@@ -65,6 +65,29 @@ extension ResolutionStringExtension on String {
     }
     return int.tryParse(split('x').last);
   }
+
+  bool get isLandscape {
+    final width = resolutionWidth;
+    final height = resolutionHeight;
+
+    if (width == null || height == null) {
+      return false;
+    }
+
+    return width > height;
+  }
+
+  /// If [Landscape], change to [Portrait], vice versa
+  String? get rotate {
+    final width = resolutionWidth;
+    final height = resolutionHeight;
+
+    if (width == null || height == null) {
+      return null;
+    }
+
+    return '${height}x$width';
+  }
 }
 
 extension AppVersionParsing on String {
