@@ -188,7 +188,8 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
 
         if (withOverrides) {
           final overrides = ref.read(configOverridesProvider);
-          finalConfig = ScrcpyUtils.handleOverrides(overrides, selectedConfig);
+          finalConfig =
+              ScrcpyUtils.handleOverrides(ref, overrides, selectedConfig);
         }
 
         await ScrcpyUtils.newInstance(ref, selectedConfig: finalConfig);

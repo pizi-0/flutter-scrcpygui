@@ -8,6 +8,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
+import 'package:scrcpygui/utils/extension.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/adb_devices.dart';
@@ -263,19 +264,57 @@ class ScrcpyUtils {
   // }
 
   static ScrcpyConfig handleOverrides(
-      List<ScrcpyOverride> overrides, ScrcpyConfig config) {
+      WidgetRef ref, List<ScrcpyOverride> overrides, ScrcpyConfig config) {
     var resultingConfig = config;
+    final device = ref.read(selectedDeviceProvider);
+
+    if (device == null) {
+      logger.e('No device selected');
+      return resultingConfig;
+    }
 
     if (overrides.contains(ScrcpyOverride.record)) {
       resultingConfig = resultingConfig.copyWith(isRecording: true);
     }
 
     if (overrides.contains(ScrcpyOverride.landscape)) {
-      final currentUserFlags = resultingConfig.additionalFlags;
+      if (config.videoOptions.displayId == 'new') {
+        final currentVdOption =
+            resultingConfig.videoOptions.virtualDisplayOptions;
+        String reso = currentVdOption.resolution;
 
-      resultingConfig = resultingConfig.copyWith(
-        additionalFlags: currentUserFlags.append('--orientation=270'),
-      );
+        if (reso == DEFAULT) {
+          final info = ref
+              .read(infoProvider)
+              .firstWhereOrNull((i) => i.serialNo == device.serialNo);
+
+          if (info == null) {
+            logger.e('No display info for device (${device.id})');
+            return resultingConfig;
+          }
+
+          reso = info.displays.first.resolution;
+        }
+
+        if (!reso.isLandscape) {
+          reso = reso.rotate ?? reso;
+        }
+
+        final currentVideoOptions = resultingConfig.videoOptions;
+
+        resultingConfig = resultingConfig.copyWith(
+          videoOptions: currentVideoOptions.copyWith(
+              virtualDisplayOptions:
+                  currentVdOption.copyWith(resolution: reso)),
+        );
+      }
+      // else {
+      //   final currentFlags = resultingConfig.additionalFlags;
+
+      //   resultingConfig = resultingConfig.copyWith(
+      //     additionalFlags: currentFlags.append('--capture-orientation=90'),
+      //   );
+      // }
     }
 
     if (overrides.contains(ScrcpyOverride.mute)) {

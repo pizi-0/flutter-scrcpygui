@@ -198,7 +198,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
 
         if (withOverrides) {
           final overridden =
-              ScrcpyUtils.handleOverrides(overrides, selectedConfig);
+              ScrcpyUtils.handleOverrides(ref, overrides, selectedConfig);
 
           await ScrcpyUtils.newInstance(
             ref,

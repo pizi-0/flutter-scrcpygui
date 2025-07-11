@@ -97,7 +97,6 @@ class _BigControlPage2State extends ConsumerState<BigControlPage2> {
                   ControlButtons(device: device),
                   Expanded(child: DeviceRunningInstances(device: device)),
                   ConfigListSmall(
-                    showOverrideButton: false,
                     showConfigManagerButton: false,
                   ),
                 ],

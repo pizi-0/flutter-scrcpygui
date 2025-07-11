@@ -616,7 +616,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
     if (withOverrides) {
       final overrides = ref.read(configOverridesProvider);
       final overridden =
-          ScrcpyUtils.handleOverrides(overrides, selectedConfig!);
+          ScrcpyUtils.handleOverrides(ref, overrides, selectedConfig!);
 
       await ScrcpyUtils.newInstance(
         ref,

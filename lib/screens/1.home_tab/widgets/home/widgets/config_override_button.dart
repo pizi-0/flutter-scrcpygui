@@ -112,18 +112,18 @@ class _OverrideConfigPopoverState extends ConsumerState<OverrideConfigPopover> {
                     ],
                   ),
                 ),
-                // SecondaryButton(
-                //   trailing: Checkbox(
-                //     state: overrides.contains(ScrcpyOverride.landscape)
-                //         ? CheckboxState.checked
-                //         : CheckboxState.unchecked,
-                //     onChanged: (value) => overrideNotifier
-                //         .toggleOverride(ScrcpyOverride.landscape),
-                //   ),
-                //   onPressed: () =>
-                //       overrideNotifier.toggleOverride(ScrcpyOverride.landscape),
-                //   child: Text('Landscape'),
-                // ),
+                SecondaryButton(
+                  trailing: Checkbox(
+                    state: overrides.contains(ScrcpyOverride.landscape)
+                        ? CheckboxState.checked
+                        : CheckboxState.unchecked,
+                    onChanged: (value) => overrideNotifier
+                        .toggleOverride(ScrcpyOverride.landscape),
+                  ),
+                  onPressed: () =>
+                      overrideNotifier.toggleOverride(ScrcpyOverride.landscape),
+                  child: Text('Landscape'),
+                ),
                 SecondaryButton(
                   trailing: Checkbox(
                     state: overrides.contains(ScrcpyOverride.mute)
