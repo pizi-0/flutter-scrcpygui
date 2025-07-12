@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/device_info_model.dart';
 import 'package:scrcpygui/utils/extension.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -91,7 +92,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
       ),
       children: [
         _buildDisplaySelector(selectedConfig, info),
-        const Divider(),
+        // const Divider(),
         _buildVideoCodecNFormatSelector(context, selectedConfig, info),
         const Divider(),
         _buildVideoBitrate(context),
@@ -170,9 +171,10 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
       ...displays.map((d) => (d.id, d.id)),
       ('new', 'New display'),
     ];
+    final theme = Theme.of(context);
 
     return Column(
-      spacing: 8,
+      // spacing: 8,
       children: [
         ConfigCustom(
           dimTitle: false,
@@ -202,97 +204,115 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
             itemBuilder: (context, value) => Text(value.$2),
           ),
         ),
-        if (selectedConfig.videoOptions.displayId == 'new') const Divider(),
-        if (selectedConfig.videoOptions.displayId == 'new')
-          Card(
-            borderRadius: Theme.of(context).borderRadiusMd,
-            filled: true,
-            padding: EdgeInsets.all(8),
-            child: Column(
-              spacing: 8,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Label(child: Text(el.videoSection.displays.virtual.label))
-                    .small(),
-                PgSectionCard(
-                  cardPadding: EdgeInsets.all(8),
+        Gap(8, crossAxisExtent: 8),
+        const Divider(),
+        PgExpandable(
+          expand: selectedConfig.videoOptions.displayId == 'new',
+          child: Column(
+            children: [
+              Gap(8),
+              OutlinedContainer(
+                backgroundColor: theme.colorScheme.accent,
+                borderRadius: theme.borderRadiusMd,
+                padding: EdgeInsets.all(8),
+                child: Column(
+                  spacing: 8,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ConfigUserInput(
-                      placeholder: Text('eg: 1920x1080'),
-                      inputFormatters: [],
-                      showinfo: showInfo,
-                      label: el.videoSection.displays.virtual.resolution.label,
-                      subtitle: selectedConfig.videoOptions
-                                      .virtualDisplayOptions.resolution ==
-                                  DEFAULT ||
-                              vdResolutionController.text.isEmpty ||
-                              !selectedConfig.videoOptions.virtualDisplayOptions
-                                  .resolution.isValidResolution
-                          ? el.videoSection.displays.virtual.resolution.info
-                              .default$
-                          : el.videoSection.displays.virtual.resolution.info
-                              .alt(res: vdResolutionController.text),
-                      controller: vdResolutionController,
-                      onChanged: _onVdResolutionChanged,
-                    ),
-                    Divider(),
-                    ConfigUserInput(
-                      placeholder: Text('eg: 420'),
-                      showinfo: showInfo,
-                      label: el.videoSection.displays.virtual.dpi.label,
-                      subtitle: selectedConfig
-                                      .videoOptions.virtualDisplayOptions.dpi ==
-                                  DEFAULT ||
-                              vdDPIController.text.isEmpty
-                          ? el.videoSection.displays.virtual.dpi.info.default$
-                          : el.videoSection.displays.virtual.dpi.info.alt(
-                              dpi: vdDPIController.text,
-                              res: vdResolutionController.text),
-                      controller: vdDPIController,
-                      onChanged: _onVdDpiChanged,
-                    ),
-                    Divider(),
-                    ConfigCustom(
-                      title: el.videoSection.displays.virtual.deco.label,
-                      subtitle: selectedConfig.videoOptions
-                              .virtualDisplayOptions.disableDecorations
-                          ? el.videoSection.displays.virtual.deco.info.alt
-                          : el.videoSection.displays.virtual.deco.info.default$,
-                      showinfo: showInfo,
-                      childExpand: false,
-                      onPressed: _onVdDisableDecoChanged,
-                      child: Checkbox(
-                        state: selectedConfig.videoOptions.virtualDisplayOptions
-                                .disableDecorations
-                            ? CheckboxState.checked
-                            : CheckboxState.unchecked,
-                        onChanged: (val) => _onVdDisableDecoChanged(),
-                      ),
-                    ),
-                    Divider(),
-                    ConfigCustom(
-                      title: el.videoSection.displays.virtual.preserve.label,
-                      subtitle: selectedConfig
-                              .videoOptions.virtualDisplayOptions.preseveContent
-                          ? el.videoSection.displays.virtual.preserve.info.alt
-                          : el.videoSection.displays.virtual.preserve.info
-                              .default$,
-                      showinfo: showInfo,
-                      childExpand: false,
-                      onPressed: _onVdDestroyContentChanged,
-                      child: Checkbox(
-                        state: selectedConfig.videoOptions.virtualDisplayOptions
-                                .preseveContent
-                            ? CheckboxState.checked
-                            : CheckboxState.unchecked,
-                        onChanged: (value) => _onVdDestroyContentChanged(),
-                      ),
+                    Label(child: Text(el.videoSection.displays.virtual.label))
+                        .small(),
+                    PgSectionCard(
+                      cardPadding: EdgeInsets.all(8),
+                      children: [
+                        ConfigUserInput(
+                          placeholder: Text('eg: 1920x1080'),
+                          inputFormatters: [],
+                          showinfo: showInfo,
+                          label:
+                              el.videoSection.displays.virtual.resolution.label,
+                          subtitle: selectedConfig.videoOptions
+                                          .virtualDisplayOptions.resolution ==
+                                      DEFAULT ||
+                                  vdResolutionController.text.isEmpty ||
+                                  !selectedConfig
+                                      .videoOptions
+                                      .virtualDisplayOptions
+                                      .resolution
+                                      .isValidResolution
+                              ? el.videoSection.displays.virtual.resolution.info
+                                  .default$
+                              : el.videoSection.displays.virtual.resolution.info
+                                  .alt(res: vdResolutionController.text),
+                          controller: vdResolutionController,
+                          onChanged: _onVdResolutionChanged,
+                        ),
+                        Divider(),
+                        ConfigUserInput(
+                          placeholder: Text('eg: 420'),
+                          showinfo: showInfo,
+                          label: el.videoSection.displays.virtual.dpi.label,
+                          subtitle: selectedConfig.videoOptions
+                                          .virtualDisplayOptions.dpi ==
+                                      DEFAULT ||
+                                  vdDPIController.text.isEmpty
+                              ? el.videoSection.displays.virtual.dpi.info
+                                  .default$
+                              : el.videoSection.displays.virtual.dpi.info.alt(
+                                  dpi: vdDPIController.text,
+                                  res: vdResolutionController.text),
+                          controller: vdDPIController,
+                          onChanged: _onVdDpiChanged,
+                        ),
+                        Divider(),
+                        ConfigCustom(
+                          title: el.videoSection.displays.virtual.deco.label,
+                          subtitle: selectedConfig.videoOptions
+                                  .virtualDisplayOptions.disableDecorations
+                              ? el.videoSection.displays.virtual.deco.info.alt
+                              : el.videoSection.displays.virtual.deco.info
+                                  .default$,
+                          showinfo: showInfo,
+                          childExpand: false,
+                          onPressed: _onVdDisableDecoChanged,
+                          child: Checkbox(
+                            state: selectedConfig.videoOptions
+                                    .virtualDisplayOptions.disableDecorations
+                                ? CheckboxState.checked
+                                : CheckboxState.unchecked,
+                            onChanged: (val) => _onVdDisableDecoChanged(),
+                          ),
+                        ),
+                        Divider(),
+                        ConfigCustom(
+                          title:
+                              el.videoSection.displays.virtual.preserve.label,
+                          subtitle: selectedConfig.videoOptions
+                                  .virtualDisplayOptions.preseveContent
+                              ? el.videoSection.displays.virtual.preserve.info
+                                  .alt
+                              : el.videoSection.displays.virtual.preserve.info
+                                  .default$,
+                          showinfo: showInfo,
+                          childExpand: false,
+                          onPressed: _onVdDestroyContentChanged,
+                          child: Checkbox(
+                            state: selectedConfig.videoOptions
+                                    .virtualDisplayOptions.preseveContent
+                                ? CheckboxState.checked
+                                : CheckboxState.unchecked,
+                            onChanged: (value) => _onVdDestroyContentChanged(),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              Gap(8),
+              const Divider(),
+            ],
           ),
+        ),
 
         // if (selectedConfig.videoOptions.displayId == 'new') const Divider(),
         // if (selectedConfig.videoOptions.displayId == 'new')
