@@ -17,7 +17,12 @@ import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:string_extensions/string_extensions.dart';
 
+import '../../db/db.dart';
+import '../../providers/version_provider.dart';
+import '../../utils/adb_utils.dart';
+import '../1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
 import 'widgets/ip_connect.dart';
 import 'widgets/wifi_scan_result.dart';
 
@@ -186,27 +191,9 @@ class ConnectTabBig extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               spacing: 8,
                               children: [
-                                Basic(
-                                  title: Text(ipHistory[index]),
-                                  trailing: Row(
-                                    spacing: 8,
-                                    children: [
-                                      GhostButton(
-                                        density: ButtonDensity.iconDense,
-                                        onPressed: () {
-                                          ipInput.text = ipHistory[index];
-                                        },
-                                        child: Icon(Icons.edit_rounded),
-                                      ),
-                                      GhostButton(
-                                        density: ButtonDensity.iconDense,
-                                        onPressed: () {
-                                          ipInput.text = ipHistory[index];
-                                        },
-                                        child: Icon(Icons.link_rounded),
-                                      ),
-                                    ],
-                                  ),
+                                IpHistoryTile(
+                                  ip: ipHistory[index],
+                                  ipTextController: ipInput,
                                 ),
                                 Divider()
                               ],
@@ -235,6 +222,119 @@ class ConnectTabBig extends ConsumerWidget {
         ),
       ],
     );
+  }
+}
+
+class IpHistoryTile extends ConsumerStatefulWidget {
+  const IpHistoryTile({
+    super.key,
+    required this.ip,
+    required this.ipTextController,
+  });
+
+  final String ip;
+  final TextEditingController ipTextController;
+
+  @override
+  ConsumerState<IpHistoryTile> createState() => _IpHistoryTileState();
+}
+
+class _IpHistoryTileState extends ConsumerState<IpHistoryTile> {
+  bool loading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Basic(
+      title: Text(widget.ip),
+      trailing: Row(
+        spacing: 8,
+        children: [
+          GhostButton(
+            density: ButtonDensity.iconDense,
+            onPressed: () {
+              widget.ipTextController.text = widget.ip;
+            },
+            child: Icon(Icons.edit_rounded),
+          ),
+          GhostButton(
+            density: ButtonDensity.iconDense,
+            onPressed: () => _connect(widget.ip),
+            child: loading
+                ? SizedBox.square(
+                    dimension: 20,
+                    child: Center(child: const CircularProgressIndicator()))
+                : Icon(Icons.link_rounded),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _connect(String ipport) async {
+    loading = true;
+    setState(() {});
+
+    try {
+      final workDir = ref.read(execDirProvider);
+      final res = await AdbUtils.connectWithIp(workDir, ipport: ipport);
+
+      if (res.success) {
+        ref.read(ipHistoryProvider.notifier).update((state) {
+          if (state.length == 10) {
+            state.removeLast();
+          }
+          return [ipport, ...state.where((ip) => ip != ipport)];
+        });
+
+        await Db.saveWirelessHistory(ref.read(ipHistoryProvider));
+        showToast(
+          showDuration: 1.5.seconds,
+          context: context,
+          location: ToastLocation.bottomCenter,
+          builder: (context, overlay) => SurfaceCard(
+              child: Basic(
+            title: Text(el.connectLoc.withIp.connected(to: ipport)),
+            trailing: const Icon(
+              Icons.check_circle_outline_rounded,
+              color: Colors.green,
+            ),
+          )),
+        );
+      }
+
+      if (!res.success) {
+        showDialog(
+          barrierDismissible: true,
+          context: context,
+          builder: (context) => ErrorDialog(
+            title: el.statusLoc.error,
+            content: [
+              Text(
+                res.errorMessage.replaceAtIndex(
+                    index: 0,
+                    replacement: res.errorMessage.substring(0, 1).capitalize),
+              ),
+            ],
+          ),
+        );
+      }
+    } on Exception catch (e) {
+      if (mounted) {
+        loading = false;
+        setState(() {});
+      }
+
+      showDialog(
+        context: context,
+        builder: (context) => ErrorDialog(
+            title: el.statusLoc.error, content: [Text(e.toString())]),
+      );
+    }
+
+    if (mounted) {
+      loading = false;
+      setState(() {});
+    }
   }
 }
 
