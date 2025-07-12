@@ -209,12 +209,21 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
           ),
         ],
         leading: [
-          IconButton.ghost(
-            onPressed:
-                hasChanges && similar.isEmpty ? _saveConfig : context.pop,
-            icon: hasChanges && similar.isEmpty
-                ? Icon(Icons.save_rounded)
-                : Icon(Icons.arrow_back_rounded),
+          Row(
+            children: [
+              IconButton.ghost(
+                onPressed: context.pop,
+                icon: Icon(Icons.arrow_back_rounded),
+              ),
+              FadeIn(
+                duration: 200.milliseconds,
+                animate: hasChanges && similar.isEmpty,
+                child: IconButton.ghost(
+                  onPressed: _saveConfig,
+                  icon: Icon(Icons.save_rounded),
+                ),
+              ),
+            ],
           ),
         ],
         title: hasChanges
