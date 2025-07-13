@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,7 @@ import 'package:localization/localization.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
+import 'package:scrcpygui/models/device_settings_screen_state.dart';
 import 'package:scrcpygui/providers/automation_provider.dart';
 import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
@@ -18,12 +20,12 @@ import 'package:scrcpygui/widgets/custom_ui/pg_column.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../../../models/automation.dart';
 import '../../../../providers/adb_provider.dart';
+import 'device_settings_state_provider.dart';
 
 // ignore: constant_identifier_names
 const DO_NOTHING = 'Do nothing';
-final deviceSettingsShowInfo = StateProvider((ref) => false);
-final deviceSettingsLoading = StateProvider((ref) => false);
 
 class DeviceSettingsScreen extends ConsumerStatefulWidget {
   final String id;
@@ -37,11 +39,11 @@ class DeviceSettingsScreen extends ConsumerStatefulWidget {
 
 class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   late AdbDevices dev;
-  String? autoLaunchConfigId;
-  late TextEditingController namecontroller;
+
   ScrollController scrollController = ScrollController();
   bool loading = false;
-  FocusNode textBox = FocusNode();
+  late DeviceSettingsScreenState oldState;
+  late TextEditingController oldController;
 
   @override
   void initState() {
@@ -51,16 +53,22 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
         .read(infoProvider)
         .firstWhereOrNull((info) => info.serialNo == dev.serialNo);
 
-    final autoLaunch = ref
-        .read(autoLaunchProvider)
-        .firstWhereOrNull((a) => a.deviceId == dev.id);
-
-    autoLaunchConfigId = autoLaunch?.configId;
-
-    namecontroller =
+    oldController =
         TextEditingController(text: deviceInfo?.deviceName ?? dev.modelName);
+    final newController =
+        ref.read(deviceSettingsStateProvider(dev)).namecontroller;
 
-    textBox.addListener(_onLoseFocus);
+    oldState = ref
+        .read(deviceSettingsStateProvider(dev))
+        .copyWith(namecontroller: oldController);
+
+    newController.addListener(
+      () {
+        if (newController.text != oldController.text) {
+          setState(() {});
+        }
+      },
+    );
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((a) async {
@@ -72,8 +80,6 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
 
   @override
   void dispose() {
-    namecontroller.dispose();
-    textBox.removeListener(_onLoseFocus);
     super.dispose();
   }
 
@@ -83,29 +89,85 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
         .watch(infoProvider)
         .firstWhereOrNull((info) => info.serialNo == dev.serialNo);
 
+    final currentState = ref.watch(deviceSettingsStateProvider(dev));
+
     return PgScaffoldCustom(
       title: Text(
           '${el.deviceSettingsLoc.title} / ${deviceInfo?.deviceName ?? dev.modelName}'),
-      onBack: () => context.pop(),
+      leading: [
+        IconButton.ghost(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => context.pop(),
+        ),
+        FadeIn(
+          duration: 200.milliseconds,
+          animate: oldState != currentState,
+          child: IconButton.ghost(
+            icon: Icon(Icons.save),
+            onPressed: _save,
+          ),
+        ),
+      ],
+      appBarTrailing: [
+        IconButton.ghost(
+          icon: Icon(Icons.arrow_back, color: Colors.transparent),
+          onPressed: null,
+        ),
+        IconButton.ghost(
+          icon: Icon(Icons.save, color: Colors.transparent),
+          onPressed: null,
+        ),
+      ],
       scaffoldBody: ResponsiveBuilder(builder: (context, sizeInfo) {
         return AnimatedSwitcher(
           duration: 200.milliseconds,
           child: sizeInfo.isMobile || sizeInfo.isTablet
-              ? DeviceSettingsSmall(
-                  loading: loading,
-                  namecontroller: namecontroller,
-                  textBox: textBox,
-                  device: dev,
-                )
-              : DeviceSettingsBig(
-                  loading: loading,
-                  namecontroller: namecontroller,
-                  textBox: textBox,
-                  device: dev,
-                ),
+              ? DeviceSettingsSmall(device: dev)
+              : DeviceSettingsBig(device: dev),
         );
       }),
     );
+  }
+
+  Future<void> _save() async {
+    final newState = ref.read(deviceSettingsStateProvider(dev));
+    final deviceInfo =
+        ref.read(infoProvider).firstWhere((i) => i.serialNo == dev.serialNo);
+
+    if (newState.namecontroller.text != deviceInfo.deviceName) {
+      final newInfo =
+          deviceInfo.copyWith(deviceName: newState.namecontroller.text);
+
+      ref.read(infoProvider.notifier).addOrEditDeviceInfo(newInfo);
+      await Db.saveDeviceInfos(ref.read(infoProvider));
+    }
+
+    if (newState.autoConnect) {
+      final data = ConnectAutomation(deviceIp: dev.id);
+      ref.read(autoConnectProvider.notifier).add(data);
+      await Db.saveAutoConnect(ref.read(autoConnectProvider));
+    } else {
+      ref.read(autoConnectProvider.notifier).remove(dev.id);
+      await Db.saveAutoConnect(ref.read(autoConnectProvider));
+    }
+
+    if (newState.autoLaunch) {
+      ref.read(autoLaunchProvider.notifier).remove(dev.id);
+
+      for (final ca in newState.autoLaunchConfig) {
+        ref.read(autoLaunchProvider.notifier).add(ca);
+      }
+
+      await Db.saveAutoLaunch(ref.read(autoLaunchProvider));
+    } else {
+      ref.read(autoLaunchProvider.notifier).remove(dev.id);
+
+      await Db.saveAutoLaunch(ref.read(autoLaunchProvider));
+    }
+
+    setState(() {
+      oldState = newState;
+    });
   }
 
   Future<void> _getDeviceInfo() async {
@@ -139,46 +201,32 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
     setState(() {});
   }
 
-  void _onLoseFocus() {
-    if (!textBox.hasFocus) {
-      final deviceInfo = ref
-          .read(infoProvider)
-          .firstWhereOrNull((info) => info.serialNo == dev.serialNo);
-      namecontroller =
-          TextEditingController(text: deviceInfo?.deviceName ?? dev.modelName);
-      setState(() {});
-    }
-  }
+  // void _onLoseFocus() {
+  //   if (!textBox.hasFocus) {
+  //     final deviceInfo = ref
+  //         .read(infoProvider)
+  //         .firstWhereOrNull((info) => info.serialNo == dev.serialNo);
+  //     namecontroller =
+  //         TextEditingController(text: deviceInfo?.deviceName ?? dev.modelName);
+  //     setState(() {});
+  //   }
+  // }
 }
 
 class DeviceSettingsSmall extends ConsumerWidget {
-  final bool expandContent;
   final AdbDevices device;
-  final TextEditingController namecontroller;
-  final bool loading;
-  final FocusNode textBox;
-  const DeviceSettingsSmall({
-    super.key,
-    this.expandContent = false,
-    required this.loading,
-    required this.namecontroller,
-    required this.textBox,
-    required this.device,
-  });
+
+  const DeviceSettingsSmall({super.key, required this.device});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SingleChildScrollView(
-      child: Column(
-        spacing: 8,
-        children: [
-          SettingsPane(
-            namecontroller: namecontroller,
-            textBox: textBox,
-            device: device,
-          ),
-          InfoPane(device: device)
-        ],
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        child: Column(
+          spacing: 8,
+          children: [SettingsPane(device: device), InfoPane(device: device)],
+        ),
       ),
     );
   }
@@ -186,16 +234,8 @@ class DeviceSettingsSmall extends ConsumerWidget {
 
 class DeviceSettingsBig extends ConsumerWidget {
   final AdbDevices device;
-  final TextEditingController namecontroller;
-  final bool loading;
-  final FocusNode textBox;
-  const DeviceSettingsBig({
-    super.key,
-    required this.loading,
-    required this.namecontroller,
-    required this.textBox,
-    required this.device,
-  });
+
+  const DeviceSettingsBig({super.key, required this.device});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -204,8 +244,6 @@ class DeviceSettingsBig extends ConsumerWidget {
       children: [
         LeftColumn(
           child: SettingsPane(
-            namecontroller: namecontroller,
-            textBox: textBox,
             device: device,
             expandContent: true,
           ),

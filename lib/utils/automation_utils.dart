@@ -30,7 +30,10 @@ class AutomationUtils {
     for (final t in task) {
       final running = ref.read(scrcpyInstanceProvider);
       if (connected.where((d) => d.id == t.deviceId).isNotEmpty) {
-        if (running.where((inst) => inst.device.id == t.deviceId).isEmpty) {
+        if (running
+            .where((inst) =>
+                inst.device.id == t.deviceId && inst.config.id == t.configId)
+            .isEmpty) {
           final configToLaunch =
               allConfigs.firstWhereOrNull((c) => c.id == t.configId);
 
