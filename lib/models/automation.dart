@@ -25,6 +25,16 @@ class ConfigAutomation {
 
   factory ConfigAutomation.fromJson(String source) =>
       ConfigAutomation.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  bool operator ==(covariant ConfigAutomation other) {
+    if (identical(this, other)) return true;
+
+    return other.deviceId == deviceId && other.configId == configId;
+  }
+
+  @override
+  int get hashCode => deviceId.hashCode ^ configId.hashCode;
 }
 
 class ConnectAutomation {
@@ -48,4 +58,14 @@ class ConnectAutomation {
 
   factory ConnectAutomation.fromJson(String source) =>
       ConnectAutomation.fromMap(json.decode(source) as Map<String, dynamic>);
+
+  @override
+  bool operator ==(covariant ConnectAutomation other) {
+    if (identical(this, other)) return true;
+
+    return other.deviceIp == deviceIp;
+  }
+
+  @override
+  int get hashCode => deviceIp.hashCode;
 }
