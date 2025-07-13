@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/device_settings_state_provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../db/db.dart';
@@ -13,7 +14,6 @@ import '../../../../../utils/adb_utils.dart';
 import '../../../../../utils/const.dart';
 import '../../../../../widgets/custom_ui/pg_list_tile.dart';
 import '../../../../../widgets/custom_ui/pg_section_card.dart';
-import '../device_settings_screen.dart';
 
 class InfoPane extends ConsumerStatefulWidget {
   final AdbDevices device;
@@ -28,7 +28,8 @@ class _InfoPaneState extends ConsumerState<InfoPane> {
   @override
   Widget build(BuildContext context) {
     final dev = widget.device;
-    final loading = ref.watch(deviceSettingsLoading);
+    final state = ref.watch(deviceSettingsStateProvider(dev));
+    final loading = state.loading;
 
     final deviceInfo = ref
         .watch(infoProvider)
@@ -214,7 +215,7 @@ class _InfoPaneState extends ConsumerState<InfoPane> {
     final selectedDevice = ref.read(selectedDeviceProvider);
     final dev = widget.device;
 
-    ref.read(deviceSettingsLoading.notifier).state = true;
+    ref.read(deviceSettingsStateProvider(dev).notifier).toggleLoading();
 
     final deviceInfo = ref
         .read(infoProvider)
@@ -239,7 +240,7 @@ class _InfoPaneState extends ConsumerState<InfoPane> {
     }
 
     if (mounted) {
-      ref.read(deviceSettingsLoading.notifier).state = false;
+      ref.read(deviceSettingsStateProvider(dev).notifier).toggleLoading();
     }
   }
 }
