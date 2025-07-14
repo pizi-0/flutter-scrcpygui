@@ -195,7 +195,7 @@ class TagChip extends ConsumerWidget {
 
     return Tooltip(
       tooltip: (context) =>
-          PgTooltipContainer(child: Text(getTooltip(tag.label))),
+          TooltipContainer(child: Text(getTooltip(tag.label))),
       child: Chip(
         style: filters.contains(tag) ? ButtonStyle.primary() : null,
         onPressed: () {
