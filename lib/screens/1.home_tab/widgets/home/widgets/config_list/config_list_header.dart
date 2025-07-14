@@ -62,8 +62,8 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
                 onSecondaryTapUp: (details) =>
                     ref.read(configTags.notifier).clearTag(),
                 child: tags.isNotEmpty
-                    ? Text('Filter (${tags.length})')
-                    : Text('Filter'),
+                    ? Text('${el.buttonLabelLoc.filter} (${tags.length})')
+                    : Text(el.buttonLabelLoc.filter),
               ),
               Button(
                 style: headerState.edit
@@ -78,7 +78,7 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
 
                   ref.read(configTags.notifier).clearTag();
                 },
-                child: Text('Edit'),
+                child: Text(el.buttonLabelLoc.edit),
               ),
               Button(
                 style: headerState.override
@@ -95,8 +95,9 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
                   ref.read(configOverridesProvider.notifier).clearOverride();
                 },
                 child: overrides.isEmpty
-                    ? Text('Override')
-                    : Text('Override (${overrides.length})'),
+                    ? Text(el.buttonLabelLoc.override)
+                    : Text(
+                        '${el.buttonLabelLoc.override} (${overrides.length})'),
               ),
             ],
           ),

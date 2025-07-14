@@ -7571,11 +7571,13 @@ class ButtonLabelLoc {
     required this.overwrite,
     required this.save,
     required this.clear,
-    required this.filter,
     required this.delete,
     required this.serverAgree,
     required this.reorder,
     required this.stopAll,
+    required this.filter,
+    required this.edit,
+    required this.override,
   });
   factory ButtonLabelLoc.fromJson(Map<String, dynamic> json) {
     return ButtonLabelLoc(
@@ -7592,11 +7594,13 @@ class ButtonLabelLoc {
       overwrite: (json['overwrite'] ?? '').toString(),
       save: (json['save'] ?? '').toString(),
       clear: (json['clear'] ?? '').toString(),
-      filter: (json['filter'] ?? '').toString(),
       delete: (json['delete'] ?? '').toString(),
       serverAgree: (json['server_agree'] ?? '').toString(),
       reorder: (json['reorder'] ?? '').toString(),
       stopAll: (json['stop_all'] ?? '').toString(),
+      filter: (json['filter'] ?? '').toString(),
+      edit: (json['edit'] ?? '').toString(),
+      override: (json['override'] ?? '').toString(),
     );
   }
   final String ok;
@@ -7612,11 +7616,13 @@ class ButtonLabelLoc {
   final String overwrite;
   final String save;
   final String clear;
-  final String filter;
   final String delete;
   final String serverAgree;
   final String reorder;
   final String stopAll;
+  final String filter;
+  final String edit;
+  final String override;
   Map<String, Object> get _content => {
         r'''ok''': ok,
         r'''close''': close,
@@ -7631,11 +7637,13 @@ class ButtonLabelLoc {
         r'''overwrite''': overwrite,
         r'''save''': save,
         r'''clear''': clear,
-        r'''filter''': filter,
         r'''delete''': delete,
         r'''server_agree''': serverAgree,
         r'''reorder''': reorder,
         r'''stop_all''': stopAll,
+        r'''filter''': filter,
+        r'''edit''': edit,
+        r'''override''': override,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -7676,6 +7684,7 @@ class StatusLoc {
     required this.running,
     required this.stopped,
     required this.gettingInfo,
+    required this.noDevicesFound,
   });
   factory StatusLoc.fromJson(Map<String, dynamic> json) {
     return StatusLoc(
@@ -7688,6 +7697,7 @@ class StatusLoc {
       running: (json['running'] ?? '').toString(),
       stopped: (json['stopped'] ?? '').toString(),
       gettingInfo: (json['getting_info'] ?? '').toString(),
+      noDevicesFound: (json['no_devices_found'] ?? '').toString(),
     );
   }
   final String failed;
@@ -7699,6 +7709,7 @@ class StatusLoc {
   final String running;
   final String stopped;
   final String gettingInfo;
+  final String noDevicesFound;
   Map<String, Object> get _content => {
         r'''failed''': failed,
         r'''unauth''': unauth,
@@ -7709,6 +7720,7 @@ class StatusLoc {
         r'''running''': running,
         r'''stopped''': stopped,
         r'''getting_info''': gettingInfo,
+        r'''no_devices_found''': noDevicesFound,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -7964,6 +7976,192 @@ class ConfigFiltersLocLabel {
   }
 }
 
+class ConfigOverrideLoc {
+  const ConfigOverrideLoc({
+    required this.record,
+    required this.landscape,
+    required this.mute,
+  });
+  factory ConfigOverrideLoc.fromJson(Map<String, dynamic> json) {
+    return ConfigOverrideLoc(
+      record: ConfigOverrideLocRecord.fromJson(
+          (json['record'] as Map).cast<String, dynamic>()),
+      landscape: ConfigOverrideLocLandscape.fromJson(
+          (json['landscape'] as Map).cast<String, dynamic>()),
+      mute: ConfigOverrideLocMute.fromJson(
+          (json['mute'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final ConfigOverrideLocRecord record;
+
+  final ConfigOverrideLocLandscape landscape;
+
+  final ConfigOverrideLocMute mute;
+
+  Map<String, Object> get _content => {
+        r'''record''': record,
+        r'''landscape''': landscape,
+        r'''mute''': mute,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ConfigOverrideLocRecord {
+  const ConfigOverrideLocRecord({
+    required this.label,
+    required this.openFolder,
+  });
+  factory ConfigOverrideLocRecord.fromJson(Map<String, dynamic> json) {
+    return ConfigOverrideLocRecord(
+      label: (json['label'] ?? '').toString(),
+      openFolder: (json['open_folder'] ?? '').toString(),
+    );
+  }
+  final String label;
+  final String openFolder;
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''open_folder''': openFolder,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ConfigOverrideLocLandscape {
+  const ConfigOverrideLocLandscape({
+    required this.label,
+    required this.info,
+  });
+  factory ConfigOverrideLocLandscape.fromJson(Map<String, dynamic> json) {
+    return ConfigOverrideLocLandscape(
+      label: (json['label'] ?? '').toString(),
+      info: (json['info'] ?? '').toString(),
+    );
+  }
+  final String label;
+  final String info;
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ConfigOverrideLocMute {
+  const ConfigOverrideLocMute({
+    required this.label,
+  });
+  factory ConfigOverrideLocMute.fromJson(Map<String, dynamic> json) {
+    return ConfigOverrideLocMute(
+      label: (json['label'] ?? '').toString(),
+    );
+  }
+  final String label;
+  Map<String, Object> get _content => {
+        r'''label''': label,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class LocalizationMessages {
   LocalizationMessages({
     required this.homeLoc,
@@ -8001,6 +8199,7 @@ class LocalizationMessages {
     required this.commonLoc,
     required this.colorSchemeNameLoc,
     required this.configFiltersLoc,
+    required this.configOverrideLoc,
   });
   factory LocalizationMessages.fromJson(Map<String, dynamic> json) {
     return LocalizationMessages(
@@ -8074,6 +8273,8 @@ class LocalizationMessages {
           (json['color_scheme_name_loc'] as Map).cast<String, dynamic>()),
       configFiltersLoc: ConfigFiltersLoc.fromJson(
           (json['config_filters_loc'] as Map).cast<String, dynamic>()),
+      configOverrideLoc: ConfigOverrideLoc.fromJson(
+          (json['config_override_loc'] as Map).cast<String, dynamic>()),
     );
   }
   final HomeLoc homeLoc;
@@ -8146,6 +8347,8 @@ class LocalizationMessages {
 
   final ConfigFiltersLoc configFiltersLoc;
 
+  final ConfigOverrideLoc configOverrideLoc;
+
   Map<String, Object> get _content => {
         r'''home_loc''': homeLoc,
         r'''device_tile_loc''': deviceTileLoc,
@@ -8182,6 +8385,7 @@ class LocalizationMessages {
         r'''common_loc''': commonLoc,
         r'''color_scheme_name_loc''': colorSchemeNameLoc,
         r'''config_filters_loc''': configFiltersLoc,
+        r'''config_override_loc''': configOverrideLoc,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -8825,11 +9029,13 @@ LocalizationMessages get en => LocalizationMessages(
         overwrite: 'Overwrite',
         save: 'Save',
         clear: 'Clear',
-        filter: 'Filter configs',
         delete: 'Delete',
         serverAgree: 'I understand, start server',
         reorder: 'Reorder',
         stopAll: 'Stop all',
+        filter: 'Filter',
+        edit: 'Edit',
+        override: 'Override',
       ),
       statusLoc: StatusLoc(
         failed: 'Failed',
@@ -8841,6 +9047,7 @@ LocalizationMessages get en => LocalizationMessages(
         running: 'Running',
         stopped: 'Stopped',
         gettingInfo: 'Getting info',
+        noDevicesFound: 'No devices found',
       ),
       commonLoc: CommonLoc(
         default$: 'Default',
@@ -8866,6 +9073,19 @@ LocalizationMessages get en => LocalizationMessages(
         label: ConfigFiltersLocLabel(
           withApp: 'With app',
           virt: 'Virtual display',
+        ),
+      ),
+      configOverrideLoc: ConfigOverrideLoc(
+        record: ConfigOverrideLocRecord(
+          label: 'Record',
+          openFolder: 'Open folder',
+        ),
+        landscape: ConfigOverrideLocLandscape(
+          label: 'Landscape',
+          info: 'Only for virtual display',
+        ),
+        mute: ConfigOverrideLocMute(
+          label: 'Mute',
         ),
       ),
     );
@@ -9493,11 +9713,13 @@ LocalizationMessages get es => LocalizationMessages(
         overwrite: 'Sobrescribir',
         save: 'Guardar',
         clear: 'Limpiar',
-        filter: 'Filtrar configuraciones',
         delete: 'Eliminar',
         serverAgree: 'Entiendo, iniciar servidor',
         reorder: 'Reordenar',
         stopAll: 'Detener todo',
+        filter: 'Filtrar',
+        edit: 'Editar',
+        override: 'Modificar',
       ),
       statusLoc: StatusLoc(
         failed: 'Fallido',
@@ -9509,6 +9731,7 @@ LocalizationMessages get es => LocalizationMessages(
         running: 'En ejecución',
         stopped: 'Detenido',
         gettingInfo: 'Obteniendo información',
+        noDevicesFound: 'No se encontraron dispositivos',
       ),
       commonLoc: CommonLoc(
         default$: 'Predeterminado',
@@ -9534,6 +9757,19 @@ LocalizationMessages get es => LocalizationMessages(
         label: ConfigFiltersLocLabel(
           withApp: 'Con app',
           virt: 'Pantalla virtual',
+        ),
+      ),
+      configOverrideLoc: ConfigOverrideLoc(
+        record: ConfigOverrideLocRecord(
+          label: 'Grabar',
+          openFolder: 'Abrir carpeta',
+        ),
+        landscape: ConfigOverrideLocLandscape(
+          label: 'Horizontal',
+          info: 'Solo para pantalla virtual',
+        ),
+        mute: ConfigOverrideLocMute(
+          label: 'Silenciar',
         ),
       ),
     );
@@ -10157,11 +10393,13 @@ LocalizationMessages get it => LocalizationMessages(
         overwrite: 'Sovrascrivi',
         save: 'Salva',
         clear: 'Cancella',
-        filter: 'Filtra configurazioni',
         delete: 'Elimina',
         serverAgree: 'Capisco, avvia server',
         reorder: 'Riordina',
         stopAll: 'Ferma tutto',
+        filter: 'Filtra',
+        edit: 'Modifica',
+        override: 'Ignora',
       ),
       statusLoc: StatusLoc(
         failed: 'Fallito',
@@ -10173,6 +10411,7 @@ LocalizationMessages get it => LocalizationMessages(
         running: 'In esecuzione',
         stopped: 'Fermato',
         gettingInfo: 'Recupero informazioni',
+        noDevicesFound: 'Nessun dispositivo trovato',
       ),
       commonLoc: CommonLoc(
         default$: 'Predefinito',
@@ -10198,6 +10437,19 @@ LocalizationMessages get it => LocalizationMessages(
         label: ConfigFiltersLocLabel(
           withApp: 'Con app',
           virt: 'Display virtuale',
+        ),
+      ),
+      configOverrideLoc: ConfigOverrideLoc(
+        record: ConfigOverrideLocRecord(
+          label: 'Registra',
+          openFolder: 'Apri cartella',
+        ),
+        landscape: ConfigOverrideLocLandscape(
+          label: 'Orizzontale',
+          info: 'Solo per display virtuale',
+        ),
+        mute: ConfigOverrideLocMute(
+          label: 'Silenzia',
         ),
       ),
     );
@@ -10820,11 +11072,13 @@ LocalizationMessages get ms => LocalizationMessages(
         overwrite: 'Timpa',
         save: 'Simpan',
         clear: 'Kosongkan',
-        filter: 'Tapis konfigurasi',
         delete: 'Padam',
         serverAgree: 'Saya faham, mulakan pelayan',
         reorder: 'Susun semula',
         stopAll: 'Hentikan semua',
+        filter: 'Tapis',
+        edit: 'Ubah',
+        override: 'Ubahsuai',
       ),
       statusLoc: StatusLoc(
         failed: 'Gagal',
@@ -10836,6 +11090,7 @@ LocalizationMessages get ms => LocalizationMessages(
         running: 'Sedang berjalan',
         stopped: 'Dihentikan',
         gettingInfo: 'Mendapatkan maklumat',
+        noDevicesFound: 'Tiada peranti ditemui',
       ),
       commonLoc: CommonLoc(
         default$: 'Lalai',
@@ -10861,6 +11116,19 @@ LocalizationMessages get ms => LocalizationMessages(
         label: ConfigFiltersLocLabel(
           withApp: 'Dengan aplikasi',
           virt: 'Paparan maya',
+        ),
+      ),
+      configOverrideLoc: ConfigOverrideLoc(
+        record: ConfigOverrideLocRecord(
+          label: 'Rakam',
+          openFolder: 'Buka folder',
+        ),
+        landscape: ConfigOverrideLocLandscape(
+          label: 'Lanskap',
+          info: 'Hanya untuk paparan maya',
+        ),
+        mute: ConfigOverrideLocMute(
+          label: 'Senyap',
         ),
       ),
     );

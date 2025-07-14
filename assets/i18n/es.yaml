@@ -515,11 +515,13 @@ button_label_loc:
   overwrite: Sobrescribir
   save: Guardar
   clear: Limpiar
-  filter: Filtrar configuraciones
   delete: Eliminar
   server_agree: Entiendo, iniciar servidor
   reorder: Reordenar
   stop_all: Detener todo
+  filter: Filtrar
+  edit: Editar
+  override: Modificar
 
 # status
 status_loc:
@@ -532,6 +534,7 @@ status_loc:
   running: En ejecución
   stopped: Detenido
   getting_info: Obteniendo información
+  no_devices_found: No se encontraron dispositivos
 
 # common
 common_loc:
@@ -558,3 +561,13 @@ config_filters_loc:
   label:
     withApp: Con app
     virt: Pantalla virtual
+
+config_override_loc:
+  record:
+    label: Grabar
+    open_folder: Abrir carpeta
+  landscape:
+    label: Horizontal
+    info: Solo para pantalla virtual
+  mute:
+    label: Silenciar

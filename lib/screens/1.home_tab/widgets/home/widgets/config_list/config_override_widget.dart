@@ -1,5 +1,5 @@
-import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/directory_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -41,7 +41,9 @@ class _OverrideWidgetsState extends ConsumerState<OverrideWidgets> {
             onPressed: () =>
                 ref.read(configOverridesProvider.notifier).toggleOverride(e),
             trailing: _overrideChipTrailing(e, overrides.contains(e)),
-            child: Text(e.name.capitalize).small,
+            child: Text(context
+                    .tr('config_override_loc.${e.name.toLowerCase()}.label'))
+                .small,
           ),
         )
       ],
@@ -54,7 +56,9 @@ class _OverrideWidgetsState extends ConsumerState<OverrideWidgets> {
     switch (e) {
       case ScrcpyOverride.record:
         return Tooltip(
-          tooltip: TooltipContainer(child: Text('Open folder')).call,
+          tooltip: TooltipContainer(
+                  child: Text(el.configOverrideLoc.record.openFolder))
+              .call,
           child: IconButton(
             variance: ButtonStyle.link(),
             density: ButtonDensity.compact,
@@ -69,7 +73,8 @@ class _OverrideWidgetsState extends ConsumerState<OverrideWidgets> {
       case ScrcpyOverride.landscape:
         return Tooltip(
           tooltip:
-              TooltipContainer(child: Text('For virtual display only')).call,
+              TooltipContainer(child: Text(el.configOverrideLoc.landscape.info))
+                  .call,
           child: Icon(Icons.info_outline_rounded).iconSmall(),
         );
 

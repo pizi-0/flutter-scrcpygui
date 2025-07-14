@@ -54,7 +54,8 @@ class _BonsoirResultsState extends ConsumerState<BonsoirResults> {
                     if (bonsoirDevices.isEmpty)
                       SliverFillRemaining(
                         child: Center(
-                          child: Text('No devices found').textSmall.muted,
+                          child:
+                              Text(el.statusLoc.noDevicesFound).textSmall.muted,
                         ),
                       ),
                     if (bonsoirDevices.isNotEmpty)

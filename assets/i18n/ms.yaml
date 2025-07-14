@@ -515,11 +515,13 @@ button_label_loc:
   overwrite: Timpa
   save: Simpan
   clear: Kosongkan
-  filter: Tapis konfigurasi
   delete: Padam
   server_agree: Saya faham, mulakan pelayan
   reorder: Susun semula
   stop_all: Hentikan semua
+  filter: Tapis
+  edit: Ubah
+  override: Ubahsuai
 
 
 
@@ -534,6 +536,7 @@ status_loc:
   running: Sedang berjalan
   stopped: Dihentikan
   getting_info: Mendapatkan maklumat
+  no_devices_found: Tiada peranti ditemui
 
 # common
 common_loc:
@@ -560,3 +563,13 @@ config_filters_loc:
   label:
     withApp: Dengan aplikasi
     virt: Paparan maya
+
+config_override_loc:
+  record:
+    label: Rakam
+    open_folder: Buka folder
+  landscape:
+    label: Lanskap
+    info: Hanya untuk paparan maya
+  mute:
+    label: Senyap

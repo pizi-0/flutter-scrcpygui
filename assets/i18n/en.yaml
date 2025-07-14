@@ -540,11 +540,13 @@ button_label_loc:
   overwrite: Overwrite
   save: Save
   clear: Clear
-  filter: Filter configs
   delete: Delete  
   server_agree: I understand, start server
   reorder: Reorder
   stop_all: Stop all
+  filter: Filter
+  edit: Edit
+  override: Override
 
 # status 
 status_loc: 
@@ -557,6 +559,7 @@ status_loc:
   running: Running
   stopped: Stopped
   getting_info: Getting info
+  no_devices_found: No devices found
 
 # common
 common_loc:
@@ -585,3 +588,14 @@ config_filters_loc:
   label:
     withApp: With app
     virt: Virtual display
+
+
+config_override_loc:
+  record:
+    label: Record
+    open_folder: Open folder
+  landscape: 
+    label: Landscape
+    info: Only for virtual display
+  mute:
+    label: Mute
