@@ -4,18 +4,18 @@ final configListStateProvider =
     StateProvider<ConfigListState>((ref) => ConfigListState());
 
 class ConfigListState {
-  final bool reorder;
+  final bool edit;
   final bool filtering;
   final bool override;
 
-  bool get isOpen => reorder || filtering || override;
+  bool get isOpen => edit || filtering || override;
 
   ConfigListState(
-      {this.reorder = false, this.filtering = false, this.override = false});
+      {this.edit = false, this.filtering = false, this.override = false});
 
-  ConfigListState copyWith({bool? reorder, bool? filtering, bool? override}) {
+  ConfigListState copyWith({bool? edit, bool? filtering, bool? override}) {
     return ConfigListState(
-      reorder: reorder ?? this.reorder,
+      edit: edit ?? this.edit,
       filtering: filtering ?? this.filtering,
       override: override ?? this.override,
     );
