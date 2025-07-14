@@ -89,6 +89,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         (conf) => conf == lastUsedConfig,
         orElse: () => defaultMirror);
 
+    final hidden = await Db.getHiddenConfigs();
+    ref.read(hiddenConfigsProvider.notifier).state = hidden;
+
     final wirelessHistory = await Db.getWirelessHistory();
     ref.read(ipHistoryProvider.notifier).update((state) => wirelessHistory);
 

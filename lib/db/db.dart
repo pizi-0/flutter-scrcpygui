@@ -164,6 +164,16 @@ class Db {
     prefs.setStringList(PKEY_SAVED_CONFIG, savedJson);
   }
 
+  static Future<void> saveHiddenConfigs(List<String> hidden) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList(PKEY_HIDDEN_CONFIGS, hidden);
+  }
+
+  static Future<List<String>> getHiddenConfigs() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getStringList(PKEY_HIDDEN_CONFIGS) ?? [];
+  }
+
   /*
   Device control dialog DB
   */

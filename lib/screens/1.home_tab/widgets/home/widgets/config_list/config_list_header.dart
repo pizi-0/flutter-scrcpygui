@@ -13,9 +13,12 @@ import 'config_override_widget.dart';
 
 class ConfigListHeader extends ConsumerStatefulWidget {
   final List<ScrcpyConfig> reordered;
+  final List<String> hiddenList;
+
   const ConfigListHeader({
     super.key,
-    this.reordered = const [],
+    required this.reordered,
+    required this.hiddenList,
   });
 
   @override
@@ -53,7 +56,7 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
                   ref.read(configListStateProvider.notifier).state =
                       headerState.copyWith(
                           filtering: !headerState.filtering,
-                          reorder: false,
+                          edit: false,
                           override: false);
                 },
                 onSecondaryTapUp: (details) =>
@@ -63,19 +66,19 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
                     : Text('Filter'),
               ),
               Button(
-                style: headerState.reorder
+                style: headerState.edit
                     ? ButtonStyle.primary(density: ButtonDensity.dense)
                     : ButtonStyle.secondary(density: ButtonDensity.dense),
                 onPressed: () {
                   ref.read(configListStateProvider.notifier).state =
                       headerState.copyWith(
                           filtering: false,
-                          reorder: !headerState.reorder,
+                          edit: !headerState.edit,
                           override: false);
 
                   ref.read(configTags.notifier).clearTag();
                 },
-                child: Text(el.buttonLabelLoc.reorder),
+                child: Text('Edit'),
               ),
               Button(
                 style: headerState.override
@@ -85,7 +88,7 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
                   ref.read(configListStateProvider.notifier).state =
                       headerState.copyWith(
                           filtering: false,
-                          reorder: false,
+                          edit: false,
                           override: !headerState.override);
                 },
                 onSecondaryTapUp: (details) {
@@ -119,7 +122,7 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
     switch (headerState) {
       case ConfigListState(filtering: true):
         return ConfigFilterButtonBig(key: const ValueKey('filter'));
-      case ConfigListState(reorder: true):
+      case ConfigListState(edit: true):
         return Row(
           key: const ValueKey('reorder'),
           spacing: 8,
@@ -129,7 +132,7 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
               child: Icon(Icons.close_rounded).iconSmall(),
               onPressed: () => ref
                   .read(configListStateProvider.notifier)
-                  .state = headerState.copyWith(reorder: false),
+                  .state = headerState.copyWith(edit: false),
             ),
             Chip(
               style: ButtonStyle.primary(),
@@ -141,9 +144,28 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
 
                 ref
                     .read(configListStateProvider.notifier)
-                    .update((state) => state.copyWith(reorder: false));
+                    .update((state) => state.copyWith(edit: false));
+
+                ref.read(hiddenConfigsProvider.notifier).state =
+                    widget.hiddenList;
+
+                final filteredConfig = ref
+                    .read(filteredConfigsProvider)
+                    .where((c) => !widget.hiddenList.contains(c.id));
+                final selectedConfig = ref.read(selectedConfigProvider);
+
+                if (filteredConfig.isEmpty) {
+                  ref.read(selectedConfigProvider.notifier).state = null;
+                } else {
+                  if (selectedConfig != null &&
+                      !filteredConfig.contains(selectedConfig)) {
+                    ref.read(selectedConfigProvider.notifier).state =
+                        filteredConfig.first;
+                  }
+                }
 
                 await Db.saveConfigs(ref.read(configsProvider));
+                await Db.saveHiddenConfigs(ref.read(hiddenConfigsProvider));
               },
               child: Text(el.buttonLabelLoc.save).small,
             ),

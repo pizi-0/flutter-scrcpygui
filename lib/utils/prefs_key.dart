@@ -6,6 +6,8 @@ const PKEY_APPTHEME = 'app-theme';
 
 const PKEY_SAVED_CONFIG = 'saved-config';
 
+const PKEY_HIDDEN_CONFIGS = 'hidden-configs';
+
 const PKEY_WIRELESS_DEVICE_HX = 'wireless-history';
 
 const PKEY_SAVED_DEVICES = 'saved-devices';

@@ -50,9 +50,11 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
   Widget build(BuildContext context) {
     final config = ref.watch(selectedConfigProvider);
     final overrides = ref.watch(configOverridesProvider);
+    final hidden = ref.watch(hiddenConfigsProvider);
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
-    final filteredConfigs = ref.watch(filteredConfigsProvider);
+    final filteredConfigs =
+        ref.watch(filteredConfigsProvider).where((c) => !hidden.contains(c.id));
 
     return PgSectionCard(
       label: el.configLoc.label(count: '${filteredConfigs.length}'),
@@ -249,14 +251,30 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
   bool loading = false;
 
   List<ScrcpyConfig> reorderList = [];
+  List<String> hidden = [];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final filteredConfigs = ref.read(filteredConfigsProvider);
+      final hiddenConfigs = ref.read(hiddenConfigsProvider);
+
+      reorderList = [...filteredConfigs];
+
+      hidden = [...hiddenConfigs];
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final filteredConfigs = ref.watch(filteredConfigsProvider);
-    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
-    final reorder = ref.watch(configListStateProvider).reorder;
+    final filteredConfigs = [
+      ...ref.watch(filteredConfigsProvider).where((c) => !hidden.contains(c.id))
+    ];
 
-    reorderList = [...filteredConfigs];
+    ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
+    final edit = ref.watch(configListStateProvider).edit;
 
     return PgSectionCardNoScroll(
       label: el.configLoc.label(count: '${filteredConfigs.length}'),
@@ -272,25 +290,39 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 8,
         children: [
-          ConfigListHeader(reordered: reorderList),
+          ConfigListHeader(reordered: reorderList, hiddenList: hidden),
           Expanded(
             child: CustomScrollView(
               physics: NeverScrollableScrollPhysics(),
               slivers: [
                 SliverFillRemaining(
-                  child: ReorderableList(
-                    itemBuilder: (context, index) {
-                      return _reorderableConfigListTIle(index, filteredConfigs);
-                    },
-                    itemCount:
-                        reorder ? reorderList.length : filteredConfigs.length,
-                    onReorder: (oldIndex, newIndex) {
-                      if (oldIndex < newIndex) {
-                        newIndex -= 1;
-                      }
-                      final item = reorderList.removeAt(oldIndex);
-                      reorderList.insert(newIndex, item);
-                    },
+                  child: AnimatedSwitcher(
+                    duration: 200.milliseconds,
+                    child: filteredConfigs.isEmpty && !edit
+                        ? Center(
+                            child: Text(el.configLoc.empty).muted.textSmall,
+                          )
+                        : ReorderableList(
+                            padding: EdgeInsets.all(8),
+                            itemBuilder: (context, index) {
+                              final config = edit
+                                  ? reorderList[index]
+                                  : filteredConfigs.toList()[index];
+
+                              return _reorderableConfigListTIle(config);
+                            },
+                            itemCount: edit
+                                ? reorderList.length
+                                : filteredConfigs.length,
+                            onReorder: (oldIndex, newIndex) {
+                              if (oldIndex < newIndex) {
+                                newIndex -= 1;
+                              }
+                              final item = reorderList.removeAt(oldIndex);
+                              reorderList.insert(newIndex, item);
+                              setState(() {});
+                            },
+                          ),
                   ),
                 )
               ],
@@ -301,45 +333,64 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
     );
   }
 
-  Widget _reorderableConfigListTIle(
-      int index, List<ScrcpyConfig> filteredConfigs) {
-    final reorder = ref.watch(configListStateProvider).reorder;
+  Widget _reorderableConfigListTIle(ScrcpyConfig config) {
+    final edit = ref.watch(configListStateProvider).edit;
 
     return Column(
-      key: reorder
-          ? ValueKey(reorderList[index].id)
-          : ValueKey(filteredConfigs[index].id),
+      key: edit
+          ? ValueKey(reorderList.firstWhere((c) => c.id == config.id).id)
+          : ValueKey(config.id),
       spacing: 8,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            spacing: reorder ? 8 : 0,
-            children: [
-              AnimatedContainer(
-                duration: 100.milliseconds,
-                width: reorder ? 20 : 0,
-                child: FittedBox(
-                  child: MouseRegion(
-                    cursor: SystemMouseCursors.grab,
-                    child: ReorderableDragStartListener(
-                        index: index,
-                        child: Icon(Icons.drag_indicator_rounded)),
-                  ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          spacing: 8,
+          children: [
+            AnimatedSize(
+              duration: 150.milliseconds,
+              child: SizedBox(
+                width: edit ? null : 0,
+                child: Row(
+                  children: [
+                    MouseRegion(
+                      cursor: SystemMouseCursors.grab,
+                      child: ReorderableDragStartListener(
+                          index: reorderList.indexOf(config),
+                          child:
+                              Icon(Icons.drag_indicator_rounded).iconSmall()),
+                    ),
+                    IconButton.ghost(
+                      onPressed: () {
+                        if (hidden.contains(config.id)) {
+                          hidden.remove(config.id);
+                        } else {
+                          hidden.add(config.id);
+                        }
+                        setState(() {});
+                      },
+                      icon: Icon(
+                        hidden.contains(config.id)
+                            ? Icons.visibility_off_rounded
+                            : Icons.visibility_rounded,
+                        color: hidden.contains(config.id) ? Colors.red : null,
+                      ).iconSmall(),
+                    ),
+                  ],
                 ),
               ),
-              Expanded(
-                  child: ConfigListTile(
-                      conf: reorder
-                          ? reorderList[index]
-                          : filteredConfigs[index])),
-            ],
-          ),
+            ),
+            Expanded(
+              child: ConfigListTile(
+                showStartButton: !edit,
+                conf: config,
+              ),
+            ),
+          ],
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          padding: const EdgeInsets.all(4.0),
           child: const Divider(),
-        )
+        ),
       ],
     );
   }
