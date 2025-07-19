@@ -1,4 +1,5 @@
 import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
@@ -255,16 +256,27 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
 
   @override
   void initState() {
+    final filteredConfigs = ref.read(filteredConfigsProvider);
+    final hiddenConfigs = ref.read(hiddenConfigsProvider);
+
+    reorderList = [...filteredConfigs];
+
+    hidden = [...hiddenConfigs];
+
+    ref.listenManual(
+      filteredConfigsProvider,
+      (previous, next) {
+        final filteredConfigs = ref.read(filteredConfigsProvider);
+        final hiddenConfigs = ref.read(hiddenConfigsProvider);
+
+        reorderList = [...filteredConfigs];
+        hidden = [...hiddenConfigs];
+
+        setState(() {});
+      },
+    );
+
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final filteredConfigs = ref.read(filteredConfigsProvider);
-      final hiddenConfigs = ref.read(hiddenConfigsProvider);
-
-      reorderList = [...filteredConfigs];
-
-      hidden = [...hiddenConfigs];
-      setState(() {});
-    });
   }
 
   @override
