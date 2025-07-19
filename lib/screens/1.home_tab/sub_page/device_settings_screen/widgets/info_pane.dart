@@ -56,7 +56,7 @@ class _InfoPaneState extends ConsumerState<InfoPane> {
                 else
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: Column(
                         spacing: 8,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -67,7 +67,7 @@ class _InfoPaneState extends ConsumerState<InfoPane> {
               ],
             )
           : Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 spacing: 8,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

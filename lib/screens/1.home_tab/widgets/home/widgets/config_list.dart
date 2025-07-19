@@ -107,32 +107,36 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
                 itemBuilder: (context, value) => Text(value.configName),
               ),
             ),
-            ButtonGroup(
-              children: [
-                Tooltip(
-                  tooltip: widget.showOverrideButton
-                      ? TooltipContainer(
-                          child: Text('* Right click to start with overrides'),
-                        ).call
-                      : (context) => SizedBox.shrink(),
-                  child: PrimaryButton(
-                    onPressed: loading ? null : _start,
-                    onSecondaryTapUp: (d) =>
-                        loading || !widget.showOverrideButton
-                            ? null
-                            : _start(withOverrides: true),
-                    onLongPressStart: (details) =>
-                        loading || !widget.showOverrideButton
-                            ? null
-                            : _start(withOverrides: true),
-                    child: loading
-                        ? const CircularProgressIndicator().iconLarge()
-                        : Text(
-                            '${el.configLoc.start}${overrides.isNotEmpty && widget.showOverrideButton ? ' *' : ''}'),
+            SizedBox(
+              height: 32,
+              child: ButtonGroup(
+                children: [
+                  Tooltip(
+                    tooltip: widget.showOverrideButton
+                        ? TooltipContainer(
+                            child:
+                                Text('* Right click to start with overrides'),
+                          ).call
+                        : (context) => SizedBox.shrink(),
+                    child: PrimaryButton(
+                      onPressed: loading ? null : _start,
+                      onSecondaryTapUp: (d) =>
+                          loading || !widget.showOverrideButton
+                              ? null
+                              : _start(withOverrides: true),
+                      onLongPressStart: (details) =>
+                          loading || !widget.showOverrideButton
+                              ? null
+                              : _start(withOverrides: true),
+                      child: loading
+                          ? const CircularProgressIndicator().iconLarge()
+                          : Text(
+                              '${el.configLoc.start}${overrides.isNotEmpty && widget.showOverrideButton ? ' *' : ''}'),
+                    ),
                   ),
-                ),
-                if (widget.showOverrideButton) OverrideButton(),
-              ],
+                  if (widget.showOverrideButton) OverrideButton(),
+                ],
+              ),
             )
           ],
         )
@@ -315,7 +319,6 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
                             child: Text(el.configLoc.empty).muted.textSmall,
                           )
                         : ReorderableList(
-                            padding: EdgeInsets.all(8),
                             itemBuilder: (context, index) {
                               final config = edit
                                   ? reorderList[index]
@@ -362,32 +365,35 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
               duration: 150.milliseconds,
               child: SizedBox(
                 width: edit ? null : 0,
-                child: Row(
-                  children: [
-                    MouseRegion(
-                      cursor: SystemMouseCursors.grab,
-                      child: ReorderableDragStartListener(
-                          index: reorderList.indexOf(config),
-                          child:
-                              Icon(Icons.drag_indicator_rounded).iconSmall()),
-                    ),
-                    IconButton.ghost(
-                      onPressed: () {
-                        if (hidden.contains(config.id)) {
-                          hidden.remove(config.id);
-                        } else {
-                          hidden.add(config.id);
-                        }
-                        setState(() {});
-                      },
-                      icon: Icon(
-                        hidden.contains(config.id)
-                            ? Icons.visibility_off_rounded
-                            : Icons.visibility_rounded,
-                        color: hidden.contains(config.id) ? Colors.red : null,
-                      ).iconSmall(),
-                    ),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      MouseRegion(
+                        cursor: SystemMouseCursors.grab,
+                        child: ReorderableDragStartListener(
+                            index: reorderList.indexOf(config),
+                            child:
+                                Icon(Icons.drag_indicator_rounded).iconSmall()),
+                      ),
+                      IconButton.ghost(
+                        onPressed: () {
+                          if (hidden.contains(config.id)) {
+                            hidden.remove(config.id);
+                          } else {
+                            hidden.add(config.id);
+                          }
+                          setState(() {});
+                        },
+                        icon: Icon(
+                          hidden.contains(config.id)
+                              ? Icons.visibility_off_rounded
+                              : Icons.visibility_rounded,
+                          color: hidden.contains(config.id) ? Colors.red : null,
+                        ).iconSmall(),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

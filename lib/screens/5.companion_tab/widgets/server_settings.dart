@@ -133,7 +133,7 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
       expandContent: widget.expandContent,
       content: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Column(
             spacing: 8,
             children: [

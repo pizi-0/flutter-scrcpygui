@@ -1,6 +1,8 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/providers/app_grid_settings_provider.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -43,7 +45,7 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
         color: theme.colorScheme.border.withAlpha(50),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: PgExpandable(
           expand: headerState.isOpen,
           title: ButtonGroup(
@@ -157,12 +159,19 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
 
                 if (filteredConfig.isEmpty) {
                   ref.read(selectedConfigProvider.notifier).state = null;
+                  ref.read(controlPageConfigProvider.notifier).state = null;
                 } else {
                   if (selectedConfig != null &&
                       !filteredConfig.contains(selectedConfig)) {
                     ref.read(selectedConfigProvider.notifier).state =
                         filteredConfig.first;
                   }
+
+                  ref.read(controlPageConfigProvider.notifier).state = ref
+                      .read(filteredConfigsProvider)
+                      .firstWhereOrNull((c) =>
+                          c.id ==
+                          ref.read(appGridSettingsProvider).lastUsedConfig);
                 }
 
                 await Db.saveConfigs(ref.read(configsProvider));

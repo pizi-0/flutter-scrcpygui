@@ -19,7 +19,6 @@ class _ControlButtonsState extends ConsumerState<ControlButtons> {
   @override
   Widget build(BuildContext context) {
     return PgSectionCardNoScroll(
-      cardPadding: EdgeInsets.all(15),
       label: el.loungeLoc.controls.label,
       content: FittedBox(
         fit: BoxFit.scaleDown,
