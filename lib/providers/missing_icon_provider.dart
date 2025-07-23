@@ -16,6 +16,7 @@ class MissingIconNotifier extends StateNotifier<List<ScrcpyApp>> {
 }
 
 final missingIconProvider =
-    StateNotifierProvider<MissingIconNotifier, List<ScrcpyApp>>((ref) {
+    StateNotifierProvider.autoDispose<MissingIconNotifier, List<ScrcpyApp>>(
+        (ref) {
   return MissingIconNotifier([]);
 });
