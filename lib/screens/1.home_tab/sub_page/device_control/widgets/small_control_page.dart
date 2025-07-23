@@ -2,6 +2,7 @@
 
 import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
 import 'package:collection/collection.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
@@ -33,7 +34,7 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
   ScrcpyApp? selectedApp;
   bool loading = false;
   ScrollController scrollController = ScrollController();
-  double controlsHeight = 109.3;
+  bool showControlButton = true;
 
   @override
   void initState() {
@@ -44,17 +45,16 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
 
     scrollController.addListener(
       () {
-        if (scrollController.offset >
-                scrollController.position.maxScrollExtent / 5 &&
-            controlsHeight != 0) {
-          controlsHeight = 0;
-          setState(() {});
-        }
-
-        if (scrollController.offset == 0 && controlsHeight != 109.3) {
-          if (controlsHeight != 109.3) {
-            controlsHeight = 109.3;
-            setState(() {});
+        if (scrollController.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          setState(() {
+            showControlButton = true;
+          });
+        } else {
+          if (scrollController.position.extentAfter > 200) {
+            setState(() {
+              showControlButton = false;
+            });
           }
         }
       },
@@ -120,15 +120,17 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 spacing: 8,
                 children: [
-                  AnimatedContainer(
+                  AnimatedSize(
                     duration: 200.milliseconds,
-                    height: controlsHeight,
-                    child: ScrollConfiguration(
-                      behavior: ScrollConfiguration.of(context)
-                          .copyWith(scrollbars: false),
-                      child: SingleChildScrollView(
-                        physics: NeverScrollableScrollPhysics(),
-                        child: ControlButtons(device: device),
+                    child: SizedBox(
+                      height: showControlButton ? null : 0,
+                      child: ScrollConfiguration(
+                        behavior: ScrollConfiguration.of(context)
+                            .copyWith(scrollbars: false),
+                        child: SingleChildScrollView(
+                          physics: NeverScrollableScrollPhysics(),
+                          child: ControlButtons(device: device),
+                        ),
                       ),
                     ),
                   ),
