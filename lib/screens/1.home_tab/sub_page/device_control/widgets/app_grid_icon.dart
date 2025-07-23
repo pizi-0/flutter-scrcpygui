@@ -29,6 +29,8 @@ import '../../../../../utils/scrcpy_utils.dart';
 import '../../../../../widgets/custom_ui/pg_section_card.dart';
 import '../device_control_page.dart';
 
+const imageScale = 0.2;
+
 class AppGridIcon extends ConsumerStatefulWidget {
   const AppGridIcon({
     super.key,
@@ -196,9 +198,10 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                             child: _iconFile != null
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
-                                    child: Image.file(
+                                    child: Image(
+                                      image: FileImage(_iconFile!,
+                                          scale: imageScale),
                                       key: UniqueKey(),
-                                      _iconFile!,
                                       fit: BoxFit.cover,
                                       errorBuilder:
                                           (context, error, stackTrace) =>
@@ -312,7 +315,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
               controlPageKeyboardListenerNode.requestFocus();
 
               if (_iconFile != null) {
-                await FileImage(_iconFile!).evict();
+                await FileImage(_iconFile!, scale: imageScale).evict();
               }
 
               if (mounted) {
@@ -518,7 +521,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
 
           imageFile = await ImageUtils.byteToPngFile(byte, path, maxSize: 256);
           if (_iconFile != null) {
-            await FileImage(_iconFile!).evict();
+            await FileImage(_iconFile!, scale: imageScale).evict();
             _iconFile = null;
           }
           _iconFile = imageFile;
