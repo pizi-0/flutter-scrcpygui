@@ -6,9 +6,11 @@ import 'dart:io';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/position_and_size.dart';
 import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/extension.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/adb_devices.dart';
@@ -75,10 +77,11 @@ class ScrcpyUtils {
   }
 
   static Future<ScrcpyRunningInstance> _startServer(
-      WidgetRef ref, AdbDevices selectedDevice, ScrcpyConfig selectedConfig,
+      WidgetRef ref, AdbDevices selectedDevice, ScrcpyConfig config,
       {bool isTest = true,
       String customInstanceName = '',
       Map<String, String>? env}) async {
+    ScrcpyConfig selectedConfig = config;
     final workDir = ref.read(execDirProvider);
     final runningInstance = ref.read(scrcpyInstanceProvider);
 
@@ -105,6 +108,11 @@ class ScrcpyUtils {
           break;
         }
       }
+    }
+
+    if (true) {
+      selectedConfig = ScrcpyUtils.handleHorizontalPosition(ref,
+          config: config, device: selectedDevice);
     }
 
     comm = ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice,
@@ -332,5 +340,67 @@ class ScrcpyUtils {
     }
 
     return resultingConfig;
+  }
+
+  static ScrcpyConfig handleHorizontalPosition(WidgetRef ref,
+      {required ScrcpyConfig config, required AdbDevices device}) {
+    ScrcpyConfig res = config;
+    final screenSize = View.of(ref.context).display.size;
+
+    final instances = ref.read(scrcpyInstanceProvider);
+    final info =
+        ref.read(infoProvider).firstWhere((i) => i.serialNo == device.serialNo);
+
+    List<ScrcpyPosition> positions = [
+      ...instances
+          .where((i) => i.config.windowOptions.position != null)
+          .where((i) => i.config.windowOptions.position!.x != null)
+          .map((i) => i.config.windowOptions.position!)
+    ];
+
+    positions.sort((a, b) => a.x!.compareTo(b.x!));
+
+    if (positions.isEmpty) {
+      final resolution = config.videoOptions.displayId == 'new'
+          ? config.videoOptions.virtualDisplayOptions.resolution
+          : info.displays
+              .firstWhere((d) => d.id == config.videoOptions.displayId)
+              .resolution;
+
+      final scale = resolution.resolutionHeight! / (screenSize.height * 0.88);
+
+      return res.copyWith(
+          windowOptions: res.windowOptions.copyWith(
+              position: ScrcpyPosition(x: 0),
+              size: ScrcpySize(
+                  width: (resolution.resolutionWidth! / scale).ceil())));
+    } else {
+      final instanceWidth = [
+        ...instances.map((inst) => (
+              inst.config.windowOptions.size?.width ?? 0,
+              inst.config.windowOptions.position?.x ?? 0
+            ))
+      ];
+
+      instanceWidth.sort((a, b) => a.$1.compareTo(b.$1));
+
+      final nextX = instanceWidth.last.$1 + instanceWidth.last.$2;
+
+      final resolution = config.videoOptions.displayId == 'new'
+          ? config.videoOptions.virtualDisplayOptions.resolution
+          : info.displays
+              .firstWhere((d) => d.id == config.videoOptions.displayId)
+              .resolution;
+
+      final scale = resolution.resolutionHeight! / (screenSize.height * 0.88);
+
+      res = res.copyWith(
+          windowOptions: res.windowOptions.copyWith(
+              position: ScrcpyPosition(x: nextX),
+              size: ScrcpySize(
+                  width: (resolution.resolutionWidth! / scale).ceil())));
+    }
+
+    return res;
   }
 }
