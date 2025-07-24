@@ -6,6 +6,7 @@ import 'package:logger/logger.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/app_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/device_options.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/position_and_size.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/video_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/window_options.dart';
 import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
@@ -81,6 +82,8 @@ final ScrcpyConfig defaultMirror = ScrcpyConfig(
     noBorder: false,
     alwaysOntop: false,
     timeLimit: 0,
+    position: ScrcpyPosition(),
+    size: ScrcpySize(),
   ),
   additionalFlags: '',
   savePath: Platform.isLinux || Platform.isMacOS
@@ -124,6 +127,8 @@ final ScrcpyConfig newConfig = ScrcpyConfig(
     noBorder: false,
     alwaysOntop: false,
     timeLimit: 0,
+    position: ScrcpyPosition(),
+    size: ScrcpySize(),
   ),
   additionalFlags: '',
   savePath: Platform.isLinux || Platform.isMacOS
@@ -170,6 +175,8 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
     noBorder: false,
     alwaysOntop: false,
     timeLimit: 0,
+    position: ScrcpyPosition(),
+    size: ScrcpySize(),
   ),
   additionalFlags: '',
   savePath: Platform.isLinux || Platform.isMacOS

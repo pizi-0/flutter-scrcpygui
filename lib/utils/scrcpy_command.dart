@@ -41,6 +41,8 @@ class ScrcpyCommand {
             .append(_noBorder(config)) // no border
             .append(_alwaysOnTop(config)) // always ontop
             .append(_timeLimit(config)) // time limit
+            .append(_position(config))
+            .append(_size(config))
             .append(_startApp(config)) // start app
         ;
 
@@ -244,6 +246,38 @@ class ScrcpyCommand {
     }
 
     return '';
+  }
+
+  static String _position(ScrcpyConfig config) {
+    String res = '';
+
+    if (config.windowOptions.position != null) {
+      if (config.windowOptions.position!.x != null) {
+        res += ' --window-x=${config.windowOptions.position!.x}';
+      }
+
+      if (config.windowOptions.position!.y != null) {
+        res += ' --window-y=${config.windowOptions.position!.y}';
+      }
+    }
+
+    return res;
+  }
+
+  static String _size(ScrcpyConfig config) {
+    String res = '';
+
+    if (config.windowOptions.size != null) {
+      if (config.windowOptions.size!.width != null) {
+        res += ' --window-width=${config.windowOptions.size!.width}';
+      }
+
+      if (config.windowOptions.size!.height != null) {
+        res += ' --window-height=${config.windowOptions.size!.height}';
+      }
+    }
+
+    return res;
   }
 
   static String _startApp(ScrcpyConfig config) {
