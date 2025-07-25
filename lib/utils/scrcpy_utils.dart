@@ -368,6 +368,8 @@ class ScrcpyUtils {
     final scale =
         workingResolution.resolutionHeight! / (screenSize.height * 0.88);
 
+    final newWindowWidth = (workingResolution.resolutionWidth! / scale).ceil();
+
     if (workingResolution.isLandscape ||
         config.windowOptions.noWindow ||
         config.additionalFlags
@@ -375,48 +377,76 @@ class ScrcpyUtils {
       return res;
     }
 
-    List<ScrcpyPosition> positions = [
-      ...instances
-          .where((i) => i.config.windowOptions.position != null)
-          .where((i) => i.config.windowOptions.position!.x != null)
-          .map((i) => i.config.windowOptions.position!)
-    ];
-
-    positions.sort((a, b) => a.x!.compareTo(b.x!));
-
-    if (positions.isEmpty) {
-      return res.copyWith(
-          windowOptions: res.windowOptions.copyWith(
-              position: ScrcpyPosition(x: 0),
-              size: ScrcpySize(
-                  width: (workingResolution.resolutionWidth! / scale).ceil())));
-    } else {
-      final instanceWidth = [
-        ...instances.map((inst) => (
-              inst.config.windowOptions.size?.width ?? 0,
-              inst.config.windowOptions.position?.x ?? 0
+    // Get all running instances that have a defined position and size.
+    final sortedInstances = instances
+        .where((i) =>
+            i.config.windowOptions.position?.x != null &&
+            i.config.windowOptions.size?.width != null)
+        .map((inst) => (
+              x: inst.config.windowOptions.position!.x!,
+              width: inst.config.windowOptions.size!.width!,
             ))
-      ];
+        .toList()
+      // Sort instances by their starting position.
+      ..sort((a, b) => a.x.compareTo(b.x));
 
-      instanceWidth.sort((a, b) => a.$2.compareTo(b.$2));
+    if (sortedInstances.isEmpty) {
+      // No other windows, place at the beginning if it fits.
+      if (newWindowWidth <= screenSize.width) {
+        return res.copyWith(
+          windowOptions: res.windowOptions.copyWith(
+            position: ScrcpyPosition(x: 0),
+            size: ScrcpySize(width: newWindowWidth),
+          ),
+        );
+      }
+      // Not enough space for even one window.
+      return res;
+    } else {
+      int? nextX;
 
-      final totalWidth =
-          instanceWidth.map((e) => e.$1).reduce((a, b) => a + b) +
-              (workingResolution.resolutionWidth! / scale).ceil();
-
-      if (totalWidth > screenSize.width) {
-        return res;
+      // 1. Check for space before the first window (from screen edge to first window).
+      if (sortedInstances.first.x >= newWindowWidth) {
+        nextX = 0;
       }
 
-      final nextX = instanceWidth.last.$1 + instanceWidth.last.$2;
+      // 2. Check for gaps between existing windows.
+      if (nextX == null) {
+        for (var i = 0; i < sortedInstances.length - 1; i++) {
+          final currentWindow = sortedInstances[i];
+          final nextWindow = sortedInstances[i + 1];
 
-      res = res.copyWith(
+          final gapStart = currentWindow.x + currentWindow.width;
+          final gapWidth = nextWindow.x - gapStart;
+
+          if (gapWidth >= newWindowWidth) {
+            nextX = gapStart;
+            break; // Use the first available gap.
+          }
+        }
+      }
+
+      // 3. Check for space after the last window.
+      if (nextX == null) {
+        final lastWindow = sortedInstances.last;
+        final positionAfterLast = lastWindow.x + lastWindow.width;
+        if (positionAfterLast + newWindowWidth <= screenSize.width) {
+          nextX = positionAfterLast;
+        }
+      }
+
+      // 4. If a suitable position was found, update the config.
+      if (nextX != null) {
+        return res.copyWith(
           windowOptions: res.windowOptions.copyWith(
-              position: ScrcpyPosition(x: nextX),
-              size: ScrcpySize(
-                  width: (workingResolution.resolutionWidth! / scale).ceil())));
+            position: ScrcpyPosition(x: nextX),
+            size: ScrcpySize(width: newWindowWidth),
+          ),
+        );
+      }
     }
 
+    // If no suitable position was found, return the original config.
     return res;
   }
 }
