@@ -30,12 +30,8 @@ class AutomationUtils {
     for (final t in task) {
       final running = ref.read(scrcpyInstanceProvider);
       if (connected.where((d) => d.id == t.deviceId).isNotEmpty) {
-        if (running
-            .where((inst) =>
-                inst.device.id == t.deviceId && inst.config.id == t.configId)
-            .isEmpty) {
-          final configToLaunch =
-              allConfigs.firstWhereOrNull((c) => c.id == t.configId);
+        if (running.where((inst) => inst.device.id == t.deviceId && inst.config.id == t.configId).isEmpty) {
+          final configToLaunch = allConfigs.firstWhereOrNull((c) => c.id == t.configId);
 
           final device = connected.firstWhereOrNull((d) => d.id == t.deviceId);
 
@@ -45,13 +41,12 @@ class AutomationUtils {
 
           final hasApp = configToLaunch.appOptions.selectedApp != null;
 
-          ScrcpyUtils.newInstance(
+          await ScrcpyUtils.newInstance(
             ref,
             selectedDevice: device,
             selectedConfig: configToLaunch,
-            customInstanceName: hasApp
-                ? '${configToLaunch.appOptions.selectedApp!.name} (${configToLaunch.configName})'
-                : '',
+            customInstanceName:
+                hasApp ? '${configToLaunch.appOptions.selectedApp!.name} (${configToLaunch.configName})' : '',
           );
         }
       }
