@@ -97,6 +97,26 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
         ),
         const Divider(),
         InkWell(
+          onTap: _toggleAutoArrangeScrcpyWindow,
+          child: PgListTile(
+            title: 'Auto arrange scrcpy window',
+            trailing: ConstrainedBox(
+              constraints:
+                  BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Checkbox(
+                  state: behaviour.autoArrangeScrcpyWindow
+                      ? CheckboxState.checked
+                      : CheckboxState.unchecked,
+                  onChanged: (b) => _toggleAutoArrangeScrcpyWindow(),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const Divider(),
+        InkWell(
           onTap: _toggleRememberWinSize,
           child: PgListTile(
             title: el.settingsLoc.behavior.windowSize.label,
@@ -165,6 +185,11 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
 
   Future<void> _toggleRememberWinSize() async {
     ref.read(settingsProvider.notifier).changeRememberWinSize();
+    await Db.saveAppSettings(ref.read(settingsProvider));
+  }
+
+  Future<void> _toggleAutoArrangeScrcpyWindow() async {
+    ref.read(settingsProvider.notifier).changeAutoArrangeScrcpyWindow();
     await Db.saveAppSettings(ref.read(settingsProvider));
   }
 }

@@ -24,6 +24,7 @@ class AppBehaviour {
   final MinimizeAction minimizeAction;
   final bool hideDefaultConfig;
   final bool rememberWinSize;
+  final bool autoArrangeScrcpyWindow;
 
   AppBehaviour({
     required this.languageCode,
@@ -33,6 +34,7 @@ class AppBehaviour {
     required this.minimizeAction,
     required this.hideDefaultConfig,
     required this.rememberWinSize,
+    required this.autoArrangeScrcpyWindow,
   });
 
   Map<String, dynamic> toMap() {
@@ -44,6 +46,7 @@ class AppBehaviour {
       'minimizeAction': minimizeAction.index,
       'hideDefaultConfig': hideDefaultConfig,
       'rememberWinSize': rememberWinSize,
+      'autoArrangeScrcpyWindow': autoArrangeScrcpyWindow,
     };
   }
 
@@ -53,16 +56,19 @@ class AppBehaviour {
       killNoWindowInstance: map['killNoWindowInstance'] ?? true,
       traySupport: map['traySupport'] ?? true,
       toastEnabled: map['toastEnabled'] ?? true,
-      minimizeAction:
-          map['minimizeAction'] == null ? MinimizeAction.toTaskBar : MinimizeAction.values[map['minimizeAction']],
+      minimizeAction: map['minimizeAction'] == null
+          ? MinimizeAction.toTaskBar
+          : MinimizeAction.values[map['minimizeAction']],
       hideDefaultConfig: map['hideDefaultConfig'] ?? false,
       rememberWinSize: map['rememberWinSize'] ?? false,
+      autoArrangeScrcpyWindow: map['autoArrangeScrcpyWindow'] ?? false,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory AppBehaviour.fromJson(String source) => AppBehaviour.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory AppBehaviour.fromJson(String source) =>
+      AppBehaviour.fromMap(json.decode(source) as Map<String, dynamic>);
 
   AppBehaviour copyWith({
     String? languageCode,
@@ -72,6 +78,7 @@ class AppBehaviour {
     MinimizeAction? minimizeAction,
     bool? hideDefaultConfig,
     bool? rememberWinSize,
+    bool? autoArrangeScrcpyWindow,
   }) {
     return AppBehaviour(
       languageCode: languageCode ?? this.languageCode,
@@ -81,12 +88,14 @@ class AppBehaviour {
       minimizeAction: minimizeAction ?? this.minimizeAction,
       hideDefaultConfig: hideDefaultConfig ?? this.hideDefaultConfig,
       rememberWinSize: rememberWinSize ?? this.rememberWinSize,
+      autoArrangeScrcpyWindow:
+          autoArrangeScrcpyWindow ?? this.autoArrangeScrcpyWindow,
     );
   }
 
   @override
   String toString() {
-    return 'AppBehaviour(languageCode: $languageCode, killNoWindowInstance: $killNoWindowInstance, traySupport: $traySupport, toastEnabled: $toastEnabled, minimizeAction: $minimizeAction, hideDefaultConfig: $hideDefaultConfig, rememberWinSize: $rememberWinSize)';
+    return 'AppBehaviour(languageCode: $languageCode, killNoWindowInstance: $killNoWindowInstance, traySupport: $traySupport, toastEnabled: $toastEnabled, minimizeAction: $minimizeAction, hideDefaultConfig: $hideDefaultConfig, rememberWinSize: $rememberWinSize, autoArrangeScrcpyWindow: $autoArrangeScrcpyWindow)';
   }
 
   @override
@@ -99,7 +108,8 @@ class AppBehaviour {
         other.toastEnabled == toastEnabled &&
         other.minimizeAction == minimizeAction &&
         other.hideDefaultConfig == hideDefaultConfig &&
-        other.rememberWinSize == rememberWinSize;
+        other.rememberWinSize == rememberWinSize &&
+        other.autoArrangeScrcpyWindow == autoArrangeScrcpyWindow;
   }
 
   @override
@@ -110,6 +120,7 @@ class AppBehaviour {
         toastEnabled.hashCode ^
         minimizeAction.hashCode ^
         hideDefaultConfig.hashCode ^
-        rememberWinSize.hashCode;
+        rememberWinSize.hashCode ^
+        autoArrangeScrcpyWindow.hashCode;
   }
 }

@@ -91,6 +91,8 @@ class TitleBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final appversion = ref.watch(appVersionProvider);
+    final autoArrangeScrcpyWindow =
+        ref.watch(settingsProvider).behaviour.autoArrangeScrcpyWindow;
 
     return OutlinedContainer(
       borderRadius: theme.borderRadiusXs,
@@ -120,6 +122,26 @@ class TitleBar extends ConsumerWidget {
                       .paddingOnly(top: 4.5),
                 ],
               ).paddingOnly(left: 8),
+            ),
+          ),
+          Tooltip(
+            tooltip: TooltipContainer(
+                    child: Text(
+                        'Arrange scrcpy window when starting: $autoArrangeScrcpyWindow'))
+                .call,
+            child: IconButton.ghost(
+              icon: Icon(
+                  autoArrangeScrcpyWindow
+                      ? Icons.view_column
+                      : Icons.view_column_outlined,
+                  color: autoArrangeScrcpyWindow
+                      ? theme.colorScheme.primary
+                      : theme.colorScheme.foreground.withAlpha(100)),
+              onPressed: () async {
+                ref
+                    .read(settingsProvider.notifier)
+                    .changeAutoArrangeScrcpyWindow();
+              },
             ),
           ),
           IconButton.ghost(

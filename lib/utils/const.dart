@@ -200,6 +200,7 @@ final defaultAppBehaviour = AppBehaviour(
   minimizeAction: MinimizeAction.toTaskBar,
   hideDefaultConfig: false,
   rememberWinSize: false,
+  autoArrangeScrcpyWindow: false,
 );
 
 final defaultCompanionServerSettings = CompanionServerSettings(

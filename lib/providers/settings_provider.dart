@@ -71,6 +71,14 @@ class SettingsNotifier extends Notifier<AppSettings> {
         behaviour: currentBehaviour.copyWith(
             rememberWinSize: !state.behaviour.rememberWinSize));
   }
+
+  void changeAutoArrangeScrcpyWindow() {
+    var currentBehaviour = state.behaviour;
+
+    state = state.copyWith(
+        behaviour: currentBehaviour.copyWith(
+            autoArrangeScrcpyWindow: !state.behaviour.autoArrangeScrcpyWindow));
+  }
 }
 
 final settingsProvider =
