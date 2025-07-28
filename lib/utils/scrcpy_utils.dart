@@ -27,6 +27,8 @@ import '../models/scrcpy_related/scrcpy_running_instance.dart';
 import 'adb_utils.dart';
 import 'scrcpy_command.dart';
 
+Set<ScrcpyConfig> ignoreAutoArrangeConfigs = {};
+
 class ScrcpyUtils {
   static Future<void> pingRunning(WidgetRef ref) async {
     final running = ref.read(scrcpyInstanceProvider);
@@ -43,23 +45,15 @@ class ScrcpyUtils {
     List<String> pids = [];
 
     if (Platform.isLinux || Platform.isMacOS) {
-      List<String> split = (await Process.run('bash', ['-c', 'pgrep scrcpy']))
-          .stdout
-          .toString()
-          .split('\n');
+      List<String> split = (await Process.run('bash', ['-c', 'pgrep scrcpy'])).stdout.toString().split('\n');
       split.removeLast();
 
-      pids = split
-          .map((e) => e.trim())
-          .where((el) => el != appPID.trim() && el.trim().isNotEmpty)
-          .toList();
+      pids = split.map((e) => e.trim()).where((el) => el != appPID.trim() && el.trim().isNotEmpty).toList();
     }
 
     if (Platform.isWindows) {
-      final list = (await Process.run('tasklist',
-              ['/fi', 'ImageName eq scrcpy.exe', '/v', '/fo', 'csv']))
-          .stdout
-          .toString();
+      final list =
+          (await Process.run('tasklist', ['/fi', 'ImageName eq scrcpy.exe', '/v', '/fo', 'csv'])).stdout.toString();
 
       final split = list.splitLines();
       split.removeAt(0);
@@ -77,24 +71,16 @@ class ScrcpyUtils {
     }
   }
 
-  static Future<ScrcpyRunningInstance> _startServer(
-      WidgetRef ref, AdbDevices selectedDevice, ScrcpyConfig config,
-      {bool isTest = true,
-      String customInstanceName = '',
-      Map<String, String>? env}) async {
+  static Future<ScrcpyRunningInstance> _startServer(WidgetRef ref, AdbDevices selectedDevice, ScrcpyConfig config,
+      {bool isTest = true, String customInstanceName = '', Map<String, String>? env}) async {
     ScrcpyConfig selectedConfig = config;
     final workDir = ref.read(execDirProvider);
     final runningInstance = ref.read(scrcpyInstanceProvider);
-    final shouldArrange =
-        ref.read(settingsProvider).behaviour.autoArrangeScrcpyWindow;
+    final shouldArrange = ref.read(settingsProvider).behaviour.autoArrangeScrcpyWindow;
 
-    final deviceInfo = ref
-        .read(infoProvider)
-        .firstWhereOrNull((info) => info.serialNo == selectedDevice.serialNo);
+    final deviceInfo = ref.read(infoProvider).firstWhereOrNull((info) => info.serialNo == selectedDevice.serialNo);
 
-    final isWireless = selectedDevice.id.contains(adbMdns) ||
-        selectedDevice.id.isIpv4 ||
-        selectedDevice.id.isIpv6;
+    final isWireless = selectedDevice.id.contains(adbMdns) || selectedDevice.id.isIpv4 || selectedDevice.id.isIpv6;
 
     List<String> comm = [];
     String customName =
@@ -102,9 +88,7 @@ class ScrcpyUtils {
 
     if (runningInstance.where((r) => r.instanceName == customName).isNotEmpty) {
       for (int i = 1; i < 100; i++) {
-        bool alreadyExist = runningInstance
-            .where((r) => r.instanceName == '$customName($i)')
-            .isNotEmpty;
+        bool alreadyExist = runningInstance.where((r) => r.instanceName == '$customName($i)').isNotEmpty;
 
         if (!alreadyExist) {
           customName = '$customName($i)';
@@ -114,16 +98,13 @@ class ScrcpyUtils {
     }
 
     if (shouldArrange && !isTest) {
-      selectedConfig = await ScrcpyUtils.handleHorizontalPosition(ref,
-          config: config, device: selectedDevice);
+      selectedConfig = await ScrcpyUtils.handleHorizontalPosition(ref, config: config, device: selectedDevice);
     }
 
     comm = ScrcpyCommand.buildCommand(ref, selectedConfig, selectedDevice,
         customName: '${isTest ? '[TEST] ' : ''}$customName');
 
-    final process = await CommandRunner.startScrcpyCommand(
-        workDir, selectedDevice,
-        args: comm, env: env);
+    final process = await CommandRunner.startScrcpyCommand(workDir, selectedDevice, args: comm, env: env);
     await Future.delayed(500.milliseconds);
 
     final now = DateTime.now();
@@ -167,13 +148,10 @@ class ScrcpyUtils {
       Map<String, String>? env}) async {
     AdbDevices device = selectedDevice ?? ref.read(selectedDeviceProvider)!;
 
-    final deviceInfo = ref
-        .read(infoProvider)
-        .firstWhereOrNull((info) => info.serialNo == device.serialNo);
+    final deviceInfo = ref.read(infoProvider).firstWhereOrNull((info) => info.serialNo == device.serialNo);
 
     if (deviceInfo == null) {
-      final info =
-          await AdbUtils.getDeviceInfoFor(ref.read(execDirProvider), device);
+      final info = await AdbUtils.getDeviceInfoFor(ref.read(execDirProvider), device);
 
       ref.read(infoProvider.notifier).addOrEditDeviceInfo(info);
       await Db.saveDeviceInfos(ref.read(infoProvider));
@@ -185,8 +163,7 @@ class ScrcpyUtils {
     ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
   }
 
-  static Future<void> killServer(ScrcpyRunningInstance instance,
-      {bool forceKill = false}) async {
+  static Future<void> killServer(ScrcpyRunningInstance instance, {bool forceKill = false}) async {
     if (Platform.isLinux || Platform.isMacOS) {
       Process.killPid(int.parse(instance.scrcpyPID));
     }
@@ -195,14 +172,10 @@ class ScrcpyUtils {
       // necessary as taskkill seems to unable to kill console app
       // give out this when running only taskkill: SUCCESS: Sent termination signal to the process with PID $instance.scrcpyPID
 
-      final res =
-          await Process.run('taskkill', ['/pid', instance.scrcpyPID, '/t']);
+      final res = await Process.run('taskkill', ['/pid', instance.scrcpyPID, '/t']);
 
       final regex = RegExp(r"\d+");
-      final pids = regex
-          .allMatches(res.stderr.toString())
-          .map((match) => int.parse(match.group(0)!))
-          .toSet();
+      final pids = regex.allMatches(res.stderr.toString()).map((match) => int.parse(match.group(0)!)).toSet();
 
       pids
         ..remove(pid) // scrcpygui pid
@@ -214,12 +187,8 @@ class ScrcpyUtils {
     }
   }
 
-  static List<ScrcpyRunningInstance> getInstanceForDevice(
-      WidgetRef ref, AdbDevices dev) {
-    List<ScrcpyRunningInstance> res = ref
-        .read(scrcpyInstanceProvider)
-        .where((inst) => inst.device == dev)
-        .toList();
+  static List<ScrcpyRunningInstance> getInstanceForDevice(WidgetRef ref, AdbDevices dev) {
+    List<ScrcpyRunningInstance> res = ref.read(scrcpyInstanceProvider).where((inst) => inst.device == dev).toList();
 
     return res;
   }
@@ -283,8 +252,7 @@ class ScrcpyUtils {
   //   return overrideWidget;
   // }
 
-  static ScrcpyConfig handleOverrides(
-      WidgetRef ref, List<ScrcpyOverride> overrides, ScrcpyConfig config) {
+  static ScrcpyConfig handleOverrides(WidgetRef ref, List<ScrcpyOverride> overrides, ScrcpyConfig config) {
     var resultingConfig = config;
     final device = ref.read(selectedDeviceProvider);
 
@@ -299,14 +267,11 @@ class ScrcpyUtils {
 
     if (overrides.contains(ScrcpyOverride.landscape)) {
       if (config.videoOptions.displayId == 'new') {
-        final currentVdOption =
-            resultingConfig.videoOptions.virtualDisplayOptions;
+        final currentVdOption = resultingConfig.videoOptions.virtualDisplayOptions;
         String reso = currentVdOption.resolution;
 
         if (reso == DEFAULT) {
-          final info = ref
-              .read(infoProvider)
-              .firstWhereOrNull((i) => i.serialNo == device.serialNo);
+          final info = ref.read(infoProvider).firstWhereOrNull((i) => i.serialNo == device.serialNo);
 
           if (info == null) {
             logger.e('No display info for device (${device.id})');
@@ -323,9 +288,7 @@ class ScrcpyUtils {
         final currentVideoOptions = resultingConfig.videoOptions;
 
         resultingConfig = resultingConfig.copyWith(
-          videoOptions: currentVideoOptions.copyWith(
-              virtualDisplayOptions:
-                  currentVdOption.copyWith(resolution: reso)),
+          videoOptions: currentVideoOptions.copyWith(virtualDisplayOptions: currentVdOption.copyWith(resolution: reso)),
         );
       }
       // else {
@@ -338,112 +301,127 @@ class ScrcpyUtils {
     }
 
     if (overrides.contains(ScrcpyOverride.mute)) {
-      resultingConfig =
-          resultingConfig.copyWith(scrcpyMode: ScrcpyMode.videoOnly);
+      resultingConfig = resultingConfig.copyWith(scrcpyMode: ScrcpyMode.videoOnly);
     }
 
     return resultingConfig;
   }
 
-  static Future<ScrcpyConfig> handleHorizontalPosition(WidgetRef ref,
-      {required ScrcpyConfig config, required AdbDevices device}) async {
+  static Future<ScrcpyConfig> handleHorizontalPosition(
+    WidgetRef ref, {
+    required ScrcpyConfig config,
+    required AdbDevices device,
+    bool startFromRight = false,
+  }) async {
     ScrcpyConfig res = config;
     final display = (await screenRetriever.getPrimaryDisplay());
     final screenSize = display.size;
 
     final instances = ref.read(scrcpyInstanceProvider);
-    final info =
-        ref.read(infoProvider).firstWhere((i) => i.serialNo == device.serialNo);
+    final info = ref.read(infoProvider).firstWhere((i) => i.serialNo == device.serialNo);
 
-    final defaultDeviceResolution = info.displays.first.resolution;
+    final defaultDeviceResolution = getDisplays(
+                (await CommandRunner.runScrcpyCommand(ref.read(execDirProvider), device, args: ['--list-displays']))
+                    .stdout)
+            .firstWhereOrNull((d) => d.id == config.videoOptions.displayId)
+            ?.resolution ??
+        info.displays.first.resolution;
 
     final workingResolution = config.videoOptions.displayId == 'new'
         ? config.videoOptions.virtualDisplayOptions.resolution == DEFAULT
             ? defaultDeviceResolution
             : config.videoOptions.virtualDisplayOptions.resolution
-        : info.displays
-            .firstWhere((d) => d.id == config.videoOptions.displayId)
-            .resolution;
+        : defaultDeviceResolution;
 
-    final scale =
-        workingResolution.resolutionHeight! / (screenSize.height * 0.88);
+    final scale = workingResolution.resolutionHeight! / (screenSize.height * 0.88);
 
     final newWindowWidth = (workingResolution.resolutionWidth! / scale).ceil();
+    final newWindowHeight = (workingResolution.resolutionHeight! / scale).ceil();
+
+    const int gap = 2; // Gap between windows
 
     if (workingResolution.isLandscape ||
         config.windowOptions.noWindow ||
-        config.additionalFlags
-            .containsAny(['orientation=90', 'orientation=270'])) {
+        config.additionalFlags.containsAny(['orientation=90', 'orientation=270']) ||
+        config.windowOptions.size?.height != null ||
+        config.windowOptions.size?.width != null ||
+        config.windowOptions.position?.x != null ||
+        config.windowOptions.position?.y != null ||
+        config.additionalFlags.containsAny(['window-x', 'window-y', 'window-width', 'window-height'])) {
+      ignoreAutoArrangeConfigs.add(config);
+
       return res;
     }
 
-    // Get all running instances that have a defined position and size.
-    final sortedInstances = instances
+    // Gather all running instances with defined position and size.
+    final positionedInstances = instances
         .where((i) =>
             i.config.windowOptions.position?.x != null &&
-            i.config.windowOptions.size?.width != null)
+            i.config.windowOptions.position?.y != null &&
+            i.config.windowOptions.size?.width != null &&
+            i.config.windowOptions.size?.height != null &&
+            !ignoreAutoArrangeConfigs.contains(i.config))
         .map((inst) => (
               x: inst.config.windowOptions.position!.x!,
+              y: inst.config.windowOptions.position!.y!,
               width: inst.config.windowOptions.size!.width!,
+              height: inst.config.windowOptions.size!.height!,
             ))
-        .toList()
-      // Sort instances by their starting position.
-      ..sort((a, b) => a.x.compareTo(b.x));
+        .toList();
 
-    if (sortedInstances.isEmpty) {
-      // No other windows, place at the beginning if it fits.
-      if (newWindowWidth <= screenSize.width) {
-        return res.copyWith(
-          windowOptions: res.windowOptions.copyWith(
-            position: ScrcpyPosition(x: 0),
-            size: ScrcpySize(width: newWindowWidth),
-          ),
-        );
-      }
-      // Not enough space for even one window.
-      return res;
-    } else {
-      int? nextX;
+    for (int row = 0;; row++) {
+      final y = row * (newWindowHeight + gap);
+      if (y + newWindowHeight > screenSize.height) break; // No more vertical space
 
-      // 1. Check for space before the first window (from screen edge to first window).
-      if (sortedInstances.first.x >= newWindowWidth) {
-        nextX = 0;
-      }
+      final rowInstances = positionedInstances.where((w) => (w.y - y).abs() < gap).toList();
 
-      // 2. Check for gaps between existing windows.
-      if (nextX == null) {
-        for (var i = 0; i < sortedInstances.length - 1; i++) {
-          final currentWindow = sortedInstances[i];
-          final nextWindow = sortedInstances[i + 1];
+      // Sort by x (left-to-right) or by x descending (right-to-left)
+      rowInstances.sort((a, b) => startFromRight ? b.x.compareTo(a.x) : a.x.compareTo(b.x));
 
-          final gapStart = currentWindow.x + currentWindow.width;
-          final gapWidth = nextWindow.x - gapStart;
-
-          if (gapWidth >= newWindowWidth) {
-            nextX = gapStart;
-            break; // Use the first available gap.
+      if (!startFromRight) {
+        int x = 0;
+        for (final win in rowInstances) {
+          if (x + newWindowWidth <= win.x - gap) {
+            return res.copyWith(
+              windowOptions: res.windowOptions.copyWith(
+                position: ScrcpyPosition(x: x, y: y),
+                size: ScrcpySize(width: newWindowWidth, height: newWindowHeight),
+              ),
+            );
           }
+          x = win.x + win.width + gap;
+        }
+        if (x + newWindowWidth <= screenSize.width) {
+          return res.copyWith(
+            windowOptions: res.windowOptions.copyWith(
+              position: ScrcpyPosition(x: x, y: y),
+              size: ScrcpySize(width: newWindowWidth, height: newWindowHeight),
+            ),
+          );
+        }
+      } else {
+        int x = (screenSize.width - newWindowWidth).ceil();
+        for (final win in rowInstances) {
+          if (x >= win.x + win.width + gap) {
+            return res.copyWith(
+              windowOptions: res.windowOptions.copyWith(
+                position: ScrcpyPosition(x: x, y: y),
+                size: ScrcpySize(width: newWindowWidth, height: newWindowHeight),
+              ),
+            );
+          }
+          x = win.x - newWindowWidth - gap;
+        }
+        if (x >= 0) {
+          return res.copyWith(
+            windowOptions: res.windowOptions.copyWith(
+              position: ScrcpyPosition(x: x, y: y),
+              size: ScrcpySize(width: newWindowWidth, height: newWindowHeight),
+            ),
+          );
         }
       }
-
-      // 3. Check for space after the last window.
-      if (nextX == null) {
-        final lastWindow = sortedInstances.last;
-        final positionAfterLast = lastWindow.x + lastWindow.width;
-        if (positionAfterLast + newWindowWidth <= screenSize.width) {
-          nextX = positionAfterLast;
-        }
-      }
-
-      // 4. If a suitable position was found, update the config.
-      if (nextX != null) {
-        return res.copyWith(
-          windowOptions: res.windowOptions.copyWith(
-            position: ScrcpyPosition(x: nextX),
-            size: ScrcpySize(width: newWindowWidth),
-          ),
-        );
-      }
+      // Otherwise, try next row
     }
 
     // If no suitable position was found, return the original config.
