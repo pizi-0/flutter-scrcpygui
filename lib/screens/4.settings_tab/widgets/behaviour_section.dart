@@ -9,6 +9,8 @@ import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../../models/settings_model/auto_arrange_status_enum.dart';
+
 class BehaviourSection extends ConsumerStatefulWidget {
   const BehaviourSection({super.key});
 
@@ -48,8 +50,7 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
           subtitle: el.settingsLoc.behavior.language.info,
           showSubtitle: true,
           trailing: ConstrainedBox(
-            constraints: const BoxConstraints(
-                minWidth: 180, maxWidth: 180, minHeight: 30),
+            constraints: const BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
             child: Select(
               filled: true,
               value: behaviour.languageCode,
@@ -58,8 +59,7 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
 
                 await Db.saveAppSettings(ref.read(settingsProvider));
               },
-              itemBuilder: (context, value) =>
-                  langDD.firstWhere((lang) => lang.value == value).child,
+              itemBuilder: (context, value) => langDD.firstWhere((lang) => lang.value == value).child,
               popup: SelectPopup(items: SelectItemList(children: langDD)).call,
             ),
           ),
@@ -68,52 +68,50 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
         PgListTile(
           title: el.settingsLoc.behavior.minimize.label,
           trailing: ConstrainedBox(
-            constraints: const BoxConstraints(
-                minWidth: 180, maxWidth: 180, minHeight: 30),
+            constraints: const BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
             child: Select(
               filled: true,
-              value: minimizeDD(context)
-                  .firstWhere((act) => act.$1 == behaviour.minimizeAction),
+              value: minimizeDD(context).firstWhere((act) => act.$1 == behaviour.minimizeAction),
               onChanged: (act) async {
-                ref
-                    .read(settingsProvider.notifier)
-                    .changeMinimizeBehaviour(act!.$1);
+                ref.read(settingsProvider.notifier).changeMinimizeBehaviour(act!.$1);
 
                 await Db.saveAppSettings(ref.read(settingsProvider));
               },
-              itemBuilder: (context, value) => OverflowMarquee(
-                  duration: 5.seconds,
-                  delayDuration: 1.seconds,
-                  child: Text(value.$2)),
+              itemBuilder: (context, value) =>
+                  OverflowMarquee(duration: 5.seconds, delayDuration: 1.seconds, child: Text(value.$2)),
               popup: SelectPopup(
                 items: SelectItemList(
-                    children: minimizeDD(context)
-                        .map((act) =>
-                            SelectItemButton(value: act, child: Text(act.$2)))
-                        .toList()),
+                    children:
+                        minimizeDD(context).map((act) => SelectItemButton(value: act, child: Text(act.$2))).toList()),
               ).call,
             ),
           ),
         ),
         const Divider(),
-        InkWell(
-          onTap: _toggleAutoArrangeScrcpyWindow,
-          child: PgListTile(
-            title: 'Auto arrange scrcpy window',
-            trailing: ConstrainedBox(
-              constraints:
-                  BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Checkbox(
-                  state: behaviour.autoArrangeScrcpyWindow
-                      ? CheckboxState.checked
-                      : CheckboxState.unchecked,
-                  onChanged: (b) => _toggleAutoArrangeScrcpyWindow(),
-                ),
-              ),
-            ),
-          ),
+        PgListTile(
+          title: 'Auto arrange scrcpy window',
+          trailing: ConstrainedBox(
+              constraints: BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
+              child: Select(
+                value: behaviour.autoArrangeStatus,
+                onChanged: (value) async {
+                  ref.read(settingsProvider.notifier).changeAutoArrangeStatus(value!);
+
+                  await Db.saveAppSettings(ref.read(settingsProvider));
+                },
+                filled: true,
+                popup: SelectPopup(
+                  items: SelectItemList(
+                    children: AutoArrangeStatus.values.map((status) {
+                      return SelectItemButton(
+                        value: status,
+                        child: Text(status.name.capitalize),
+                      );
+                    }).toList(),
+                  ),
+                ).call,
+                itemBuilder: (context, value) => Text(value.name.capitalize),
+              )),
         ),
         const Divider(),
         InkWell(
@@ -121,14 +119,11 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
           child: PgListTile(
             title: el.settingsLoc.behavior.windowSize.label,
             trailing: ConstrainedBox(
-              constraints:
-                  BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
+              constraints: BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Checkbox(
-                  state: behaviour.rememberWinSize
-                      ? CheckboxState.checked
-                      : CheckboxState.unchecked,
+                  state: behaviour.rememberWinSize ? CheckboxState.checked : CheckboxState.unchecked,
                   onChanged: (b) => _toggleRememberWinSize(),
                 ),
               ),
@@ -185,11 +180,6 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
 
   Future<void> _toggleRememberWinSize() async {
     ref.read(settingsProvider.notifier).changeRememberWinSize();
-    await Db.saveAppSettings(ref.read(settingsProvider));
-  }
-
-  Future<void> _toggleAutoArrangeScrcpyWindow() async {
-    ref.read(settingsProvider.notifier).changeAutoArrangeScrcpyWindow();
     await Db.saveAppSettings(ref.read(settingsProvider));
   }
 }

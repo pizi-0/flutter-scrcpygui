@@ -5,6 +5,8 @@ import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/themes.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../models/settings_model/auto_arrange_status_enum.dart';
+
 class SettingsNotifier extends Notifier<AppSettings> {
   @override
   AppSettings build() {
@@ -27,14 +29,12 @@ class SettingsNotifier extends Notifier<AppSettings> {
 
   void toggleOldScheme() {
     var currentLooks = state.looks;
-    state = state.copyWith(
-        looks: currentLooks.copyWith(useOldScheme: !currentLooks.useOldScheme));
+    state = state.copyWith(looks: currentLooks.copyWith(useOldScheme: !currentLooks.useOldScheme));
   }
 
   void changeTintLevel(double tintLevel) {
     var currentLooks = state.looks;
-    state = state.copyWith(
-        looks: currentLooks.copyWith(accentTintLevel: tintLevel));
+    state = state.copyWith(looks: currentLooks.copyWith(accentTintLevel: tintLevel));
   }
 
   void changeCornerRadius(double radius) {
@@ -45,41 +45,42 @@ class SettingsNotifier extends Notifier<AppSettings> {
   void changeMinimizeBehaviour(MinimizeAction behaviour) {
     var currentBehaviour = state.behaviour;
 
-    state = state.copyWith(
-        behaviour: currentBehaviour.copyWith(minimizeAction: behaviour));
+    state = state.copyWith(behaviour: currentBehaviour.copyWith(minimizeAction: behaviour));
   }
 
   void changeLanguage(String languageCode) {
     var currentBehaviour = state.behaviour;
 
-    state = state.copyWith(
-        behaviour: currentBehaviour.copyWith(languageCode: languageCode));
+    state = state.copyWith(behaviour: currentBehaviour.copyWith(languageCode: languageCode));
   }
 
   void changeHideConfig() {
     var currentBehaviour = state.behaviour;
 
-    state = state.copyWith(
-        behaviour: currentBehaviour.copyWith(
-            hideDefaultConfig: !state.behaviour.hideDefaultConfig));
+    state = state.copyWith(behaviour: currentBehaviour.copyWith(hideDefaultConfig: !state.behaviour.hideDefaultConfig));
   }
 
   void changeRememberWinSize() {
     var currentBehaviour = state.behaviour;
 
-    state = state.copyWith(
-        behaviour: currentBehaviour.copyWith(
-            rememberWinSize: !state.behaviour.rememberWinSize));
+    state = state.copyWith(behaviour: currentBehaviour.copyWith(rememberWinSize: !state.behaviour.rememberWinSize));
   }
 
-  void changeAutoArrangeScrcpyWindow() {
+  void toggleAutoArrangeStatus() {
     var currentBehaviour = state.behaviour;
 
-    state = state.copyWith(
-        behaviour: currentBehaviour.copyWith(
-            autoArrangeScrcpyWindow: !state.behaviour.autoArrangeScrcpyWindow));
+    final currentInt = currentBehaviour.autoArrangeStatus.index;
+
+    final newStatus = AutoArrangeStatus.values[(currentInt + 1) % AutoArrangeStatus.values.length];
+
+    state = state.copyWith(behaviour: currentBehaviour.copyWith(autoArrangeStatus: newStatus));
+  }
+
+  void changeAutoArrangeStatus(AutoArrangeStatus status) {
+    var currentBehaviour = state.behaviour;
+
+    state = state.copyWith(behaviour: currentBehaviour.copyWith(autoArrangeStatus: status));
   }
 }
 
-final settingsProvider =
-    NotifierProvider<SettingsNotifier, AppSettings>(() => SettingsNotifier());
+final settingsProvider = NotifierProvider<SettingsNotifier, AppSettings>(() => SettingsNotifier());

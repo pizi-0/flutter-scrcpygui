@@ -24,6 +24,7 @@ import 'package:scrcpygui/utils/command_runner.dart';
 import '../db/db.dart';
 import '../models/scrcpy_related/scrcpy_enum.dart';
 import '../models/scrcpy_related/scrcpy_running_instance.dart';
+import '../models/settings_model/auto_arrange_status_enum.dart';
 import 'adb_utils.dart';
 import 'scrcpy_command.dart';
 
@@ -76,7 +77,7 @@ class ScrcpyUtils {
     ScrcpyConfig selectedConfig = config;
     final workDir = ref.read(execDirProvider);
     final runningInstance = ref.read(scrcpyInstanceProvider);
-    final shouldArrange = ref.read(settingsProvider).behaviour.autoArrangeScrcpyWindow;
+    final shouldArrange = ref.read(settingsProvider).behaviour.autoArrangeStatus != AutoArrangeStatus.off;
 
     final deviceInfo = ref.read(infoProvider).firstWhereOrNull((info) => info.serialNo == selectedDevice.serialNo);
 
@@ -311,11 +312,11 @@ class ScrcpyUtils {
     WidgetRef ref, {
     required ScrcpyConfig config,
     required AdbDevices device,
-    bool startFromRight = false,
   }) async {
     ScrcpyConfig res = config;
     final display = (await screenRetriever.getPrimaryDisplay());
     final screenSize = display.size;
+    bool startFromRight = ref.read(settingsProvider).behaviour.autoArrangeStatus == AutoArrangeStatus.fromRight;
 
     final instances = ref.read(scrcpyInstanceProvider);
     final info = ref.read(infoProvider).firstWhere((i) => i.serialNo == device.serialNo);

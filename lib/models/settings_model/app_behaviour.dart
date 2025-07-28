@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'auto_arrange_status_enum.dart';
+
 abstract interface class NamedEnum {
   final String name;
   const NamedEnum(this.name);
@@ -24,7 +26,7 @@ class AppBehaviour {
   final MinimizeAction minimizeAction;
   final bool hideDefaultConfig;
   final bool rememberWinSize;
-  final bool autoArrangeScrcpyWindow;
+  final AutoArrangeStatus autoArrangeStatus;
 
   AppBehaviour({
     required this.languageCode,
@@ -34,7 +36,7 @@ class AppBehaviour {
     required this.minimizeAction,
     required this.hideDefaultConfig,
     required this.rememberWinSize,
-    required this.autoArrangeScrcpyWindow,
+    required this.autoArrangeStatus,
   });
 
   Map<String, dynamic> toMap() {
@@ -46,7 +48,7 @@ class AppBehaviour {
       'minimizeAction': minimizeAction.index,
       'hideDefaultConfig': hideDefaultConfig,
       'rememberWinSize': rememberWinSize,
-      'autoArrangeScrcpyWindow': autoArrangeScrcpyWindow,
+      'autoArrangeStatus': autoArrangeStatus.index,
     };
   }
 
@@ -56,19 +58,17 @@ class AppBehaviour {
       killNoWindowInstance: map['killNoWindowInstance'] ?? true,
       traySupport: map['traySupport'] ?? true,
       toastEnabled: map['toastEnabled'] ?? true,
-      minimizeAction: map['minimizeAction'] == null
-          ? MinimizeAction.toTaskBar
-          : MinimizeAction.values[map['minimizeAction']],
+      minimizeAction:
+          map['minimizeAction'] == null ? MinimizeAction.toTaskBar : MinimizeAction.values[map['minimizeAction']],
       hideDefaultConfig: map['hideDefaultConfig'] ?? false,
       rememberWinSize: map['rememberWinSize'] ?? false,
-      autoArrangeScrcpyWindow: map['autoArrangeScrcpyWindow'] ?? false,
+      autoArrangeStatus: AutoArrangeStatus.values[map['autoArrangeStatus'] ?? 0],
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory AppBehaviour.fromJson(String source) =>
-      AppBehaviour.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory AppBehaviour.fromJson(String source) => AppBehaviour.fromMap(json.decode(source) as Map<String, dynamic>);
 
   AppBehaviour copyWith({
     String? languageCode,
@@ -78,7 +78,7 @@ class AppBehaviour {
     MinimizeAction? minimizeAction,
     bool? hideDefaultConfig,
     bool? rememberWinSize,
-    bool? autoArrangeScrcpyWindow,
+    AutoArrangeStatus? autoArrangeStatus,
   }) {
     return AppBehaviour(
       languageCode: languageCode ?? this.languageCode,
@@ -88,14 +88,13 @@ class AppBehaviour {
       minimizeAction: minimizeAction ?? this.minimizeAction,
       hideDefaultConfig: hideDefaultConfig ?? this.hideDefaultConfig,
       rememberWinSize: rememberWinSize ?? this.rememberWinSize,
-      autoArrangeScrcpyWindow:
-          autoArrangeScrcpyWindow ?? this.autoArrangeScrcpyWindow,
+      autoArrangeStatus: autoArrangeStatus ?? this.autoArrangeStatus,
     );
   }
 
   @override
   String toString() {
-    return 'AppBehaviour(languageCode: $languageCode, killNoWindowInstance: $killNoWindowInstance, traySupport: $traySupport, toastEnabled: $toastEnabled, minimizeAction: $minimizeAction, hideDefaultConfig: $hideDefaultConfig, rememberWinSize: $rememberWinSize, autoArrangeScrcpyWindow: $autoArrangeScrcpyWindow)';
+    return 'AppBehaviour(languageCode: $languageCode, killNoWindowInstance: $killNoWindowInstance, traySupport: $traySupport, toastEnabled: $toastEnabled, minimizeAction: $minimizeAction, hideDefaultConfig: $hideDefaultConfig, rememberWinSize: $rememberWinSize, autoArrangeStatus: $autoArrangeStatus)';
   }
 
   @override
@@ -109,7 +108,7 @@ class AppBehaviour {
         other.minimizeAction == minimizeAction &&
         other.hideDefaultConfig == hideDefaultConfig &&
         other.rememberWinSize == rememberWinSize &&
-        other.autoArrangeScrcpyWindow == autoArrangeScrcpyWindow;
+        other.autoArrangeStatus == autoArrangeStatus;
   }
 
   @override
@@ -121,6 +120,6 @@ class AppBehaviour {
         minimizeAction.hashCode ^
         hideDefaultConfig.hashCode ^
         rememberWinSize.hashCode ^
-        autoArrangeScrcpyWindow.hashCode;
+        autoArrangeStatus.hashCode;
   }
 }

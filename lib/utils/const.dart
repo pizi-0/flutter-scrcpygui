@@ -19,6 +19,7 @@ import 'package:uuid/uuid.dart';
 import '../models/scrcpy_related/scrcpy_config.dart';
 import '../models/scrcpy_related/scrcpy_enum.dart';
 import '../models/settings_model/app_theme.dart';
+import '../models/settings_model/auto_arrange_status_enum.dart';
 import '../models/settings_model/companion_server_settings.dart';
 
 final List<ScrcpyConfig> defaultConfigs = [
@@ -136,8 +137,7 @@ final ScrcpyConfig newConfig = ScrcpyConfig(
       : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}',
 );
 
-final ScrcpyConfig doNothing =
-    newConfig.copyWith(configName: DO_NOTHING, id: DO_NOTHING);
+final ScrcpyConfig doNothing = newConfig.copyWith(configName: DO_NOTHING, id: DO_NOTHING);
 
 final ScrcpyConfig defaultRecord = ScrcpyConfig(
   id: 'default-record',
@@ -200,7 +200,7 @@ final defaultAppBehaviour = AppBehaviour(
   minimizeAction: MinimizeAction.toTaskBar,
   hideDefaultConfig: false,
   rememberWinSize: false,
-  autoArrangeScrcpyWindow: false,
+  autoArrangeStatus: AutoArrangeStatus.off,
 );
 
 final defaultCompanionServerSettings = CompanionServerSettings(
@@ -218,8 +218,7 @@ final defaultSettings = AppSettings(
   behaviour: defaultAppBehaviour,
 );
 
-const scrcpyLatestUrl =
-    'https://api.github.com/repos/Genymobile/scrcpy/releases/latest';
+const scrcpyLatestUrl = 'https://api.github.com/repos/Genymobile/scrcpy/releases/latest';
 
 const eadb = './adb';
 const escrcpy = './scrcpy';
@@ -230,11 +229,7 @@ final logger = Logger(
   output: null,
 );
 
-final shellEnv = {
-  'ADB': './adb',
-  'SCRCPY_SERVER_PATH': './scrcpy-server',
-  'SCRCPY_ICON_PATH': './icon.png'
-};
+final shellEnv = {'ADB': './adb', 'SCRCPY_SERVER_PATH': './scrcpy-server', 'SCRCPY_ICON_PATH': './icon.png'};
 
 const String adbMdns = '_adb-tls-connect._tcp';
 const String adbPairMdns = '_adb-tls-pairing._tcp';
