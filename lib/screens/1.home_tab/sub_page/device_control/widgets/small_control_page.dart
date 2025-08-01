@@ -137,7 +137,6 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
                   Expanded(
                     child: AppGrid(
                       device: device,
-                      persistentHeader: false,
                       scrollController: scrollController,
                     ),
                   ),

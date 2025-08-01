@@ -16,7 +16,6 @@ import '../../../../../providers/device_info_provider.dart';
 import '../../../../../providers/missing_icon_provider.dart';
 import '../../../../../providers/version_provider.dart';
 import '../../../../../utils/command_runner.dart';
-import '../../../../../widgets/navigation_shell.dart';
 import '../device_control_page.dart';
 import 'app_grid_icon.dart';
 import 'big_control_page.dart';
@@ -38,16 +37,12 @@ class AppGrid extends ConsumerStatefulWidget {
 class _AppGridState extends ConsumerState<AppGrid> {
   TextEditingController appSearchController = TextEditingController();
   ScrollController appScrollController = ScrollController();
-  double sidebarWidth = 52;
   bool gettingApp = false;
   bool showMissingIcon = false;
 
   @override
   void initState() {
     super.initState();
-    if (widget.persistentHeader) {
-      sidebarWidth = _findSidebarWidth();
-    }
   }
 
   @override
@@ -107,8 +102,6 @@ class _AppGridState extends ConsumerState<AppGrid> {
                 .contains(appSearchController.text.toLowerCase()))
         .toList();
 
-    final size = MediaQuery.sizeOf(context);
-
     final missingIcons = ref.watch(missingIconProvider);
 
     if (missingIcons.isEmpty) {
@@ -116,7 +109,6 @@ class _AppGridState extends ConsumerState<AppGrid> {
     }
 
     return PgSectionCardNoScroll(
-      constraints: BoxConstraints(maxWidth: (size.width - sidebarWidth) * 0.5),
       label: el.loungeLoc.launcher.label,
       labelButton: IconButton.ghost(
         enabled: !gettingApp,
@@ -453,15 +445,5 @@ class _AppGridState extends ConsumerState<AppGrid> {
         )
       ],
     );
-  }
-
-  double _findSidebarWidth() {
-    final box = sidebarKey.currentContext?.findRenderObject();
-
-    if (box != null) {
-      return (box as RenderBox).size.width;
-    } else {
-      return 52;
-    }
   }
 }
