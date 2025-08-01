@@ -2,7 +2,8 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:animate_do/animate_do.dart';
-import 'package:awesome_extensions/awesome_extensions.dart' show StyledText, PaddingX, NumExtension;
+import 'package:awesome_extensions/awesome_extensions.dart'
+    show StyledText, PaddingX, NumExtension;
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -49,7 +50,8 @@ class NavigationShellState extends ConsumerState<NavigationShell> {
             children: [
               Row(
                 children: [
-                  if (sizeInfo.isDesktop || sizeInfo.isTablet) const AppSideBar(),
+                  if (sizeInfo.isDesktop || sizeInfo.isTablet)
+                    const AppSideBar(),
                   if (sizeInfo.isMobile) const Gap(52),
                   Expanded(
                     child: AnimatedBranchContainer(
@@ -91,21 +93,31 @@ class TitleBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final appversion = ref.watch(appVersionProvider);
-    final autoArrangeStatus = ref.watch(settingsProvider).behaviour.autoArrangeStatus;
+    final autoArrangeStatus =
+        ref.watch(settingsProvider).behaviour.autoArrangeStatus;
 
     Widget buildAutoArrangeIndicator() {
       switch (autoArrangeStatus) {
         case AutoArrangeStatus.off:
           return const Icon(Icons.grid_off_rounded, color: Colors.red);
         case AutoArrangeStatus.fromLeft:
-          return const Icon(Icons.align_horizontal_left_rounded, color: Colors.green);
+          return const Icon(Icons.align_horizontal_left_rounded,
+              color: Colors.green);
         case AutoArrangeStatus.fromRight:
-          return const Icon(Icons.align_horizontal_right_rounded, color: Colors.blue);
+          return const Icon(Icons.align_horizontal_right_rounded,
+              color: Colors.blue);
       }
     }
 
-    return OutlinedContainer(
-      borderRadius: theme.borderRadiusXs,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: theme.borderRadiusXs,
+        border: Border(
+          bottom: BorderSide(
+            color: theme.colorScheme.border,
+          ),
+        ),
+      ),
       height: 45,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -126,37 +138,62 @@ class TitleBar extends ConsumerWidget {
                     width: 20,
                   ).paddingOnly(left: 3),
                   Text('Scrcpy GUI ($appversion)').fontSize(12),
-                  const Text('by pizi-0').fontSize(8).underline().paddingOnly(top: 4.5),
+                  const Text('by pizi-0')
+                      .fontSize(8)
+                      .underline()
+                      .paddingOnly(top: 4.5),
                 ],
               ).paddingOnly(left: 8),
             ),
           ),
-          Tooltip(
-            tooltip: TooltipContainer(
-                    child: autoArrangeStatus == AutoArrangeStatus.off
-                        ? Text('Auto arrange disabled')
-                        : Text('Arrange enabled.\nAlignment: ${autoArrangeStatus.name}'))
-                .call,
-            child: IconButton.ghost(
-              icon: buildAutoArrangeIndicator(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: Tooltip(
+              tooltip: TooltipContainer(
+                      child: autoArrangeStatus == AutoArrangeStatus.off
+                          ? Text('Auto arrange disabled')
+                          : Text(
+                              'Arrange enabled.\nAlignment: ${autoArrangeStatus.name}'))
+                  .call,
+              child: IconButton(
+                variance: ButtonVariance.ghost,
+                size: ButtonSize.small,
+                icon: Padding(
+                  padding: EdgeInsets.all(4.0),
+                  child: buildAutoArrangeIndicator(),
+                ),
+                onPressed: () async {
+                  ref.read(settingsProvider.notifier).toggleAutoArrangeStatus();
+                },
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4.0),
+            child: IconButton(
+              variance: ButtonVariance.ghost,
+              size: ButtonSize.small,
+              icon: Padding(
+                padding: EdgeInsets.all(4.0),
+                child: theme.brightness == Brightness.dark
+                    ? const Icon(Icons.light_mode_rounded, color: Colors.yellow)
+                    : const Icon(Icons.dark_mode_rounded, color: Colors.yellow),
+              ),
               onPressed: () async {
-                ref.read(settingsProvider.notifier).toggleAutoArrangeStatus();
+                ref.read(settingsProvider.notifier).changeThememode(
+                      theme.brightness == Brightness.dark
+                          ? ThemeMode.light
+                          : ThemeMode.dark,
+                    );
+
+                await Db.saveAppSettings(ref.read(settingsProvider));
               },
             ),
           ),
-          IconButton.ghost(
-            icon: theme.brightness == Brightness.dark
-                ? const Icon(Icons.light_mode_rounded, color: Colors.yellow)
-                : const Icon(Icons.dark_mode_rounded, color: Colors.yellow),
-            onPressed: () async {
-              ref.read(settingsProvider.notifier).changeThememode(
-                    theme.brightness == Brightness.dark ? ThemeMode.light : ThemeMode.dark,
-                  );
-
-              await Db.saveAppSettings(ref.read(settingsProvider));
-            },
-          ),
-          if (!Platform.isMacOS) ...[VerticalDivider(indent: 16, endIndent: 16), const TitleBarButton()]
+          if (!Platform.isMacOS) ...[
+            VerticalDivider(indent: 16, endIndent: 16),
+            const TitleBarButton()
+          ]
         ],
       ),
     );
@@ -165,7 +202,8 @@ class TitleBar extends ConsumerWidget {
 
 class AnimatedBranchContainer extends ConsumerWidget {
   /// Creates a AnimatedBranchContainer
-  const AnimatedBranchContainer({super.key, required this.currentIndex, required this.children});
+  const AnimatedBranchContainer(
+      {super.key, required this.currentIndex, required this.children});
 
   /// The index (in [children]) of the branch Navigator to display.
   final int currentIndex;
@@ -215,7 +253,8 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return TapRegion(
-      onTapOutside: (event) => ref.read(appSideBarStateProvider.notifier).state = false,
+      onTapOutside: (event) =>
+          ref.read(appSideBarStateProvider.notifier).state = false,
       child: ResponsiveBuilder(builder: (context, sizingInfo) {
         final shouldExpand = sizingInfo.isTablet || sizingInfo.isDesktop;
 
@@ -236,11 +275,14 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
               labelPosition: NavigationLabelPosition.end,
               labelType: NavigationLabelType.expanded,
               padding: EdgeInsets.all(8),
-              onSelected: (value) => ref.read(mainScreenPage.notifier).state = value,
+              onSelected: (value) =>
+                  ref.read(mainScreenPage.notifier).state = value,
               children: [
                 NavigationButton(
                   alignment: Alignment.centerLeft,
-                  onPressed: () => ref.read(appSideBarStateProvider.notifier).update((state) => !state),
+                  onPressed: () => ref
+                      .read(appSideBarStateProvider.notifier)
+                      .update((state) => !state),
                   label: const Text('Menu'),
                   child: const Icon(Icons.menu),
                 ),
