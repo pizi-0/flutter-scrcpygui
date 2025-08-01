@@ -1,5 +1,4 @@
 import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
