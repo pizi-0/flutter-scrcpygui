@@ -49,12 +49,17 @@ class CompanionTabSmall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          ServerSettings(),
-          ClientList(),
-        ],
+    return Align(
+      alignment: Alignment.topCenter,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            ServerSettings(),
+            ClientList(),
+          ],
+        ),
       ),
     );
   }

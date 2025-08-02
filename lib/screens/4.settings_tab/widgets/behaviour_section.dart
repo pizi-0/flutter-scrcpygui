@@ -50,7 +50,8 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
           subtitle: el.settingsLoc.behavior.language.info,
           showSubtitle: true,
           trailing: ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
+            constraints: const BoxConstraints(
+                minWidth: 180, maxWidth: 180, minHeight: 30),
             child: Select(
               filled: true,
               value: behaviour.languageCode,
@@ -59,7 +60,8 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
 
                 await Db.saveAppSettings(ref.read(settingsProvider));
               },
-              itemBuilder: (context, value) => langDD.firstWhere((lang) => lang.value == value).child,
+              itemBuilder: (context, value) =>
+                  langDD.firstWhere((lang) => lang.value == value).child,
               popup: SelectPopup(items: SelectItemList(children: langDD)).call,
             ),
           ),
@@ -68,21 +70,29 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
         PgListTile(
           title: el.settingsLoc.behavior.minimize.label,
           trailing: ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
+            constraints: const BoxConstraints(
+                minWidth: 180, maxWidth: 180, minHeight: 30),
             child: Select(
               filled: true,
-              value: minimizeDD(context).firstWhere((act) => act.$1 == behaviour.minimizeAction),
+              value: minimizeDD(context)
+                  .firstWhere((act) => act.$1 == behaviour.minimizeAction),
               onChanged: (act) async {
-                ref.read(settingsProvider.notifier).changeMinimizeBehaviour(act!.$1);
+                ref
+                    .read(settingsProvider.notifier)
+                    .changeMinimizeBehaviour(act!.$1);
 
                 await Db.saveAppSettings(ref.read(settingsProvider));
               },
-              itemBuilder: (context, value) =>
-                  OverflowMarquee(duration: 5.seconds, delayDuration: 1.seconds, child: Text(value.$2)),
+              itemBuilder: (context, value) => OverflowMarquee(
+                  duration: 5.seconds,
+                  delayDuration: 1.seconds,
+                  child: Text(value.$2)),
               popup: SelectPopup(
                 items: SelectItemList(
-                    children:
-                        minimizeDD(context).map((act) => SelectItemButton(value: act, child: Text(act.$2))).toList()),
+                    children: minimizeDD(context)
+                        .map((act) =>
+                            SelectItemButton(value: act, child: Text(act.$2)))
+                        .toList()),
               ).call,
             ),
           ),
@@ -91,11 +101,14 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
         PgListTile(
           title: 'Auto arrange scrcpy window',
           trailing: ConstrainedBox(
-              constraints: BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
+              constraints:
+                  BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
               child: Select(
                 value: behaviour.autoArrangeStatus,
                 onChanged: (value) async {
-                  ref.read(settingsProvider.notifier).changeAutoArrangeStatus(value!);
+                  ref
+                      .read(settingsProvider.notifier)
+                      .changeAutoArrangeStatus(value!);
 
                   await Db.saveAppSettings(ref.read(settingsProvider));
                 },
@@ -105,12 +118,12 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
                     children: AutoArrangeStatus.values.map((status) {
                       return SelectItemButton(
                         value: status,
-                        child: Text(status.name.capitalize),
+                        child: Text(status.value),
                       );
                     }).toList(),
                   ),
                 ).call,
-                itemBuilder: (context, value) => Text(value.name.capitalize),
+                itemBuilder: (context, value) => Text(value.value),
               )),
         ),
         const Divider(),
@@ -119,11 +132,14 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
           child: PgListTile(
             title: el.settingsLoc.behavior.windowSize.label,
             trailing: ConstrainedBox(
-              constraints: BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
+              constraints:
+                  BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Checkbox(
-                  state: behaviour.rememberWinSize ? CheckboxState.checked : CheckboxState.unchecked,
+                  state: behaviour.rememberWinSize
+                      ? CheckboxState.checked
+                      : CheckboxState.unchecked,
                   onChanged: (b) => _toggleRememberWinSize(),
                 ),
               ),
