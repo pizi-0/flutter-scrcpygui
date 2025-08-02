@@ -9,7 +9,7 @@ import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import '../../../models/settings_model/auto_arrange_status_enum.dart';
+import '../../../models/settings_model/auto_arrange_origin.dart';
 
 class BehaviourSection extends ConsumerStatefulWidget {
   const BehaviourSection({super.key});
@@ -104,26 +104,26 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
               constraints:
                   BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
               child: Select(
-                value: behaviour.autoArrangeStatus,
+                value: behaviour.autoArrangeOrigin,
                 onChanged: (value) async {
                   ref
                       .read(settingsProvider.notifier)
-                      .changeAutoArrangeStatus(value!);
+                      .changeAutoArrangeOrigin(value!);
 
                   await Db.saveAppSettings(ref.read(settingsProvider));
                 },
                 filled: true,
                 popup: SelectPopup(
                   items: SelectItemList(
-                    children: AutoArrangeStatus.values.map((status) {
+                    children: AutoArrangeOrigin.values.map((status) {
                       return SelectItemButton(
                         value: status,
-                        child: Text(status.value),
+                        child: Text(status.name),
                       );
                     }).toList(),
                   ),
                 ).call,
-                itemBuilder: (context, value) => Text(value.value),
+                itemBuilder: (context, value) => Text(value.name),
               )),
         ),
         const Divider(),
