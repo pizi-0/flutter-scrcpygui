@@ -19,11 +19,10 @@ import 'package:scrcpygui/screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
 import 'package:scrcpygui/screens/4.settings_tab/settings_tab.dart';
 import 'package:scrcpygui/screens/5.companion_tab/companion_tab.dart';
 import 'package:scrcpygui/screens/about_tab/about_tab.dart';
+import 'package:scrcpygui/widgets/auto_arrange_indicator.dart';
 import 'package:scrcpygui/widgets/title_bar_button.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:window_manager/window_manager.dart';
-
-import '../models/settings_model/auto_arrange_status_enum.dart';
 
 final sidebarKey = GlobalKey<_AppSideBarState>();
 
@@ -93,21 +92,6 @@ class TitleBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final appversion = ref.watch(appVersionProvider);
-    final autoArrangeStatus =
-        ref.watch(settingsProvider).behaviour.autoArrangeStatus;
-
-    Widget buildAutoArrangeIndicator() {
-      switch (autoArrangeStatus) {
-        case AutoArrangeStatus.off:
-          return const Icon(Icons.grid_off_rounded, color: Colors.red);
-        case AutoArrangeStatus.fromLeft:
-          return const Icon(Icons.align_horizontal_left_rounded,
-              color: Colors.green);
-        case AutoArrangeStatus.fromRight:
-          return const Icon(Icons.align_horizontal_right_rounded,
-              color: Colors.blue);
-      }
-    }
 
     return Container(
       decoration: BoxDecoration(
@@ -146,28 +130,7 @@ class TitleBar extends ConsumerWidget {
               ).paddingOnly(left: 8),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0),
-            child: Tooltip(
-              tooltip: TooltipContainer(
-                      child: autoArrangeStatus == AutoArrangeStatus.off
-                          ? Text('Auto arrange disabled')
-                          : Text(
-                              'Arrange enabled.\nAlignment: ${autoArrangeStatus.name}'))
-                  .call,
-              child: IconButton(
-                variance: ButtonVariance.ghost,
-                size: ButtonSize.small,
-                icon: Padding(
-                  padding: EdgeInsets.all(4.0),
-                  child: buildAutoArrangeIndicator(),
-                ),
-                onPressed: () async {
-                  ref.read(settingsProvider.notifier).toggleAutoArrangeStatus();
-                },
-              ),
-            ),
-          ),
+          AutoArrangeIndicator(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4.0),
             child: IconButton(
