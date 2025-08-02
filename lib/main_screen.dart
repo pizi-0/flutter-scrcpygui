@@ -76,6 +76,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
     autoLaunchConfigTimer?.cancel();
     runningInstancePingTimer?.cancel();
     _serverUtils.stopServer(ref);
+    node.dispose();
     super.dispose();
   }
 
@@ -173,15 +174,9 @@ class _MainScreenState extends ConsumerState<MainScreen>
     );
 
     WidgetsBinding.instance.addPostFrameCallback((a) async {
-      autoDevicesPingTimer = Timer.periodic(1.seconds, (a) async {
-        await AutomationUtils.autoconnectRunner(ref);
-      });
-      autoLaunchConfigTimer = Timer.periodic(1.seconds, (a) async {
-        await AutomationUtils.autoLaunchConfigRunner(ref);
-      });
-      runningInstancePingTimer = Timer.periodic(1.seconds, (a) async {
-        await ScrcpyUtils.pingRunning(ref);
-      });
+      _startAutoDevicesPing();
+      _startAutoLaunchConfig();
+      _startRunningInstancePing();
 
       if (companionSettings.startOnLaunch) {
         try {
@@ -227,6 +222,31 @@ class _MainScreenState extends ConsumerState<MainScreen>
           );
         }
       }
+    });
+  }
+
+  void _startAutoDevicesPing() {
+    autoDevicesPingTimer = Timer.periodic(1.seconds, (_) async {
+      await AutomationUtils.autoconnectRunner(ref);
+    });
+  }
+
+  void _startAutoLaunchConfig() {
+    bool isRunning = false;
+    autoLaunchConfigTimer = Timer.periodic(1.seconds, (_) async {
+      if (isRunning) return;
+      isRunning = true;
+      try {
+        await AutomationUtils.autoLaunchConfigRunner(ref);
+      } finally {
+        isRunning = false;
+      }
+    });
+  }
+
+  void _startRunningInstancePing() {
+    runningInstancePingTimer = Timer.periodic(1.seconds, (_) async {
+      await ScrcpyUtils.pingRunning(ref);
     });
   }
 
