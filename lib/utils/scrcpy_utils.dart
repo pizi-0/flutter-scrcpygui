@@ -358,9 +358,14 @@ class ScrcpyUtils {
     final display = (await screenRetriever.getPrimaryDisplay());
     final screenSize = display.size;
     final behaviour = ref.read(settingsProvider).behaviour;
-    final origin =
-        behaviour.autoArrangeOrigin; // Remove center from UI/settings
-    double windowToScreenHeightRatio = 0.75;
+    final origin = behaviour.autoArrangeOrigin;
+    double windowToScreenHeightRatio = behaviour.windowToScreenHeightRatio;
+
+    final titleBarHeight = config.windowOptions.noBorder
+        ? 0
+        : Platform.isWindows
+            ? 32
+            : 0;
 
     final instances = ref.read(scrcpyInstanceProvider);
     final info =
@@ -437,34 +442,24 @@ class ScrcpyUtils {
       }
     }
 
-    int getStartY(int col) {
+    int getStartY(int row) {
       switch (origin) {
         case AutoArrangeOrigin.topLeft:
         case AutoArrangeOrigin.topRight:
-          return 0;
+          return row * (newWindowHeight + gap) + titleBarHeight;
         case AutoArrangeOrigin.bottomLeft:
         case AutoArrangeOrigin.bottomRight:
-          return (screenSize.height - newWindowHeight).ceil();
+          return (screenSize.height - newWindowHeight).ceil() -
+              row * (newWindowHeight + gap) +
+              titleBarHeight;
         case AutoArrangeOrigin.centerLeft:
         case AutoArrangeOrigin.centerRight:
-          return ((screenSize.height - newWindowHeight) / 2).ceil();
+          // Centered vertically, then offset by row
+          return ((screenSize.height - newWindowHeight) / 2).ceil() +
+              row * (newWindowHeight + gap) +
+              titleBarHeight;
         default:
-          return 0;
-      }
-    }
-
-    bool isHorizontal() {
-      switch (origin) {
-        case AutoArrangeOrigin.topLeft:
-        case AutoArrangeOrigin.topRight:
-        case AutoArrangeOrigin.bottomLeft:
-        case AutoArrangeOrigin.bottomRight:
-          return true;
-        case AutoArrangeOrigin.centerLeft:
-        case AutoArrangeOrigin.centerRight:
-          return false;
-        default:
-          return true; // Default to horizontal for 'off' or unknown origin
+          return row * (newWindowHeight + gap) + titleBarHeight;
       }
     }
 
@@ -479,182 +474,61 @@ class ScrcpyUtils {
       }
     }
 
-    bool isReverseY() {
-      switch (origin) {
-        case AutoArrangeOrigin.bottomLeft:
-        case AutoArrangeOrigin.bottomRight:
-          return true;
-        default:
-          return false;
-      }
-    }
+    // Try to find the first available spot in a grid (row by row)
+    int maxRows = (screenSize.height / (newWindowHeight + gap)).floor();
 
-    // Main arrangement loop (improved: prioritize stacking vertically for top/bottom origins)
-    if (isHorizontal()) {
-      // For top/bottom origins, prioritize stacking vertically before starting a new row
-      bool prioritizeVertical = origin == AutoArrangeOrigin.topLeft ||
-          origin == AutoArrangeOrigin.topRight ||
-          origin == AutoArrangeOrigin.bottomLeft ||
-          origin == AutoArrangeOrigin.bottomRight;
+    for (int row = 0; row < maxRows; row++) {
+      int y = getStartY(row);
 
-      if (prioritizeVertical) {
-        // Find the first available vertical slot in the current column before moving sideways
-        int maxRows = (screenSize.height / (newWindowHeight + gap)).floor();
-        for (int col = 0;; col++) {
-          int x = getStartX(col) +
-              (isReverseX()
-                  ? -col * (newWindowWidth + gap)
-                  : col * (newWindowWidth + gap));
-          if (x < 0 || x + newWindowWidth > screenSize.width) break;
+      // Get all windows in this row
+      final rowInstances =
+          positionedInstances.where((w) => (w.y - y).abs() < gap).toList();
 
-          // For each column, try to stack vertically
-          List<int> usedYs = positionedInstances
-              .where((w) =>
-                  (w.x - x).abs() < gap &&
-                  w.width == newWindowWidth &&
-                  w.height == newWindowHeight)
-              .map((w) => w.y)
-              .toList();
+      rowInstances.sort(
+          (a, b) => isReverseX() ? b.x.compareTo(a.x) : a.x.compareTo(b.x));
 
-          for (int row = 0; row < maxRows; row++) {
-            int y = getStartY(row) +
-                (isReverseY()
-                    ? -row * (newWindowHeight + gap)
-                    : row * (newWindowHeight + gap));
-            if (y < 0 || y + newWindowHeight > screenSize.height) break;
-            if (!usedYs.contains(y)) {
-              return res.copyWith(
-                windowOptions: res.windowOptions.copyWith(
-                  position: ScrcpyPosition(x: x, y: y),
-                  size: ScrcpySize(
-                      width: newWindowWidth, height: newWindowHeight),
-                ),
-              );
-            }
+      int x = getStartX(row);
+      if (!isReverseX()) {
+        for (final win in rowInstances) {
+          if (x + newWindowWidth <= win.x - gap) {
+            return res.copyWith(
+              windowOptions: res.windowOptions.copyWith(
+                position: ScrcpyPosition(x: x, y: y),
+                size:
+                    ScrcpySize(width: newWindowWidth, height: newWindowHeight),
+              ),
+            );
           }
+          x = win.x + win.width + gap;
+        }
+        if (x + newWindowWidth <= screenSize.width) {
+          return res.copyWith(
+            windowOptions: res.windowOptions.copyWith(
+              position: ScrcpyPosition(x: x, y: y),
+              size: ScrcpySize(width: newWindowWidth, height: newWindowHeight),
+            ),
+          );
         }
       } else {
-        // Default: fill row first (sideways)
-        for (int row = 0;; row++) {
-          int y = getStartY(row) +
-              (isReverseY()
-                  ? -row * (newWindowHeight + gap)
-                  : row * (newWindowHeight + gap));
-          if (y < 0 || y + newWindowHeight > screenSize.height) break;
-
-          final rowInstances =
-              positionedInstances.where((w) => (w.y - y).abs() < gap).toList();
-
-          rowInstances.sort(
-              (a, b) => isReverseX() ? b.x.compareTo(a.x) : a.x.compareTo(b.x));
-
-          int x = getStartX(row);
-          if (!isReverseX()) {
-            for (final win in rowInstances) {
-              if (x + newWindowWidth <= win.x - gap) {
-                return res.copyWith(
-                  windowOptions: res.windowOptions.copyWith(
-                    position: ScrcpyPosition(x: x, y: y),
-                    size: ScrcpySize(
-                        width: newWindowWidth, height: newWindowHeight),
-                  ),
-                );
-              }
-              x = win.x + win.width + gap;
-            }
-            if (x + newWindowWidth <= screenSize.width) {
-              return res.copyWith(
-                windowOptions: res.windowOptions.copyWith(
-                  position: ScrcpyPosition(x: x, y: y),
-                  size: ScrcpySize(
-                      width: newWindowWidth, height: newWindowHeight),
-                ),
-              );
-            }
-          } else {
-            for (final win in rowInstances) {
-              if (x >= win.x + win.width + gap) {
-                return res.copyWith(
-                  windowOptions: res.windowOptions.copyWith(
-                    position: ScrcpyPosition(x: x, y: y),
-                    size: ScrcpySize(
-                        width: newWindowWidth, height: newWindowHeight),
-                  ),
-                );
-              }
-              x = win.x - newWindowWidth - gap;
-            }
-            if (x >= 0) {
-              return res.copyWith(
-                windowOptions: res.windowOptions.copyWith(
-                  position: ScrcpyPosition(x: x, y: y),
-                  size: ScrcpySize(
-                      width: newWindowWidth, height: newWindowHeight),
-                ),
-              );
-            }
+        for (final win in rowInstances) {
+          if (x >= win.x + win.width + gap) {
+            return res.copyWith(
+              windowOptions: res.windowOptions.copyWith(
+                position: ScrcpyPosition(x: x, y: y),
+                size:
+                    ScrcpySize(width: newWindowWidth, height: newWindowHeight),
+              ),
+            );
           }
+          x = win.x - newWindowWidth - gap;
         }
-      }
-    } else {
-      for (int col = 0;; col++) {
-        int x = getStartX(col) +
-            (isReverseX()
-                ? -col * (newWindowWidth + gap)
-                : col * (newWindowWidth + gap));
-        if (x < 0 || x + newWindowWidth > screenSize.width) break;
-
-        final colInstances =
-            positionedInstances.where((w) => (w.x - x).abs() < gap).toList();
-
-        colInstances.sort(
-            (a, b) => isReverseY() ? b.y.compareTo(a.y) : a.y.compareTo(b.y));
-
-        int y = getStartY(col);
-        if (!isReverseY()) {
-          for (final win in colInstances) {
-            if (y + newWindowHeight <= win.y - gap) {
-              return res.copyWith(
-                windowOptions: res.windowOptions.copyWith(
-                  position: ScrcpyPosition(x: x, y: y),
-                  size: ScrcpySize(
-                      width: newWindowWidth, height: newWindowHeight),
-                ),
-              );
-            }
-            y = win.y + win.height + gap;
-          }
-          if (y + newWindowHeight <= screenSize.height) {
-            return res.copyWith(
-              windowOptions: res.windowOptions.copyWith(
-                position: ScrcpyPosition(x: x, y: y),
-                size:
-                    ScrcpySize(width: newWindowWidth, height: newWindowHeight),
-              ),
-            );
-          }
-        } else {
-          for (final win in colInstances) {
-            if (y >= win.y + win.height + gap) {
-              return res.copyWith(
-                windowOptions: res.windowOptions.copyWith(
-                  position: ScrcpyPosition(x: x, y: y),
-                  size: ScrcpySize(
-                      width: newWindowWidth, height: newWindowHeight),
-                ),
-              );
-            }
-            y = win.y - newWindowHeight - gap;
-          }
-          if (y >= 0) {
-            return res.copyWith(
-              windowOptions: res.windowOptions.copyWith(
-                position: ScrcpyPosition(x: x, y: y),
-                size:
-                    ScrcpySize(width: newWindowWidth, height: newWindowHeight),
-              ),
-            );
-          }
+        if (x >= 0) {
+          return res.copyWith(
+            windowOptions: res.windowOptions.copyWith(
+              position: ScrcpyPosition(x: x, y: y),
+              size: ScrcpySize(width: newWindowWidth, height: newWindowHeight),
+            ),
+          );
         }
       }
     }
