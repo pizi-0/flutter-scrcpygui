@@ -86,39 +86,50 @@ class _SettingsPaneState extends ConsumerState<SettingsPane> {
 
   PgExpandable _configsSelect(List<ScrcpyConfig> allconfigs, AdbDevices dev) {
     final state = ref.watch(deviceSettingsStateProvider(dev));
+    final theme = Theme.of(context);
 
     return PgExpandable(
         expand: state.autoLaunch,
         child: OutlinedContainer(
-          padding: EdgeInsets.all(4),
-          child: GridView.builder(
-            itemCount: allconfigs.length,
-            shrinkWrap: true,
-            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 150,
-              mainAxisExtent: 25,
-              crossAxisSpacing: 4,
-              mainAxisSpacing: 4,
+          backgroundColor: state.autoLaunch ? theme.colorScheme.accent : null,
+          borderRadius: theme.borderRadiusMd,
+          padding: EdgeInsets.all(2),
+          child: Card(
+            borderRadius: theme.borderRadiusMd,
+            padding: EdgeInsets.all(4),
+            child: GridView.builder(
+              itemCount: allconfigs.length,
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 150,
+                mainAxisExtent: 28,
+                crossAxisSpacing: 4,
+                mainAxisSpacing: 4,
+              ),
+              itemBuilder: (context, index) {
+                final config = allconfigs[index];
+                final selected = state.autoLaunchConfig
+                    .where((a) => a.configId == config.id)
+                    .isNotEmpty;
+
+                return Chip(
+                  style: selected
+                      ? ButtonStyle.primary()
+                          .withBorderRadius(borderRadius: theme.borderRadiusSm)
+                      : ButtonStyle.secondary()
+                          .withBorderRadius(borderRadius: theme.borderRadiusSm),
+                  onPressed: () {
+                    final ca =
+                        ConfigAutomation(deviceId: dev.id, configId: config.id);
+
+                    ref
+                        .read(deviceSettingsStateProvider(dev).notifier)
+                        .toggleConfig(ca);
+                  },
+                  child: OverflowMarquee(child: Text(config.configName)),
+                );
+              },
             ),
-            itemBuilder: (context, index) {
-              final config = allconfigs[index];
-              final selected = state.autoLaunchConfig
-                  .where((a) => a.configId == config.id)
-                  .isNotEmpty;
-
-              return Chip(
-                style: selected ? ButtonStyle.primary() : null,
-                onPressed: () {
-                  final ca =
-                      ConfigAutomation(deviceId: dev.id, configId: config.id);
-
-                  ref
-                      .read(deviceSettingsStateProvider(dev).notifier)
-                      .toggleConfig(ca);
-                },
-                child: OverflowMarquee(child: Text(config.configName)),
-              );
-            },
           ),
         ));
   }

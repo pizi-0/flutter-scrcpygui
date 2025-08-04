@@ -214,12 +214,14 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
               OutlinedContainer(
                 backgroundColor: theme.colorScheme.accent,
                 borderRadius: theme.borderRadiusMd,
-                padding: EdgeInsets.all(8),
+                padding: EdgeInsets.all(4),
                 child: Column(
                   spacing: 8,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Label(child: Text(el.videoSection.displays.virtual.label))
+                    Label(
+                            child: Text(
+                                ' ${el.videoSection.displays.virtual.label}'))
                         .small(),
                     PgSectionCard(
                       cardPadding: EdgeInsets.all(8),
