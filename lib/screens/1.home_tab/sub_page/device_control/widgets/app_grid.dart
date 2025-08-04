@@ -324,6 +324,8 @@ class _AppGridState extends ConsumerState<AppGrid> {
                   items: SelectItemList(
                       children: allConfigs
                           .where((c) => !c.windowOptions.noWindow)
+                          .where((c) =>
+                              !ref.read(hiddenConfigsProvider).contains(c.id))
                           .map((c) => SelectItemButton(
                               value: c,
                               child: OverflowMarquee(
