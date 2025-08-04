@@ -11,7 +11,6 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_app_list.dart
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_camera.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_display.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_encoder.dart';
-import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_info.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/command_runner.dart';
 
@@ -44,53 +43,71 @@ class AdbUtils {
     return res;
   }
 
-  static Future<ScrcpyInfo> getScrcpyDetailsFor(
-      String workDir, AdbDevices dev) async {
-    final buildVersion = await CommandRunner.runAdbCommand(workDir, args: [
-      '-s',
-      dev.id,
-      'shell',
-      'getprop',
-      'ro.product.build.version.release'
-    ]);
+  // static Future<ScrcpyInfo> getScrcpyDetailsFor(
+  //     String workDir, AdbDevices dev) async {
+  //   String buildVersion = '';
+  //   final res = await CommandRunner.runAdbCommand(workDir, args: [
+  //     '-s',
+  //     dev.id,
+  //     'shell',
+  //     'getprop',
+  //     'ro.product.build.version.release'
+  //   ]);
 
-    final info = await CommandRunner.runScrcpyCommand(
-      workDir,
-      dev,
-      args: [
-        '--list-encoders',
-        '--list-displays',
-        '--list-cameras',
-        '--list-apps'
-      ],
-    );
+  //   if (res.stdout.toString().trim().isNotEmpty) {
+  //     buildVersion = res.stdout.toString().trim();
+  //   } else {
+  //     final res = await CommandRunner.runAdbCommand(workDir,
+  //         args: ['-s', dev.id, 'shell', 'getprop', 'ro.build.version.release']);
+  //     buildVersion = res.stdout.toString().trim();
+  //   }
 
-    final cameraInfo = _getCameraInfo(info.stdout);
-    final videoEncoderInfo = _getVideoEncoders(info.stdout);
-    final audioEncoderInfo = _getAudioEncoders(info.stdout);
-    final displayInfo = getDisplays(info.stdout);
-    final appsList = getAppsList(info.stdout);
+  //   final info = await CommandRunner.runScrcpyCommand(
+  //     workDir,
+  //     dev,
+  //     args: [
+  //       '--list-encoders',
+  //       '--list-displays',
+  //       '--list-cameras',
+  //       '--list-apps'
+  //     ],
+  //   );
 
-    return ScrcpyInfo(
-      device: dev,
-      buildVersion: buildVersion.stdout.toString().trim(),
-      cameras: cameraInfo,
-      displays: displayInfo,
-      videoEncoders: videoEncoderInfo,
-      audioEncoder: audioEncoderInfo,
-      appList: appsList,
-    );
-  }
+  //   final cameraInfo = _getCameraInfo(info.stdout);
+  //   final videoEncoderInfo = _getVideoEncoders(info.stdout);
+  //   final audioEncoderInfo = _getAudioEncoders(info.stdout);
+  //   final displayInfo = getDisplays(info.stdout);
+  //   final appsList = getAppsList(info.stdout);
+
+  //   return ScrcpyInfo(
+  //     device: dev,
+  //     buildVersion: buildVersion,
+  //     cameras: cameraInfo,
+  //     displays: displayInfo,
+  //     videoEncoders: videoEncoderInfo,
+  //     audioEncoder: audioEncoderInfo,
+  //     appList: appsList,
+  //   );
+  // }
 
   static Future<DeviceInfo> getDeviceInfoFor(
       String workDir, AdbDevices dev) async {
-    final buildVersion = await CommandRunner.runAdbCommand(workDir, args: [
+    String buildVersion = '';
+    final res = await CommandRunner.runAdbCommand(workDir, args: [
       '-s',
       dev.id,
       'shell',
       'getprop',
       'ro.product.build.version.release'
     ]);
+
+    if (res.stdout.toString().trim().isNotEmpty) {
+      buildVersion = res.stdout.toString().trim();
+    } else {
+      final res = await CommandRunner.runAdbCommand(workDir,
+          args: ['-s', dev.id, 'shell', 'getprop', 'ro.build.version.release']);
+      buildVersion = res.stdout.toString().trim();
+    }
 
     final info = await CommandRunner.runScrcpyCommand(
       workDir,
@@ -112,7 +129,7 @@ class AdbUtils {
     return DeviceInfo(
       serialNo: dev.serialNo,
       deviceName: dev.modelName,
-      buildVersion: buildVersion.stdout.toString().trim(),
+      buildVersion: buildVersion,
       cameras: cameraInfo,
       displays: displayInfo,
       videoEncoders: videoEncoderInfo,
@@ -274,10 +291,10 @@ class AdbUtils {
 }
 
 List<ScrcpyCamera> _getCameraInfo(String res) {
-  RegExp idRegex = RegExp(r'(?<=--camera-id=)\d+');
-  RegExp descRegex = RegExp(r'(?<=\()\w+(?=,)');
-  RegExp resolutionRegex = RegExp(r'\d+x\d+');
-  RegExp fpsRegex = RegExp(r'(?<=\[)\d+, \d+(?=])');
+  RegExp idRegex = RegExp(r'--camera-id=(\d+)');
+  RegExp descRegex = RegExp(r'\(([^,]+),');
+  RegExp resolutionRegex = RegExp(r'(\d+x\d+)');
+  RegExp fpsRegex = RegExp(r'fps=\[([^\]]+)\]');
 
   List<ScrcpyCamera> cameras = [];
 
@@ -289,15 +306,18 @@ List<ScrcpyCamera> _getCameraInfo(String res) {
 
   for (final info in cameraInfo) {
     try {
-      final id = idRegex.stringMatch(info);
-      final desc = descRegex.stringMatch(info);
-      final resolution = resolutionRegex.stringMatch(info);
-      final fps = fpsRegex.stringMatch(info);
+      final id = idRegex.firstMatch(info)?.group(1);
+      final desc = descRegex.firstMatch(info)?.group(1);
+      final resolution = resolutionRegex.firstMatch(info)?.group(1);
+      final fpsRaw = fpsRegex.firstMatch(info)?.group(1);
+      List<String> fps =
+          fpsRaw != null ? fpsRaw.split(',').map((e) => e.trim()).toList() : [];
+
       ScrcpyCamera camera = ScrcpyCamera(
         id: id ?? 'null',
-        desc: desc!,
-        sizes: [resolution!],
-        fps: fps?.split(',').map((e) => e.trim()).toList() ?? [],
+        desc: desc ?? '',
+        sizes: [resolution ?? ''],
+        fps: fps,
       );
       cameras.add(camera);
     } on Exception catch (e) {
@@ -309,8 +329,8 @@ List<ScrcpyCamera> _getCameraInfo(String res) {
 }
 
 List<VideoEncoder> _getVideoEncoders(String res) {
-  RegExp codecRegex = RegExp(r'(?<=--video-codec=)\w+');
-  RegExp encoderRegex = RegExp(r"(?<=--video-encoder=)(.*)(?= )");
+  RegExp codecRegex = RegExp(r'--video-codec=([^\s]+)');
+  RegExp encoderRegex = RegExp(r'--video-encoder=([^\s]+)');
   List<VideoEncoder> videoEncoders = [];
   final encoderInfo = res
       .toString()
@@ -320,15 +340,15 @@ List<VideoEncoder> _getVideoEncoders(String res) {
 
   for (final info in encoderInfo) {
     try {
-      final codec = codecRegex.stringMatch(info);
-      final encoder = encoderRegex.stringMatch(info)!.split(' ').first;
-      if (videoEncoders.where((e) => e.codec.contains(codec!)).isNotEmpty) {
-        videoEncoders
-            .firstWhere((e) => e.codec.contains(codec!))
-            .encoder
-            .add(encoder);
+      final codecMatch = codecRegex.firstMatch(info);
+      final encoderMatch = encoderRegex.firstMatch(info);
+      final codec = codecMatch?.group(1);
+      final encoder = encoderMatch?.group(1);
+      if (codec == null || encoder == null) continue;
+      if (videoEncoders.where((e) => e.codec == codec).isNotEmpty) {
+        videoEncoders.firstWhere((e) => e.codec == codec).encoder.add(encoder);
       } else {
-        videoEncoders.add(VideoEncoder(codec: codec!, encoder: [encoder]));
+        videoEncoders.add(VideoEncoder(codec: codec, encoder: [encoder]));
       }
     } on Exception catch (e) {
       logger.e('Error getting video encoders info from scrcpy', error: e);
@@ -339,8 +359,8 @@ List<VideoEncoder> _getVideoEncoders(String res) {
 }
 
 List<AudioEncoder> _getAudioEncoders(String res) {
-  RegExp codecRegex = RegExp(r'(?<=--audio-codec=)\w+');
-  RegExp encoderRegex = RegExp(r"(?<=--audio-encoder=)(.*)(?= )");
+  RegExp codecRegex = RegExp(r'--audio-codec=([^\s]+)');
+  RegExp encoderRegex = RegExp(r'--audio-encoder=([^\s]+)');
   List<AudioEncoder> audioEncoder = [];
 
   final encoderInfo = res
@@ -351,15 +371,15 @@ List<AudioEncoder> _getAudioEncoders(String res) {
 
   for (final info in encoderInfo) {
     try {
-      final codec = codecRegex.stringMatch(info);
-      final encoder = encoderRegex.stringMatch(info)!.split(' ').first;
-      if (audioEncoder.where((e) => e.codec.contains(codec!)).isNotEmpty) {
-        audioEncoder
-            .firstWhere((e) => e.codec.contains(codec!))
-            .encoder
-            .add(encoder);
+      final codecMatch = codecRegex.firstMatch(info);
+      final encoderMatch = encoderRegex.firstMatch(info);
+      final codec = codecMatch?.group(1);
+      final encoder = encoderMatch?.group(1);
+      if (codec == null || encoder == null) continue;
+      if (audioEncoder.where((e) => e.codec == codec).isNotEmpty) {
+        audioEncoder.firstWhere((e) => e.codec == codec).encoder.add(encoder);
       } else {
-        audioEncoder.add(AudioEncoder(codec: codec!, encoder: [encoder]));
+        audioEncoder.add(AudioEncoder(codec: codec, encoder: [encoder]));
       }
     } on Exception catch (e) {
       logger.e('Error getting audio encoders info from scrcpy', error: e);
@@ -371,7 +391,7 @@ List<AudioEncoder> _getAudioEncoders(String res) {
 
 List<ScrcpyDisplay> getDisplays(String res) {
   RegExp idRegex = RegExp(r'(?<=--display-id=)\d+');
-  RegExp resolutionRegex = RegExp(r'\d+x\d+');
+  RegExp resolutionRegex = RegExp(r'\((\d+x\d+)\)');
   List<ScrcpyDisplay> displays = [];
 
   try {
@@ -383,9 +403,11 @@ List<ScrcpyDisplay> getDisplays(String res) {
 
     for (final info in displayInfo) {
       final id = idRegex.stringMatch(info);
-      final resolution = resolutionRegex.stringMatch(info);
-
-      displays.add(ScrcpyDisplay(id: id!, resolution: resolution!));
+      final resolutionMatch = resolutionRegex.firstMatch(info);
+      final resolution = resolutionMatch?.group(1);
+      if (id != null && resolution != null) {
+        displays.add(ScrcpyDisplay(id: id, resolution: resolution));
+      }
     }
   } on Exception catch (e) {
     logger.e('Error getting display info from scrcpy', error: e);
