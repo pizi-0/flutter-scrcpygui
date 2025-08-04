@@ -36,19 +36,31 @@ class _ConfigManagerState extends ConsumerState<ConfigManager> {
 
   @override
   void initState() {
+    ref.listenManual(
+      configsProvider,
+      (previous, next) {
+        final allConfigs = ref.read(configsProvider);
+        final hiddenConfigs = ref.read(hiddenConfigsProvider);
+
+        oldList = [...allConfigs];
+        reorderList = [...allConfigs];
+
+        oldHidden = [...hiddenConfigs];
+        hidden = [...hiddenConfigs];
+        setState(() {});
+      },
+    );
+
+    final allConfigs = ref.read(configsProvider);
+    final hiddenConfigs = ref.read(hiddenConfigsProvider);
+
+    oldList = [...allConfigs];
+    reorderList = [...allConfigs];
+
+    oldHidden = [...hiddenConfigs];
+    hidden = [...hiddenConfigs];
+
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(configTags.notifier).clearTag();
-      final filteredConfigs = ref.read(filteredConfigsProvider);
-      final hiddenConfigs = ref.read(hiddenConfigsProvider);
-
-      oldList = [...filteredConfigs];
-      reorderList = [...filteredConfigs];
-
-      oldHidden = [...hiddenConfigs];
-      hidden = [...hiddenConfigs];
-      setState(() {});
-    });
   }
 
   @override
