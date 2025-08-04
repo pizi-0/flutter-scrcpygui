@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../../../../db/db.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_config.dart';
@@ -114,16 +115,23 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
                   size: ButtonSize.small,
                   onPressed: () =>
                       DirectoryUtils.openFolder(widget.conf.savePath!),
-                  icon: const Icon(Icons.folder),
+                  icon: const Icon(Icons.folder_rounded),
                 ),
               if (!defaultConfigs.contains(widget.conf))
                 const VerticalDivider(indent: 10, endIndent: 10),
-              if (!defaultConfigs.contains(widget.conf))
+              if (!defaultConfigs.contains(widget.conf)) ...[
                 IconButton.ghost(
                   size: ButtonSize.small,
                   onPressed: () => _onEditPressed(widget.conf),
                   icon: const Icon(Icons.edit_rounded),
                 ),
+                const VerticalDivider(indent: 10, endIndent: 10),
+                IconButton.ghost(
+                  size: ButtonSize.small,
+                  onPressed: () => _onDuplicatePressed(widget.conf),
+                  icon: const Icon(Icons.copy_rounded),
+                ),
+              ],
               if (!defaultConfigs.contains(widget.conf))
                 const VerticalDivider(indent: 10, endIndent: 10),
               if (!defaultConfigs.contains(widget.conf))
@@ -246,6 +254,36 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
       );
     } else {
       ref.read(configScreenConfig.notifier).setConfig(config);
+      context.push('/home/config-settings');
+    }
+  }
+
+  void _onDuplicatePressed(ScrcpyConfig config) {
+    ref.read(selectedConfigProvider.notifier).state = config;
+    configDropdownKey.currentState?.closePopup();
+
+    if (ref.read(selectedDeviceProvider) == null) {
+      showDialog(
+        barrierDismissible: true,
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(el.noDeviceDialogLoc.title),
+          content: Text(
+            el.noDeviceDialogLoc.contentsEdit,
+            textAlign: TextAlign.start,
+          ),
+          actions: [
+            SecondaryButton(
+              child: Text(el.buttonLabelLoc.close),
+              onPressed: () => context.pop(),
+            )
+          ],
+        ),
+      );
+    } else {
+      ref
+          .read(configScreenConfig.notifier)
+          .setConfig(config.copyWith(id: Uuid().v4()));
       context.push('/home/config-settings');
     }
   }
