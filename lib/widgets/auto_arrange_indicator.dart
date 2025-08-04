@@ -1,5 +1,6 @@
 import 'package:awesome_extensions/awesome_extensions_dart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/settings_model/auto_arrange_origin.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -282,7 +283,7 @@ class _OriginBoxState extends ConsumerState<OriginBox> {
               child: hover
                   ? OverflowMarquee(
                       child: Text(
-                        widget.origin.name,
+                        tr('auto_arrange_origin_loc.${widget.origin.value.replaceAll(' ', '_').toLowerCase()}'),
                         textAlign: TextAlign.center,
                         maxLines: 1,
                         style: TextStyle(
@@ -291,7 +292,7 @@ class _OriginBoxState extends ConsumerState<OriginBox> {
                       ),
                     )
                   : Text(
-                      widget.origin.name,
+                      tr('auto_arrange_origin_loc.${widget.origin.value.replaceAll(' ', '_').toLowerCase()}'),
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       style: TextStyle(

@@ -428,6 +428,12 @@ settings_loc:
     window_size:
       label: Recordar tamaño de ventana
       info: Recordar tamaño de ventana al salir
+    auto_arrange:
+      label: Organizar ventanas scrcpy automáticamente
+      info: Organizar automáticamente las ventanas de scrcpy al iniciar
+    window_to_screen_ratio:
+      label: Relación ventana/pantalla
+      info: "Relación del tamaño de la ventana de scrcpy con el tamaño de la pantalla principal, 1.0 = pantalla completa, predeterminado: 0.88"
 
 ## companion tab
 companion_loc:
@@ -571,3 +577,13 @@ config_override_loc:
     info: Solo para pantalla virtual
   mute:
     label: Silenciar
+
+auto_arrange_origin_loc:
+  title: Origen de organización automática
+  off: Desactivado
+  top_left: Arriba a la izquierda
+  top_right: Arriba a la derecha
+  center_left: Centro a la izquierda
+  center_right: Centro a la derecha
+  bottom_left: Abajo a la izquierda
+  bottom_right: Abajo a la derecha

@@ -4,12 +4,16 @@ abstract interface class SimpleStringEnum {
   const SimpleStringEnum(this.value);
 }
 
-enum AutoArrangeOrigin {
-  off,
-  topLeft,
-  topRight,
-  centerLeft,
-  centerRight,
-  bottomLeft,
-  bottomRight,
+enum AutoArrangeOrigin implements SimpleStringEnum {
+  off('off'),
+  topLeft('top left'),
+  topRight('top right'),
+  centerLeft('center left'),
+  centerRight('center right'),
+  bottomLeft('bottom left'),
+  bottomRight('bottom right');
+
+  @override
+  final String value;
+  const AutoArrangeOrigin(this.value);
 }

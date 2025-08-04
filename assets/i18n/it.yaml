@@ -428,6 +428,12 @@ settings_loc:
     window_size:
       label: Ricorda dimensioni finestra
       info: Ricorda le dimensioni della finestra all'uscita
+    auto_arrange:
+      label: Disponi automaticamente le finestre di scrcpy
+      info: Disponi automaticamente le finestre di scrcpy all'avvio
+    window_to_screen_ratio:
+      label: Rapporto finestra/schermo
+      info: "Rapporto tra le dimensioni della finestra di scrcpy e le dimensioni dello schermo primario, 1.0 = schermo intero, predefinito: 0.88"
 
 ## companion tab
 companion_loc:
@@ -572,3 +578,13 @@ config_override_loc:
     info: Solo per display virtuale
   mute:
     label: Silenzia
+
+auto_arrange_origin_loc:
+  title: Punto di ancoraggio
+  off: Spento
+  top_left: In alto a sinistra
+  top_right: In alto a destra
+  center_left: Al centro a sinistra
+  center_right: Al centro a destra
+  bottom_left: In basso a sinistra
+  bottom_right: In basso a destra

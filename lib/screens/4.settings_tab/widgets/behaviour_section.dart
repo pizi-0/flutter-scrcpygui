@@ -5,6 +5,8 @@ import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:scrcpygui/widgets/config_tiles.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -19,8 +21,43 @@ class BehaviourSection extends ConsumerStatefulWidget {
 }
 
 class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
+  final windowToScreenRatioFocusNode = FocusNode();
+  TextEditingController? windowToScreenRatioController;
+
+  @override
+  void initState() {
+    windowToScreenRatioController = TextEditingController(
+      text: ref
+          .read(settingsProvider)
+          .behaviour
+          .windowToScreenHeightRatio
+          .toString(),
+    );
+    windowToScreenRatioFocusNode.addListener(onRatioNodeFocusLost);
+    super.initState();
+  }
+
+  void onRatioNodeFocusLost() {
+    windowToScreenRatioController?.text = ref
+        .read(settingsProvider)
+        .behaviour
+        .windowToScreenHeightRatio
+        .toString();
+
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    windowToScreenRatioFocusNode.dispose();
+    windowToScreenRatioController?.dispose();
+    windowToScreenRatioFocusNode.removeListener(onRatioNodeFocusLost);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final behaviour = ref.watch(settingsProvider).behaviour;
 
     final langDD = [
@@ -98,34 +135,109 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
           ),
         ),
         const Divider(),
-        PgListTile(
-          title: 'Auto arrange scrcpy window',
-          trailing: ConstrainedBox(
-              constraints:
-                  BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
-              child: Select(
-                value: behaviour.autoArrangeOrigin,
-                onChanged: (value) async {
-                  ref
-                      .read(settingsProvider.notifier)
-                      .changeAutoArrangeOrigin(value!);
+        Column(
+          children: [
+            PgListTile(
+              title: el.settingsLoc.behavior.autoArrange.label,
+              trailing: ConstrainedBox(
+                constraints:
+                    BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
+                child: Select(
+                  value: behaviour.autoArrangeOrigin,
+                  onChanged: (value) async {
+                    ref
+                        .read(settingsProvider.notifier)
+                        .changeAutoArrangeOrigin(value!);
 
-                  await Db.saveAppSettings(ref.read(settingsProvider));
-                },
-                filled: true,
-                popup: SelectPopup(
-                  items: SelectItemList(
-                    children: AutoArrangeOrigin.values.map((status) {
-                      return SelectItemButton(
-                        value: status,
-                        child: Text(status.name),
-                      );
-                    }).toList(),
+                    await Db.saveAppSettings(ref.read(settingsProvider));
+                  },
+                  filled: true,
+                  popup: SelectPopup(
+                    items: SelectItemList(
+                      children: AutoArrangeOrigin.values.map((status) {
+                        return SelectItemButton(
+                          value: status,
+                          child: Text(tr(
+                              'auto_arrange_origin_loc.${status.value.replaceAll(' ', '_').toLowerCase()}')),
+                        );
+                      }).toList(),
+                    ),
+                  ).call,
+                  itemBuilder: (context, value) => Text(
+                    tr('auto_arrange_origin_loc.${value.value.replaceAll(' ', '_').toLowerCase()}'),
                   ),
-                ).call,
-                itemBuilder: (context, value) => Text(value.name),
-              )),
+                ),
+              ),
+            ),
+            PgExpandable(
+              expand: behaviour.autoArrangeOrigin != AutoArrangeOrigin.off,
+              child: Column(
+                children: [
+                  Gap(8),
+                  OutlinedContainer(
+                    borderRadius: theme.borderRadiusMd,
+                    backgroundColor: theme.colorScheme.muted,
+                    padding: const EdgeInsets.all(4),
+                    child: OutlinedContainer(
+                      borderRadius: theme.borderRadiusMd,
+                      backgroundColor: theme.colorScheme.background,
+                      padding: const EdgeInsets.all(8),
+                      child: ConfigCustom(
+                        dimTitle: false,
+                        title:
+                            el.settingsLoc.behavior.windowToScreenRatio.label,
+                        subtitle: 'Min: 0.4, Max: 1.0',
+                        showinfo: true,
+                        child: TextField(
+                          features: [
+                            InputFeature.trailing(
+                              IconButton.ghost(
+                                density: ButtonDensity.compact,
+                                icon: Icon(Icons.refresh_rounded),
+                                onPressed: () {
+                                  ref
+                                      .read(settingsProvider.notifier)
+                                      .changeWindowToScreenHeightRatio(0.88);
+
+                                  windowToScreenRatioController?.text = '0.88';
+                                  windowToScreenRatioFocusNode.unfocus();
+
+                                  Db.saveAppSettings(
+                                      ref.read(settingsProvider));
+                                },
+                              ),
+                            )
+                          ],
+                          focusNode: windowToScreenRatioFocusNode,
+                          textAlign: TextAlign.end,
+                          filled: true,
+                          controller: windowToScreenRatioController,
+                          onSubmitted: (value) {
+                            final val = double.tryParse(value) ?? 0.88;
+
+                            if (val < 0.4 || val > 1.0) {
+                              windowToScreenRatioFocusNode.unfocus();
+                              return;
+                            }
+
+                            ref
+                                .read(settingsProvider.notifier)
+                                .changeWindowToScreenHeightRatio(
+                                    double.tryParse(value) ?? 0.88);
+                            windowToScreenRatioFocusNode.unfocus();
+
+                            Db.saveAppSettings(ref.read(settingsProvider));
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
+
         const Divider(),
         InkWell(
           onTap: _toggleRememberWinSize,

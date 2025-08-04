@@ -447,6 +447,12 @@ settings_loc:
     window_size:
       label: Remember window size
       info: Remember window size on exit
+    auto_arrange:
+      label: Auto arrange scrcpy windows
+      info: Automatically arrange scrcpy windows on start
+    window_to_screen_ratio:
+      label: Window to screen ratio
+      info: "Ratio of scrcpy window size to primary screen size, 1.0 = full screen, default: 0.88"
 
 ## companion tab
 companion_loc:
@@ -599,3 +605,13 @@ config_override_loc:
     info: Only for virtual display
   mute:
     label: Mute
+
+auto_arrange_origin_loc:
+  title: Auto arrange origin
+  off: Off
+  top_left: Top left
+  top_right: Top right
+  center_left: Center left
+  center_right: Center right
+  bottom_left: Bottom left
+  bottom_right: Bottom right

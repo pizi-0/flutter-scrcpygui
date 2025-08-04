@@ -428,6 +428,12 @@ settings_loc:
     window_size:
       label: Ingat saiz tetingkap
       info: Ingat saiz tetingkap semasa keluar
+    auto_arrange:
+      label: Susun tetingkap scrcpy secara automatik
+      info: Susun tetingkap scrcpy secara automatik semasa mula
+    window_to_screen_ratio:
+      label: Nisbah tetingkap ke skrin
+      info: "Nisbah saiz tetingkap scrcpy kepada saiz skrin utama, 1.0 = skrin penuh, lalai: 0.88"
 
 ## companion tab
 companion_loc:
@@ -573,3 +579,13 @@ config_override_loc:
     info: Hanya untuk paparan maya
   mute:
     label: Senyap
+
+auto_arrange_origin_loc:
+  title: Titik rujukan
+  off: Matikan
+  top_left: Kiri atas
+  top_right: Kanan atas
+  center_left: Tengah kiri
+  center_right: Tengah kanan
+  bottom_left: Kiri bawah
+  bottom_right: Kanan bawah

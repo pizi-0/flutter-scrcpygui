@@ -6443,6 +6443,8 @@ class SettingsLocBehavior {
     required this.language,
     required this.minimize,
     required this.windowSize,
+    required this.autoArrange,
+    required this.windowToScreenRatio,
   });
   factory SettingsLocBehavior.fromJson(Map<String, dynamic> json) {
     return SettingsLocBehavior(
@@ -6453,6 +6455,10 @@ class SettingsLocBehavior {
           (json['minimize'] as Map).cast<String, dynamic>()),
       windowSize: SettingsLocBehaviorWindowSize.fromJson(
           (json['window_size'] as Map).cast<String, dynamic>()),
+      autoArrange: SettingsLocBehaviorAutoArrange.fromJson(
+          (json['auto_arrange'] as Map).cast<String, dynamic>()),
+      windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio.fromJson(
+          (json['window_to_screen_ratio'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -6462,11 +6468,17 @@ class SettingsLocBehavior {
 
   final SettingsLocBehaviorWindowSize windowSize;
 
+  final SettingsLocBehaviorAutoArrange autoArrange;
+
+  final SettingsLocBehaviorWindowToScreenRatio windowToScreenRatio;
+
   Map<String, Object> get _content => {
         r'''label''': label,
         r'''language''': language,
         r'''minimize''': minimize,
         r'''window_size''': windowSize,
+        r'''auto_arrange''': autoArrange,
+        r'''window_to_screen_ratio''': windowToScreenRatio,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -6640,6 +6652,97 @@ class SettingsLocBehaviorWindowSize {
   });
   factory SettingsLocBehaviorWindowSize.fromJson(Map<String, dynamic> json) {
     return SettingsLocBehaviorWindowSize(
+      label: (json['label'] ?? '').toString(),
+      info: (json['info'] ?? '').toString(),
+    );
+  }
+  final String label;
+  final String info;
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class SettingsLocBehaviorAutoArrange {
+  const SettingsLocBehaviorAutoArrange({
+    required this.label,
+    required this.info,
+  });
+  factory SettingsLocBehaviorAutoArrange.fromJson(Map<String, dynamic> json) {
+    return SettingsLocBehaviorAutoArrange(
+      label: (json['label'] ?? '').toString(),
+      info: (json['info'] ?? '').toString(),
+    );
+  }
+  final String label;
+  final String info;
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class SettingsLocBehaviorWindowToScreenRatio {
+  const SettingsLocBehaviorWindowToScreenRatio({
+    required this.label,
+    required this.info,
+  });
+  factory SettingsLocBehaviorWindowToScreenRatio.fromJson(
+      Map<String, dynamic> json) {
+    return SettingsLocBehaviorWindowToScreenRatio(
       label: (json['label'] ?? '').toString(),
       info: (json['info'] ?? '').toString(),
     );
@@ -8162,6 +8265,75 @@ class ConfigOverrideLocMute {
   }
 }
 
+class AutoArrangeOriginLoc {
+  const AutoArrangeOriginLoc({
+    required this.title,
+    required this.off,
+    required this.topLeft,
+    required this.topRight,
+    required this.centerLeft,
+    required this.centerRight,
+    required this.bottomLeft,
+    required this.bottomRight,
+  });
+  factory AutoArrangeOriginLoc.fromJson(Map<String, dynamic> json) {
+    return AutoArrangeOriginLoc(
+      title: (json['title'] ?? '').toString(),
+      off: (json['off'] ?? '').toString(),
+      topLeft: (json['top_left'] ?? '').toString(),
+      topRight: (json['top_right'] ?? '').toString(),
+      centerLeft: (json['center_left'] ?? '').toString(),
+      centerRight: (json['center_right'] ?? '').toString(),
+      bottomLeft: (json['bottom_left'] ?? '').toString(),
+      bottomRight: (json['bottom_right'] ?? '').toString(),
+    );
+  }
+  final String title;
+  final String off;
+  final String topLeft;
+  final String topRight;
+  final String centerLeft;
+  final String centerRight;
+  final String bottomLeft;
+  final String bottomRight;
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''off''': off,
+        r'''top_left''': topLeft,
+        r'''top_right''': topRight,
+        r'''center_left''': centerLeft,
+        r'''center_right''': centerRight,
+        r'''bottom_left''': bottomLeft,
+        r'''bottom_right''': bottomRight,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class LocalizationMessages {
   LocalizationMessages({
     required this.homeLoc,
@@ -8200,6 +8372,7 @@ class LocalizationMessages {
     required this.colorSchemeNameLoc,
     required this.configFiltersLoc,
     required this.configOverrideLoc,
+    required this.autoArrangeOriginLoc,
   });
   factory LocalizationMessages.fromJson(Map<String, dynamic> json) {
     return LocalizationMessages(
@@ -8275,6 +8448,8 @@ class LocalizationMessages {
           (json['config_filters_loc'] as Map).cast<String, dynamic>()),
       configOverrideLoc: ConfigOverrideLoc.fromJson(
           (json['config_override_loc'] as Map).cast<String, dynamic>()),
+      autoArrangeOriginLoc: AutoArrangeOriginLoc.fromJson(
+          (json['auto_arrange_origin_loc'] as Map).cast<String, dynamic>()),
     );
   }
   final HomeLoc homeLoc;
@@ -8349,6 +8524,8 @@ class LocalizationMessages {
 
   final ConfigOverrideLoc configOverrideLoc;
 
+  final AutoArrangeOriginLoc autoArrangeOriginLoc;
+
   Map<String, Object> get _content => {
         r'''home_loc''': homeLoc,
         r'''device_tile_loc''': deviceTileLoc,
@@ -8386,6 +8563,7 @@ class LocalizationMessages {
         r'''color_scheme_name_loc''': colorSchemeNameLoc,
         r'''config_filters_loc''': configFiltersLoc,
         r'''config_override_loc''': configOverrideLoc,
+        r'''auto_arrange_origin_loc''': autoArrangeOriginLoc,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -8939,6 +9117,15 @@ LocalizationMessages get en => LocalizationMessages(
             label: 'Remember window size',
             info: 'Remember window size on exit',
           ),
+          autoArrange: SettingsLocBehaviorAutoArrange(
+            label: 'Auto arrange scrcpy windows',
+            info: 'Automatically arrange scrcpy windows on start',
+          ),
+          windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
+            label: 'Window to screen ratio',
+            info:
+                'Ratio of scrcpy window size to primary screen size, 1.0 = full screen, default: 0.88',
+          ),
         ),
       ),
       companionLoc: CompanionLoc(
@@ -9087,6 +9274,16 @@ LocalizationMessages get en => LocalizationMessages(
         mute: ConfigOverrideLocMute(
           label: 'Mute',
         ),
+      ),
+      autoArrangeOriginLoc: AutoArrangeOriginLoc(
+        title: 'Auto arrange origin',
+        off: 'Off',
+        topLeft: 'Top left',
+        topRight: 'Top right',
+        centerLeft: 'Center left',
+        centerRight: 'Center right',
+        bottomLeft: 'Bottom left',
+        bottomRight: 'Bottom right',
       ),
     );
 LocalizationMessages get es => LocalizationMessages(
@@ -9623,6 +9820,15 @@ LocalizationMessages get es => LocalizationMessages(
             label: 'Recordar tamaño de ventana',
             info: 'Recordar tamaño de ventana al salir',
           ),
+          autoArrange: SettingsLocBehaviorAutoArrange(
+            label: 'Organizar ventanas scrcpy automáticamente',
+            info: 'Organizar automáticamente las ventanas de scrcpy al iniciar',
+          ),
+          windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
+            label: 'Relación ventana/pantalla',
+            info:
+                'Relación del tamaño de la ventana de scrcpy con el tamaño de la pantalla principal, 1.0 = pantalla completa, predeterminado: 0.88',
+          ),
         ),
       ),
       companionLoc: CompanionLoc(
@@ -9771,6 +9977,16 @@ LocalizationMessages get es => LocalizationMessages(
         mute: ConfigOverrideLocMute(
           label: 'Silenciar',
         ),
+      ),
+      autoArrangeOriginLoc: AutoArrangeOriginLoc(
+        title: 'Origen de organización automática',
+        off: 'Desactivado',
+        topLeft: 'Arriba a la izquierda',
+        topRight: 'Arriba a la derecha',
+        centerLeft: 'Centro a la izquierda',
+        centerRight: 'Centro a la derecha',
+        bottomLeft: 'Abajo a la izquierda',
+        bottomRight: 'Abajo a la derecha',
       ),
     );
 LocalizationMessages get it => LocalizationMessages(
@@ -10303,6 +10519,15 @@ LocalizationMessages get it => LocalizationMessages(
             label: 'Ricorda dimensioni finestra',
             info: '''Ricorda le dimensioni della finestra all'uscita''',
           ),
+          autoArrange: SettingsLocBehaviorAutoArrange(
+            label: 'Disponi automaticamente le finestre di scrcpy',
+            info: '''Disponi automaticamente le finestre di scrcpy all'avvio''',
+          ),
+          windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
+            label: 'Rapporto finestra/schermo',
+            info:
+                'Rapporto tra le dimensioni della finestra di scrcpy e le dimensioni dello schermo primario, 1.0 = schermo intero, predefinito: 0.88',
+          ),
         ),
       ),
       companionLoc: CompanionLoc(
@@ -10451,6 +10676,16 @@ LocalizationMessages get it => LocalizationMessages(
         mute: ConfigOverrideLocMute(
           label: 'Silenzia',
         ),
+      ),
+      autoArrangeOriginLoc: AutoArrangeOriginLoc(
+        title: 'Punto di ancoraggio',
+        off: 'Spento',
+        topLeft: 'In alto a sinistra',
+        topRight: 'In alto a destra',
+        centerLeft: 'Al centro a sinistra',
+        centerRight: 'Al centro a destra',
+        bottomLeft: 'In basso a sinistra',
+        bottomRight: 'In basso a destra',
       ),
     );
 LocalizationMessages get ms => LocalizationMessages(
@@ -10982,6 +11217,15 @@ LocalizationMessages get ms => LocalizationMessages(
             label: 'Ingat saiz tetingkap',
             info: 'Ingat saiz tetingkap semasa keluar',
           ),
+          autoArrange: SettingsLocBehaviorAutoArrange(
+            label: 'Susun tetingkap scrcpy secara automatik',
+            info: 'Susun tetingkap scrcpy secara automatik semasa mula',
+          ),
+          windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
+            label: 'Nisbah tetingkap ke skrin',
+            info:
+                'Nisbah saiz tetingkap scrcpy kepada saiz skrin utama, 1.0 = skrin penuh, lalai: 0.88',
+          ),
         ),
       ),
       companionLoc: CompanionLoc(
@@ -11130,6 +11374,16 @@ LocalizationMessages get ms => LocalizationMessages(
         mute: ConfigOverrideLocMute(
           label: 'Senyap',
         ),
+      ),
+      autoArrangeOriginLoc: AutoArrangeOriginLoc(
+        title: 'Titik rujukan',
+        off: 'Matikan',
+        topLeft: 'Kiri atas',
+        topRight: 'Kanan atas',
+        centerLeft: 'Tengah kiri',
+        centerRight: 'Tengah kanan',
+        bottomLeft: 'Kiri bawah',
+        bottomRight: 'Kanan bawah',
       ),
     );
 Map<Locale, LocalizationMessages> get _languageMap => {
