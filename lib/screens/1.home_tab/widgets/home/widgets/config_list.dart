@@ -17,7 +17,7 @@ import '../../../../../utils/const.dart';
 import '../../../../../utils/scrcpy_utils.dart';
 import '../../../../../widgets/custom_ui/pg_section_card.dart';
 import '../../../../../widgets/custom_ui/pg_select.dart' as pg;
-import '../../bottom_bar/widgets/config_combobox_item.dart';
+import '../../bottom_bar/widgets/config_dropdown_item.dart';
 import 'config_override_button.dart';
 import 'connection_error_dialog.dart';
 import 'config_list/config_list_header.dart';
