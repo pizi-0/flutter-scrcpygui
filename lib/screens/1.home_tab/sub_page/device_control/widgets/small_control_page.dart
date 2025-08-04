@@ -34,7 +34,6 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
   ScrcpyApp? selectedApp;
   bool loading = false;
   ScrollController scrollController = ScrollController();
-  bool showControlButton = true;
 
   @override
   void initState() {
@@ -42,23 +41,6 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
     final deviceInfo = ref
         .read(infoProvider)
         .firstWhereOrNull((info) => info.serialNo == widget.device.serialNo);
-
-    scrollController.addListener(
-      () {
-        if (scrollController.position.userScrollDirection ==
-            ScrollDirection.forward) {
-          setState(() {
-            showControlButton = true;
-          });
-        } else {
-          if (scrollController.position.extentAfter > 200) {
-            setState(() {
-              showControlButton = false;
-            });
-          }
-        }
-      },
-    );
 
     WidgetsBinding.instance.addPostFrameCallback((t) {
       if (deviceInfo == null) {
@@ -120,20 +102,8 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 spacing: 8,
                 children: [
-                  AnimatedSize(
-                    duration: 200.milliseconds,
-                    child: SizedBox(
-                      height: showControlButton ? null : 0,
-                      child: ScrollConfiguration(
-                        behavior: ScrollConfiguration.of(context)
-                            .copyWith(scrollbars: false),
-                        child: SingleChildScrollView(
-                          physics: NeverScrollableScrollPhysics(),
-                          child: ControlButtons(device: device),
-                        ),
-                      ),
-                    ),
-                  ),
+                  CollapsingControlButtons(
+                      device: device, scrollController: scrollController),
                   Expanded(
                     child: AppGrid(
                       device: device,
@@ -145,6 +115,73 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
             ),
           ),
       ],
+    );
+  }
+}
+
+class CollapsingControlButtons extends StatefulWidget {
+  const CollapsingControlButtons({
+    super.key,
+    required this.device,
+    required this.scrollController,
+  });
+
+  final ScrollController scrollController;
+  final AdbDevices device;
+
+  @override
+  State<CollapsingControlButtons> createState() =>
+      _CollapsingControlButtonsState();
+}
+
+class _CollapsingControlButtonsState extends State<CollapsingControlButtons> {
+  bool showControlButton = true;
+
+  void _onScrollListener() {
+    widget.scrollController.addListener(
+      () {
+        if (widget.scrollController.position.userScrollDirection ==
+            ScrollDirection.forward) {
+          setState(() {
+            showControlButton = true;
+          });
+        } else {
+          if (widget.scrollController.position.extentAfter > 200) {
+            setState(() {
+              showControlButton = false;
+            });
+          }
+        }
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    widget.scrollController.addListener(_onScrollListener);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.scrollController.removeListener(_onScrollListener);
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSize(
+      duration: 200.milliseconds,
+      child: SizedBox(
+        height: showControlButton ? null : 0,
+        child: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+          child: SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            child: ControlButtons(device: widget.device),
+          ),
+        ),
+      ),
     );
   }
 }
