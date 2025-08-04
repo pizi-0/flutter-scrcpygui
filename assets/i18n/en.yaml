@@ -119,7 +119,7 @@ config_manager_loc:
 config_screen_loc:
   title: Config settings
   connection_lost: Lost connection to device
-  similar_exist: Similar config exists (${count})
+  similar_exist: Duplicate of ${configName}
 
 ## home_tab > config screen > test config
 log_screen_loc: 

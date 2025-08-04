@@ -114,7 +114,7 @@ config_manager_loc:
 config_screen_loc:
   title: Tetapan konfigurasi
   connection_lost: Sambungan ke peranti terputus
-  similar_exist: Konfigurasi serupa wujud (${count})
+  similar_exist: Salinan daripada ${configName}
 
 ## home_tab > config screen > test config
 log_screen_loc:

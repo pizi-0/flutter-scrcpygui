@@ -114,7 +114,7 @@ config_manager_loc:
 config_screen_loc:
   title: Impostazioni configurazione
   connection_lost: Connessione al dispositivo persa
-  similar_exist: Esiste una configurazione simile (${count})
+  similar_exist: Duplicato di ${configName}
 
 ## home_tab > config screen > test config
 log_screen_loc:

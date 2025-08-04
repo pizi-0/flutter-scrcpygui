@@ -177,21 +177,8 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       spacing: 8,
                       children: [
-                        Text(el.configScreenLoc
-                            .similarExist(count: similar.length.toString())),
-                        HoverCard(
-                            hoverBuilder: (context) => SurfaceCard(
-                                    child: Basic(
-                                  content: Column(
-                                    spacing: 4,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: similar
-                                        .map((conf) => Text(conf.configName))
-                                        .toList(),
-                                  ),
-                                )),
-                            child: Icon(Icons.info_outline_rounded).iconSmall())
+                        Text(el.configScreenLoc.similarExist(
+                            configName: similar.first.configName)),
                       ],
                     ),
                   ),

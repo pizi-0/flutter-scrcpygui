@@ -1499,23 +1499,25 @@ class ConfigScreenLoc {
   const ConfigScreenLoc({
     required this.title,
     required this.connectionLost,
-    required String Function({required String count}) similarExist,
+    required String Function({required String configName}) similarExist,
   }) : _similarExist = similarExist;
   factory ConfigScreenLoc.fromJson(Map<String, dynamic> json) {
     return ConfigScreenLoc(
       title: (json['title'] ?? '').toString(),
       connectionLost: (json['connection_lost'] ?? '').toString(),
-      similarExist: ({required String count}) => (json['similar_exist'] ?? '')
-          .toString()
-          .replaceAll(r'${count}', count)
-          .replaceAll(_variableRegExp, ''),
+      similarExist: ({required String configName}) =>
+          (json['similar_exist'] ?? '')
+              .toString()
+              .replaceAll(r'${configName}', configName)
+              .replaceAll(_variableRegExp, ''),
     );
   }
   final String title;
   final String connectionLost;
-  String similarExist({required String count}) => _similarExist(count: count);
+  String similarExist({required String configName}) =>
+      _similarExist(configName: configName);
 
-  final String Function({required String count}) _similarExist;
+  final String Function({required String configName}) _similarExist;
 
   Map<String, Object> get _content => {
         r'''title''': title,
@@ -8729,8 +8731,8 @@ LocalizationMessages get en => LocalizationMessages(
       configScreenLoc: ConfigScreenLoc(
         title: 'Config settings',
         connectionLost: 'Lost connection to device',
-        similarExist: ({required String count}) =>
-            '''Similar config exists (${count})''',
+        similarExist: ({required String configName}) =>
+            '''Duplicate of ${configName}''',
       ),
       logScreenLoc: LogScreenLoc(
         title: 'Test log',
@@ -9426,8 +9428,8 @@ LocalizationMessages get es => LocalizationMessages(
       configScreenLoc: ConfigScreenLoc(
         title: 'Ajustes de configuración',
         connectionLost: 'Conexión del dispositivo perdida',
-        similarExist: ({required String count}) =>
-            '''Existe una configuración similar (${count})''',
+        similarExist: ({required String configName}) =>
+            '''Duplicado de ${configName}''',
       ),
       logScreenLoc: LogScreenLoc(
         title: 'Registro de prueba',
@@ -10127,8 +10129,8 @@ LocalizationMessages get it => LocalizationMessages(
       configScreenLoc: ConfigScreenLoc(
         title: 'Impostazioni configurazione',
         connectionLost: 'Connessione al dispositivo persa',
-        similarExist: ({required String count}) =>
-            '''Esiste una configurazione simile (${count})''',
+        similarExist: ({required String configName}) =>
+            '''Duplicato di ${configName}''',
       ),
       logScreenLoc: LogScreenLoc(
         title: 'Log di test',
@@ -10826,8 +10828,8 @@ LocalizationMessages get ms => LocalizationMessages(
       configScreenLoc: ConfigScreenLoc(
         title: 'Tetapan konfigurasi',
         connectionLost: 'Sambungan ke peranti terputus',
-        similarExist: ({required String count}) =>
-            '''Konfigurasi serupa wujud (${count})''',
+        similarExist: ({required String configName}) =>
+            '''Salinan daripada ${configName}''',
       ),
       logScreenLoc: LogScreenLoc(
         title: 'Log Ujian',
