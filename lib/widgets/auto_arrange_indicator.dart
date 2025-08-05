@@ -2,6 +2,8 @@ import 'package:awesome_extensions/awesome_extensions_dart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/settings_model/auto_arrange_origin.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_subtitle.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../db/db.dart';
@@ -112,24 +114,67 @@ class _AutoArrangeIndicatorState extends ConsumerState<AutoArrangeIndicator> {
             ),
           );
         },
+        onSecondaryTapUp: (details) {
+          ref.read(settingsProvider.notifier).changeAutoArrangeOrigin(
+                AutoArrangeOrigin.off,
+              );
+          Db.saveAppSettings(ref.read(settingsProvider));
+        },
+        onLongPressEnd: (details) {
+          ref.read(settingsProvider.notifier).changeAutoArrangeOrigin(
+                AutoArrangeOrigin.off,
+              );
+          Db.saveAppSettings(ref.read(settingsProvider));
+        },
       ),
     );
   }
 }
 
-class AutoArrangeOriginSelector extends ConsumerWidget {
+class AutoArrangeOriginSelector extends ConsumerStatefulWidget {
   const AutoArrangeOriginSelector({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AutoArrangeOriginSelector> createState() =>
+      _AutoArrangeOriginSelectorState();
+}
+
+class _AutoArrangeOriginSelectorState
+    extends ConsumerState<AutoArrangeOriginSelector> {
+  final focusNode = FocusNode();
+  TextEditingController ratio = TextEditingController();
+  bool error = false;
+
+  @override
+  void initState() {
+    ratio.text = ref
+        .read(settingsProvider)
+        .behaviour
+        .windowToScreenHeightRatio
+        .toString();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    ratio.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final origin = ref.watch(settingsProvider).behaviour.autoArrangeOrigin;
+
     return SizedBox(
       width: 150,
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        spacing: 8,
         children: [
-          Text('Alignment').textSmall,
+          Text(el.autoArrangeOriginLoc.alignments).textSmall,
+          Gap(8),
           Divider(),
+          Gap(8),
           Column(
             spacing: 4,
             children: [
@@ -166,53 +211,76 @@ class AutoArrangeOriginSelector extends ConsumerWidget {
               ),
             ],
           ),
-          // SizedBox.square(
-          //   dimension: 100,
-          //   child: GridView.builder(
-          //     shrinkWrap: true,
-          //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          //       crossAxisCount: 3,
-          //     ),
-          //     itemCount: 9,
-          //     itemBuilder: (context, index) {
-          //       final isSelected = index == selectedIndex;
-          //       return Padding(
-          //         padding: const EdgeInsets.all(2.0),
-          //         child: Button(
-          //           style: isSelected
-          //               ? ButtonStyle.primary()
-          //               : ButtonStyle.outline(),
-          //           onPressed: _disabledIndices.contains(index)
-          //               ? null
-          //               : () async {
-          //                   ref
-          //                       .read(settingsProvider.notifier)
-          //                       .changeAutoArrangeOrigin(index == 0
-          //                           ? AutoArrangeOrigin.topLeft
-          //                           : index == 2
-          //                               ? AutoArrangeOrigin.topRight
-          //                               : index == 3
-          //                                   ? AutoArrangeOrigin.centerLeft
-          //                                   : index == 5
-          //                                       ? AutoArrangeOrigin.centerRight
-          //                                       : index == 6
-          //                                           ? AutoArrangeOrigin
-          //                                               .bottomLeft
-          //                                           : index == 8
-          //                                               ? AutoArrangeOrigin
-          //                                                   .bottomRight
-          //                                               : AutoArrangeOrigin
-          //                                                   .off);
-          //                   await Db.saveAppSettings(
-          //                       ref.read(settingsProvider));
-          //                 },
-          //           child: SizedBox.shrink(),
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // ),
-          SizedBox(),
+          PgExpandable(
+            expand: origin != AutoArrangeOrigin.off,
+            child: Column(
+              spacing: 8,
+              children: [
+                SizedBox(),
+                Divider(),
+                PgSubtitle(
+                  showSubtitle: error,
+                  subtitle: 'Min: 0.4, Max: ~1.0',
+                  child: TextField(
+                    padding: const EdgeInsets.all(4.0),
+                    controller: ratio,
+                    focusNode: focusNode,
+                    filled: true,
+                    features: [
+                      InputFeature.leading(
+                        Text('${el.settingsLoc.behavior.windowToScreenRatio.labelShort} :')
+                            .textSmall,
+                      ),
+                      InputFeature.trailing(IconButton.outline(
+                        density: ButtonDensity.compact,
+                        icon: Icon(Icons.refresh_rounded),
+                        onPressed: () {
+                          ratio.text = '0.88';
+                          ref
+                              .read(settingsProvider.notifier)
+                              .changeWindowToScreenHeightRatio(0.88);
+                          error = false;
+                          focusNode.unfocus();
+                          Db.saveAppSettings(ref.read(settingsProvider));
+                          setState(() {});
+                        },
+                      )),
+                    ],
+                    onChanged: (value) {
+                      final r = double.tryParse(value);
+
+                      if (r == null || r < 0.4 || r > 1.0) {
+                        error = true;
+                      } else {
+                        error = false;
+                      }
+                      setState(() {});
+                    },
+                    onSubmitted: (value) {
+                      final r = double.tryParse(value) ?? 0.88;
+                      if (r < 0.4 || r > 1.0) {
+                        ratio.text = ref
+                            .read(settingsProvider)
+                            .behaviour
+                            .windowToScreenHeightRatio
+                            .toString();
+                        setState(() {});
+                        return;
+                      }
+
+                      ref
+                          .read(settingsProvider.notifier)
+                          .changeWindowToScreenHeightRatio(
+                            double.tryParse(value) ?? 0.88,
+                          );
+                      focusNode.unfocus();
+                      Db.saveAppSettings(ref.read(settingsProvider));
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -242,7 +310,7 @@ class _OriginBoxState extends ConsumerState<OriginBox> {
     return Expanded(
       flex: hover ? 2 : 1,
       child: MouseRegion(
-        onHover: (event) {
+        onEnter: (event) {
           if (mounted) {
             hover = true;
             setState(() {});
