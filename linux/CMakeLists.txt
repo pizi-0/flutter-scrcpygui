@@ -44,6 +44,9 @@ function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_options(${TARGET} PRIVATE -Wall -Werror)
   target_compile_options(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:-O3>")
   target_compile_definitions(${TARGET} PRIVATE "$<$<NOT:$<CONFIG:Debug>>:NDEBUG>")
+  # [WORKAROUND] for tray_manager deprecation issue:
+  # https://github.com/leanflutter/tray_manager/issues/67
+  target_compile_options(${TARGET} PRIVATE -Wno-error=deprecated-declarations)
 endfunction()
 
 # Flutter library and tool build rules.
