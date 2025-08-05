@@ -292,7 +292,13 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
         crossAxisAlignment: CrossAxisAlignment.start,
         spacing: 8,
         children: [
-          ConfigListHeader(reordered: reorderList, hiddenList: hidden),
+          ConfigListHeader(
+              reordered: reorderList,
+              hiddenList: hidden,
+              onCancel: () {
+                hidden = [...ref.read(hiddenConfigsProvider)];
+                setState(() {});
+              }),
           Expanded(
             child: CustomScrollView(
               physics: NeverScrollableScrollPhysics(),

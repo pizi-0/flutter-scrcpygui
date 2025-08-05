@@ -16,11 +16,13 @@ import 'config_override_widget.dart';
 class ConfigListHeader extends ConsumerStatefulWidget {
   final List<ScrcpyConfig> reordered;
   final List<String> hiddenList;
+  final void Function()? onCancel;
 
   const ConfigListHeader({
     super.key,
     required this.reordered,
     required this.hiddenList,
+    this.onCancel,
   });
 
   @override
@@ -55,6 +57,10 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
                     ? ButtonStyle.primary(density: ButtonDensity.dense)
                     : ButtonStyle.secondary(density: ButtonDensity.dense),
                 onPressed: () {
+                  if (headerState.edit) {
+                    widget.onCancel?.call();
+                  }
+
                   ref.read(configListStateProvider.notifier).state =
                       headerState.copyWith(
                           filtering: !headerState.filtering,
@@ -72,6 +78,10 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
                     ? ButtonStyle.primary(density: ButtonDensity.dense)
                     : ButtonStyle.secondary(density: ButtonDensity.dense),
                 onPressed: () {
+                  if (headerState.edit) {
+                    widget.onCancel?.call();
+                  }
+
                   ref.read(configListStateProvider.notifier).state =
                       headerState.copyWith(
                           filtering: false,
@@ -87,6 +97,10 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
                     ? ButtonStyle.primary(density: ButtonDensity.dense)
                     : ButtonStyle.secondary(density: ButtonDensity.dense),
                 onPressed: () {
+                  if (headerState.edit) {
+                    widget.onCancel?.call();
+                  }
+
                   ref.read(configListStateProvider.notifier).state =
                       headerState.copyWith(
                           filtering: false,
@@ -131,12 +145,13 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
           spacing: 8,
           children: [
             Chip(
-              style: ButtonStyle.destructiveIcon(),
-              child: Icon(Icons.close_rounded).iconSmall(),
-              onPressed: () => ref
-                  .read(configListStateProvider.notifier)
-                  .state = headerState.copyWith(edit: false),
-            ),
+                style: ButtonStyle.destructiveIcon(),
+                child: Icon(Icons.close_rounded).iconSmall(),
+                onPressed: () => {
+                      ref.read(configListStateProvider.notifier).state =
+                          headerState.copyWith(edit: false),
+                      widget.onCancel?.call(),
+                    }),
             Chip(
               style: ButtonStyle.primary(),
               onPressed: () async {
