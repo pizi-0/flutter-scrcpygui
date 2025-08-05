@@ -432,8 +432,9 @@ settings_loc:
       label: Susun tetingkap scrcpy secara automatik
       info: Susun tetingkap scrcpy secara automatik semasa mula
     window_to_screen_ratio:
-      label: Nisbah tetingkap ke skrin
-      info: "Nisbah saiz tetingkap scrcpy kepada saiz skrin utama, 1.0 = skrin penuh, lalai: 0.88"
+      label: Nisbah ketinggian tetingkap ke skrin
+      label_short: Tinggi %
+      info: "Nisbah ketinggian tetingkap scrcpy kepada ketinggian skrin utama. Min: 0.4, Maks: 1.0, Lalai: 0.88"
 
 ## companion tab
 companion_loc:
@@ -582,6 +583,7 @@ config_override_loc:
 
 auto_arrange_origin_loc:
   title: Titik rujukan
+  alignments: Penjajaran
   off: Matikan
   top_left: Kiri atas
   top_right: Kanan atas

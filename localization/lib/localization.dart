@@ -6740,19 +6740,23 @@ class SettingsLocBehaviorAutoArrange {
 class SettingsLocBehaviorWindowToScreenRatio {
   const SettingsLocBehaviorWindowToScreenRatio({
     required this.label,
+    required this.labelShort,
     required this.info,
   });
   factory SettingsLocBehaviorWindowToScreenRatio.fromJson(
       Map<String, dynamic> json) {
     return SettingsLocBehaviorWindowToScreenRatio(
       label: (json['label'] ?? '').toString(),
+      labelShort: (json['label_short'] ?? '').toString(),
       info: (json['info'] ?? '').toString(),
     );
   }
   final String label;
+  final String labelShort;
   final String info;
   Map<String, Object> get _content => {
         r'''label''': label,
+        r'''label_short''': labelShort,
         r'''info''': info,
       };
   T getContent<T>(String key) {
@@ -8270,6 +8274,7 @@ class ConfigOverrideLocMute {
 class AutoArrangeOriginLoc {
   const AutoArrangeOriginLoc({
     required this.title,
+    required this.alignments,
     required this.off,
     required this.topLeft,
     required this.topRight,
@@ -8281,6 +8286,7 @@ class AutoArrangeOriginLoc {
   factory AutoArrangeOriginLoc.fromJson(Map<String, dynamic> json) {
     return AutoArrangeOriginLoc(
       title: (json['title'] ?? '').toString(),
+      alignments: (json['alignments'] ?? '').toString(),
       off: (json['off'] ?? '').toString(),
       topLeft: (json['top_left'] ?? '').toString(),
       topRight: (json['top_right'] ?? '').toString(),
@@ -8291,6 +8297,7 @@ class AutoArrangeOriginLoc {
     );
   }
   final String title;
+  final String alignments;
   final String off;
   final String topLeft;
   final String topRight;
@@ -8300,6 +8307,7 @@ class AutoArrangeOriginLoc {
   final String bottomRight;
   Map<String, Object> get _content => {
         r'''title''': title,
+        r'''alignments''': alignments,
         r'''off''': off,
         r'''top_left''': topLeft,
         r'''top_right''': topRight,
@@ -9124,9 +9132,10 @@ LocalizationMessages get en => LocalizationMessages(
             info: 'Automatically arrange scrcpy windows on start',
           ),
           windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
-            label: 'Window to screen ratio',
+            label: 'Window to screen height ratio',
+            labelShort: 'Height %',
             info:
-                'Ratio of scrcpy window size to primary screen size, 1.0 = full screen, default: 0.88',
+                'Ratio of scrcpy window height to primary screen height. Min: 0.4, Max: 1.0, Default: 0.88',
           ),
         ),
       ),
@@ -9279,6 +9288,7 @@ LocalizationMessages get en => LocalizationMessages(
       ),
       autoArrangeOriginLoc: AutoArrangeOriginLoc(
         title: 'Auto arrange origin',
+        alignments: 'Alignments',
         off: 'Off',
         topLeft: 'Top left',
         topRight: 'Top right',
@@ -9827,9 +9837,10 @@ LocalizationMessages get es => LocalizationMessages(
             info: 'Organizar automáticamente las ventanas de scrcpy al iniciar',
           ),
           windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
-            label: 'Relación ventana/pantalla',
+            label: 'Relación altura ventana/pantalla',
+            labelShort: 'Altura %',
             info:
-                'Relación del tamaño de la ventana de scrcpy con el tamaño de la pantalla principal, 1.0 = pantalla completa, predeterminado: 0.88',
+                'Relación de la altura de la ventana de scrcpy con la altura de la pantalla principal. Mín: 0.4, Máx: 1.0, Predeterminado: 0.88',
           ),
         ),
       ),
@@ -9982,6 +9993,7 @@ LocalizationMessages get es => LocalizationMessages(
       ),
       autoArrangeOriginLoc: AutoArrangeOriginLoc(
         title: 'Origen de organización automática',
+        alignments: 'Alineaciones',
         off: 'Desactivado',
         topLeft: 'Arriba a la izquierda',
         topRight: 'Arriba a la derecha',
@@ -10526,9 +10538,10 @@ LocalizationMessages get it => LocalizationMessages(
             info: '''Disponi automaticamente le finestre di scrcpy all'avvio''',
           ),
           windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
-            label: 'Rapporto finestra/schermo',
+            label: 'Rapporto altezza finestra/schermo',
+            labelShort: 'Altezza %',
             info:
-                'Rapporto tra le dimensioni della finestra di scrcpy e le dimensioni dello schermo primario, 1.0 = schermo intero, predefinito: 0.88',
+                '''Rapporto tra l'altezza della finestra di scrcpy e l'altezza dello schermo primario. Min: 0.4, Max: 1.0, Predefinito: 0.88''',
           ),
         ),
       ),
@@ -10681,6 +10694,7 @@ LocalizationMessages get it => LocalizationMessages(
       ),
       autoArrangeOriginLoc: AutoArrangeOriginLoc(
         title: 'Punto di ancoraggio',
+        alignments: 'Allineamenti',
         off: 'Spento',
         topLeft: 'In alto a sinistra',
         topRight: 'In alto a destra',
@@ -11224,9 +11238,10 @@ LocalizationMessages get ms => LocalizationMessages(
             info: 'Susun tetingkap scrcpy secara automatik semasa mula',
           ),
           windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
-            label: 'Nisbah tetingkap ke skrin',
+            label: 'Nisbah ketinggian tetingkap ke skrin',
+            labelShort: 'Tinggi %',
             info:
-                'Nisbah saiz tetingkap scrcpy kepada saiz skrin utama, 1.0 = skrin penuh, lalai: 0.88',
+                'Nisbah ketinggian tetingkap scrcpy kepada ketinggian skrin utama. Min: 0.4, Maks: 1.0, Lalai: 0.88',
           ),
         ),
       ),
@@ -11379,6 +11394,7 @@ LocalizationMessages get ms => LocalizationMessages(
       ),
       autoArrangeOriginLoc: AutoArrangeOriginLoc(
         title: 'Titik rujukan',
+        alignments: 'Penjajaran',
         off: 'Matikan',
         topLeft: 'Kiri atas',
         topRight: 'Kanan atas',

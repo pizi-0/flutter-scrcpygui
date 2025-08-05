@@ -67,11 +67,11 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
       ),
       const SelectItemButton(
         value: 'es',
-        child: Text('Spanish'),
+        child: Text('Español'),
       ),
       const SelectItemButton(
         value: 'it',
-        child: Text('Italian'),
+        child: Text('Italiano'),
       ),
       const SelectItemButton(
         value: 'ms',

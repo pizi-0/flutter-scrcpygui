@@ -432,8 +432,9 @@ settings_loc:
       label: Organizar ventanas scrcpy automáticamente
       info: Organizar automáticamente las ventanas de scrcpy al iniciar
     window_to_screen_ratio:
-      label: Relación ventana/pantalla
-      info: "Relación del tamaño de la ventana de scrcpy con el tamaño de la pantalla principal, 1.0 = pantalla completa, predeterminado: 0.88"
+      label: Relación altura ventana/pantalla
+      label_short: Altura %
+      info: "Relación de la altura de la ventana de scrcpy con la altura de la pantalla principal. Mín: 0.4, Máx: 1.0, Predeterminado: 0.88"
 
 ## companion tab
 companion_loc:
@@ -580,6 +581,7 @@ config_override_loc:
 
 auto_arrange_origin_loc:
   title: Origen de organización automática
+  alignments: Alineaciones
   off: Desactivado
   top_left: Arriba a la izquierda
   top_right: Arriba a la derecha
