@@ -13,6 +13,7 @@ import '../../../../../models/config_list_screen_state.dart';
 import '../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../providers/adb_provider.dart';
 import '../../../../../providers/config_provider.dart';
+import '../../../../../utils/adb_utils.dart';
 import '../../../../../utils/const.dart';
 import '../../../../../utils/scrcpy_utils.dart';
 import '../../../../../widgets/custom_ui/pg_section_card.dart';
@@ -144,20 +145,12 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
   }
 
   void _onNewConfigPressed() {
-    final selectedDevice = ref.read(selectedDeviceProvider);
-    final allDevices = ref.read(adbProvider);
+    AdbUtils.autoSelectDevice(ref);
 
-    if (allDevices.isNotEmpty) {
-      if (selectedDevice != null) {
-        final newconfig = newConfig.copyWith(id: const Uuid().v4());
-        ref.read(configScreenConfig.notifier).setConfig(newconfig);
-        context.push('/home/config-settings');
-      } else {
-        ref.read(selectedDeviceProvider.notifier).state = allDevices.first;
-        if (mounted) {
-          _onNewConfigPressed();
-        }
-      }
+    if (ref.read(selectedDeviceProvider) != null) {
+      final newconfig = newConfig.copyWith(id: const Uuid().v4());
+      ref.read(configScreenConfig.notifier).setConfig(newconfig);
+      context.push('/home/config-settings');
     } else {
       showDialog(
         barrierDismissible: true,
@@ -170,7 +163,6 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
   }
 
   Future<void> _start({bool withOverrides = false}) async {
-    final selectedDevice = ref.read(selectedDeviceProvider);
     final selectedConfig = ref.read(selectedConfigProvider);
     final overrides = ref.read(configOverridesProvider);
     if (selectedConfig == null) {
@@ -189,24 +181,19 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
         ),
       );
     } else {
-      if (selectedDevice == null) {
-        if (ref.read(adbProvider).length == 1) {
-          ref.read(selectedDeviceProvider.notifier).state =
-              ref.read(adbProvider).first;
+      AdbUtils.autoSelectDevice(ref);
 
-          _start();
-        } else {
-          showDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (context) => ErrorDialog(
-              title: el.noDeviceDialogLoc.title,
-              content: [
-                Text(el.noDeviceDialogLoc.contentsStart),
-              ],
-            ),
-          );
-        }
+      if (ref.read(selectedDeviceProvider) == null) {
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (context) => ErrorDialog(
+            title: el.noDeviceDialogLoc.title,
+            content: [
+              Text(el.noDeviceDialogLoc.contentsStart),
+            ],
+          ),
+        );
       } else {
         loading = true;
         setState(() {});
@@ -413,20 +400,12 @@ class ConfigListBigState extends ConsumerState<ConfigListBig> {
   }
 
   void _onNewConfigPressed() {
-    final selectedDevice = ref.read(selectedDeviceProvider);
-    final allDevices = ref.read(adbProvider);
+    AdbUtils.autoSelectDevice(ref);
 
-    if (allDevices.isNotEmpty) {
-      if (selectedDevice != null) {
-        final newconfig = newConfig.copyWith(id: const Uuid().v4());
-        ref.read(configScreenConfig.notifier).setConfig(newconfig);
-        context.push('/home/config-settings');
-      } else {
-        ref.read(selectedDeviceProvider.notifier).state = allDevices.first;
-        if (mounted) {
-          _onNewConfigPressed();
-        }
-      }
+    if (ref.read(selectedDeviceProvider) != null) {
+      final newconfig = newConfig.copyWith(id: const Uuid().v4());
+      ref.read(configScreenConfig.notifier).setConfig(newconfig);
+      context.push('/home/config-settings');
     } else {
       showDialog(
         barrierDismissible: true,

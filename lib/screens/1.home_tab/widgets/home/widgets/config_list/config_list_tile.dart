@@ -3,6 +3,7 @@ import 'package:awesome_extensions/awesome_extensions.dart'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -148,7 +149,6 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
   }
 
   Future<void> _start({bool withOverrides = false}) async {
-    final selectedDevice = ref.read(selectedDeviceProvider);
     final selectedConfig = ref.read(selectedConfigProvider);
     if (selectedConfig == null) {
       showDialog(
@@ -166,7 +166,9 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
         ),
       );
     } else {
-      if (selectedDevice == null) {
+      AdbUtils.autoSelectDevice(ref);
+
+      if (ref.read(selectedDeviceProvider) == null) {
         if (ref.read(adbProvider).length == 1) {
           ref.read(selectedDeviceProvider.notifier).state =
               ref.read(adbProvider).first;
@@ -234,6 +236,8 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
     ref.read(selectedConfigProvider.notifier).state = config;
     configDropdownKey.currentState?.closePopup();
 
+    AdbUtils.autoSelectDevice(ref);
+
     if (ref.read(selectedDeviceProvider) == null) {
       showDialog(
         barrierDismissible: true,
@@ -261,6 +265,8 @@ class _ConfigListTileState extends ConsumerState<ConfigListTile> {
   void _onDuplicatePressed(ScrcpyConfig config) {
     ref.read(selectedConfigProvider.notifier).state = config;
     configDropdownKey.currentState?.closePopup();
+
+    AdbUtils.autoSelectDevice(ref);
 
     if (ref.read(selectedDeviceProvider) == null) {
       showDialog(

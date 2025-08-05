@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/directory_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -65,6 +66,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
           onPressed:
               isDefaultConfig ? null : () => _onEditPressed(widget.config),
         ),
+        VerticalDivider(indent: 8, endIndent: 8),
         IconButton(
           size: ButtonSize.small,
           variance: ButtonVariance.ghost,
@@ -85,6 +87,7 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
           ),
           onPressed: isDefaultConfig ? null : _onRemoveConfigPressed,
         ),
+        VerticalDivider(indent: 8, endIndent: 8),
       ],
     );
   }
@@ -110,6 +113,8 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
   void _onEditPressed(ScrcpyConfig config) {
     ref.read(selectedConfigProvider.notifier).state = config;
     configDropdownKey.currentState?.closePopup();
+
+    AdbUtils.autoSelectDevice(ref);
 
     if (ref.read(selectedDeviceProvider) == null) {
       showDialog(
@@ -138,6 +143,8 @@ class _ConfigDropDownItemState extends ConsumerState<ConfigDropDownItem> {
   void _onDuplicatePressed(ScrcpyConfig config) {
     ref.read(selectedConfigProvider.notifier).state = config;
     configDropdownKey.currentState?.closePopup();
+
+    AdbUtils.autoSelectDevice(ref);
 
     if (ref.read(selectedDeviceProvider) == null) {
       showDialog(

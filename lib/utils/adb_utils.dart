@@ -4,6 +4,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/device_info_model.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/result/wireless_connect_result.dart';
@@ -41,6 +42,21 @@ class AdbUtils {
     }
 
     return res;
+  }
+
+  static void autoSelectDevice(WidgetRef ref) {
+    final connected = ref.read(adbProvider);
+    final device = ref.read(selectedDeviceProvider);
+
+    if (device == null) {
+      if (connected.isNotEmpty) {
+        Set<String> serialNos = connected.map((e) => e.serialNo).toSet();
+
+        if (serialNos.length == 1) {
+          ref.read(selectedDeviceProvider.notifier).state = connected.first;
+        }
+      }
+    }
   }
 
   // static Future<ScrcpyInfo> getScrcpyDetailsFor(
