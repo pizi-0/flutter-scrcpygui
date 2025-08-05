@@ -91,7 +91,9 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
       });
       fetchedIcon = await IconDb.fetchAndSaveIcon(widget.app.packageName);
       if (fetchedIcon == null) {
-        ref.read(missingIconProvider.notifier).addApp(widget.app);
+        if (mounted) {
+          ref.read(missingIconProvider.notifier).addApp(widget.app);
+        }
       }
     }
 
