@@ -48,6 +48,16 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
   bool loading = false;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((a) {
+      ref
+          .read(configListStateProvider.notifier)
+          .update((state) => state.copyWith(edit: false));
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final config = ref.watch(selectedConfigProvider);
     final overrides = ref.watch(configOverridesProvider);
