@@ -16,9 +16,11 @@ import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/widgets/info_pane.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/widgets/settings_pane.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
+import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_column.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:string_extensions/string_extensions.dart';
 
 import '../../../../models/automation.dart';
 import '../../../../providers/adb_provider.dart';
@@ -43,7 +45,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
   ScrollController scrollController = ScrollController();
   bool loading = false;
   late DeviceSettingsScreenState oldState;
-  late TextEditingController oldController;
+  late TextEditingController namecontroller;
 
   @override
   void initState() {
@@ -53,22 +55,12 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
         .read(infoProvider)
         .firstWhereOrNull((info) => info.serialNo == dev.serialNo);
 
-    oldController =
+    namecontroller =
         TextEditingController(text: deviceInfo?.deviceName ?? dev.modelName);
-    final newController =
-        ref.read(deviceSettingsStateProvider(dev)).namecontroller;
 
     oldState = ref
         .read(deviceSettingsStateProvider(dev))
-        .copyWith(namecontroller: oldController);
-
-    newController.addListener(
-      () {
-        if (newController.text != oldController.text) {
-          setState(() {});
-        }
-      },
-    );
+        .copyWith(deviceName: deviceInfo?.deviceName ?? dev.modelName);
 
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((a) async {
@@ -80,20 +72,44 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
 
   @override
   void dispose() {
+    namecontroller.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final deviceInfo = ref
         .watch(infoProvider)
         .firstWhereOrNull((info) => info.serialNo == dev.serialNo);
 
     final currentState = ref.watch(deviceSettingsStateProvider(dev));
+    final isWireless = dev.id.isIpv4 || dev.id.contains(adbMdns);
 
     return PgScaffoldCustom(
-      title: Text(
-          '${el.deviceSettingsLoc.title} / ${deviceInfo?.deviceName ?? dev.modelName}'),
+      title: RichText(
+        text: TextSpan(
+          style: TextStyle(
+              fontSize: theme.typography.xLarge.fontSize,
+              fontWeight: FontWeight.bold,
+              decoration: TextDecoration.underline,
+              color: theme.colorScheme.foreground),
+          children: [
+            TextSpan(text: el.deviceSettingsLoc.title),
+            TextSpan(text: ' / '),
+            WidgetSpan(
+                baseline: TextBaseline.ideographic,
+                child: isWireless
+                    ? Icon(
+                        Icons.wifi_rounded,
+                        size: 22,
+                      )
+                    : Icon(Icons.usb_rounded)),
+            TextSpan(text: ' ${deviceInfo?.deviceName ?? dev.modelName}')
+          ],
+        ),
+      ),
       leading: [
         IconButton.ghost(
           icon: Icon(Icons.arrow_back),
@@ -122,8 +138,8 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
         return AnimatedSwitcher(
           duration: 200.milliseconds,
           child: sizeInfo.isMobile || sizeInfo.isTablet
-              ? DeviceSettingsSmall(device: dev)
-              : DeviceSettingsBig(device: dev),
+              ? DeviceSettingsSmall(device: dev, nameController: namecontroller)
+              : DeviceSettingsBig(device: dev, nameController: namecontroller),
         );
       }),
     );
@@ -134,9 +150,8 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
     final deviceInfo =
         ref.read(infoProvider).firstWhere((i) => i.serialNo == dev.serialNo);
 
-    if (newState.namecontroller.text != deviceInfo.deviceName) {
-      final newInfo =
-          deviceInfo.copyWith(deviceName: newState.namecontroller.text);
+    if (newState.deviceName != deviceInfo.deviceName) {
+      final newInfo = deviceInfo.copyWith(deviceName: namecontroller.text);
 
       ref.read(infoProvider.notifier).addOrEditDeviceInfo(newInfo);
       await Db.saveDeviceInfos(ref.read(infoProvider));
@@ -214,9 +229,11 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
 }
 
 class DeviceSettingsSmall extends ConsumerWidget {
+  final TextEditingController nameController;
   final AdbDevices device;
 
-  const DeviceSettingsSmall({super.key, required this.device});
+  const DeviceSettingsSmall(
+      {super.key, required this.device, required this.nameController});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -225,7 +242,10 @@ class DeviceSettingsSmall extends ConsumerWidget {
       child: SingleChildScrollView(
         child: Column(
           spacing: 8,
-          children: [SettingsPane(device: device), InfoPane(device: device)],
+          children: [
+            SettingsPane(device: device, nameController: nameController),
+            InfoPane(device: device)
+          ],
         ),
       ),
     );
@@ -233,9 +253,11 @@ class DeviceSettingsSmall extends ConsumerWidget {
 }
 
 class DeviceSettingsBig extends ConsumerWidget {
+  final TextEditingController nameController;
   final AdbDevices device;
 
-  const DeviceSettingsBig({super.key, required this.device});
+  const DeviceSettingsBig(
+      {super.key, required this.device, required this.nameController});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -244,6 +266,7 @@ class DeviceSettingsBig extends ConsumerWidget {
       children: [
         LeftColumn(
           child: SettingsPane(
+            nameController: nameController,
             device: device,
             expandContent: true,
           ),

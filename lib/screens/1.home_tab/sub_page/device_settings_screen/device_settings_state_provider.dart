@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/models/device_settings_screen_state.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../providers/automation_provider.dart';
 import '../../../../providers/device_info_provider.dart';
@@ -26,15 +25,8 @@ class DeviceSettingsStateNotifier
         .where((a) => a.deviceIp == device.id)
         .isNotEmpty;
 
-    TextEditingController namecontroller =
-        TextEditingController(text: info?.deviceName ?? device.modelName);
-
-    ref.onDispose(() {
-      namecontroller.dispose();
-    });
-
     return DeviceSettingsScreenState(
-      namecontroller: namecontroller,
+      deviceName: info?.deviceName ?? device.modelName,
       autoLaunchConfig: autolaunch,
       autoConnect: autoConnect,
       loading: false,
@@ -44,6 +36,10 @@ class DeviceSettingsStateNotifier
 
   void toggleLoading() {
     state = state.copyWith(loading: !state.loading);
+  }
+
+  void rename(String name) {
+    state = state.copyWith(deviceName: name.trim());
   }
 
   void toggleAutoConnect() {

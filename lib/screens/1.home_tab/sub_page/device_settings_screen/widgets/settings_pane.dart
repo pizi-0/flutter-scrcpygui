@@ -16,12 +16,14 @@ import '../../../../../providers/device_info_provider.dart';
 import '../../../../../widgets/config_tiles.dart';
 
 class SettingsPane extends ConsumerStatefulWidget {
+  final TextEditingController nameController;
   final bool expandContent;
   final AdbDevices device;
   const SettingsPane({
     super.key,
     this.expandContent = false,
     required this.device,
+    required this.nameController,
   });
 
   @override
@@ -197,8 +199,10 @@ class _SettingsPaneState extends ConsumerState<SettingsPane> {
           filled: true,
           focusNode: textBox,
           placeholder: Text(deviceInfo?.deviceName ?? dev.modelName),
-          controller: state.namecontroller,
+          controller: widget.nameController,
           onSubmitted: _onTextBoxSubmit,
+          onChanged: (value) =>
+              ref.read(deviceSettingsStateProvider(dev).notifier).rename(value),
         ),
       ),
     );
@@ -212,6 +216,7 @@ class _SettingsPaneState extends ConsumerState<SettingsPane> {
 
   void _onTextBoxSubmit(String value) async {
     textBox.unfocus();
+    ref.read(deviceSettingsStateProvider(widget.device).notifier).rename(value);
   }
 
   void _onAutoConnectToggled() async {
