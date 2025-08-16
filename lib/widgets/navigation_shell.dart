@@ -2,23 +2,17 @@ import 'dart:io';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart'
-    show StyledText, PaddingX, NumExtension;
+    show NumExtension, PaddingX, StyledText;
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:localization/localization.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/main_screen.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
-import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
-import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
-import 'package:scrcpygui/screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
-import 'package:scrcpygui/screens/4.settings_tab/settings_tab.dart';
-import 'package:scrcpygui/screens/5.companion_tab/companion_tab.dart';
-import 'package:scrcpygui/screens/about_tab/about_tab.dart';
 import 'package:scrcpygui/widgets/auto_arrange_indicator.dart';
+import 'package:scrcpygui/widgets/custom_ui/custom_clippers.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_navigation_rail.dart';
 import 'package:scrcpygui/widgets/title_bar_button.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:window_manager/window_manager.dart';
@@ -36,6 +30,7 @@ class NavigationShell extends ConsumerStatefulWidget {
 class NavigationShellState extends ConsumerState<NavigationShell> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final currentIndex = ref.watch(mainScreenPage);
     final expanded = ref.watch(appSideBarStateProvider);
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
@@ -48,9 +43,7 @@ class NavigationShellState extends ConsumerState<NavigationShell> {
             children: [
               Row(
                 children: [
-                  if (sizeInfo.isDesktop || sizeInfo.isTablet)
-                    const AppSideBar(),
-                  if (sizeInfo.isMobile) const Gap(52),
+                  const Gap(50),
                   Expanded(
                     child: AnimatedBranchContainer(
                       currentIndex: currentIndex,
@@ -59,21 +52,24 @@ class NavigationShellState extends ConsumerState<NavigationShell> {
                   ),
                 ],
               ),
-              if (sizeInfo.isMobile)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    children: [
-                      const AppSideBar(),
-                      if (expanded)
-                        Expanded(
-                          child: Container(
-                            color: Colors.black.withAlpha(50),
-                          ),
-                        )
-                    ],
+              Positioned.fill(
+                child: IgnorePointer(
+                  ignoring: !expanded,
+                  child: OutlinedContainer(
+                    duration: 200.milliseconds,
+                    surfaceOpacity: expanded ? 0.5 : 0,
+                    backgroundColor: theme.colorScheme.background,
+                    borderRadius: BorderRadius.all(Radius.zero),
+                    borderColor: Colors.transparent,
+                    borderWidth: 0,
+                    child: SizedBox.expand(),
                   ),
                 ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: const AppSideBar(),
+              ),
             ],
           ),
         );
@@ -93,14 +89,7 @@ class TitleBar extends ConsumerWidget {
     final appversion = ref.watch(appVersionProvider);
 
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: theme.borderRadiusXs,
-        border: Border(
-          bottom: BorderSide(
-            color: theme.colorScheme.border,
-          ),
-        ),
-      ),
+      color: background(context),
       height: 45,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -209,89 +198,100 @@ class AppSideBar extends ConsumerStatefulWidget {
 class _AppSideBarState extends ConsumerState<AppSideBar> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final expanded = ref.watch(appSideBarStateProvider);
-    final currentPage = ref.watch(mainScreenPage);
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
-    return TapRegion(
-      onTapOutside: (event) =>
-          ref.read(appSideBarStateProvider.notifier).state = false,
-      child: ResponsiveBuilder(builder: (context, sizingInfo) {
-        final shouldExpand = sizingInfo.isTablet || sizingInfo.isDesktop;
-
-        return IntrinsicWidth(
-          key: sidebarKey,
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border(
-                right: BorderSide(
-                  color: theme.colorScheme.border,
+    return Row(
+      children: [
+        PgNavigationRail(),
+        // TapRegion(
+        //   onTapOutside: (event) =>
+        //       ref.read(appSideBarStateProvider.notifier).state = false,
+        //   child: IntrinsicWidth(
+        //     key: sidebarKey,
+        //     child: NavigationRail(
+        //       backgroundColor: background(context),
+        //       expanded: expanded,
+        //       keepCrossAxisSize: true,
+        //       index: currentPage,
+        //       alignment: NavigationRailAlignment.start,
+        //       labelPosition: NavigationLabelPosition.end,
+        //       labelType: NavigationLabelType.expanded,
+        //       padding: EdgeInsets.fromLTRB(8, 4, 8, 8),
+        //       onSelected: (value) =>
+        //           ref.read(mainScreenPage.notifier).state = value,
+        //       children: [
+        //         NavigationButton(
+        //           alignment: Alignment.centerLeft,
+        //           onPressed: () => ref
+        //               .read(appSideBarStateProvider.notifier)
+        //               .update((state) => !state),
+        //           label: const Text('Menu'),
+        //           child: const Icon(Icons.menu),
+        //         ),
+        //         NavigationItem(
+        //           alignment: Alignment.centerLeft,
+        //           onChanged: (value) => context.go(HomeTab.route),
+        //           label: Text(el.homeLoc.title),
+        //           child: const Icon(Icons.home),
+        //         ),
+        //         NavigationItem(
+        //           alignment: Alignment.centerLeft,
+        //           onChanged: (value) => context.go(ConnectTab.route),
+        //           label: Text(el.connectLoc.title),
+        //           child: const Icon(Icons.link),
+        //         ),
+        //         NavigationItem(
+        //           alignment: Alignment.centerLeft,
+        //           onChanged: (value) => context.go(ScrcpyManagerTab.route),
+        //           label: Text(el.scrcpyManagerLoc.title),
+        //           child: const Icon(Icons.system_update_alt),
+        //         ),
+        //         NavigationItem(
+        //           alignment: Alignment.centerLeft,
+        //           onChanged: (value) => context.go(CompanionTab.route),
+        //           label: Text(el.companionLoc.title),
+        //           child: const Icon(Icons.phone_android),
+        //         ),
+        //         const NavigationDivider(),
+        //         NavigationItem(
+        //           alignment: Alignment.centerLeft,
+        //           onChanged: (value) => context.go(SettingsTab.route),
+        //           label: Text(el.settingsLoc.title),
+        //           child: const Icon(Icons.settings),
+        //         ),
+        //         const NavigationDivider(),
+        //         NavigationItem(
+        //           alignment: Alignment.centerLeft,
+        //           onChanged: (value) => context.go(AboutTab.route),
+        //           label: Text(el.aboutLoc.title),
+        //           child: const Icon(Icons.info_rounded),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
+        Expanded(
+          child: ClipPath(
+            clipper: TransparentSquareClipper(),
+            child: Container(
+              color: background(context),
+              child: OutlinedContainer(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  bottomLeft: Radius.circular(10),
                 ),
+                child: SizedBox.expand(),
               ),
             ),
-            child: NavigationRail(
-              expanded: expanded || shouldExpand,
-              index: currentPage,
-              alignment: NavigationRailAlignment.start,
-              labelPosition: NavigationLabelPosition.end,
-              labelType: NavigationLabelType.expanded,
-              padding: EdgeInsets.all(8),
-              onSelected: (value) =>
-                  ref.read(mainScreenPage.notifier).state = value,
-              children: [
-                NavigationButton(
-                  alignment: Alignment.centerLeft,
-                  onPressed: () => ref
-                      .read(appSideBarStateProvider.notifier)
-                      .update((state) => !state),
-                  label: const Text('Menu'),
-                  child: const Icon(Icons.menu),
-                ),
-                const NavigationDivider(),
-                NavigationItem(
-                  alignment: Alignment.centerLeft,
-                  onChanged: (value) => context.go(HomeTab.route),
-                  label: Text(el.homeLoc.title),
-                  child: const Icon(Icons.home),
-                ),
-                NavigationItem(
-                  alignment: Alignment.centerLeft,
-                  onChanged: (value) => context.go(ConnectTab.route),
-                  label: Text(el.connectLoc.title),
-                  child: const Icon(Icons.link),
-                ),
-                NavigationItem(
-                  alignment: Alignment.centerLeft,
-                  onChanged: (value) => context.go(ScrcpyManagerTab.route),
-                  label: Text(el.scrcpyManagerLoc.title),
-                  child: const Icon(Icons.system_update_alt),
-                ),
-                NavigationItem(
-                  alignment: Alignment.centerLeft,
-                  onChanged: (value) => context.go(CompanionTab.route),
-                  label: Text(el.companionLoc.title),
-                  child: const Icon(Icons.phone_android),
-                ),
-                const NavigationDivider(),
-                NavigationItem(
-                  alignment: Alignment.centerLeft,
-                  onChanged: (value) => context.go(SettingsTab.route),
-                  label: Text(el.settingsLoc.title),
-                  child: const Icon(Icons.settings),
-                ),
-                const NavigationDivider(),
-                NavigationItem(
-                  alignment: Alignment.centerLeft,
-                  onChanged: (value) => context.go(AboutTab.route),
-                  label: Text(el.aboutLoc.title),
-                  child: const Icon(Icons.info_rounded),
-                ),
-              ],
-            ),
           ),
-        );
-      }),
+        )
+      ],
     );
   }
+}
+
+Color background(BuildContext context) {
+  final theme = Theme.of(context);
+
+  return theme.colorScheme.background;
 }
