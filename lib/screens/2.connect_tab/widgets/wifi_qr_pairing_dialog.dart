@@ -106,9 +106,7 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
     late String pairRes;
 
     final toPair = (await stream.firstWhere(
-        (e) =>
-            e.service?.type ==
-            BonsoirDiscoveryServiceFoundEvent.discoveryServiceFound,
+        (e) => e is BonsoirDiscoveryServiceFoundEvent,
         orElse: () => BonsoirDiscoveryUnknownEvent()));
 
     if (toPair != BonsoirDiscoveryUnknownEvent()) {

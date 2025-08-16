@@ -7,21 +7,19 @@ class BonsoirUtils {
   static Future<void> startDiscovery(
       BonsoirDiscovery discovery, WidgetRef ref) async {
     try {
+      await discovery.initialize();
+
       if (discovery.isReady) {
         await discovery.start();
 
         discovery.eventStream!.listen((event) async {
-          if (event.service?.type ==
-              BonsoirDiscoveryServiceFoundEvent.discoveryServiceFound) {
-            // await discovery.serviceResolver.resolveService(event.service!);
-            ref.read(bonsoirDeviceProvider.notifier).addService(event.service!);
-          } else if (event.service?.type ==
-              BonsoirDiscoveryServiceResolvedEvent.discoveryServiceResolved) {
-          } else if (event.service?.type ==
-              BonsoirDiscoveryServiceLostEvent.discoveryServiceLost) {
+          if (event is BonsoirDiscoveryServiceFoundEvent) {
+            ref.read(bonsoirDeviceProvider.notifier).addService(event.service);
+          } else if (event is BonsoirDiscoveryServiceResolvedEvent) {
+          } else if (event is BonsoirDiscoveryServiceLostEvent) {
             ref
                 .read(bonsoirDeviceProvider.notifier)
-                .removeService(event.service!);
+                .removeService(event.service);
           }
         });
       }
