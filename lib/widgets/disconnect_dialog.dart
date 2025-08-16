@@ -65,8 +65,8 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
                       device.modelName.toUpperCase()),
             ),
             content: ConstrainedBox(
-              constraints:
-                  const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
+              constraints: const BoxConstraints(
+                  minWidth: sectionWidth, maxWidth: sectionWidth),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -52,7 +52,7 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: appWidth),
+      constraints: const BoxConstraints(maxWidth: sectionWidth),
       child: AlertDialog(
         title: Text(el.connectLoc.qrPair.pair),
         content: Column(

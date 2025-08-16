@@ -65,7 +65,7 @@ class _OverrideConfigPopoverState extends ConsumerState<OverrideConfigPopover> {
     return ModalContainer(
       child: ConstrainedBox(
         constraints:
-            BoxConstraints(maxWidth: appWidth / 2, maxHeight: appWidth),
+            BoxConstraints(maxWidth: sectionWidth / 2, maxHeight: sectionWidth),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,

@@ -19,7 +19,7 @@ class PgSectionCard extends ConsumerWidget {
       this.labelTrail,
       this.cardPadding = const EdgeInsets.all(8),
       this.borderColor,
-      this.constraints = const BoxConstraints(maxWidth: appWidth),
+      this.constraints = const BoxConstraints(maxWidth: sectionWidth),
       required this.children});
 
   @override
@@ -93,7 +93,7 @@ class PgSectionCardNoScroll extends ConsumerWidget {
     this.cardPadding = const EdgeInsets.all(8),
     this.borderColor,
     required this.content,
-    this.constraints = const BoxConstraints(maxWidth: appWidth),
+    this.constraints = const BoxConstraints(maxWidth: sectionWidth),
     this.expandContent = false,
     // required this.children,
   });

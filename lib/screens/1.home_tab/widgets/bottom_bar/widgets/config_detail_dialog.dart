@@ -35,8 +35,8 @@ class _ConfigDetailDialogState extends ConsumerState<ConfigDetailDialog> {
     return AlertDialog(
       title: const Text('Config info'),
       content: ConstrainedBox(
-        constraints:
-            BoxConstraints(maxWidth: appWidth, maxHeight: size.height - 161),
+        constraints: BoxConstraints(
+            maxWidth: sectionWidth, maxHeight: size.height - 161),
         child: Scrollbar(
           controller: scrollController,
           thumbVisibility: true,

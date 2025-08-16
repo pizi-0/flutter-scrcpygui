@@ -51,7 +51,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
         .toList();
 
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: appWidth),
+      constraints: const BoxConstraints(maxWidth: sectionWidth),
       child: IntrinsicHeight(
         child: loading
             ? Center(
@@ -72,7 +72,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                 title: Text(el.quitDialogLoc.title),
                 content: ConstrainedBox(
                   constraints: const BoxConstraints(
-                      minWidth: appWidth, maxWidth: appWidth),
+                      minWidth: sectionWidth, maxWidth: sectionWidth),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,

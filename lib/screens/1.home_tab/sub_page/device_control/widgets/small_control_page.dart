@@ -97,7 +97,7 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
         else
           Expanded(
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: appWidth),
+              constraints: BoxConstraints(maxWidth: sectionWidth),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 spacing: 8,

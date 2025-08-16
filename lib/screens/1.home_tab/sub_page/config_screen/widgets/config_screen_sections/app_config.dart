@@ -68,7 +68,8 @@ class AppConfigState extends ConsumerState<AppConfig> {
                   filled: true,
                   value: selectedConfig.appOptions.selectedApp,
                   placeholder: Text('Select an app'),
-                  popupConstraints: BoxConstraints(maxHeight: appWidth - 100),
+                  popupConstraints:
+                      BoxConstraints(maxHeight: sectionWidth - 100),
                   onChanged: (app) {
                     ref
                         .read(configScreenConfig.notifier)

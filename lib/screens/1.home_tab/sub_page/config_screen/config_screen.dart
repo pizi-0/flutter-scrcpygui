@@ -241,20 +241,20 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
                   ]
                 : [
                     if (isEditing) RenameConfig(oldConfig: oldConfig),
-                    const SizedBox(width: appWidth, child: ModeConfig()),
+                    const SizedBox(width: sectionWidth, child: ModeConfig()),
                     if (selectedConfig.scrcpyMode != ScrcpyMode.audioOnly)
                       SizedBox(
-                          width: appWidth,
+                          width: sectionWidth,
                           child: VideoConfig(info: deviceInfo)),
                     if (selectedConfig.scrcpyMode != ScrcpyMode.videoOnly)
                       SizedBox(
-                          width: appWidth,
+                          width: sectionWidth,
                           child: AudioConfig(info: deviceInfo)),
-                    const SizedBox(width: appWidth, child: AppConfig()),
-                    const SizedBox(width: appWidth, child: DeviceConfig()),
-                    const SizedBox(width: appWidth, child: WindowConfig()),
+                    const SizedBox(width: sectionWidth, child: AppConfig()),
+                    const SizedBox(width: sectionWidth, child: DeviceConfig()),
+                    const SizedBox(width: sectionWidth, child: WindowConfig()),
                     const SizedBox(
-                        width: appWidth, child: AdditionalFlagsConfig()),
+                        width: sectionWidth, child: AdditionalFlagsConfig()),
                     const PreviewAndTest(),
                     const SizedBox(height: 20),
                   ],

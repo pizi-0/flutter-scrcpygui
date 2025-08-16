@@ -18,8 +18,8 @@ class OverrideDialog extends ConsumerWidget {
           ? const Text('Edit disabled:')
           : const Text('Incompatible flags:'),
       content: ConstrainedBox(
-        constraints:
-            const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
+        constraints: const BoxConstraints(
+            minWidth: sectionWidth, maxWidth: sectionWidth),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,

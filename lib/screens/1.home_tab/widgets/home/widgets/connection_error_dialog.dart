@@ -14,8 +14,8 @@ class ErrorDialog extends ConsumerWidget {
     return AlertDialog(
       title: Text(title),
       content: ConstrainedBox(
-        constraints:
-            const BoxConstraints(maxWidth: appWidth, minWidth: appWidth),
+        constraints: const BoxConstraints(
+            maxWidth: sectionWidth, minWidth: sectionWidth),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,

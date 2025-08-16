@@ -538,7 +538,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
         showDialog(
           context: context,
           builder: (context) => ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: appWidth),
+            constraints: BoxConstraints(maxWidth: sectionWidth),
             child: AlertDialog(
               title: Text('Unsupported format'),
               content: Column(
@@ -568,8 +568,8 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
       showDialog(
           context: context,
           builder: (context) => ConstrainedBox(
-                constraints:
-                    BoxConstraints(maxWidth: appWidth, minWidth: appWidth),
+                constraints: BoxConstraints(
+                    maxWidth: sectionWidth, minWidth: sectionWidth),
                 child: AlertDialog(
                   title: Text(el.statusLoc.error),
                   content: Column(

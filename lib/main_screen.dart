@@ -208,8 +208,8 @@ class _MainScreenState extends ConsumerState<MainScreen>
             builder: (context) => AlertDialog(
                 title: Text(el.statusLoc.error),
                 content: ConstrainedBox(
-                  constraints:
-                      BoxConstraints(maxWidth: appWidth, minWidth: appWidth),
+                  constraints: BoxConstraints(
+                      maxWidth: sectionWidth, minWidth: sectionWidth),
                   child: Text(
                       'Failed to start companion server.\n\n${e.toString()}'),
                 ),

@@ -282,8 +282,8 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
             builder: (context) => AlertDialog(
               title: Text(el.serverDisclaimerLoc.title),
               content: ConstrainedBox(
-                constraints:
-                    BoxConstraints(maxWidth: appWidth, minWidth: appWidth),
+                constraints: BoxConstraints(
+                    maxWidth: sectionWidth, minWidth: sectionWidth),
                 child: Text(
                   el.serverDisclaimerLoc.contents,
                 ),
@@ -333,8 +333,8 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
           builder: (context) => AlertDialog(
               title: Text(el.statusLoc.error),
               content: ConstrainedBox(
-                constraints:
-                    BoxConstraints(maxWidth: appWidth, minWidth: appWidth),
+                constraints: BoxConstraints(
+                    maxWidth: sectionWidth, minWidth: sectionWidth),
                 child: Text(
                     'Failed to start companion server.\n\n${e.toString()}'),
               ),

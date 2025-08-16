@@ -61,7 +61,7 @@ class _ConfigScreenCloseDialogState
         allConfigs.where((conf) => conf.id == selectedConfig!.id).isNotEmpty;
 
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: appWidth),
+      constraints: const BoxConstraints(maxWidth: sectionWidth),
       child: IntrinsicHeight(
         child: AlertDialog(
           title: nameExist
@@ -73,8 +73,8 @@ class _ConfigScreenCloseDialogState
                   ? Text(el.closeDialogLoc.overwrite)
                   : Text(el.closeDialogLoc.save),
           content: ConstrainedBox(
-            constraints:
-                const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
+            constraints: const BoxConstraints(
+                minWidth: sectionWidth, maxWidth: sectionWidth),
             child: Column(
               spacing: 8,
               mainAxisSize: MainAxisSize.min,

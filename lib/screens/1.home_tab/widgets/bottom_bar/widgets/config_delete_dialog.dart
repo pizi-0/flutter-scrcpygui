@@ -25,8 +25,8 @@ class _ConfigDeleteDialogState extends ConsumerState<ConfigDeleteDialog> {
     return AlertDialog(
       title: Text(el.deleteConfigDialogLoc.title),
       content: ConstrainedBox(
-          constraints:
-              const BoxConstraints(minWidth: appWidth, maxWidth: appWidth),
+          constraints: const BoxConstraints(
+              minWidth: sectionWidth, maxWidth: sectionWidth),
           child: Text(el.deleteConfigDialogLoc
               .contents(configname: widget.config.configName))),
       actions: [
