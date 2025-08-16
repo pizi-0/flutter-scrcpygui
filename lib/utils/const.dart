@@ -27,7 +27,7 @@ final List<ScrcpyConfig> defaultConfigs = [
   defaultRecord,
 ];
 
-const double appWidth = 450;
+const double sectionWidth = 437;
 
 // const List<DropdownMenuItem> yesno = [
 //   DropdownMenuItem(
