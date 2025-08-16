@@ -31,8 +31,11 @@ dependencies:
   animate_do: ^4.2.0
   animated_custom_dropdown: ^3.1.1
   archive: ^4.0.2
-  awesome_extensions: ^2.0.17
-  bonsoir: ^5.1.10
+  awesome_extensions:  
+    git: 
+      url: https://github.com/shakthizen/awesome_extensions.git
+      ref: 264382e
+  bonsoir: ^6.0.1
   collection: ^1.19.0
   cupertino_icons: ^1.0.6
   dart_ping: ^9.0.1
@@ -44,11 +47,11 @@ dependencies:
   flex_color_picker: ^3.5.1
   flutter:
     sdk: flutter
-  flutter_context_menu: ^0.2.0
+  flutter_context_menu: ^0.3.0
   flutter_riverpod: ^2.5.1
   flutter_single_instance: ^1.2.3
   fpdart: ^1.1.1
-  go_router: ^15.2.3
+  go_router: ^16.1.0
   go_transitions: ^0.8.1
   google_fonts: ^6.2.1
   hexcolor: ^3.0.1
