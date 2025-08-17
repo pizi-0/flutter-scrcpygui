@@ -241,10 +241,16 @@ class DeviceSettingsSmall extends ConsumerWidget {
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
         child: Column(
-          spacing: 8,
           children: [
-            SettingsPane(device: device, nameController: nameController),
-            InfoPane(device: device)
+            Gap(6),
+            Column(
+              spacing: 8,
+              children: [
+                SettingsPane(device: device, nameController: nameController),
+                InfoPane(device: device),
+              ],
+            ),
+            Gap(8),
           ],
         ),
       ),

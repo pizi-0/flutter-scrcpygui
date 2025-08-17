@@ -128,12 +128,9 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
     return PgScaffoldCustom(
       appBarTrailing: [
         IconButton.ghost(
-          icon: Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: checkingForUpdate
-                ? const CircularProgressIndicator(size: 20)
-                : const Icon(Icons.refresh),
-          ),
+          icon: checkingForUpdate
+              ? const CircularProgressIndicator(size: 20)
+              : const Icon(Icons.refresh),
           onPressed: () async {
             try {
               await _checkForUpdate();
@@ -192,96 +189,105 @@ class ManagerTabSmall extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
-        PgSectionCard(
-          label: el.scrcpyManagerLoc.current.label,
+        Gap(6),
+        Column(
+          spacing: 8,
           children: [
-            installed.length > 1
-                ? ConfigCustom(
-                    dimTitle: false,
-                    title: latest == scrcpyVersion
-                        ? '${el.scrcpyManagerLoc.current.inUse} (${el.statusLoc.latest})'
-                        : el.scrcpyManagerLoc.current.inUse,
-                    child: Select(
-                      filled: true,
-                      value: installed
-                          .firstWhere((ins) => ins.version == scrcpyVersion),
-                      onChanged: (value) async {
-                        await SetupUtils.saveCurrentScrcpyVersion(
-                            value!.version);
-                        ref.read(execDirProvider.notifier).state = value.path;
-                        ref.read(scrcpyVersionProvider.notifier).state =
-                            value.version;
-                      },
-                      popup: SelectPopup(
-                        items: SelectItemList(
-                            children: installed
-                                .map((ins) => SelectItemButton(
-                                      value: ins,
-                                      child: Text(ins.version == BUNDLED_VERSION
-                                          ? '${ins.version} (${el.commonLoc.bundled})'
-                                          : ins.version),
-                                    ))
-                                .toList()),
-                      ).call,
-                      itemBuilder: (context, value) => Text(value.version),
-                    ),
-                  )
-                : ConfigCustom(
-                    dimTitle: false,
-                    padRight: 8,
-                    childBackgroundColor: Colors.transparent,
-                    title: el.scrcpyManagerLoc.current.inUse,
-                    childExpand: false,
-                    child: Text('v$scrcpyVersion').small(),
+            PgSectionCard(
+              label: el.scrcpyManagerLoc.current.label,
+              children: [
+                installed.length > 1
+                    ? ConfigCustom(
+                        dimTitle: false,
+                        title: latest == scrcpyVersion
+                            ? '${el.scrcpyManagerLoc.current.inUse} (${el.statusLoc.latest})'
+                            : el.scrcpyManagerLoc.current.inUse,
+                        child: Select(
+                          filled: true,
+                          value: installed.firstWhere(
+                              (ins) => ins.version == scrcpyVersion),
+                          onChanged: (value) async {
+                            await SetupUtils.saveCurrentScrcpyVersion(
+                                value!.version);
+                            ref.read(execDirProvider.notifier).state =
+                                value.path;
+                            ref.read(scrcpyVersionProvider.notifier).state =
+                                value.version;
+                          },
+                          popup: SelectPopup(
+                            items: SelectItemList(
+                                children: installed
+                                    .map((ins) => SelectItemButton(
+                                          value: ins,
+                                          child: Text(ins.version ==
+                                                  BUNDLED_VERSION
+                                              ? '${ins.version} (${el.commonLoc.bundled})'
+                                              : ins.version),
+                                        ))
+                                    .toList()),
+                          ).call,
+                          itemBuilder: (context, value) => Text(value.version),
+                        ),
+                      )
+                    : ConfigCustom(
+                        dimTitle: false,
+                        padRight: 8,
+                        childBackgroundColor: Colors.transparent,
+                        title: el.scrcpyManagerLoc.current.inUse,
+                        childExpand: false,
+                        child: Text('v$scrcpyVersion').small(),
+                      ),
+                const Divider(),
+                ConfigCustom(
+                  dimTitle: false,
+                  childBackgroundColor: Colors.transparent,
+                  title: el.scrcpyManagerLoc.exec.label,
+                  subtitle: el.scrcpyManagerLoc.exec.info,
+                  showinfo: true,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        variance: ButtonVariance.ghost,
+                        icon: const Padding(
+                          padding: EdgeInsets.all(3.0),
+                          child: Icon(Icons.folder),
+                        ),
+                        onPressed: () async {
+                          await DirectoryUtils.openFolder(
+                              scrcpyDir.split(scrcpyVersion).first);
+                        },
+                      ),
+                    ],
                   ),
-            const Divider(),
-            ConfigCustom(
-              dimTitle: false,
-              childBackgroundColor: Colors.transparent,
-              title: el.scrcpyManagerLoc.exec.label,
-              subtitle: el.scrcpyManagerLoc.exec.info,
-              showinfo: true,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                ),
+              ],
+            ),
+            if (!checkingForUpdate &&
+                latest != scrcpyVersion &&
+                installed.where((i) => i.version == latest).isEmpty)
+              PgSectionCard(
+                label: el.scrcpyManagerLoc.updater.label,
                 children: [
-                  IconButton(
-                    variance: ButtonVariance.ghost,
-                    icon: const Padding(
-                      padding: EdgeInsets.all(3.0),
-                      child: Icon(Icons.folder),
+                  ConfigCustom(
+                    dimTitle: false,
+                    padRight: 6,
+                    childBackgroundColor: Colors.transparent,
+                    title: el.scrcpyManagerLoc.updater.newVersion,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text('v$latest'),
+                      ],
                     ),
-                    onPressed: () async {
-                      await DirectoryUtils.openFolder(
-                          scrcpyDir.split(scrcpyVersion).first);
-                    },
                   ),
+                  const Divider(),
+                  const DownloadUpdate(),
                 ],
               ),
-            ),
           ],
         ),
-        if (!checkingForUpdate &&
-            latest != scrcpyVersion &&
-            installed.where((i) => i.version == latest).isEmpty)
-          PgSectionCard(
-            label: el.scrcpyManagerLoc.updater.label,
-            children: [
-              ConfigCustom(
-                dimTitle: false,
-                padRight: 6,
-                childBackgroundColor: Colors.transparent,
-                title: el.scrcpyManagerLoc.updater.newVersion,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text('v$latest'),
-                  ],
-                ),
-              ),
-              const Divider(),
-              const DownloadUpdate(),
-            ],
-          ),
+        Gap(8),
       ],
     );
   }

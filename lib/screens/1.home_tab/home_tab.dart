@@ -79,8 +79,19 @@ class HomeSmall extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Column(
-      spacing: 8,
-      children: [Expanded(child: ConnectedDevices()), ConfigListSmall()],
+      children: [
+        Gap(6),
+        Expanded(
+          child: Column(
+            spacing: 8,
+            children: [
+              Expanded(child: ConnectedDevices()),
+              ConfigListSmall(),
+            ],
+          ),
+        ),
+        Gap(8),
+      ],
     );
   }
 }

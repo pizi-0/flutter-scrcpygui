@@ -51,10 +51,7 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
       title: Text(el.connectLoc.title).bold.underline,
       appBarTrailing: [
         IconButton.ghost(
-          icon: const Padding(
-            padding: EdgeInsets.all(3.0),
-            child: Icon(Icons.qr_code),
-          ),
+          icon: Icon(Icons.qr_code),
           onPressed: () async {
             final res = await showDialog(
               barrierDismissible: true,
@@ -120,27 +117,35 @@ class ConnectTabSmall extends ConsumerWidget {
 
     return Column(
       children: [
-        PgSectionCard(
-          label: el.connectLoc.withIp.label,
-          labelTrail: IconButton.ghost(
-            onPressed: () => showDialog(
-              context: context,
-              builder: (context) => IPHistoryDialog(controller: ipInput),
+        Gap(6),
+        Column(
+          spacing: 8,
+          children: [
+            PgSectionCard(
+              label: el.connectLoc.withIp.label,
+              labelTrail: IconButton.ghost(
+                density: ButtonDensity.dense,
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => IPHistoryDialog(controller: ipInput),
+                ),
+                icon: Icon(Icons.history_rounded),
+                leading: Text(el.ipHistoryLoc.title),
+              ).showIf(ipHistory.isNotEmpty),
+              children: [IPConnect(controller: ipInput)],
             ),
-            icon: Icon(Icons.history_rounded),
-            leading: Text(el.ipHistoryLoc.title),
-          ).showIf(ipHistory.isNotEmpty),
-          children: [IPConnect(controller: ipInput)],
-        ),
-        PgSectionCard(
-          cardPadding: const EdgeInsets.all(8),
-          label:
-              el.connectLoc.withMdns.label(count: '${bonsoirDevices.length}'),
-          labelTrail: const CircularProgressIndicator(),
-          children: const [
-            BonsoirResults(),
+            PgSectionCard(
+              cardPadding: const EdgeInsets.all(8),
+              label: el.connectLoc.withMdns
+                  .label(count: '${bonsoirDevices.length}'),
+              labelTrail: const CircularProgressIndicator(),
+              children: const [
+                BonsoirResults(),
+              ],
+            ),
           ],
-        )
+        ),
+        Gap(8),
       ],
     );
   }

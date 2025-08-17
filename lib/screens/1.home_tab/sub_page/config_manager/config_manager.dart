@@ -92,33 +92,36 @@ class _ConfigManagerState extends ConsumerState<ConfigManager> {
           onPressed: null,
         ),
       ],
-      scaffoldBody: Align(
-        alignment: Alignment.topCenter,
-        child: PgSectionCardNoScroll(
-          expandContent: true,
-          cardPadding: EdgeInsets.all(0),
-          content: Column(
-            children: [
-              Expanded(
-                child: ReorderableList(
-                  padding: EdgeInsets.all(16),
-                  itemBuilder: (context, index) {
-                    final config = reorderList[index];
+      scaffoldBody: Padding(
+        padding: const EdgeInsets.only(top: 8.0, bottom: 8),
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: PgSectionCardNoScroll(
+            expandContent: true,
+            cardPadding: EdgeInsets.all(0),
+            content: Column(
+              children: [
+                Expanded(
+                  child: ReorderableList(
+                    padding: EdgeInsets.all(16),
+                    itemBuilder: (context, index) {
+                      final config = reorderList[index];
 
-                    return _reorderableConfigListTIle(config);
-                  },
-                  itemCount: reorderList.length,
-                  onReorder: (oldIndex, newIndex) {
-                    if (oldIndex < newIndex) {
-                      newIndex -= 1;
-                    }
-                    final item = reorderList.removeAt(oldIndex);
-                    reorderList.insert(newIndex, item);
-                    setState(() {});
-                  },
+                      return _reorderableConfigListTIle(config);
+                    },
+                    itemCount: reorderList.length,
+                    onReorder: (oldIndex, newIndex) {
+                      if (oldIndex < newIndex) {
+                        newIndex -= 1;
+                      }
+                      final item = reorderList.removeAt(oldIndex);
+                      reorderList.insert(newIndex, item);
+                      setState(() {});
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

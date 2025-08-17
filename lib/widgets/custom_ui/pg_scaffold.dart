@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart' show kToolbarHeight;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -30,11 +29,20 @@ class PgScaffold extends ConsumerWidget {
     final theme = Theme.of(context);
     return Scaffold(
       loadingProgressIndeterminate: showLoading,
+      floatingHeader: true,
       headers: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(
-              maxHeight: kToolbarHeight + 5, minHeight: kToolbarHeight + 5),
+        Container(
+          height: 47,
+          decoration: BoxDecoration(
+              border: Border(
+            bottom: BorderSide(
+              color: theme.colorScheme.border,
+              width: 1,
+            ),
+          )),
           child: AppBar(
+            surfaceBlur: theme.surfaceBlur,
+            surfaceOpacity: theme.surfaceOpacity,
             leading: leading ??
                 [
                   IconButton.ghost(
@@ -55,7 +63,7 @@ class PgScaffold extends ConsumerWidget {
                     ),
                   ),
                 ],
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(4),
             title: Row(
               children: [
                 Expanded(
@@ -74,20 +82,19 @@ class PgScaffold extends ConsumerWidget {
               child: Text('Getting device info'),
             )
           : Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
               child: SingleChildScrollView(
-                child: wrap
-                    ? Wrap(
-                        alignment: WrapAlignment.center,
-                        spacing: 8,
-                        runSpacing: 8,
-                        children: children,
-                      )
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: children,
-                      ),
-              ),
+                  child: Column(
+                children: [
+                  Gap(52),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: children,
+                  ),
+                ],
+              )),
             ),
     );
   }
@@ -98,6 +105,7 @@ class PgScaffoldCustom extends ConsumerWidget {
   final List<Widget> footers;
   final List<Widget>? appBarTrailing;
   final List<Widget>? leading;
+  final bool padTop;
 
   final bool showLoading;
   final bool wrap;
@@ -114,6 +122,7 @@ class PgScaffoldCustom extends ConsumerWidget {
     this.onBack,
     this.showLoading = false,
     this.wrap = true,
+    this.padTop = true,
   });
 
   @override
@@ -122,10 +131,18 @@ class PgScaffoldCustom extends ConsumerWidget {
     return Scaffold(
       loadingProgressIndeterminate: showLoading,
       headers: [
-        ConstrainedBox(
-          constraints: const BoxConstraints(
-              maxHeight: kToolbarHeight + 5, minHeight: kToolbarHeight + 5),
+        Container(
+          height: 47,
+          decoration: BoxDecoration(
+              border: Border(
+            bottom: BorderSide(
+              color: theme.colorScheme.border,
+              width: 1,
+            ),
+          )),
           child: AppBar(
+            surfaceBlur: theme.surfaceBlur,
+            surfaceOpacity: theme.surfaceOpacity,
             leading: leading ??
                 [
                   IconButton.ghost(
@@ -146,19 +163,18 @@ class PgScaffoldCustom extends ConsumerWidget {
                     ),
                   ),
                 ],
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(4),
             title: Row(
               children: [
                 Expanded(child: Center(child: FittedBox(child: title))),
               ],
             ),
-            // backgroundColor: theme.colorScheme.muted,
           ),
         )
       ],
       footers: footers,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
         child: scaffoldBody,
       ),
     );

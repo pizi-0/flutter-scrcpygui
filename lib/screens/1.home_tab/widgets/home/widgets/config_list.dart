@@ -84,6 +84,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
         ],
       ),
       labelTrail: IconButton.ghost(
+        density: ButtonDensity.dense,
         leading: Text(el.configLoc.new$),
         icon: const Icon(Icons.add),
         onPressed: _onNewConfigPressed,
@@ -129,6 +130,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
                           ).call
                         : (context) => SizedBox.shrink(),
                     child: PrimaryButton(
+                      density: ButtonDensity.dense,
                       onPressed: loading ? null : _start,
                       onSecondaryTapUp: (d) =>
                           loading || !widget.showOverrideButton

@@ -82,7 +82,6 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
         .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
     return Column(
-      spacing: 8,
       children: [
         if (deviceInfo == null)
           Expanded(
@@ -100,8 +99,8 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
               constraints: BoxConstraints(maxWidth: sectionWidth),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                spacing: 8,
                 children: [
+                  Gap(6),
                   CollapsingControlButtons(
                       device: device, scrollController: scrollController),
                   Expanded(
@@ -110,6 +109,7 @@ class _SmallControlPageState extends ConsumerState<SmallControlPage> {
                       scrollController: scrollController,
                     ),
                   ),
+                  Gap(8)
                 ],
               ),
             ),
@@ -178,7 +178,12 @@ class _CollapsingControlButtonsState extends State<CollapsingControlButtons> {
           behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
           child: SingleChildScrollView(
             physics: NeverScrollableScrollPhysics(),
-            child: ControlButtons(device: widget.device),
+            child: Column(
+              children: [
+                ControlButtons(device: widget.device),
+                Gap(8),
+              ],
+            ),
           ),
         ),
       ),

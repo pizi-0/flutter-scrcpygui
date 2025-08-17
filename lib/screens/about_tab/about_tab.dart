@@ -98,12 +98,9 @@ class _AboutTabState extends ConsumerState<AboutTab> {
       title: el.aboutLoc.title,
       appBarTrailing: [
         IconButton.ghost(
-          icon: Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: loading
-                ? const CircularProgressIndicator(size: 20)
-                : const Icon(Icons.refresh),
-          ),
+          icon: loading
+              ? const CircularProgressIndicator(size: 20)
+              : const Icon(Icons.refresh),
           onPressed: _getLatest,
         ),
       ],

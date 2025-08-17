@@ -20,9 +20,15 @@ class LeftColumn extends StatelessWidget {
       child: shouldAlign
           ? Align(
               alignment: alignment,
-              child: child,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 6.0, bottom: 8),
+                child: child,
+              ),
             )
-          : child,
+          : Padding(
+              padding: const EdgeInsets.only(top: 6.0, bottom: 8),
+              child: child,
+            ),
     );
   }
 }
@@ -47,9 +53,15 @@ class RightColumn extends StatelessWidget {
       child: shouldAlign
           ? Align(
               alignment: alignment,
-              child: child,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 6.0, bottom: 8),
+                child: child,
+              ),
             )
-          : child,
+          : Padding(
+              padding: const EdgeInsets.only(top: 6.0, bottom: 8),
+              child: child,
+            ),
     );
   }
 }

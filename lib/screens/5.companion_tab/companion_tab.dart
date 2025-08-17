@@ -56,8 +56,15 @@ class CompanionTabSmall extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: [
-            ServerSettings(),
-            ClientList(),
+            Gap(6),
+            Column(
+              spacing: 8,
+              children: [
+                ServerSettings(),
+                ClientList(),
+              ],
+            ),
+            Gap(8)
           ],
         ),
       ),

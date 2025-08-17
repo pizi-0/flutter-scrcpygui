@@ -29,7 +29,7 @@ class PgSectionCard extends ConsumerWidget {
     return ConstrainedBox(
       constraints: constraints!,
       child: Column(
-        spacing: 8,
+        spacing: 4,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (label != null)
@@ -37,7 +37,10 @@ class PgSectionCard extends ConsumerWidget {
                 trailing: labelTrail,
                 child: Row(
                   children: [
-                    Text(label!).small.firstP.paddingSymmetric(vertical: 8),
+                    Text(label!)
+                        .small
+                        .firstP
+                        .paddingSymmetric(vertical: 8, horizontal: 8),
                     if (labelButton != null) labelButton!,
                   ],
                 )),
@@ -105,7 +108,7 @@ class PgSectionCardNoScroll extends ConsumerWidget {
     return ConstrainedBox(
       constraints: constraints!,
       child: Column(
-        spacing: 8,
+        spacing: 4,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (label != null)
@@ -113,7 +116,10 @@ class PgSectionCardNoScroll extends ConsumerWidget {
                 trailing: labelTrail,
                 child: Row(
                   children: [
-                    Text(label!).small.firstP.paddingSymmetric(vertical: 8),
+                    Text(label!)
+                        .small
+                        .firstP
+                        .paddingSymmetric(vertical: 8, horizontal: 8),
                     if (labelButton != null) labelButton!,
                   ],
                 )),
