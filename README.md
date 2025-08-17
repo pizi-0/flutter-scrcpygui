@@ -67,7 +67,7 @@ Here's a summary of the build process (see [doc/build.md](doc/build.md) for full
 
 ### Prerequisites
 
-*   **Flutter:** Version 3.32.4 (recommended to use [fvm](https://fvm.app/documentation/getting-started/installation) for version management).
+*   **Flutter:** Version 3.35.1 (recommended to use [fvm](https://fvm.app/documentation/getting-started/installation) for version management).
 *   **Desktop Development Requirements:** Ensure you have the necessary Flutter dependencies for desktop development.
 *   **Tray Manager (Linux):**
     *   `ayatana-appindicator3-0.1` or `appindicator3-0.1`
@@ -80,8 +80,8 @@ Here's a summary of the build process (see [doc/build.md](doc/build.md) for full
 ```bash
 git clone https://github.com/pizi-0/flutter-scrcpygui.git
 cd flutter-scrcpygui
-fvm install 3.32.4
-fvm use 3.32.4
+fvm install 3.35.1
+fvm use 3.35.1
 fvm flutter pub get
 fvm flutter build linux/windows/mac --release
 ```
