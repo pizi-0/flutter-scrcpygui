@@ -109,6 +109,8 @@ class _AutoArrangeIndicatorState extends ConsumerState<AutoArrangeIndicator> {
             context: context,
             alignment: Alignment.bottomCenter,
             builder: (context) => Card(
+              surfaceBlur: theme.surfaceBlur,
+              surfaceOpacity: theme.surfaceOpacity,
               padding: const EdgeInsets.all(8.0),
               child: AutoArrangeOriginSelector(),
             ),

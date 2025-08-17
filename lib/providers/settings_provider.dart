@@ -44,6 +44,17 @@ class SettingsNotifier extends Notifier<AppSettings> {
     state = state.copyWith(looks: currentLooks.copyWith(widgetRadius: radius));
   }
 
+  void changeOpacity(double opacity) {
+    var currentLooks = state.looks;
+    state =
+        state.copyWith(looks: currentLooks.copyWith(surfaceOpacity: opacity));
+  }
+
+  void changeBlur(double blur) {
+    var currentLooks = state.looks;
+    state = state.copyWith(looks: currentLooks.copyWith(surfaceBlur: blur));
+  }
+
   void changeMinimizeBehaviour(MinimizeAction behaviour) {
     var currentBehaviour = state.behaviour;
 

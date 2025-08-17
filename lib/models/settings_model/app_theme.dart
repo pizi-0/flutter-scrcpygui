@@ -10,12 +10,16 @@ class AppTheme {
   final ColorSchemesWithName scheme;
   final ThemeMode themeMode;
   final double accentTintLevel;
+  final double surfaceBlur;
+  final double surfaceOpacity;
 
   AppTheme({
     required this.scheme,
     required this.themeMode,
     this.useOldScheme = false,
     this.widgetRadius = 0.5,
+    this.surfaceBlur = 0,
+    this.surfaceOpacity = 1,
     required this.accentTintLevel,
   });
 
@@ -25,6 +29,8 @@ class AppTheme {
     ColorSchemesWithName? scheme,
     ThemeMode? themeMode,
     double? accentTintLevel,
+    double? surfaceBlur,
+    double? surfaceOpacity,
   }) {
     return AppTheme(
       widgetRadius: widgetRadius ?? this.widgetRadius,
@@ -32,6 +38,8 @@ class AppTheme {
       scheme: scheme ?? this.scheme,
       themeMode: themeMode ?? this.themeMode,
       accentTintLevel: accentTintLevel ?? this.accentTintLevel,
+      surfaceBlur: surfaceBlur ?? this.surfaceBlur,
+      surfaceOpacity: surfaceOpacity ?? this.surfaceOpacity,
     );
   }
 
@@ -42,6 +50,8 @@ class AppTheme {
       'scheme': scheme.toMap(),
       'themeMode': ThemeMode.values.indexOf(themeMode),
       'accentTintLevel': accentTintLevel,
+      'surfaceBlur': surfaceBlur,
+      'surfaceOpacity': surfaceOpacity,
     };
   }
 
@@ -56,6 +66,8 @@ class AppTheme {
           : mySchemes().first,
       themeMode: ThemeMode.values[map['themeMode']],
       accentTintLevel: map['accentTintLevel'],
+      surfaceBlur: map['surfaceBlur'] ?? 0,
+      surfaceOpacity: map['surfaceOpacity'] ?? 1,
     );
   }
 

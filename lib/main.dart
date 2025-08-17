@@ -130,16 +130,16 @@ class _MyAppState extends ConsumerState<MyApp> {
             ? looks.scheme.light
             : mySchemeLight(looks.scheme.light.primary),
         radius: looks.widgetRadius,
-        surfaceBlur: 0,
-        surfaceOpacity: 1,
+        surfaceBlur: looks.surfaceBlur,
+        surfaceOpacity: looks.surfaceOpacity,
       ),
       darkTheme: ThemeData(
         colorScheme: looks.useOldScheme
             ? looks.scheme.dark
             : mySchemeDark(looks.scheme.dark.primary),
         radius: looks.widgetRadius,
-        surfaceBlur: 0,
-        surfaceOpacity: 1,
+        surfaceBlur: looks.surfaceBlur,
+        surfaceOpacity: looks.surfaceOpacity,
       ),
       themeMode: looks.themeMode,
       // home: const SplashScreen(),

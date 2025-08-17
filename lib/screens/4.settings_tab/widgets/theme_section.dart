@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/material.dart' show InkWell;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -124,6 +126,56 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
             ),
           ),
         ),
+        const Divider(),
+        PgListTile(
+          title: 'Surface opacity',
+          subtitle: 'Known to cause flickering in Linux',
+          showSubtitle: Platform.isLinux,
+          trailing: ConstrainedBox(
+            constraints: const BoxConstraints(
+                minWidth: 180, maxWidth: 180, minHeight: 30),
+            child: Row(
+              spacing: 8,
+              children: [
+                Text(looks.surfaceOpacity.toStringAsFixed(1)).small().medium(),
+                Expanded(
+                  child: Slider(
+                    min: 0,
+                    max: 1,
+                    hintValue: SliderValue.single(looks.surfaceOpacity),
+                    value: SliderValue.single(looks.surfaceOpacity),
+                    onChanged: (value) => _onOpacityChange(value.value),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const Divider(),
+        PgListTile(
+          title: 'Surface blur',
+          subtitle: 'Known to cause flickering in Linux',
+          showSubtitle: Platform.isLinux,
+          trailing: ConstrainedBox(
+            constraints: const BoxConstraints(
+                minWidth: 180, maxWidth: 180, minHeight: 30),
+            child: Row(
+              spacing: 8,
+              children: [
+                Text(looks.surfaceBlur.toStringAsFixed(1)).small().medium(),
+                Expanded(
+                  child: Slider(
+                    min: 0,
+                    max: 20,
+                    hintValue: SliderValue.single(looks.surfaceBlur),
+                    value: SliderValue.single(looks.surfaceBlur),
+                    onChanged: (value) => _onBlurChange(value.value),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -135,6 +187,16 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
 
   Future<void> _onRadiusChange(double value) async {
     ref.read(settingsProvider.notifier).changeCornerRadius(value);
+    await Db.saveAppSettings(ref.read(settingsProvider));
+  }
+
+  Future<void> _onOpacityChange(double value) async {
+    ref.read(settingsProvider.notifier).changeOpacity(value);
+    await Db.saveAppSettings(ref.read(settingsProvider));
+  }
+
+  Future<void> _onBlurChange(double value) async {
+    ref.read(settingsProvider.notifier).changeBlur(value);
     await Db.saveAppSettings(ref.read(settingsProvider));
   }
 }
