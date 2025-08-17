@@ -17,6 +17,8 @@ import 'package:scrcpygui/widgets/title_bar_button.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
+import '../utils/custom_scheme.dart';
+
 final sidebarKey = GlobalKey<_AppSideBarState>();
 
 class NavigationShell extends ConsumerStatefulWidget {
@@ -199,86 +201,25 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
   @override
   Widget build(BuildContext context) {
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
+    final theme = Theme.of(context);
 
     return Row(
       children: [
         PgNavigationRail(),
-        // TapRegion(
-        //   onTapOutside: (event) =>
-        //       ref.read(appSideBarStateProvider.notifier).state = false,
-        //   child: IntrinsicWidth(
-        //     key: sidebarKey,
-        //     child: NavigationRail(
-        //       backgroundColor: background(context),
-        //       expanded: expanded,
-        //       keepCrossAxisSize: true,
-        //       index: currentPage,
-        //       alignment: NavigationRailAlignment.start,
-        //       labelPosition: NavigationLabelPosition.end,
-        //       labelType: NavigationLabelType.expanded,
-        //       padding: EdgeInsets.fromLTRB(8, 4, 8, 8),
-        //       onSelected: (value) =>
-        //           ref.read(mainScreenPage.notifier).state = value,
-        //       children: [
-        //         NavigationButton(
-        //           alignment: Alignment.centerLeft,
-        //           onPressed: () => ref
-        //               .read(appSideBarStateProvider.notifier)
-        //               .update((state) => !state),
-        //           label: const Text('Menu'),
-        //           child: const Icon(Icons.menu),
-        //         ),
-        //         NavigationItem(
-        //           alignment: Alignment.centerLeft,
-        //           onChanged: (value) => context.go(HomeTab.route),
-        //           label: Text(el.homeLoc.title),
-        //           child: const Icon(Icons.home),
-        //         ),
-        //         NavigationItem(
-        //           alignment: Alignment.centerLeft,
-        //           onChanged: (value) => context.go(ConnectTab.route),
-        //           label: Text(el.connectLoc.title),
-        //           child: const Icon(Icons.link),
-        //         ),
-        //         NavigationItem(
-        //           alignment: Alignment.centerLeft,
-        //           onChanged: (value) => context.go(ScrcpyManagerTab.route),
-        //           label: Text(el.scrcpyManagerLoc.title),
-        //           child: const Icon(Icons.system_update_alt),
-        //         ),
-        //         NavigationItem(
-        //           alignment: Alignment.centerLeft,
-        //           onChanged: (value) => context.go(CompanionTab.route),
-        //           label: Text(el.companionLoc.title),
-        //           child: const Icon(Icons.phone_android),
-        //         ),
-        //         const NavigationDivider(),
-        //         NavigationItem(
-        //           alignment: Alignment.centerLeft,
-        //           onChanged: (value) => context.go(SettingsTab.route),
-        //           label: Text(el.settingsLoc.title),
-        //           child: const Icon(Icons.settings),
-        //         ),
-        //         const NavigationDivider(),
-        //         NavigationItem(
-        //           alignment: Alignment.centerLeft,
-        //           onChanged: (value) => context.go(AboutTab.route),
-        //           label: Text(el.aboutLoc.title),
-        //           child: const Icon(Icons.info_rounded),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
         Expanded(
           child: ClipPath(
-            clipper: TransparentSquareClipper(),
-            child: Container(
-              color: background(context),
+            clipper: TransparentSquareClipper(radius: theme.radiusLg),
+            child: OutlinedContainer(
+              backgroundColor: background(context),
+              borderColor: Colors.transparent,
+              borderWidth: 0,
+              surfaceBlur: theme.surfaceBlur,
+              surfaceOpacity: theme.surfaceOpacity,
+              borderRadius: BorderRadius.all(Radius.zero),
               child: OutlinedContainer(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  bottomLeft: Radius.circular(10),
+                  topLeft: theme.radiusLgRadius,
+                  bottomLeft: theme.radiusLgRadius,
                 ),
                 child: SizedBox.expand(),
               ),
@@ -288,10 +229,4 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
       ],
     );
   }
-}
-
-Color background(BuildContext context) {
-  final theme = Theme.of(context);
-
-  return theme.colorScheme.background;
 }

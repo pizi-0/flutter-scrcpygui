@@ -6,6 +6,7 @@ import 'package:localization/localization.dart';
 import 'package:scrcpygui/main_screen.dart';
 import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
 import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
+import 'package:scrcpygui/utils/custom_scheme.dart';
 import 'package:scrcpygui/widgets/navigation_shell.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -55,16 +56,16 @@ class _PgNavigationRailState extends ConsumerState<PgNavigationRail>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return TapRegion(
       onTapOutside: (event) =>
           ref.read(appSideBarStateProvider.notifier).state = false,
       child: AnimatedBuilder(
         animation: _width,
         builder: (context, child) => OutlinedContainer(
-          borderColor: widget.backgroundColor ?? theme.colorScheme.background,
-          backgroundColor:
-              widget.backgroundColor ?? theme.colorScheme.background,
+          surfaceBlur: theme.surfaceBlur,
+          surfaceOpacity: theme.surfaceOpacity,
+          borderColor: Colors.transparent,
+          backgroundColor: background(context),
           borderWidth: 0,
           width: _width.value,
           borderRadius: BorderRadius.zero,

@@ -64,3 +64,9 @@ ColorScheme mySchemeLight(Color color) {
     chart5: const HSLColor.fromAHSL(1, 340.0, 0.75, 0.55).toColor(),
   );
 }
+
+Color background(BuildContext context) {
+  final theme = Theme.of(context);
+
+  return theme.colorScheme.background;
+}
