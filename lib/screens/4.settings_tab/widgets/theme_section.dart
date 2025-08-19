@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -66,8 +67,12 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                 minWidth: 180, maxWidth: 180, minHeight: 30),
             child: Select(
               filled: true,
-              itemBuilder: (context, value) => Text(
-                  mySchemes().firstWhere((scheme) => scheme == value).name),
+              itemBuilder: (context, value) => Text(mySchemes()
+                  .firstWhere(
+                    (scheme) => scheme == value,
+                    orElse: () => mySchemes().first,
+                  )
+                  .name),
               value: looks.scheme,
               onChanged: (scheme) async {
                 ref.read(settingsProvider.notifier).changeColorScheme(scheme!);
@@ -76,32 +81,78 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               popup: SelectPopup(
                 items: SelectItemList(
                     children: mySchemes()
-                        .map((scheme) => SelectItemButton(
-                            value: scheme, child: Text(scheme.name)))
+                        .map(
+                          (scheme) => SelectItemButton(
+                            value: scheme,
+                            child: Text(scheme.name),
+                          ),
+                        )
                         .toList()),
               ).call,
             ),
           ),
         ),
         const Divider(),
-        InkWell(
-          onTap: _toggleOldScheme,
-          child: PgListTile(
-            title: el.settingsLoc.looks.oldScheme.label,
-            trailing: ConstrainedBox(
-              constraints:
-                  BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Checkbox(
-                  state: looks.useOldScheme
-                      ? CheckboxState.checked
-                      : CheckboxState.unchecked,
-                  onChanged: (b) => _toggleOldScheme(),
+        Column(
+          children: [
+            InkWell(
+              onTap: _toggleOldScheme,
+              child: PgListTile(
+                title: el.settingsLoc.looks.oldScheme.label,
+                trailing: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      minWidth: 180, maxWidth: 180, minHeight: 30),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Checkbox(
+                      state: looks.useOldScheme
+                          ? CheckboxState.checked
+                          : CheckboxState.unchecked,
+                      onChanged: (b) => _toggleOldScheme(),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+            PgExpandable(
+              expand: !looks.useOldScheme,
+              child: Column(
+                spacing: 8,
+                children: [
+                  SizedBox(),
+                  const Divider(),
+                  PgListTile(
+                    title: looks.themeMode == ThemeMode.dark
+                        ? 'Dimness'
+                        : 'Brightness',
+                    trailing: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                          minWidth: 180, maxWidth: 180, minHeight: 30),
+                      child: Row(
+                        spacing: 8,
+                        children: [
+                          Text(looks.accentTintLevel.toStringAsFixed(0))
+                              .small()
+                              .medium(),
+                          Expanded(
+                            child: Slider(
+                              min: 90,
+                              max: 100,
+                              hintValue:
+                                  SliderValue.single(looks.accentTintLevel),
+                              value: SliderValue.single(looks.accentTintLevel),
+                              onChanged: (value) =>
+                                  _onTintLevelChange(value.value),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
         const Divider(),
         PgListTile(
@@ -197,6 +248,11 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
 
   Future<void> _onBlurChange(double value) async {
     ref.read(settingsProvider.notifier).changeBlur(value);
+    await Db.saveAppSettings(ref.read(settingsProvider));
+  }
+
+  Future<void> _onTintLevelChange(double value) async {
+    ref.read(settingsProvider.notifier).changeTintLevel(value);
     await Db.saveAppSettings(ref.read(settingsProvider));
   }
 }

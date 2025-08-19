@@ -128,7 +128,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       theme: ThemeData(
         colorScheme: looks.useOldScheme
             ? looks.scheme.light
-            : mySchemeLight(looks.scheme.light.primary),
+            : mySchemeLight(ref, looks.scheme.light.primary),
         radius: looks.widgetRadius,
         surfaceBlur: looks.surfaceBlur,
         surfaceOpacity: looks.surfaceOpacity,
@@ -136,7 +136,7 @@ class _MyAppState extends ConsumerState<MyApp> {
       darkTheme: ThemeData(
         colorScheme: looks.useOldScheme
             ? looks.scheme.dark
-            : mySchemeDark(looks.scheme.dark.primary),
+            : mySchemeDark(ref, looks.scheme.dark.primary),
         radius: looks.widgetRadius,
         surfaceBlur: looks.surfaceBlur,
         surfaceOpacity: looks.surfaceOpacity,
