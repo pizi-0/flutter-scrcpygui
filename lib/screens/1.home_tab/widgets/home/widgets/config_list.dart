@@ -59,6 +59,7 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final config = ref.watch(selectedConfigProvider);
     final overrides = ref.watch(configOverridesProvider);
     final hidden = ref.watch(hiddenConfigsProvider);
@@ -120,7 +121,8 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
             ),
             SizedBox(
               height: 32,
-              child: ButtonGroup(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Tooltip(
                     tooltip: widget.showOverrideButton
@@ -129,8 +131,19 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
                                 Text('* Right click to start with overrides'),
                           ).call
                         : (context) => SizedBox.shrink(),
-                    child: PrimaryButton(
-                      density: ButtonDensity.dense,
+                    child: Button(
+                      style: ButtonStyle.primary(
+                        density: ButtonDensity.dense,
+                      ).withBorderRadius(
+                        borderRadius:
+                            BorderRadius.horizontal(left: theme.radiusMdRadius),
+                        disabledBorderRadius:
+                            BorderRadius.horizontal(left: theme.radiusMdRadius),
+                        focusBorderRadius:
+                            BorderRadius.horizontal(left: theme.radiusMdRadius),
+                        hoverBorderRadius:
+                            BorderRadius.horizontal(left: theme.radiusMdRadius),
+                      ),
                       onPressed: loading ? null : _start,
                       onSecondaryTapUp: (d) =>
                           loading || !widget.showOverrideButton
@@ -146,7 +159,11 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
                               '${el.configLoc.start}${overrides.isNotEmpty && widget.showOverrideButton ? ' *' : ''}'),
                     ),
                   ),
-                  if (widget.showOverrideButton) OverrideButton(),
+                  OverrideButton(
+                    single: false,
+                    buttonVariance:
+                        ButtonStyle.primary(density: ButtonDensity.compact),
+                  ),
                 ],
               ),
             )

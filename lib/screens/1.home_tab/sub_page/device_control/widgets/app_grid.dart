@@ -118,9 +118,8 @@ class _AppGridState extends ConsumerState<AppGrid> {
       ),
       labelTrail: OverrideButton(
         buttonVariance: overrides.isNotEmpty
-            ? ButtonVariance.secondary
-            : ButtonVariance.ghost,
-        buttonDensity: ButtonDensity.dense,
+            ? ButtonStyle.primaryIcon(density: ButtonDensity.iconDense)
+            : ButtonStyle.ghostIcon(density: ButtonDensity.iconDense),
       ),
       expandContent: true,
       content: Column(

@@ -9,14 +9,15 @@ import '../../../../../providers/config_provider.dart';
 
 class OverrideButton extends ConsumerStatefulWidget {
   final AbstractButtonStyle buttonVariance;
-  final ButtonDensity buttonDensity;
+  final bool single;
   final Widget? leading;
 
-  const OverrideButton(
-      {super.key,
-      this.leading,
-      this.buttonVariance = ButtonVariance.primary,
-      this.buttonDensity = ButtonDensity.compact});
+  const OverrideButton({
+    super.key,
+    this.leading,
+    this.single = true,
+    required this.buttonVariance,
+  });
 
   @override
   ConsumerState<OverrideButton> createState() => _OverrideButtonState();
@@ -25,10 +26,20 @@ class OverrideButton extends ConsumerStatefulWidget {
 class _OverrideButtonState extends ConsumerState<OverrideButton> {
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      leading: widget.leading,
-      variance: widget.buttonVariance,
-      density: widget.buttonDensity,
+    final theme = Theme.of(context);
+    return Button(
+      style: widget.single
+          ? widget.buttonVariance
+          : widget.buttonVariance.withBorderRadius(
+              borderRadius:
+                  BorderRadius.horizontal(right: theme.radiusMdRadius),
+              disabledBorderRadius:
+                  BorderRadius.horizontal(right: theme.radiusMdRadius),
+              focusBorderRadius:
+                  BorderRadius.horizontal(right: theme.radiusMdRadius),
+              hoverBorderRadius:
+                  BorderRadius.horizontal(right: theme.radiusMdRadius),
+            ),
       onPressed: () {
         showPopover(
           context: context,
@@ -40,7 +51,7 @@ class _OverrideButtonState extends ConsumerState<OverrideButton> {
           ref.read(configOverridesProvider.notifier).clearOverride(),
       onLongPressStart: (details) =>
           ref.read(configOverridesProvider.notifier).clearOverride(),
-      icon: Icon(
+      child: Icon(
         Icons.expand_less_rounded,
       ),
     );
