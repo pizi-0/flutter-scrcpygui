@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/themes.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -56,14 +57,18 @@ class AppTheme {
   }
 
   factory AppTheme.fromMap(Map<String, dynamic> map) {
-    ColorSchemes();
+    ColorSchemesWithName scheme = mySchemes().first;
+
+    try {
+      scheme = ColorSchemesWithName.fromMap(map['scheme']);
+    } catch (e) {
+      logger.e(e);
+    }
 
     return AppTheme(
       widgetRadius: map['widgetRadius'] ?? 0.5,
       useOldScheme: map['useOldScheme'] ?? false,
-      scheme: map['scheme'] != null
-          ? ColorSchemesWithName.fromMap(map['scheme'])
-          : mySchemes().first,
+      scheme: scheme,
       themeMode: ThemeMode.values[map['themeMode']],
       accentTintLevel: map['accentTintLevel'],
       surfaceBlur: map['surfaceBlur'] ?? 0,
