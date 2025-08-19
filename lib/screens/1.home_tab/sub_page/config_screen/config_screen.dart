@@ -1,7 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:animate_do/animate_do.dart';
-import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
+import 'package:awesome_extensions/awesome_extensions.dart'
+    show NumExtension, StyledText;
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -178,7 +179,8 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
                       spacing: 8,
                       children: [
                         Text(el.configScreenLoc.similarExist(
-                            configName: similar.first.configName)),
+                                configName: similar.first.configName))
+                            .textColor(Colors.white),
                       ],
                     ),
                   ),

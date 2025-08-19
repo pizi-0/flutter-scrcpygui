@@ -48,9 +48,7 @@ class PgScaffold extends ConsumerWidget {
                   IconButton.ghost(
                     onPressed: onBack,
                     icon: Icon(Icons.arrow_back,
-                        color: onBack == null
-                            ? theme.colorScheme.background
-                            : null),
+                        color: onBack == null ? Colors.transparent : null),
                   ),
                 ],
             trailing: appBarTrailing ??
@@ -59,7 +57,7 @@ class PgScaffold extends ConsumerWidget {
                     onPressed: null,
                     icon: Icon(
                       Icons.arrow_back,
-                      color: Theme.of(context).colorScheme.background,
+                      color: Colors.transparent,
                     ),
                   ),
                 ],
@@ -148,9 +146,7 @@ class PgScaffoldCustom extends ConsumerWidget {
                   IconButton.ghost(
                     onPressed: onBack,
                     icon: Icon(Icons.arrow_back,
-                        color: onBack == null
-                            ? theme.colorScheme.background
-                            : null),
+                        color: onBack == null ? Colors.transparent : null),
                   ),
                 ],
             trailing: appBarTrailing ??
@@ -159,7 +155,7 @@ class PgScaffoldCustom extends ConsumerWidget {
                     onPressed: null,
                     icon: Icon(
                       Icons.arrow_back,
-                      color: Theme.of(context).colorScheme.background,
+                      color: Colors.transparent,
                     ),
                   ),
                 ],
