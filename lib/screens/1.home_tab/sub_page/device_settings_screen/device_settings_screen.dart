@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,6 +17,7 @@ import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/wid
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_column.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -88,12 +88,12 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
     final isWireless = dev.id.isIpv4 || dev.id.contains(adbMdns);
 
     return PgScaffoldCustom(
+      onBack: context.pop,
       title: RichText(
         text: TextSpan(
           style: TextStyle(
               fontSize: theme.typography.xLarge.fontSize,
               fontWeight: FontWeight.bold,
-              decoration: TextDecoration.underline,
               color: theme.colorScheme.foreground),
           children: [
             TextSpan(text: el.deviceSettingsLoc.title),
@@ -111,27 +111,18 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
         ),
       ),
       leading: [
-        IconButton.ghost(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => context.pop(),
-        ),
-        FadeIn(
-          duration: 200.milliseconds,
-          animate: oldState != currentState,
-          child: IconButton.ghost(
-            icon: Icon(Icons.save),
-            onPressed: _save,
+        PgExpandable(
+          direction: Axis.horizontal,
+          expand: oldState != currentState,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton.primary(
+              density: ButtonDensity.dense,
+              trailing: Text(el.buttonLabelLoc.save),
+              icon: Icon(Icons.save),
+              onPressed: _save,
+            ),
           ),
-        ),
-      ],
-      appBarTrailing: [
-        IconButton.ghost(
-          icon: Icon(Icons.arrow_back, color: Colors.transparent),
-          onPressed: null,
-        ),
-        IconButton.ghost(
-          icon: Icon(Icons.save, color: Colors.transparent),
-          onPressed: null,
         ),
       ],
       scaffoldBody: ResponsiveBuilder(builder: (context, sizeInfo) {

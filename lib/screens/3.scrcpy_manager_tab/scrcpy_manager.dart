@@ -140,7 +140,7 @@ class _ScrcpyManagerTabState extends ConsumerState<ScrcpyManagerTab>
           },
         ),
       ],
-      title: Text(el.scrcpyManagerLoc.title).bold().underline,
+      title: Text(el.scrcpyManagerLoc.title).xLarge().bold(),
       scaffoldBody: ResponsiveBuilder(
         builder: (context, sizeInfo) {
           return AnimatedSwitcher(

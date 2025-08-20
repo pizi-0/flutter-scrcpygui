@@ -44,7 +44,9 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
             color: theme.colorScheme.border,
           ),
         ),
-        color: theme.colorScheme.border.withAlpha(50),
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(theme.radiusMd)),
+        color: theme.colorScheme.accent.withAlpha(50),
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),

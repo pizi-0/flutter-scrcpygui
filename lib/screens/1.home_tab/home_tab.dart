@@ -37,7 +37,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     return ResponsiveBuilder(
       builder: (context, size) {
         return PgScaffoldCustom(
-          title: Text(el.homeLoc.title).xLarge.bold.underline,
+          title: Text(el.homeLoc.title).xLarge().bold(),
           scaffoldBody: ResponsiveBuilder(
             builder: (context, sizingInfo) {
               return AnimatedSwitcher(

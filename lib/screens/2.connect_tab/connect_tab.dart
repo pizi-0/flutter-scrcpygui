@@ -48,7 +48,7 @@ class _ConnectTabState extends ConsumerState<ConnectTab> {
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
     return PgScaffoldCustom(
-      title: Text(el.connectLoc.title).bold.underline,
+      title: Text(el.connectLoc.title).xLarge().bold(),
       appBarTrailing: [
         IconButton.ghost(
           icon: Icon(Icons.qr_code),

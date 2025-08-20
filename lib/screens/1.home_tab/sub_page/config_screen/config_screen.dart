@@ -23,6 +23,7 @@ import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/conf
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/preview_and_test.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/video_config.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/window_config.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -165,6 +166,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
     return PopScope(
       canPop: false,
       child: PgScaffold(
+        onBack: context.pop,
         footers: [
           if (similar.isNotEmpty)
             FadeInUp(
@@ -198,21 +200,18 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
           ),
         ],
         leading: [
-          Row(
-            children: [
-              IconButton.ghost(
-                onPressed: context.pop,
-                icon: Icon(Icons.arrow_back_rounded),
+          PgExpandable(
+            direction: Axis.horizontal,
+            expand: hasChanges && similar.isEmpty,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: IconButton.primary(
+                trailing: Text(el.buttonLabelLoc.save),
+                density: ButtonDensity.dense,
+                onPressed: _saveConfig,
+                icon: Icon(Icons.save_rounded),
               ),
-              FadeIn(
-                duration: 200.milliseconds,
-                animate: hasChanges && similar.isEmpty,
-                child: IconButton.ghost(
-                  onPressed: _saveConfig,
-                  icon: Icon(Icons.save_rounded),
-                ),
-              ),
-            ],
+            ),
           ),
         ],
         title: hasChanges

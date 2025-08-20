@@ -59,7 +59,6 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final config = ref.watch(selectedConfigProvider);
     final overrides = ref.watch(configOverridesProvider);
     final hidden = ref.watch(hiddenConfigsProvider);
@@ -120,53 +119,43 @@ class ConfigListSmallState extends ConsumerState<ConfigListSmall> {
               ),
             ),
             SizedBox(
-              height: 32,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Tooltip(
-                    tooltip: widget.showOverrideButton
-                        ? TooltipContainer(
-                            child:
-                                Text('* Right click to start with overrides'),
-                          ).call
-                        : (context) => SizedBox.shrink(),
-                    child: Button(
-                      style: ButtonStyle.primary(
-                        density: ButtonDensity.dense,
-                      ).withBorderRadius(
-                        borderRadius:
-                            BorderRadius.horizontal(left: theme.radiusMdRadius),
-                        disabledBorderRadius:
-                            BorderRadius.horizontal(left: theme.radiusMdRadius),
-                        focusBorderRadius:
-                            BorderRadius.horizontal(left: theme.radiusMdRadius),
-                        hoverBorderRadius:
-                            BorderRadius.horizontal(left: theme.radiusMdRadius),
+                height: 32,
+                child: ButtonGroup(
+                  children: [
+                    Tooltip(
+                      tooltip: widget.showOverrideButton
+                          ? TooltipContainer(
+                              child:
+                                  Text('* Right click to start with overrides'),
+                            ).call
+                          : (context) => SizedBox.shrink(),
+                      child: Button(
+                        style: ButtonStyle.primary(
+                          density: ButtonDensity.dense,
+                        ),
+                        onPressed: loading ? null : _start,
+                        onSecondaryTapUp: (d) =>
+                            loading || !widget.showOverrideButton
+                                ? null
+                                : _start(withOverrides: true),
+                        onLongPressStart: (details) =>
+                            loading || !widget.showOverrideButton
+                                ? null
+                                : _start(withOverrides: true),
+                        child: loading
+                            ? const CircularProgressIndicator().iconLarge()
+                            : Text(
+                                '${el.configLoc.start}${overrides.isNotEmpty && widget.showOverrideButton ? ' *' : ''}'),
                       ),
-                      onPressed: loading ? null : _start,
-                      onSecondaryTapUp: (d) =>
-                          loading || !widget.showOverrideButton
-                              ? null
-                              : _start(withOverrides: true),
-                      onLongPressStart: (details) =>
-                          loading || !widget.showOverrideButton
-                              ? null
-                              : _start(withOverrides: true),
-                      child: loading
-                          ? const CircularProgressIndicator().iconLarge()
-                          : Text(
-                              '${el.configLoc.start}${overrides.isNotEmpty && widget.showOverrideButton ? ' *' : ''}'),
                     ),
-                  ),
-                  OverrideButton(
-                    single: false,
-                    buttonVariance:
-                        ButtonStyle.primary(density: ButtonDensity.compact),
-                  ),
-                ],
-              ),
-            )
+                    if (widget.showOverrideButton)
+                      OverrideButton(
+                        single: false,
+                        buttonVariance:
+                            ButtonStyle.primary(density: ButtonDensity.compact),
+                      ),
+                  ],
+                ))
           ],
         )
       ],

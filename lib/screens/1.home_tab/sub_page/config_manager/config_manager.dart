@@ -1,5 +1,3 @@
-import 'package:animate_do/animate_do.dart';
-import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/providers/app_grid_settings_provider.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -66,19 +65,21 @@ class _ConfigManagerState extends ConsumerState<ConfigManager> {
   @override
   Widget build(BuildContext context) {
     return PgScaffoldCustom(
-      title: Text(el.configManagerLoc.title),
+      title: Text(el.configManagerLoc.title).xLarge().bold(),
+      onBack: context.pop,
       leading: [
-        IconButton.ghost(
-          icon: Icon(Icons.arrow_back_rounded),
-          onPressed: context.pop,
-        ),
-        FadeIn(
-          animate: !listEquals(oldHidden, hidden) ||
+        PgExpandable(
+          direction: Axis.horizontal,
+          expand: !listEquals(oldHidden, hidden) ||
               !listEquals(oldList, reorderList),
-          duration: 200.milliseconds,
-          child: IconButton.ghost(
-            icon: Icon(Icons.save_rounded),
-            onPressed: _save,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton.primary(
+              density: ButtonDensity.dense,
+              trailing: Text(el.buttonLabelLoc.save),
+              icon: Icon(Icons.save_rounded),
+              onPressed: _save,
+            ),
           ),
         ),
       ],

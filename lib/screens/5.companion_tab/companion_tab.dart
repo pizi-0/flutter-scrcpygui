@@ -29,7 +29,7 @@ class _CompanionTabState extends ConsumerState<CompanionTab> {
     ref.watch(settingsProvider.select((s) => s.behaviour.languageCode));
 
     return PgScaffoldCustom(
-      title: Text(el.companionLoc.title).bold().underline,
+      title: Text(el.companionLoc.title).xLarge().bold(),
       scaffoldBody: ResponsiveBuilder(
         builder: (context, sizeInfo) {
           return AnimatedSwitcher(

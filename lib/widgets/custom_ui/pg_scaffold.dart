@@ -40,39 +40,93 @@ class PgScaffold extends ConsumerWidget {
               width: 1,
             ),
           )),
-          child: AppBar(
+          child: OutlinedContainer(
             surfaceBlur: theme.surfaceBlur,
             surfaceOpacity: theme.surfaceOpacity,
-            leading: leading ??
-                [
-                  IconButton.ghost(
-                    onPressed: onBack,
-                    icon: Icon(Icons.arrow_back,
-                        color: onBack == null ? Colors.transparent : null),
-                  ),
-                ],
-            trailing: appBarTrailing ??
-                [
-                  IconButton.ghost(
-                    onPressed: null,
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.transparent,
-                    ),
-                  ),
-                ],
-            padding: const EdgeInsets.all(4),
-            title: Row(
+            borderRadius: BorderRadius.all(Radius.zero),
+            padding: EdgeInsets.symmetric(horizontal: 3),
+            borderStyle: BorderStyle.none,
+            child: Row(
               children: [
+                if (onBack == null) Gap(3),
+                ...[
+                  if (onBack != null)
+                    IconButton.ghost(
+                      onPressed: onBack,
+                      icon: Icon(Icons.arrow_back,
+                          color: onBack == null ? Colors.transparent : null),
+                    ),
+                  Gap(3),
+                  ...leading ?? []
+                ],
                 Expanded(
-                    child: Center(
-                        child: FittedBox(
-                            child: Text(title).xLarge().bold().underline()))),
+                    child: Padding(
+                  padding: onBack == null
+                      ? const EdgeInsets.all(6.0)
+                      : EdgeInsets.zero,
+                  child: Text(
+                    title,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ).xLarge().bold(),
+                )),
+                Gap(3),
+                ...appBarTrailing ??
+                    [
+                      IconButton.ghost(
+                        onPressed: null,
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Colors.transparent,
+                        ),
+                      ),
+                    ]
               ],
             ),
-            // backgroundColor: theme.colorScheme.muted,
           ),
-        )
+        ),
+        // Container(
+        //   height: 47,
+        //   decoration: BoxDecoration(
+        //       border: Border(
+        //     bottom: BorderSide(
+        //       color: theme.colorScheme.border,
+        //       width: 1,
+        //     ),
+        //   )),
+        //   child: AppBar(
+        //     surfaceBlur: theme.surfaceBlur,
+        //     surfaceOpacity: theme.surfaceOpacity,
+        //     leading: leading ??
+        //         [
+        //           IconButton.ghost(
+        //             onPressed: onBack,
+        //             icon: Icon(Icons.arrow_back,
+        //                 color: onBack == null ? Colors.transparent : null),
+        //           ),
+        //         ],
+        //     trailing: appBarTrailing ??
+        //         [
+        //           IconButton.ghost(
+        //             onPressed: null,
+        //             icon: Icon(
+        //               Icons.arrow_back,
+        //               color: Colors.transparent,
+        //             ),
+        //           ),
+        //         ],
+        //     padding: const EdgeInsets.all(4),
+        //     title: Row(
+        //       children: [
+        //         Expanded(
+        //             child: Center(
+        //                 child: FittedBox(
+        //                     child: Text(title).xLarge().bold().underline()))),
+        //       ],
+        //     ),
+        //     // backgroundColor: theme.colorScheme.muted,
+        //   ),
+        // )
       ],
       footers: footers,
       child: showLoading
@@ -138,35 +192,47 @@ class PgScaffoldCustom extends ConsumerWidget {
               width: 1,
             ),
           )),
-          child: AppBar(
+          child: OutlinedContainer(
             surfaceBlur: theme.surfaceBlur,
             surfaceOpacity: theme.surfaceOpacity,
-            leading: leading ??
-                [
-                  IconButton.ghost(
-                    onPressed: onBack,
-                    icon: Icon(Icons.arrow_back,
-                        color: onBack == null ? Colors.transparent : null),
-                  ),
-                ],
-            trailing: appBarTrailing ??
-                [
-                  IconButton.ghost(
-                    onPressed: null,
-                    icon: Icon(
-                      Icons.arrow_back,
-                      color: Colors.transparent,
-                    ),
-                  ),
-                ],
-            padding: const EdgeInsets.all(4),
-            title: Row(
+            borderRadius: BorderRadius.all(Radius.zero),
+            padding: EdgeInsets.symmetric(horizontal: 3),
+            borderStyle: BorderStyle.none,
+            child: Row(
               children: [
-                Expanded(child: Center(child: FittedBox(child: title))),
+                ...[
+                  if (onBack != null) ...[
+                    IconButton.ghost(
+                      onPressed: onBack,
+                      icon: Icon(Icons.arrow_back,
+                          color: onBack == null ? Colors.transparent : null),
+                    ),
+                    Gap(3),
+                  ],
+                  ...leading ?? []
+                ],
+                Expanded(
+                    child: Padding(
+                  padding: onBack == null
+                      ? const EdgeInsets.all(11.0)
+                      : EdgeInsets.zero,
+                  child: title,
+                )),
+                Gap(3),
+                ...appBarTrailing ??
+                    [
+                      IconButton.ghost(
+                        onPressed: null,
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Colors.transparent,
+                        ),
+                      ),
+                    ]
               ],
             ),
           ),
-        )
+        ),
       ],
       footers: footers,
       child: Padding(
