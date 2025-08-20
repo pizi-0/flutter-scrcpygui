@@ -169,7 +169,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                 Expanded(
                   child: Slider(
                     min: 0,
-                    max: 3,
+                    max: 1,
                     hintValue: SliderValue.single(looks.widgetRadius),
                     value: SliderValue.single(looks.widgetRadius),
                     onChanged: (value) => _onRadiusChange(value.value),
