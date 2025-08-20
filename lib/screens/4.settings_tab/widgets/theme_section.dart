@@ -26,6 +26,8 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
     final looks = ref.watch(settingsProvider.select((sett) => sett.looks));
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
+    final sortedScheme = mySchemes()..sort((a, b) => a.name.compareTo(b.name));
+
     return PgSectionCard(
       label: el.settingsLoc.looks.label,
       children: [
@@ -80,7 +82,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
               },
               popup: SelectPopup(
                 items: SelectItemList(
-                    children: mySchemes()
+                    children: sortedScheme
                         .map(
                           (scheme) => SelectItemButton(
                             value: scheme,
