@@ -28,6 +28,7 @@ class AppBehaviour {
   final bool rememberWinSize;
   final AutoArrangeOrigin autoArrangeOrigin;
   final double windowToScreenHeightRatio;
+  final bool showWarningOnBack;
 
   AppBehaviour({
     required this.languageCode,
@@ -39,6 +40,7 @@ class AppBehaviour {
     required this.rememberWinSize,
     required this.autoArrangeOrigin,
     this.windowToScreenHeightRatio = 0.88,
+    this.showWarningOnBack = true,
   });
 
   Map<String, dynamic> toMap() {
@@ -52,6 +54,7 @@ class AppBehaviour {
       'rememberWinSize': rememberWinSize,
       'autoArrangeOrigin': autoArrangeOrigin.index,
       'windowToScreenHeightRatio': windowToScreenHeightRatio,
+      'showWarningOnBack': showWarningOnBack,
     };
   }
 
@@ -70,6 +73,7 @@ class AppBehaviour {
           AutoArrangeOrigin.values[map['autoArrangeOrigin'] ?? 0],
       windowToScreenHeightRatio:
           (map['windowToScreenHeightRatio'] as num?)?.toDouble() ?? 0.88,
+      showWarningOnBack: map['showWarningOnBack'] ?? true,
     );
   }
 
@@ -88,6 +92,7 @@ class AppBehaviour {
     bool? rememberWinSize,
     AutoArrangeOrigin? autoArrangeOrigin,
     double? windowToScreenHeightRatio,
+    bool? showWarningOnBack,
   }) {
     return AppBehaviour(
       languageCode: languageCode ?? this.languageCode,
@@ -100,12 +105,13 @@ class AppBehaviour {
       autoArrangeOrigin: autoArrangeOrigin ?? this.autoArrangeOrigin,
       windowToScreenHeightRatio:
           windowToScreenHeightRatio ?? this.windowToScreenHeightRatio,
+      showWarningOnBack: showWarningOnBack ?? this.showWarningOnBack,
     );
   }
 
   @override
   String toString() {
-    return 'AppBehaviour(languageCode: $languageCode, killNoWindowInstance: $killNoWindowInstance, traySupport: $traySupport, toastEnabled: $toastEnabled, minimizeAction: $minimizeAction, hideDefaultConfig: $hideDefaultConfig, rememberWinSize: $rememberWinSize, autoArrangeOrigin: $autoArrangeOrigin, windowToScreenHeightRatio: $windowToScreenHeightRatio)';
+    return 'AppBehaviour(languageCode: $languageCode, killNoWindowInstance: $killNoWindowInstance, traySupport: $traySupport, toastEnabled: $toastEnabled, minimizeAction: $minimizeAction, hideDefaultConfig: $hideDefaultConfig, rememberWinSize: $rememberWinSize, autoArrangeOrigin: $autoArrangeOrigin, windowToScreenHeightRatio: $windowToScreenHeightRatio, showWarningOnBack: $showWarningOnBack)';
   }
 
   @override
@@ -120,7 +126,8 @@ class AppBehaviour {
         other.hideDefaultConfig == hideDefaultConfig &&
         other.rememberWinSize == rememberWinSize &&
         other.autoArrangeOrigin == autoArrangeOrigin &&
-        other.windowToScreenHeightRatio == windowToScreenHeightRatio;
+        other.windowToScreenHeightRatio == windowToScreenHeightRatio &&
+        other.showWarningOnBack == showWarningOnBack;
   }
 
   @override
@@ -133,6 +140,7 @@ class AppBehaviour {
         hideDefaultConfig.hashCode ^
         rememberWinSize.hashCode ^
         autoArrangeOrigin.hashCode ^
-        windowToScreenHeightRatio.hashCode;
+        windowToScreenHeightRatio.hashCode ^
+        showWarningOnBack.hashCode;
   }
 }

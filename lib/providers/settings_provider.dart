@@ -85,6 +85,14 @@ class SettingsNotifier extends Notifier<AppSettings> {
             rememberWinSize: !state.behaviour.rememberWinSize));
   }
 
+  void changeShowOnbackWarning({bool? value}) {
+    var currentBehaviour = state.behaviour;
+
+    state = state.copyWith(
+        behaviour: currentBehaviour.copyWith(
+            showWarningOnBack: value ?? !state.behaviour.showWarningOnBack));
+  }
+
   void toggleAutoArrangeStatus() {
     var currentBehaviour = state.behaviour;
 

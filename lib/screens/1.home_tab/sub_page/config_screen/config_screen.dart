@@ -13,6 +13,7 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/app_config.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
@@ -166,7 +167,23 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
     return PopScope(
       canPop: false,
       child: PgScaffold(
-        onBack: context.pop,
+        onBack: () async {
+          bool exit = true;
+
+          final shouldWarn =
+              ref.read(settingsProvider).behaviour.showWarningOnBack;
+
+          if (shouldWarn && hasChanges && similar.isEmpty) {
+            exit = (await showDialog(
+                  context: context,
+                  builder: (context) => OnbackWarning(),
+                )) ??
+                false;
+          }
+          if (exit) {
+            context.pop();
+          }
+        },
         footers: [
           if (similar.isNotEmpty)
             FadeInUp(
@@ -266,5 +283,69 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
   void _onFocusLost() {
     namecontroller.text = ref.read(configScreenConfig)!.configName;
     setState(() {});
+  }
+}
+
+class OnbackWarning extends ConsumerWidget {
+  const OnbackWarning({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final showWarningOnBack =
+        ref.watch(settingsProvider).behaviour.showWarningOnBack;
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxWidth: sectionWidth,
+        minWidth: sectionWidth,
+      ),
+      child: AlertDialog(
+        title: Text('Confirm exit?'),
+        content: OutlinedContainer(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: sectionWidth,
+              maxWidth: sectionWidth,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text('Unsaved changes will be lost.'),
+            ),
+          ),
+        ),
+        actions: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            spacing: 16,
+            children: [
+              Row(
+                spacing: 8,
+                children: [
+                  DestructiveButton(
+                    child: Text('Confirm'),
+                    onPressed: () => context.pop(true),
+                  ),
+                  SecondaryButton(
+                    child: Text('Cancel'),
+                    onPressed: () => context.pop(false),
+                  ),
+                ],
+              ),
+              Checkbox(
+                leading: Text("Don't show again").textSmall.muted,
+                state: showWarningOnBack
+                    ? CheckboxState.unchecked
+                    : CheckboxState.checked,
+                onChanged: (v) => ref
+                    .read(settingsProvider.notifier)
+                    .changeShowOnbackWarning(),
+              )
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
