@@ -65,7 +65,11 @@ class _ConfigManagerState extends ConsumerState<ConfigManager> {
   @override
   Widget build(BuildContext context) {
     return PgScaffoldCustom(
-      title: Text(el.configManagerLoc.title).xLarge().bold(),
+      title: Text(
+        el.configManagerLoc.title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ).xLarge().bold(),
       onBack: context.pop,
       leading: [
         PgExpandable(
@@ -81,16 +85,6 @@ class _ConfigManagerState extends ConsumerState<ConfigManager> {
               onPressed: _save,
             ),
           ),
-        ),
-      ],
-      appBarTrailing: [
-        IconButton.ghost(
-          icon: Icon(Icons.arrow_back_rounded, color: Colors.transparent),
-          onPressed: null,
-        ),
-        IconButton.ghost(
-          icon: Icon(Icons.arrow_back_rounded, color: Colors.transparent),
-          onPressed: null,
         ),
       ],
       scaffoldBody: Padding(
