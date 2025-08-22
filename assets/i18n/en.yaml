@@ -426,7 +426,7 @@ settings_loc:
         light: Light
         system: System
     old_scheme:
-      label: Use old color scheme
+      label: Use Shadcn color scheme
     corner_radius: 
       label: Corner radius
     accent_color:

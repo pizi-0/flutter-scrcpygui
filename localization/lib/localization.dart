@@ -9098,7 +9098,7 @@ LocalizationMessages get en => LocalizationMessages(
             ),
           ),
           oldScheme: SettingsLocLooksOldScheme(
-            label: 'Use old color scheme',
+            label: 'Use Shadcn color scheme',
           ),
           cornerRadius: SettingsLocLooksCornerRadius(
             label: 'Corner radius',
