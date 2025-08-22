@@ -1,15 +1,20 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/main_screen.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/home_tab.dart';
 import 'package:scrcpygui/screens/2.connect_tab/connect_tab.dart';
 import 'package:scrcpygui/utils/custom_scheme.dart';
 import 'package:scrcpygui/widgets/navigation_shell.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../providers/settings_provider.dart';
+import '../../screens/1.home_tab/sub_page/config_screen/config_screen.dart';
 import '../../screens/3.scrcpy_manager_tab/scrcpy_manager.dart';
 import '../../screens/4.settings_tab/settings_tab.dart';
 import '../../screens/5.companion_tab/companion_tab.dart';
@@ -152,15 +157,31 @@ class _PgNavRailButtonState extends ConsumerState<PgNavRailButton> {
     final selected = ref.watch(mainScreenPage) == widget.index;
     final expanded = ref.watch(appSideBarStateProvider);
     final theme = Theme.of(context);
+    final preventNavigation = ref.watch(preventNavigationProvider);
 
     return Button(
       style: selected
           ? ButtonStyle.primary(density: ButtonDensity.compact)
           : ButtonStyle.ghost(density: ButtonDensity.compact),
-      onPressed: () {
+      onPressed: () async {
         if (widget.index != null) {
-          ref.read(mainScreenPage.notifier).state = widget.index!;
-          context.go(widget.route!);
+          bool navigate = true;
+          final showWarning =
+              ref.read(settingsProvider).behaviour.showWarningOnBack;
+
+          if (showWarning && preventNavigation) {
+            navigate = (await showDialog(
+                  context: context,
+                  builder: (context) => OnbackWarning(),
+                )) ??
+                false;
+          }
+
+          if (navigate) {
+            ref.read(preventNavigationProvider.notifier).state = false;
+            ref.read(mainScreenPage.notifier).state = widget.index!;
+            context.go(widget.route!);
+          }
         } else {
           ref.read(appSideBarStateProvider.notifier).update((state) => !state);
         }

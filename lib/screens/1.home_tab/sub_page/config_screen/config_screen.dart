@@ -66,6 +66,15 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
 
     nameBox.addListener(_onFocusLost);
 
+    ref.listenManual(
+      configScreenConfig,
+      (previous, next) {
+        if (oldConfig != next) {
+          ref.read(preventNavigationProvider.notifier).state = true;
+        }
+      },
+    );
+
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((a) async {
@@ -130,8 +139,10 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
       switch (res) {
         case CloseDialogResult.save:
           setState(() => oldConfig = ref.read(configScreenConfig)!);
+          ref.read(preventNavigationProvider.notifier).state = false;
           context.pop();
         case CloseDialogResult.discard:
+          ref.read(preventNavigationProvider.notifier).state = false;
           context.pop();
         default:
       }
@@ -164,119 +175,116 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
         selectedConfig.isSimilarTo(conf) &&
         conf.id != selectedConfig.id);
 
-    return PopScope(
-      canPop: false,
-      child: PgScaffold(
-        onBack: () async {
-          bool exit = true;
+    return PgScaffold(
+      onBack: () async {
+        bool exit = true;
 
-          final shouldWarn =
-              ref.read(settingsProvider).behaviour.showWarningOnBack;
+        final shouldWarn =
+            ref.read(settingsProvider).behaviour.showWarningOnBack;
 
-          if (shouldWarn && hasChanges && similar.isEmpty) {
-            exit = (await showDialog(
-                  context: context,
-                  builder: (context) => OnbackWarning(),
-                )) ??
-                false;
-          }
-          if (exit) {
-            context.pop();
-          }
-        },
-        footers: [
-          if (similar.isNotEmpty)
-            FadeInUp(
-              duration: 200.milliseconds,
-              child: Container(
-                color: theme.colorScheme.destructive,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Basic(
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      spacing: 8,
-                      children: [
-                        Text(el.configScreenLoc.similarExist(
-                                configName: similar.first.configName))
-                            .textColor(Colors.white),
-                      ],
-                    ),
+        if (shouldWarn && hasChanges && similar.isEmpty) {
+          exit = (await showDialog(
+                context: context,
+                builder: (context) => OnbackWarning(),
+              )) ??
+              false;
+        }
+        if (exit) {
+          ref.read(preventNavigationProvider.notifier).state = false;
+          context.pop();
+        }
+      },
+      footers: [
+        if (similar.isNotEmpty)
+          FadeInUp(
+            duration: 200.milliseconds,
+            child: Container(
+              color: theme.colorScheme.destructive,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Basic(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 8,
+                    children: [
+                      Text(el.configScreenLoc.similarExist(
+                              configName: similar.first.configName))
+                          .textColor(Colors.white),
+                    ],
                   ),
                 ),
               ),
             ),
-        ],
-        appBarTrailing: [
-          Checkbox(
-            leading: Text(el.buttonLabelLoc.info),
-            state: showInfo ? CheckboxState.checked : CheckboxState.unchecked,
-            onChanged: (value) => ref
-                .read(configScreenShowInfo.notifier)
-                .update((state) => !state),
           ),
-        ],
-        leading: [
-          PgExpandable(
-            direction: Axis.horizontal,
-            expand: hasChanges && similar.isEmpty,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: IconButton.primary(
-                trailing: Text(el.buttonLabelLoc.save),
-                density: ButtonDensity.dense,
-                onPressed: _saveConfig,
-                icon: Icon(Icons.save_rounded),
-              ),
+      ],
+      appBarTrailing: [
+        Checkbox(
+          leading: Text(el.buttonLabelLoc.info),
+          state: showInfo ? CheckboxState.checked : CheckboxState.unchecked,
+          onChanged: (value) =>
+              ref.read(configScreenShowInfo.notifier).update((state) => !state),
+        ),
+      ],
+      leading: [
+        PgExpandable(
+          direction: Axis.horizontal,
+          expand: hasChanges && similar.isEmpty,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton.primary(
+              trailing: Text(el.buttonLabelLoc.save),
+              density: ButtonDensity.dense,
+              onPressed: _saveConfig,
+              icon: Icon(Icons.save_rounded),
             ),
           ),
-        ],
-        title: hasChanges
-            ? '${el.configScreenLoc.title}*'
-            : el.configScreenLoc.title,
-        children: selectedDevice == null
-            ? [
-                Center(
-                  child: Text(el.configScreenLoc.connectionLost),
-                )
-              ]
-            : deviceInfo == null
-                ? [
-                    SizedBox(
-                      width: MediaQuery.sizeOf(context).width,
-                      height: MediaQuery.sizeOf(context).height - 110,
-                      child: Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          spacing: 8,
-                          children: [
-                            CircularProgressIndicator(),
-                            Text(el.statusLoc.gettingInfo).textSmall.muted,
-                          ],
-                        ),
+        ),
+      ],
+      title: hasChanges
+          ? '${el.configScreenLoc.title}*'
+          : el.configScreenLoc.title,
+      children: selectedDevice == null
+          ? [
+              Center(
+                child: Text(el.configScreenLoc.connectionLost),
+              )
+            ]
+          : deviceInfo == null
+              ? [
+                  SizedBox(
+                    width: MediaQuery.sizeOf(context).width,
+                    height: MediaQuery.sizeOf(context).height - 110,
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 8,
+                        children: [
+                          CircularProgressIndicator(),
+                          Text(el.statusLoc.gettingInfo).textSmall.muted,
+                        ],
                       ),
-                    )
-                  ]
-                : [
-                    if (isEditing) RenameConfig(oldConfig: oldConfig),
-                    const SizedBox(width: sectionWidth, child: ModeConfig()),
-                    if (selectedConfig.scrcpyMode != ScrcpyMode.audioOnly)
-                      SizedBox(
-                          width: sectionWidth,
-                          child: VideoConfig(info: deviceInfo)),
-                    if (selectedConfig.scrcpyMode != ScrcpyMode.videoOnly)
-                      SizedBox(
-                          width: sectionWidth,
-                          child: AudioConfig(info: deviceInfo)),
-                    const SizedBox(width: sectionWidth, child: AppConfig()),
-                    const SizedBox(width: sectionWidth, child: DeviceConfig()),
-                    const SizedBox(width: sectionWidth, child: WindowConfig()),
-                    const SizedBox(
-                        width: sectionWidth, child: AdditionalFlagsConfig()),
-                    const PreviewAndTest(),
-                    const SizedBox(height: 20),
-                  ],
-      ),
+                    ),
+                  )
+                ]
+              : [
+                  if (isEditing) RenameConfig(oldConfig: oldConfig),
+                  const SizedBox(width: sectionWidth, child: ModeConfig()),
+                  if (selectedConfig.scrcpyMode != ScrcpyMode.audioOnly)
+                    SizedBox(
+                        width: sectionWidth,
+                        child: VideoConfig(info: deviceInfo)),
+                  if (selectedConfig.scrcpyMode != ScrcpyMode.videoOnly)
+                    SizedBox(
+                        width: sectionWidth,
+                        child: AudioConfig(info: deviceInfo)),
+                  const SizedBox(width: sectionWidth, child: AppConfig()),
+                  const SizedBox(width: sectionWidth, child: DeviceConfig()),
+                  const SizedBox(width: sectionWidth, child: WindowConfig()),
+                  const SizedBox(
+                      width: sectionWidth, child: AdditionalFlagsConfig()),
+                  const PreviewAndTest(),
+                  const SizedBox(height: 20),
+                ],
     );
   }
 
@@ -316,33 +324,22 @@ class OnbackWarning extends ConsumerWidget {
           ),
         ),
         actions: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            spacing: 16,
-            children: [
-              Row(
-                spacing: 8,
-                children: [
-                  DestructiveButton(
-                    child: Text('Confirm'),
-                    onPressed: () => context.pop(true),
-                  ),
-                  SecondaryButton(
-                    child: Text('Cancel'),
-                    onPressed: () => context.pop(false),
-                  ),
-                ],
-              ),
-              Checkbox(
-                leading: Text("Don't show again").textSmall.muted,
-                state: showWarningOnBack
-                    ? CheckboxState.unchecked
-                    : CheckboxState.checked,
-                onChanged: (v) => ref
-                    .read(settingsProvider.notifier)
-                    .changeShowOnbackWarning(),
-              )
-            ],
+          Checkbox(
+            leading: Text("Don't show again").textSmall.muted,
+            state: showWarningOnBack
+                ? CheckboxState.unchecked
+                : CheckboxState.checked,
+            onChanged: (v) =>
+                ref.read(settingsProvider.notifier).changeShowOnbackWarning(),
+          ),
+          Spacer(),
+          DestructiveButton(
+            child: Text('Confirm'),
+            onPressed: () => context.pop(true),
+          ),
+          SecondaryButton(
+            child: Text('Cancel'),
+            onPressed: () => context.pop(false),
           ),
         ],
       ),
