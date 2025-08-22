@@ -318,3 +318,5 @@ final configOverridesProvider =
         () => ConfigOverrideNotifier());
 
 final hiddenConfigsProvider = StateProvider<List<String>>((ref) => []);
+
+final preventNavigationProvider = StateProvider<bool>((ref) => false);
