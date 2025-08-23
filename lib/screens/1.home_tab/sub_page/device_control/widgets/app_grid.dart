@@ -34,7 +34,6 @@ class _AppGridState extends ConsumerState<AppGrid> {
   TextEditingController appSearchController = TextEditingController();
   ScrollController appScrollController = ScrollController();
   bool gettingApp = false;
-  bool showMissingIcon = false;
 
   @override
   void initState() {
@@ -103,10 +102,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
         .toList();
 
     final missingIcons = ref.watch(missingIconProvider);
-
-    if (missingIcons.isEmpty) {
-      showMissingIcon = false;
-    }
+    final showMissingIcon = ref.watch(showMissingIconProvider);
 
     return PgSectionCardNoScroll(
       cardPadding: EdgeInsets.zero,
@@ -126,7 +122,10 @@ class _AppGridState extends ConsumerState<AppGrid> {
       content: Stack(
         children: [
           gettingApp
-              ? const Center(child: CircularProgressIndicator())
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 90.0),
+                  child: const Center(child: CircularProgressIndicator()),
+                )
               : CustomScrollView(
                   controller: widget.scrollController ?? appScrollController,
                   slivers: [
@@ -142,35 +141,42 @@ class _AppGridState extends ConsumerState<AppGrid> {
                                 .muted),
                       ),
                     if (showMissingIcon) ...[
-                      SliverToBoxAdapter(
-                        child: Container(
-                            margin: EdgeInsets.only(bottom: 8),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.muted,
-                              borderRadius: theme.borderRadiusSm,
-                            ),
-                            child: Text(el.loungeLoc.appTile.missingIcon(
-                                    count: '${missingIcons.length}'))
-                                .textSmall),
-                      ),
-                      SliverGrid.builder(
-                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: gridSettings.gridExtent,
-                          mainAxisExtent: gridSettings.gridExtent,
-                          mainAxisSpacing: 8,
-                          crossAxisSpacing: 8,
+                      SliverPadding(
+                        padding: EdgeInsetsGeometry.symmetric(horizontal: 8),
+                        sliver: SliverToBoxAdapter(
+                          child: Container(
+                              margin: EdgeInsets.only(bottom: 8),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 16),
+                              decoration: BoxDecoration(
+                                color: theme.colorScheme.muted,
+                                borderRadius: theme.borderRadiusSm,
+                              ),
+                              child: Text(el.loungeLoc.appTile.missingIcon(
+                                      count: '${missingIcons.length}'))
+                                  .textSmall),
                         ),
-                        itemCount: missingIcons.length,
-                        itemBuilder: (context, index) {
-                          final app = missingIcons[index];
+                      ),
+                      SliverPadding(
+                        padding: EdgeInsetsGeometry.symmetric(horizontal: 8),
+                        sliver: SliverGrid.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: gridSettings.gridExtent,
+                            mainAxisExtent: gridSettings.gridExtent,
+                            mainAxisSpacing: 8,
+                            crossAxisSpacing: 8,
+                          ),
+                          itemCount: missingIcons.length,
+                          itemBuilder: (context, index) {
+                            final app = missingIcons[index];
 
-                          return AppGridIcon(
-                              key: ValueKey(app.packageName),
-                              app: app,
-                              device: widget.device);
-                        },
+                            return AppGridIcon(
+                                key: ValueKey(app.packageName),
+                                app: app,
+                                device: widget.device);
+                          },
+                        ),
                       )
                     ] else ...[
                       if (filteredDeviceAppslist.isNotEmpty) ...[
@@ -302,8 +308,6 @@ class AppGridHeader extends ConsumerStatefulWidget {
 }
 
 class _AppGridHeaderState extends ConsumerState<AppGridHeader> {
-  bool showMissingIcon = false;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -313,10 +317,7 @@ class _AppGridHeaderState extends ConsumerState<AppGridHeader> {
     final missingIcons = ref.watch(missingIconProvider);
     final allConfigs = ref.watch(configsProvider);
     final config = ref.watch(controlPageConfigProvider);
-
-    if (missingIcons.isEmpty) {
-      showMissingIcon = false;
-    }
+    final showMissingIcon = ref.watch(showMissingIconProvider);
 
     return OutlinedContainer(
       surfaceOpacity: theme.surfaceOpacity,
@@ -411,9 +412,9 @@ class _AppGridHeaderState extends ConsumerState<AppGridHeader> {
                   Toggle(
                     style: ButtonStyle.ghost(density: ButtonDensity.dense),
                     value: showMissingIcon,
-                    onChanged: (value) => setState(() {
-                      showMissingIcon = value;
-                    }),
+                    onChanged: (value) => ref
+                        .read(showMissingIconProvider.notifier)
+                        .update((state) => !state),
                     child: showMissingIcon
                         ? Text(el.loungeLoc.appTile.sections.apps)
                         : Text(el.loungeLoc.appTile

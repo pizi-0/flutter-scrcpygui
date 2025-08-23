@@ -20,3 +20,5 @@ final missingIconProvider =
         (ref) {
   return MissingIconNotifier([]);
 });
+
+final showMissingIconProvider = StateProvider<bool>((ref) => false);
