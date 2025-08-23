@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
@@ -134,7 +135,8 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                   Text('${el.aboutLoc.author}: pizi-0'),
                 ],
               ),
-              content: Row(
+              content: Wrap(
+                runSpacing: 4,
                 spacing: 4,
                 children: [
                   Tooltip(
@@ -156,6 +158,28 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                       onPressed: () => launchUrl(Uri.parse(guiDiscord)),
                       leading: Icon(BootstrapIcons.discord).iconXSmall(),
                       child: Text('Discord'),
+                    ),
+                  ),
+                  Tooltip(
+                    tooltip: (context) =>
+                        TooltipContainer(child: Text(ghSponsor)),
+                    child: Button.outline(
+                      onPressed: () {
+                        Confetti.launch(
+                          context,
+                          options: ConfettiOptions(
+                            spread: 360,
+                            y: 0,
+                            particleCount: 100,
+                          ),
+                        );
+
+                        launchUrl(Uri.parse(ghSponsor));
+                      },
+                      leading:
+                          Icon(BootstrapIcons.heartFill, color: Colors.pink)
+                              .iconXSmall(),
+                      child: Text('Sponsor'),
                     ),
                   ),
                 ],
@@ -189,3 +213,4 @@ class _AboutTabState extends ConsumerState<AboutTab> {
 const String guiGit = 'https://github.com/pizi-0/flutter-scrcpygui';
 const String guiDiscord = 'https://discord.gg/ZdV5DAxd8Y';
 const String scrcpyGit = 'https://github.com/Genymobile/scrcpy';
+const String ghSponsor = 'https://github.com/sponsors/pizi-0';
