@@ -218,8 +218,9 @@ class _AppSideBarState extends ConsumerState<AppSideBar> {
               borderRadius: BorderRadius.all(Radius.zero),
               child: OutlinedContainer(
                 borderRadius: BorderRadius.only(
-                  topLeft: theme.radiusLgRadius,
-                  bottomLeft: theme.radiusLgRadius,
+                  topLeft: Radius.circular(theme.radiusLg - 1),
+                  bottomLeft: Radius.circular(theme.radiusLg - 1),
+                  topRight: Radius.circular(theme.radiusLg - 1),
                 ),
                 child: SizedBox.expand(),
               ),

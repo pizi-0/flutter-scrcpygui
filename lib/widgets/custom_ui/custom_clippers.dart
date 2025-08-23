@@ -15,6 +15,7 @@ class TransparentSquareClipper extends CustomClipper<Path> {
       size.height,
       topLeft: Radius.circular(radius),
       bottomLeft: Radius.circular(radius),
+      topRight: Radius.circular(radius),
     );
 
     path.addRRect(squareRect);
