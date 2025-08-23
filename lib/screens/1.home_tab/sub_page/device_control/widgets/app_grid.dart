@@ -22,13 +22,9 @@ import 'big_control_page.dart';
 
 class AppGrid extends ConsumerStatefulWidget {
   final AdbDevices device;
-  final bool persistentHeader;
+
   final ScrollController? scrollController;
-  const AppGrid(
-      {super.key,
-      required this.device,
-      this.persistentHeader = true,
-      this.scrollController});
+  const AppGrid({super.key, required this.device, this.scrollController});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AppGridState();
@@ -42,22 +38,26 @@ class _AppGridState extends ConsumerState<AppGrid> {
 
   @override
   void initState() {
+    appSearchController.addListener(updateList);
     super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
-    appSearchController.dispose();
     appScrollController.dispose();
+    appSearchController.dispose();
+    appSearchController.removeListener(updateList);
+    super.dispose();
+  }
+
+  void updateList() {
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final device = widget.device;
-    final allConfigs = ref.watch(configsProvider);
-    final config = ref.watch(controlPageConfigProvider);
     final overrides = ref.watch(configOverridesProvider);
     final gridSettings = ref.watch(appGridSettingsProvider);
 
@@ -109,6 +109,7 @@ class _AppGridState extends ConsumerState<AppGrid> {
     }
 
     return PgSectionCardNoScroll(
+      cardPadding: EdgeInsets.zero,
       label: el.loungeLoc.launcher.label,
       labelButton: IconButton.ghost(
         enabled: !gettingApp,
@@ -122,74 +123,60 @@ class _AppGridState extends ConsumerState<AppGrid> {
             : ButtonStyle.ghostIcon(density: ButtonDensity.iconDense),
       ),
       expandContent: true,
-      content: Column(
-        spacing: 8,
+      content: Stack(
         children: [
-          if (widget.persistentHeader) ...[
-            _buildHeader(config, allConfigs),
-            Divider()
-          ],
-          Expanded(
-            child: gettingApp
-                ? const Center(child: CircularProgressIndicator())
-                : CustomScrollView(
-                    controller: widget.scrollController ?? appScrollController,
-                    slivers: [
-                      if (!widget.persistentHeader) ...[
-                        SliverToBoxAdapter(
-                          child: Column(
-                            spacing: 8,
-                            children: [
-                              _buildHeader(config, allConfigs),
-                              Divider(),
-                              SizedBox.shrink()
-                            ],
-                          ),
-                        )
-                      ],
-                      if (filteredAppslist.isEmpty &&
-                          filteredDeviceAppslist.isEmpty)
-                        SliverFillRemaining(
-                          child: Center(
-                              child: Text(el.loungeLoc.info.emptySearch)
-                                  .textSmall
-                                  .muted),
+          gettingApp
+              ? const Center(child: CircularProgressIndicator())
+              : CustomScrollView(
+                  controller: widget.scrollController ?? appScrollController,
+                  slivers: [
+                    SliverPadding(
+                      padding: EdgeInsets.fromLTRB(8, 90, 8, 8),
+                    ),
+                    if (filteredAppslist.isEmpty &&
+                        filteredDeviceAppslist.isEmpty)
+                      SliverFillRemaining(
+                        child: Center(
+                            child: Text(el.loungeLoc.info.emptySearch)
+                                .textSmall
+                                .muted),
+                      ),
+                    if (showMissingIcon) ...[
+                      SliverToBoxAdapter(
+                        child: Container(
+                            margin: EdgeInsets.only(bottom: 8),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 16),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.muted,
+                              borderRadius: theme.borderRadiusSm,
+                            ),
+                            child: Text(el.loungeLoc.appTile.missingIcon(
+                                    count: '${missingIcons.length}'))
+                                .textSmall),
+                      ),
+                      SliverGrid.builder(
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: gridSettings.gridExtent,
+                          mainAxisExtent: gridSettings.gridExtent,
+                          mainAxisSpacing: 8,
+                          crossAxisSpacing: 8,
                         ),
-                      if (showMissingIcon) ...[
-                        SliverToBoxAdapter(
-                          child: Container(
-                              margin: EdgeInsets.only(bottom: 8),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 16),
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.muted,
-                                borderRadius: theme.borderRadiusSm,
-                              ),
-                              child: Text(el.loungeLoc.appTile.missingIcon(
-                                      count: '${missingIcons.length}'))
-                                  .textSmall),
-                        ),
-                        SliverGrid.builder(
-                          gridDelegate:
-                              SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: gridSettings.gridExtent,
-                            mainAxisExtent: gridSettings.gridExtent,
-                            mainAxisSpacing: 8,
-                            crossAxisSpacing: 8,
-                          ),
-                          itemCount: missingIcons.length,
-                          itemBuilder: (context, index) {
-                            final app = missingIcons[index];
+                        itemCount: missingIcons.length,
+                        itemBuilder: (context, index) {
+                          final app = missingIcons[index];
 
-                            return AppGridIcon(
-                                key: ValueKey(app.packageName),
-                                app: app,
-                                device: widget.device);
-                          },
-                        )
-                      ] else ...[
-                        if (filteredDeviceAppslist.isNotEmpty) ...[
-                          SliverToBoxAdapter(
+                          return AppGridIcon(
+                              key: ValueKey(app.packageName),
+                              app: app,
+                              device: widget.device);
+                        },
+                      )
+                    ] else ...[
+                      if (filteredDeviceAppslist.isNotEmpty) ...[
+                        SliverPadding(
+                          padding: EdgeInsetsGeometry.symmetric(horizontal: 8),
+                          sliver: SliverToBoxAdapter(
                             child: Container(
                                 margin: EdgeInsets.only(bottom: 8),
                                 padding: EdgeInsets.symmetric(
@@ -202,7 +189,10 @@ class _AppGridState extends ConsumerState<AppGrid> {
                                     Text(el.loungeLoc.appTile.sections.pinned)
                                         .textSmall),
                           ),
-                          SliverGrid.builder(
+                        ),
+                        SliverPadding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          sliver: SliverGrid.builder(
                             gridDelegate:
                                 SliverGridDelegateWithMaxCrossAxisExtent(
                               maxCrossAxisExtent: gridSettings.gridExtent,
@@ -220,13 +210,17 @@ class _AppGridState extends ConsumerState<AppGrid> {
                                   device: widget.device);
                             },
                           ),
+                        ),
+                        SliverPadding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        ),
+                      ],
+                      if (filteredAppslist.isNotEmpty) ...[
+                        if (deviceAppslist.isNotEmpty)
                           SliverPadding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          ),
-                        ],
-                        if (filteredAppslist.isNotEmpty) ...[
-                          if (deviceAppslist.isNotEmpty)
-                            SliverToBoxAdapter(
+                            padding:
+                                EdgeInsetsGeometry.symmetric(horizontal: 8),
+                            sliver: SliverToBoxAdapter(
                               child: Container(
                                   margin: EdgeInsets.only(bottom: 8),
                                   padding: EdgeInsets.symmetric(
@@ -239,7 +233,10 @@ class _AppGridState extends ConsumerState<AppGrid> {
                                       Text(el.loungeLoc.appTile.sections.apps)
                                           .textSmall),
                             ),
-                          SliverGrid.builder(
+                          ),
+                        SliverPadding(
+                          padding: EdgeInsetsGeometry.symmetric(horizontal: 8),
+                          sliver: SliverGrid.builder(
                             gridDelegate:
                                 SliverGridDelegateWithMaxCrossAxisExtent(
                               maxCrossAxisExtent: gridSettings.gridExtent,
@@ -256,11 +253,14 @@ class _AppGridState extends ConsumerState<AppGrid> {
                                   app: app,
                                   device: widget.device);
                             },
-                          )
-                        ]
+                          ),
+                        )
                       ]
-                    ],
-                  ),
+                    ]
+                  ],
+                ),
+          AppGridHeader(
+            appSearchController: appSearchController,
           ),
         ],
       ),
@@ -291,160 +291,197 @@ class _AppGridState extends ConsumerState<AppGrid> {
     gettingApp = false;
     setState(() {});
   }
+}
 
-  Widget _buildHeader(ScrcpyConfig? config, List<ScrcpyConfig> allConfigs) {
+class AppGridHeader extends ConsumerStatefulWidget {
+  final TextEditingController appSearchController;
+  const AppGridHeader({super.key, required this.appSearchController});
+
+  @override
+  ConsumerState<AppGridHeader> createState() => _AppGridHeaderState();
+}
+
+class _AppGridHeaderState extends ConsumerState<AppGridHeader> {
+  bool showMissingIcon = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     final gridSettings = ref.watch(appGridSettingsProvider);
     final gridSettingsNotifier = ref.read(appGridSettingsProvider.notifier);
     final missingIcons = ref.watch(missingIconProvider);
+    final allConfigs = ref.watch(configsProvider);
+    final config = ref.watch(controlPageConfigProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      spacing: 8,
-      children: [
-        Row(
+    if (missingIcons.isEmpty) {
+      showMissingIcon = false;
+    }
+
+    return OutlinedContainer(
+      surfaceOpacity: theme.surfaceOpacity,
+      surfaceBlur: theme.surfaceBlur,
+      borderStyle: BorderStyle.none,
+      padding: EdgeInsets.fromLTRB(8, 8, 8, 0),
+      child: Container(
+        padding: EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+            border: Border(
+          bottom: BorderSide(color: theme.colorScheme.muted, width: 1.5),
+        )),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
           spacing: 8,
           children: [
-            Expanded(
-              child: Select<ScrcpyConfig>(
-                filled: true,
-                placeholder: OverflowMarquee(
-                    duration: 2.seconds,
-                    delayDuration: 0.5.seconds,
-                    child: Text(el.loungeLoc.placeholders.config)),
-                value: config,
-                onChanged: (value) {
-                  ref.read(controlPageConfigProvider.notifier).state = value;
-                  ref
-                      .read(appGridSettingsProvider.notifier)
-                      .setLastUsedConfig(value?.id);
-                  Db.saveAppGridSettings(ref.read(appGridSettingsProvider));
-                },
-                popup: SelectPopup(
-                  items: SelectItemList(
-                      children: allConfigs
-                          .where((c) => !c.windowOptions.noWindow)
-                          .where((c) =>
-                              !ref.read(hiddenConfigsProvider).contains(c.id))
-                          .map((c) => SelectItemButton(
-                              value: c,
-                              child: OverflowMarquee(
-                                  duration: 3.seconds,
-                                  delayDuration: 0.5.seconds,
-                                  child: Text(c.configName))))
-                          .toList()),
-                ).call,
-                itemBuilder: (context, value) => OverflowMarquee(
-                    duration: 2.seconds,
-                    delayDuration: 0.5.seconds,
-                    child: Text(value.configName)),
-              ),
-            ),
-            Expanded(
-              child: TextField(
-                padding: EdgeInsets.all(7),
-                filled: true,
-                placeholder: Text(el.loungeLoc.placeholders.search),
-                focusNode: searchBoxFocusNode,
-                controller: appSearchController,
-                onChanged: (value) => setState(() {}),
-                features: [
-                  if (appSearchController.text.isEmpty)
-                    InputFeature.leading(Icon(Icons.search_rounded)),
-                  if (appSearchController.text.isNotEmpty)
-                    InputFeature.trailing(IconButton(
-                        variance: ButtonVariance.link,
-                        onPressed: () {
-                          appSearchController.clear();
-                          controlPageKeyboardListenerNode.requestFocus();
+            Row(
+              spacing: 8,
+              children: [
+                Expanded(
+                  child: Select<ScrcpyConfig>(
+                    filled: true,
+                    placeholder: OverflowMarquee(
+                        duration: 2.seconds,
+                        delayDuration: 0.5.seconds,
+                        child: Text(el.loungeLoc.placeholders.config)),
+                    value: config,
+                    onChanged: (value) {
+                      ref.read(controlPageConfigProvider.notifier).state =
+                          value;
+                      ref
+                          .read(appGridSettingsProvider.notifier)
+                          .setLastUsedConfig(value?.id);
+                      Db.saveAppGridSettings(ref.read(appGridSettingsProvider));
+                    },
+                    popup: SelectPopup(
+                      items: SelectItemList(
+                          children: allConfigs
+                              .where((c) => !c.windowOptions.noWindow)
+                              .where((c) => !ref
+                                  .read(hiddenConfigsProvider)
+                                  .contains(c.id))
+                              .map((c) => SelectItemButton(
+                                  value: c,
+                                  child: OverflowMarquee(
+                                      duration: 3.seconds,
+                                      delayDuration: 0.5.seconds,
+                                      child: Text(c.configName))))
+                              .toList()),
+                    ).call,
+                    itemBuilder: (context, value) => OverflowMarquee(
+                        duration: 2.seconds,
+                        delayDuration: 0.5.seconds,
+                        child: Text(value.configName)),
+                  ),
+                ),
+                Expanded(
+                  child: TextField(
+                    padding: EdgeInsets.all(7),
+                    filled: true,
+                    placeholder: Text(el.loungeLoc.placeholders.search),
+                    focusNode: searchBoxFocusNode,
+                    controller: widget.appSearchController,
+                    features: [
+                      if (widget.appSearchController.text.isEmpty)
+                        InputFeature.leading(Icon(Icons.search_rounded)),
+                      if (widget.appSearchController.text.isNotEmpty)
+                        InputFeature.trailing(IconButton(
+                            variance: ButtonVariance.link,
+                            onPressed: () {
+                              widget.appSearchController.clear();
+                              controlPageKeyboardListenerNode.requestFocus();
 
-                          setState(() {});
-                        },
-                        density: ButtonDensity.compact,
-                        icon: Icon(Icons.close_rounded)))
-                ],
-                onSubmitted: (value) {
-                  controlPageKeyboardListenerNode.requestFocus();
-                },
-              ),
+                              setState(() {});
+                            },
+                            density: ButtonDensity.compact,
+                            icon: Icon(Icons.close_rounded)))
+                    ],
+                    onSubmitted: (value) {
+                      controlPageKeyboardListenerNode.requestFocus();
+                    },
+                  ),
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              spacing: 8,
+              children: [
+                if (missingIcons.isNotEmpty)
+                  Toggle(
+                    style: ButtonStyle.ghost(density: ButtonDensity.dense),
+                    value: showMissingIcon,
+                    onChanged: (value) => setState(() {
+                      showMissingIcon = value;
+                    }),
+                    child: showMissingIcon
+                        ? Text(el.loungeLoc.appTile.sections.apps)
+                        : Text(el.loungeLoc.appTile
+                            .missingIcon(count: '${missingIcons.length}')),
+                  ),
+                Spacer(),
+                Tooltip(
+                  tooltip: TooltipContainer(
+                          child: gridSettings.hideName
+                              ? Text(el.loungeLoc.tooltip.showAppName)
+                              : Text(el.loungeLoc.tooltip.hideAppName))
+                      .call,
+                  child: Toggle(
+                      style: ButtonStyle.ghost(density: ButtonDensity.dense),
+                      value: gridSettings.hideName,
+                      onChanged: (value) =>
+                          gridSettingsNotifier.toggleHideName(),
+                      child: gridSettings.hideName
+                          ? Icon(Icons.visibility_off_rounded).iconSmall()
+                          : Icon(Icons.visibility_rounded).iconSmall()),
+                ),
+                ButtonGroup(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.zoom_out_rounded),
+                      density: ButtonDensity.iconDense,
+                      onPressed: gridSettings.gridExtent == 50
+                          ? null
+                          : () {
+                              gridSettingsNotifier
+                                  .modifyExtent(gridSettings.gridExtent - 5);
+                              Db.saveAppGridSettings(
+                                  ref.read(appGridSettingsProvider));
+                            },
+                      variance: ButtonStyle.outline(),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.refresh_rounded),
+                      density: ButtonDensity.iconDense,
+                      onPressed: gridSettings.gridExtent == 80
+                          ? null
+                          : () {
+                              gridSettingsNotifier.modifyExtent(80);
+                              Db.saveAppGridSettings(
+                                  ref.read(appGridSettingsProvider));
+                            },
+                      variance: ButtonStyle.outline(),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.zoom_in_rounded),
+                      density: ButtonDensity.iconDense,
+                      variance: ButtonStyle.outline(),
+                      onPressed: gridSettings.gridExtent == 110
+                          ? null
+                          : () {
+                              gridSettingsNotifier
+                                  .modifyExtent(gridSettings.gridExtent + 5);
+                              Db.saveAppGridSettings(
+                                  ref.read(appGridSettingsProvider));
+                            },
+                    ),
+                  ],
+                ),
+              ],
             )
           ],
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          spacing: 8,
-          children: [
-            if (missingIcons.isNotEmpty)
-              Toggle(
-                style: ButtonStyle.ghost(density: ButtonDensity.dense),
-                value: showMissingIcon,
-                onChanged: (value) => setState(() {
-                  showMissingIcon = value;
-                }),
-                child: showMissingIcon
-                    ? Text(el.loungeLoc.appTile.sections.apps)
-                    : Text(el.loungeLoc.appTile
-                        .missingIcon(count: '${missingIcons.length}')),
-              ),
-            Spacer(),
-            Tooltip(
-              tooltip: TooltipContainer(
-                      child: gridSettings.hideName
-                          ? Text(el.loungeLoc.tooltip.showAppName)
-                          : Text(el.loungeLoc.tooltip.hideAppName))
-                  .call,
-              child: Toggle(
-                  style: ButtonStyle.ghost(density: ButtonDensity.dense),
-                  value: gridSettings.hideName,
-                  onChanged: (value) => gridSettingsNotifier.toggleHideName(),
-                  child: gridSettings.hideName
-                      ? Icon(Icons.visibility_off_rounded).iconSmall()
-                      : Icon(Icons.visibility_rounded).iconSmall()),
-            ),
-            ButtonGroup(
-              children: [
-                IconButton(
-                  icon: Icon(Icons.zoom_out_rounded),
-                  density: ButtonDensity.iconDense,
-                  onPressed: gridSettings.gridExtent == 50
-                      ? null
-                      : () {
-                          gridSettingsNotifier
-                              .modifyExtent(gridSettings.gridExtent - 5);
-                          Db.saveAppGridSettings(
-                              ref.read(appGridSettingsProvider));
-                        },
-                  variance: ButtonStyle.outline(),
-                ),
-                IconButton(
-                  icon: Icon(Icons.refresh_rounded),
-                  density: ButtonDensity.iconDense,
-                  onPressed: gridSettings.gridExtent == 80
-                      ? null
-                      : () {
-                          gridSettingsNotifier.modifyExtent(80);
-                          Db.saveAppGridSettings(
-                              ref.read(appGridSettingsProvider));
-                        },
-                  variance: ButtonStyle.outline(),
-                ),
-                IconButton(
-                  icon: Icon(Icons.zoom_in_rounded),
-                  density: ButtonDensity.iconDense,
-                  variance: ButtonStyle.outline(),
-                  onPressed: gridSettings.gridExtent == 110
-                      ? null
-                      : () {
-                          gridSettingsNotifier
-                              .modifyExtent(gridSettings.gridExtent + 5);
-                          Db.saveAppGridSettings(
-                              ref.read(appGridSettingsProvider));
-                        },
-                ),
-              ],
-            ),
-          ],
-        )
-      ],
+      ),
     );
   }
 }
