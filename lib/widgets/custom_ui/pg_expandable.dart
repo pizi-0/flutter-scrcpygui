@@ -28,7 +28,8 @@ class PgExpandable extends ConsumerWidget {
                 ],
               ),
             AnimatedSize(
-              duration: 150.milliseconds,
+              alignment: Alignment.topCenter,
+              duration: 200.milliseconds,
               child: SizedBox(
                 height: expand ? null : 0,
                 child: child,
@@ -47,7 +48,8 @@ class PgExpandable extends ConsumerWidget {
                 ],
               ),
             AnimatedSize(
-              duration: 150.milliseconds,
+              duration: 200.milliseconds,
+              alignment: Alignment.centerLeft,
               child: SizedBox(
                 width: expand ? null : 0,
                 child: child,
