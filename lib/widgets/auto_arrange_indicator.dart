@@ -146,6 +146,7 @@ class _AutoArrangeOriginSelectorState
   final focusNode = FocusNode();
   TextEditingController ratio = TextEditingController();
   bool error = false;
+  AutoArrangeOrigin? _hoveredOrigin;
 
   @override
   void initState() {
@@ -164,12 +165,33 @@ class _AutoArrangeOriginSelectorState
     super.dispose();
   }
 
+  void _onHover(bool hovering, AutoArrangeOrigin origin) {
+    setState(() {
+      _hoveredOrigin = hovering ? origin : null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final origin = ref.watch(settingsProvider).behaviour.autoArrangeOrigin;
+    const double rowWidth = 160;
+    const double spacing = 4;
+    final row1Siblings = [
+      AutoArrangeOrigin.topLeft,
+      AutoArrangeOrigin.topRight
+    ];
+    final row2Siblings = [
+      AutoArrangeOrigin.centerLeft,
+      AutoArrangeOrigin.off,
+      AutoArrangeOrigin.centerRight
+    ];
+    final row3Siblings = [
+      AutoArrangeOrigin.bottomLeft,
+      AutoArrangeOrigin.bottomRight
+    ];
 
     return SizedBox(
-      width: 150,
+      width: rowWidth,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -180,36 +202,76 @@ class _AutoArrangeOriginSelectorState
           Column(
             spacing: 4,
             children: [
-              AnimatedSize(
-                duration: 200.milliseconds,
-                child: Row(
-                  spacing: 4,
-                  children: [
-                    OriginBox(origin: AutoArrangeOrigin.topLeft),
-                    OriginBox(origin: AutoArrangeOrigin.topRight),
-                  ],
-                ),
+              Row(
+                spacing: spacing,
+                children: [
+                  OriginBox(
+                    origin: AutoArrangeOrigin.topLeft,
+                    siblings: row1Siblings,
+                    totalWidth: rowWidth - spacing,
+                    hoveredOrigin: _hoveredOrigin,
+                    onHover: (hovering) =>
+                        _onHover(hovering, AutoArrangeOrigin.topLeft),
+                  ),
+                  OriginBox(
+                    origin: AutoArrangeOrigin.topRight,
+                    siblings: row1Siblings,
+                    totalWidth: rowWidth - spacing,
+                    hoveredOrigin: _hoveredOrigin,
+                    onHover: (hovering) =>
+                        _onHover(hovering, AutoArrangeOrigin.topRight),
+                  ),
+                ],
               ),
-              AnimatedSize(
-                duration: 200.milliseconds,
-                child: Row(
-                  spacing: 4,
-                  children: [
-                    OriginBox(origin: AutoArrangeOrigin.centerLeft),
-                    OriginBox(origin: AutoArrangeOrigin.off),
-                    OriginBox(origin: AutoArrangeOrigin.centerRight),
-                  ],
-                ),
+              Row(
+                spacing: spacing,
+                children: [
+                  OriginBox(
+                    origin: AutoArrangeOrigin.centerLeft,
+                    siblings: row2Siblings,
+                    totalWidth: rowWidth - (spacing * 2),
+                    hoveredOrigin: _hoveredOrigin,
+                    onHover: (hovering) =>
+                        _onHover(hovering, AutoArrangeOrigin.centerLeft),
+                  ),
+                  OriginBox(
+                    origin: AutoArrangeOrigin.off,
+                    siblings: row2Siblings,
+                    totalWidth: rowWidth - (spacing * 2),
+                    hoveredOrigin: _hoveredOrigin,
+                    onHover: (hovering) =>
+                        _onHover(hovering, AutoArrangeOrigin.off),
+                  ),
+                  OriginBox(
+                    origin: AutoArrangeOrigin.centerRight,
+                    siblings: row2Siblings,
+                    totalWidth: rowWidth - (spacing * 2),
+                    hoveredOrigin: _hoveredOrigin,
+                    onHover: (hovering) =>
+                        _onHover(hovering, AutoArrangeOrigin.centerRight),
+                  ),
+                ],
               ),
-              AnimatedSize(
-                duration: 200.milliseconds,
-                child: Row(
-                  spacing: 4,
-                  children: [
-                    OriginBox(origin: AutoArrangeOrigin.bottomLeft),
-                    OriginBox(origin: AutoArrangeOrigin.bottomRight),
-                  ],
-                ),
+              Row(
+                spacing: spacing,
+                children: [
+                  OriginBox(
+                    origin: AutoArrangeOrigin.bottomLeft,
+                    siblings: row3Siblings,
+                    totalWidth: rowWidth - spacing,
+                    hoveredOrigin: _hoveredOrigin,
+                    onHover: (hovering) =>
+                        _onHover(hovering, AutoArrangeOrigin.bottomLeft),
+                  ),
+                  OriginBox(
+                    origin: AutoArrangeOrigin.bottomRight,
+                    siblings: row3Siblings,
+                    totalWidth: rowWidth - spacing,
+                    hoveredOrigin: _hoveredOrigin,
+                    onHover: (hovering) =>
+                        _onHover(hovering, AutoArrangeOrigin.bottomRight),
+                  ),
+                ],
               ),
             ],
           ),
@@ -289,87 +351,83 @@ class _AutoArrangeOriginSelectorState
   }
 }
 
-class OriginBox extends ConsumerStatefulWidget {
+class OriginBox extends ConsumerWidget {
   final AutoArrangeOrigin origin;
+  final ValueChanged<bool> onHover;
+  final AutoArrangeOrigin? hoveredOrigin;
+  final List<AutoArrangeOrigin> siblings;
+  final double totalWidth;
 
-  const OriginBox({super.key, required this.origin});
+  const OriginBox({
+    super.key,
+    required this.origin,
+    required this.onHover,
+    required this.hoveredOrigin,
+    required this.siblings,
+    required this.totalWidth,
+  });
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _OriginBoxState();
-}
-
-class _OriginBoxState extends ConsumerState<OriginBox> {
-  bool isSelected = false;
-  bool hover = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final selectedOrigin =
         ref.watch(settingsProvider).behaviour.autoArrangeOrigin;
-    isSelected = selectedOrigin == widget.origin;
+    final isSelected = selectedOrigin == origin;
+    final isHovered = hoveredOrigin == origin;
 
-    return Expanded(
-      flex: hover ? 2 : 1,
-      child: MouseRegion(
-        onEnter: (event) {
-          if (mounted) {
-            hover = true;
-            setState(() {});
-          }
+    final double width;
+    final isRowHovered =
+        hoveredOrigin != null && siblings.contains(hoveredOrigin);
+
+    if (!isRowHovered) {
+      width = totalWidth / siblings.length;
+    } else {
+      if (isHovered) {
+        width = totalWidth * 2 / (siblings.length + 1);
+      } else {
+        width = totalWidth * 1 / (siblings.length + 1);
+      }
+    }
+
+    final text = Text(
+      tr('auto_arrange_origin_loc.${origin.value.replaceAll(' ', '_').toLowerCase()}'),
+      textAlign: TextAlign.center,
+      maxLines: 1,
+      style: const TextStyle(
+        fontSize: 12,
+      ),
+    );
+
+    return AnimatedContainer(
+      duration: 200.milliseconds,
+      curve: Curves.easeInOut,
+      width: width,
+      child: Button(
+        onHover: onHover,
+        style: origin == AutoArrangeOrigin.off && isSelected
+            ? ButtonStyle.destructive(
+                density: ButtonDensity.dense,
+              )
+            : isSelected
+                ? ButtonStyle.outline(
+                    density: ButtonDensity.dense,
+                  ).withBackgroundColor(
+                    color: theme.colorScheme.primary,
+                    hoverColor: theme.colorScheme.primary)
+                : ButtonStyle.outline(
+                    density: ButtonDensity.dense,
+                  ).withBackgroundColor(
+                    hoverColor: origin == AutoArrangeOrigin.off
+                        ? theme.colorScheme.destructive
+                        : theme.colorScheme.muted),
+        onPressed: () {
+          ref.read(settingsProvider.notifier).changeAutoArrangeOrigin(origin);
+          Db.saveAppSettings(ref.read(settingsProvider));
         },
-        onExit: (event) {
-          if (mounted) {
-            hover = false;
-            setState(() {});
-          }
-        },
-        child: Button(
-          style: widget.origin == AutoArrangeOrigin.off && isSelected
-              ? ButtonStyle.destructive(
-                  density: ButtonDensity.dense,
-                )
-              : isSelected
-                  ? ButtonStyle.outline(
-                      density: ButtonDensity.dense,
-                    ).withBackgroundColor(
-                      color: theme.colorScheme.primary,
-                      hoverColor: theme.colorScheme.primary)
-                  : ButtonStyle.outline(
-                      density: ButtonDensity.dense,
-                    ).withBackgroundColor(
-                      hoverColor: widget.origin == AutoArrangeOrigin.off
-                          ? theme.colorScheme.destructive
-                          : theme.colorScheme.muted),
-          onPressed: () {
-            ref.read(settingsProvider.notifier).changeAutoArrangeOrigin(
-                  widget.origin,
-                );
-            Db.saveAppSettings(ref.read(settingsProvider));
-          },
-          child: SizedBox(
-            height: 20,
-            child: Center(
-              child: hover
-                  ? OverflowMarquee(
-                      child: Text(
-                        tr('auto_arrange_origin_loc.${widget.origin.value.replaceAll(' ', '_').toLowerCase()}'),
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),
-                      ),
-                    )
-                  : Text(
-                      tr('auto_arrange_origin_loc.${widget.origin.value.replaceAll(' ', '_').toLowerCase()}'),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      style: TextStyle(
-                        fontSize: 12,
-                      ),
-                    ),
-            ),
+        child: SizedBox(
+          height: 20,
+          child: Center(
+            child: isHovered ? OverflowMarquee(child: text) : text,
           ),
         ),
       ),
