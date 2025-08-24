@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_button.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../models/adb_devices.dart';
@@ -33,7 +34,7 @@ class _ControlButtonsState extends ConsumerState<ControlButtons> {
   List<Widget> _buttonList() {
     final workDir = ref.read(execDirProvider);
     return [
-      DestructiveButton(
+      PgDestructiveButton(
         density: ButtonDensity.icon,
         child: const Icon(Icons.power_settings_new_rounded),
         onPressed: () => widget.device.sendKeyEvent(workDir, DeviceKey.power),

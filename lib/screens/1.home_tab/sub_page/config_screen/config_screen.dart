@@ -31,6 +31,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import '../../../../providers/adb_provider.dart';
 import '../../../../providers/device_info_provider.dart';
 import '../../../../utils/const.dart';
+import '../../../../widgets/custom_ui/pg_button.dart';
 import 'widgets/close_dialog.dart';
 import 'widgets/config_screen_sections/config_rename.dart';
 
@@ -335,7 +336,7 @@ class OnbackWarning extends ConsumerWidget {
             },
           ),
           Spacer(),
-          DestructiveButton(
+          PgDestructiveButton(
             child: Text(el.buttonLabelLoc.confirm),
             onPressed: () => context.pop(true),
           ),

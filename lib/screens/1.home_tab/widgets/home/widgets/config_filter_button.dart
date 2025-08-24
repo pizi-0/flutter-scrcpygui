@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config_tags.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_button.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class ConfigFilterButton extends ConsumerStatefulWidget {
@@ -90,7 +91,7 @@ class _ConfigFilterPopoverState extends ConsumerState<ConfigFilterPopover> {
                 child: FadeIn(
                   duration: 200.milliseconds,
                   animate: filters.isNotEmpty,
-                  child: DestructiveButton(
+                  child: PgDestructiveButton(
                       density: ButtonDensity.dense,
                       onPressed: () => ref.read(configTags.notifier).clearTag(),
                       child: Text(el.buttonLabelLoc.clear)),

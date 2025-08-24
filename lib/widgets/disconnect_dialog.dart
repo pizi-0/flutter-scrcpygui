@@ -5,6 +5,7 @@ import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_button.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -92,7 +93,7 @@ class _DisconnectDialogState extends ConsumerState<DisconnectDialog> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Button.primary(
+                  PgDestructiveButton(
                     onPressed: () {
                       context.pop(true);
                     },

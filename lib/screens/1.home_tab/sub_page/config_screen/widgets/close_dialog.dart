@@ -9,6 +9,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/scrcpy_command.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_button.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class ConfigScreenCloseDialog extends ConsumerStatefulWidget {
@@ -118,7 +119,7 @@ class _ConfigScreenCloseDialogState
             ),
           ),
           actions: [
-            DestructiveButton(
+            PgDestructiveButton(
               onPressed: () {
                 context.pop(CloseDialogResult.discard);
               },

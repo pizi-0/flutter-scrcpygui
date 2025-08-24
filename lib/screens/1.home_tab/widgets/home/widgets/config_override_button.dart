@@ -5,6 +5,7 @@ import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/directory_utils.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_button.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../providers/config_provider.dart';
@@ -100,7 +101,7 @@ class _OverrideConfigPopoverState extends ConsumerState<OverrideConfigPopover> {
                           return value.copyWithIfBoxDecoration(
                               borderRadius: theme.borderRadiusMd);
                         },
-                        child: DestructiveButton(
+                        child: PgDestructiveButton(
                           density: ButtonDensity.dense,
                           onPressed: overrideNotifier.clearOverride,
                           child: Text(el.buttonLabelLoc.clear),

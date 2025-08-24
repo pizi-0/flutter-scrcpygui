@@ -3,6 +3,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_button.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../db/db.dart';
@@ -34,7 +35,7 @@ class _ConfigDeleteDialogState extends ConsumerState<ConfigDeleteDialog> {
           mainAxisAlignment: MainAxisAlignment.end,
           spacing: 8,
           children: [
-            DestructiveButton(
+            PgDestructiveButton(
               child: Text(el.buttonLabelLoc.delete),
               onPressed: () async {
                 if (ref.read(selectedConfigProvider) == widget.config) {

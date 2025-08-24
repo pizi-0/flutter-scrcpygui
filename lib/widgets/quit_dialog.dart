@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_button.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -146,7 +147,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
                       child: Text(el.buttonLabelLoc.selectAll),
                     ),
                   const Spacer(),
-                  DestructiveButton(
+                  PgDestructiveButton(
                     onPressed: () {
                       _onClose(wifi, instance);
                     },
