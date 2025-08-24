@@ -109,14 +109,14 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
         (e) => e is BonsoirDiscoveryServiceFoundEvent,
         orElse: () => BonsoirDiscoveryUnknownEvent()));
 
-    if (toPair != BonsoirDiscoveryUnknownEvent()) {
+    if (toPair is BonsoirDiscoveryServiceFoundEvent) {
       if (mounted) {
         loading = true;
         setState(() {});
       }
 
       pairRes = await AdbUtils.pairWithCode(
-          toPair.service!.name, id.removeSpecial, ref);
+          toPair.service.name, id.removeSpecial, ref);
       context.pop(pairRes.contains('Successfully paired to'));
     } else {
       if (mounted) {
