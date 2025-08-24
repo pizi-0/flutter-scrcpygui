@@ -7,10 +7,9 @@ import 'package:responsive_builder/responsive_builder.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
-import 'package:scrcpygui/utils/const.dart';
+import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:string_extensions/string_extensions.dart';
 
 import '../../../../providers/device_info_provider.dart';
 import 'widgets/big_control_page.dart';
@@ -37,7 +36,6 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
     final theme = Theme.of(context);
     final connected = ref.watch(adbProvider);
     final device = widget.device;
-    final isWireless = device.id.isIpv4 || device.id.contains(adbMdns);
 
     final deviceInfo = ref
         .watch(infoProvider)
@@ -75,7 +73,7 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
                 TextSpan(text: ' / '),
                 WidgetSpan(
                     baseline: TextBaseline.ideographic,
-                    child: isWireless
+                    child: isWireless(device.id)
                         ? Icon(
                             Icons.wifi_rounded,
                             size: 22,

@@ -15,12 +15,11 @@ import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/widgets/info_pane.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/widgets/settings_pane.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
-import 'package:scrcpygui/utils/const.dart';
+import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_column.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:string_extensions/string_extensions.dart';
 
 import '../../../../models/automation.dart';
 import '../../../../providers/adb_provider.dart';
@@ -85,7 +84,6 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
         .firstWhereOrNull((info) => info.serialNo == dev.serialNo);
 
     final currentState = ref.watch(deviceSettingsStateProvider(dev));
-    final isWireless = dev.id.isIpv4 || dev.id.contains(adbMdns);
 
     return PgScaffoldCustom(
       onBack: context.pop,
@@ -100,7 +98,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
             TextSpan(text: ' / '),
             WidgetSpan(
                 baseline: TextBaseline.ideographic,
-                child: isWireless
+                child: isWireless(dev.id)
                     ? Icon(
                         Icons.wifi_rounded,
                         size: 22,

@@ -55,8 +55,10 @@ class _SettingsPaneState extends ConsumerState<SettingsPane> {
                     spacing: 8,
                     children: [
                       _textbox(deviceInfo, dev),
-                      if (dev.id.isIpv4 || dev.id.isIpv6) const Divider(),
-                      if (dev.id.isIpv4 || dev.id.isIpv6) _autoConnectToggle(),
+                      if (dev.id.isIpv4 || dev.id.contains(':')) ...[
+                        const Divider(),
+                        _autoConnectToggle(),
+                      ],
                       const Divider(),
                       _onConnectedSelect(allconfigs),
                       _configsSelect(allconfigs, dev),
@@ -73,8 +75,10 @@ class _SettingsPaneState extends ConsumerState<SettingsPane> {
                   spacing: 8,
                   children: [
                     _textbox(deviceInfo, dev),
-                    if (dev.id.isIpv4 || dev.id.isIpv6) const Divider(),
-                    if (dev.id.isIpv4 || dev.id.isIpv6) _autoConnectToggle(),
+                    if (dev.id.isIpv4 || dev.id.contains(':')) ...[
+                      const Divider(),
+                      _autoConnectToggle(),
+                    ],
                     const Divider(),
                     _onConnectedSelect(allconfigs),
                     if (state.autoLaunch) Gap(2)

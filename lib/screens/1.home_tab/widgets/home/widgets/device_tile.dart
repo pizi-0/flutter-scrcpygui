@@ -8,9 +8,9 @@ import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
+import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/widgets/disconnect_dialog.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:string_extensions/string_extensions.dart';
 
 import '../../../../../models/adb_devices.dart';
 import '../../../../../models/scrcpy_related/scrcpy_running_instance.dart';
@@ -18,7 +18,6 @@ import '../../../../../providers/adb_provider.dart';
 import '../../../../../providers/scrcpy_provider.dart';
 import '../../../../../providers/version_provider.dart';
 import '../../../../../utils/adb_utils.dart';
-import '../../../../../utils/const.dart';
 import '../../../../../utils/scrcpy_utils.dart';
 import '../../../../../widgets/custom_ui/pg_list_tile.dart';
 
@@ -47,9 +46,6 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
 
     final isSelected = selectedDevice == widget.device;
     final hasRunningInstance = deviceInstance.isNotEmpty;
-    final isWireless = widget.device.id.isIpv4 ||
-        widget.device.id.isIpv6 ||
-        widget.device.id.contains(adbMdns);
 
     final deviceInfo = ref
         .watch(infoProvider)
@@ -85,13 +81,13 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
       ),
       const MenuDivider(),
       MenuLabel(child: Text(el.deviceTileLoc.context.manage).xSmall().muted()),
-      if (isWireless)
+      if (isWireless(widget.device.id))
         MenuButton(
           leading: const Icon(Icons.link_off_rounded),
           onPressed: (context) => _disconnectWireless(),
           child: Text(el.deviceTileLoc.context.disconnect),
         ),
-      if (!isWireless)
+      if (!isWireless(widget.device.id))
         MenuButton(
           leading: const Icon(Icons.wifi_rounded),
           onPressed: (context) => _toWireless(),
@@ -112,7 +108,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                 padding: const EdgeInsets.only(left: 8.0),
                 child: PgListTile(
                   key: ValueKey(widget.device.id),
-                  leading: isWireless
+                  leading: isWireless(widget.device.id)
                       ? const Icon(Icons.wifi)
                       : const Icon(Icons.usb),
                   title: deviceInfo?.deviceName ?? widget.device.modelName,

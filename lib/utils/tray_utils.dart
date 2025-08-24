@@ -10,7 +10,6 @@ import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide MenuItem;
-import 'package:string_extensions/string_extensions.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -73,7 +72,7 @@ class TrayUtils {
 
           return MenuItem.submenu(
             key: device.id,
-            label: device.id.isIpv4 || device.id.contains(adbMdns)
+            label: isWireless(device.id)
                 ? '[WiFi] ${deviceInfo?.deviceName.toUpperCase() ?? device.id}'
                 : '[USB] ${deviceInfo?.deviceName.toUpperCase() ?? device.id}',
             sublabel: 'Config',

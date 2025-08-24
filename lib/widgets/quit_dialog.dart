@@ -7,10 +7,10 @@ import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_button.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:string_extensions/string_extensions.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../db/db.dart';
@@ -46,10 +46,8 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
   @override
   Widget build(BuildContext context) {
     final runningInstance = ref.watch(scrcpyInstanceProvider);
-    final wifiDevices = ref
-        .watch(adbProvider)
-        .where((e) => e.id.contains(adbMdns) || e.id.isIpv4)
-        .toList();
+    final wifiDevices =
+        ref.watch(adbProvider).where((e) => isWireless(e.id)).toList();
 
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: sectionWidth),
@@ -198,8 +196,7 @@ class _QuitDialogState extends ConsumerState<QuitDialog> {
     }
 
     if (wifi) {
-      for (final d in connectedDevices
-          .where((e) => e.id.contains(adbMdns) || e.id.isIpv4)) {
+      for (final d in connectedDevices.where((e) => isWireless(e.id))) {
         await AdbUtils.disconnectWirelessDevice(workDir, d);
       }
     }

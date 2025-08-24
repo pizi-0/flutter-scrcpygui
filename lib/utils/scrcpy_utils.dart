@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/position_and_size.dart';
 import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/extension.dart';
 import 'package:screen_retriever/screen_retriever.dart';
@@ -96,13 +97,9 @@ class ScrcpyUtils {
         .read(infoProvider)
         .firstWhereOrNull((info) => info.serialNo == selectedDevice.serialNo);
 
-    final isWireless = selectedDevice.id.contains(adbMdns) ||
-        selectedDevice.id.isIpv4 ||
-        selectedDevice.id.isIpv6;
-
     List<String> comm = [];
     String customName =
-        '[${isWireless ? 'WiFi' : 'USB'}] [${deviceInfo?.deviceName.toUpperCase() ?? selectedDevice.modelName}] ${customInstanceName == '' ? selectedConfig.configName : customInstanceName}';
+        '[${isWireless(selectedDevice.id) ? 'WiFi' : 'USB'}] [${deviceInfo?.deviceName.toUpperCase() ?? selectedDevice.modelName}] ${customInstanceName == '' ? selectedConfig.configName : customInstanceName}';
 
     if (runningInstance.where((r) => r.instanceName == customName).isNotEmpty) {
       for (int i = 1; i < 100; i++) {

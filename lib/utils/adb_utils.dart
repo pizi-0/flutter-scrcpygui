@@ -4,6 +4,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/device_info_model.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -480,7 +481,7 @@ Future<List<AdbDevices>> getAdbInfos(String workDir,
         modelName = modelNameRes.stdout.toString().trim();
       }
 
-      if (id.contains(':') || id.contains(adbMdns)) {
+      if (isWireless(id)) {
         //get serial no if status != offline or unauth
         if (status) {
           final serialNoRes = await Process.run(

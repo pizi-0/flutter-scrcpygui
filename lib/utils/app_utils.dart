@@ -69,9 +69,7 @@ class AppUtils {
 
   static Future<void> onAppCloseRequested(
       WidgetRef ref, BuildContext context) async {
-    final wifi = ref
-        .read(adbProvider)
-        .where((d) => d.id.contains(adbMdns) || d.id.isIpv4);
+    final wifi = ref.read(adbProvider).where((d) => isWireless(d.id));
     final instance = ref.read(scrcpyInstanceProvider);
     final settings = ref.read(settingsProvider);
 
@@ -144,4 +142,8 @@ class AppUtils {
       return 0;
     }
   }
+}
+
+bool isWireless(String id) {
+  return id.contains(':') || id.contains(adbMdns) || id.isIpv4;
 }
