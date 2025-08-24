@@ -1,0 +1,607 @@
+# home tab
+home_loc:
+  title: ホーム
+  devices:
+    label: 接続中のデバイス (${count})
+
+device_tile_loc:
+  running_instances: 実行中 (${count})
+  context:
+    disconnect: 切断
+    to_wireless: ワイヤレスへ
+    stop_running: 実行中のscrcpyを停止
+    scrcpy: Scrcpy
+    all: すべて
+    all_scrcpy: すべてのscrcpyを強制終了
+    manage: 管理
+
+lounge_loc:
+  controls:
+    label: 操作
+  pinned_apps:
+    label: ピン留めされたアプリ
+  launcher:
+    label: アプリランチャー
+  running:
+    label: 実行中のインスタンス (${count})
+  app_tile:
+    context_menu:
+      pin: ${config} にピン留め
+      unpin: ピン留めを外す
+      force_close: 強制終了して開始
+      and_start: ${config} で
+      select_config: まず設定を選択してください
+      start_on: ${config} で開始
+      with_overrides: オーバーライドして開始
+      package_name: パッケージ名
+      reset_icon: アイコンをリセット
+    sections:
+      pinned: ピン留め済み
+      apps: アプリ
+    missing_icon: 見つからないアイコン (${count})
+  placeholders:
+    config: 設定を選択
+    app: アプリを選択
+    search: "「/」を押して検索"
+  tooltip:
+    missing_config: "見つからない設定: ${config}"
+    pin: アプリ/設定ペアをピン留め
+    on_config: "設定: ${config}"
+    hide_app_name: アプリ名を非表示
+    show_app_name: アプリ名を表示
+  info:
+    empty_search: アプリが見つかりません
+    empty_pin: ピン留めされたアプリはありません
+    empty_instance: 実行中のインスタンスはありません
+
+config_loc:
+  label: 設定 (${count})
+  new: 作成
+  select: 設定を選択
+  details: 詳細を表示
+  start: 開始
+  empty: 設定が見つかりません
+
+# error dialog
+no_device_dialog_loc:
+  title: デバイス
+  contentsEdit: デバイスが選択されていません。\nscrcpy設定を編集するにはデバイスを選択してください。
+  contentsStart: デバイスが選択されていません。\nscrcpyを開始するにはデバイスを選択してください。
+  contentsNew: デバイスが選択されていません。\nscrcpy設定を作成するにはデバイスを選択してください。
+
+no_config_dialog_loc:
+  title: 設定
+  contents: 設定が選択されていません。\n開始するscrcpy設定を選択してください。
+
+delete_config_dialog_loc:
+  title: 確認
+  contents: ${configname}を削除しますか？
+
+## home_tab > device settings screen
+device_settings_loc:
+  title: 設定
+  info: 情報
+  refresh: 情報を更新
+  rename:
+    label: 名前を変更
+    info: "[Enter]を押して名前を適用"
+  auto_connect:
+    label: 自動接続
+    info: ワイヤレスデバイスを自動接続
+  on_connected:
+    label: 接続時
+    info: デバイス接続時に選択した設定でscrcpyを(1)開始
+  do_nothing: 何もしない
+
+  scrcpy_info:
+    fetching: scrcpy情報を取得中
+    label: Scrcpy情報
+    name: '名前: ${name}'
+    id: 'ID: ${id}'
+    model: 'モデル: ${model}'
+    version: 'Androidバージョン: ${version}'
+    displays: ディスプレイ (${count})
+    cameras: カメラ (${count})
+    video_enc: ビデオエンコーダー (${count})
+    audio_enc: オーディオエンコーダー (${count})
+
+## home_tab > config manager
+config_manager_loc:
+  title: 設定マネージャー
+
+## home_tab > config screen
+config_screen_loc:
+  title: コンフィグ設定
+  connection_lost: デバイスへの接続が失われました
+  similar_exist: ${configName}の複製
+
+## home_tab > config screen > test config
+log_screen_loc:
+  title: テストログ
+  dialog:
+    title: コマンド
+
+### config screen > rename section
+rename_section:
+  title: 名前を変更
+
+### config screen > mode section
+mode_section:
+  title: モード
+  save_folder:
+    label: 保存フォルダー
+    info: "保存パスを'--record=保存パス/ファイル'に追加します"
+
+  main_mode:
+    label: モード
+    mirror: ミラー
+    record: 録画
+    info:
+      default: ミラーまたは録画、ミラーにはフラグなし
+      alt: "'--record='フラグを使用"
+
+  scrcpy_mode:
+    both: 音声 + 映像
+    audio_only: 音声のみ
+    video_only: 映像のみ
+    info:
+      default: デフォルトは両方、フラグなし
+      alt: "'${command}'フラグを使用"
+
+### config screen > video section
+video_section:
+  title: 映像
+  displays:
+    label: ディスプレイ
+    info:
+      default: デフォルトは利用可能な最初のもの、フラグなし
+      alt: "'--display-id='フラグを使用"
+    virtual:
+      label: 仮想ディスプレイ設定
+      new_display:
+        label: 新しいディスプレイ
+        info:
+          alt: "'--new-display'フラグを使用"
+      resolution:
+        label: 解像度
+        info:
+          default: "デバイスの解像度にデフォルト設定"
+          alt: "解像度を'--new-display=${res}'フラグに追加"
+      dpi:
+        label: DPI
+        info:
+          default: "デバイスのDPIにデフォルト設定"
+          alt: "DPIを'--new-display=${res}/${dpi}'フラグに追加"
+      deco:
+        label: システム装飾を無効化
+        info:
+          default: デフォルトはシステム装飾あり
+          alt: "'--no-vd-system-decorations'フラグを使用"
+      preserve:
+        label: アプリを維持
+        info:
+          default: scrcpyセッション終了時にアプリはデフォルトで破棄されます
+          alt: "セッション終了時にアプリをメインディスプレイに移動; '--no-vd-destroy-content'フラグを使用"
+
+  codec:
+    label: コーデック
+    info:
+      default: デフォルトはh264、フラグなし
+      alt: "'--video-codec=${codec}'フラグを使用"
+
+  encoder:
+    label: エンコーダー
+    info:
+      default: デフォルトは利用可能な最初のもの、フラグなし
+      alt: "'--video-encoder=${encoder}'フラグを使用"
+
+  format:
+    label: フォーマット
+    info:
+      default: フォーマットを'--record=保存パス/ファイル${format}'に追加"
+
+  bitrate:
+    label: ビットレート
+    info:
+      default: デフォルトは8M、フラグなし
+      alt: "'--video-bit-rate=${bitrate}M'フラグを使用"
+
+  fps_limit:
+    label: FPS制限
+    info:
+      default: 設定されない限りフラグなし
+      alt: "'--max-fps=${fps}'フラグを使用"
+
+  resolution_scale:
+    label: 解像度スケール
+    info:
+      default: デバイスの解像度に基づいて計算、設定されない限りフラグなし
+      alt: "'--max-size=${size}'フラグを使用"
+
+### config screen > audio section
+audio_section:
+  title: 音声
+  duplicate:
+    label: 音声を複製
+    info:
+      default: Android 13以上のみ
+      alt: "'--audio-dup' フラグを使用"
+
+  source:
+    label: ソース
+    info:
+      default: デフォルトは出力、フラグなし
+      alt: "'${source}'フラグを使用"
+      inCaseOfDup: "'--audio-dup' で'再生'に暗黙的に設定、フラグなし"
+
+  codec:
+    label: コーデック
+    info:
+      default: デフォルトはopus、フラグなし
+      alt: "'--audio-codec=${codec}'フラグを使用"
+      isAudioOnly: "フォーマット: ${format}、コーデック: ${codec}が必要"
+
+  encoder:
+    label: エンコーダー
+    info:
+      default: デフォルトは利用可能な最初のもの、フラグなし
+      alt: "'--audio-encoder=${encoder}'フラグを使用"
+
+  format:
+    label: フォーマット
+    info:
+      default: フォーマットを'--record=保存パス/ファイル.${format}'に追加"
+
+  bitrate:
+    label: ビットレート
+    info:
+      default: デフォルトは128k、フラグなし
+      alt: "'--audio-bit-rate=${bitrate}K'フラグを使用"
+
+### config screen > app section
+app_section:
+  title: アプリを起動
+  select:
+    label: アプリを選択
+    info:
+      alt: "'--start-app=${app}'フラグを使用"
+      fc: "'--start-app=+${app}'フラグを使用"
+  force_close:
+    label: 起動前にアプリを強制終了
+    info:
+      alt: "アプリのパッケージ名の前に'+'を付ける"
+
+### config screen > device section
+device_section:
+  title: デバイス
+  stay_awake:
+    label: スリープしない
+    info:
+      default: デバイスのスリープを防止、USB接続時のみ動作
+      alt: "'--stay-awake'フラグを使用"
+
+  show_touches:
+    label: タッチを表示
+    info:
+      default: 指のタッチを表示、デバイスでの物理的なタッチのみ動作
+      alt: "'--show-touches'フラグを使用"
+
+  off_display_start:
+    label: 起動時にディスプレイをオフ
+    info:
+      default: scrcpy起動時にデバイスのディスプレイをオフにする
+      alt: "'--turn-screen-off'フラグを使用"
+
+  off_display_exit:
+    label: 終了時にディスプレイをオフ
+    info:
+      default: scrcpy終了時にデバイスのディスプレイをオフにする
+      alt: "'--power-off-on-close'フラグを使用"
+
+  screensaver:
+    label: スクリーンセーバーを無効化 (ホスト)
+    info:
+      default: スクリーンセーバーを無効化
+      alt: "'--disable-screensaver'フラグを使用"
+
+window_section:
+  title: ウィンドウ
+  hide_window:
+    label: ウィンドウを非表示
+    info:
+      default: ウィンドウなしでscrcpyを起動
+      alt: "'--no-window'フラグを使用"
+
+  borderless:
+    label: ボーダーレス
+    info:
+      default: ウィンドウの装飾を無効化
+      alt: "'--window-borderless'フラグを使用"
+
+  always_on_top:
+    label: 常に手前に表示
+    info:
+      default: scrcpyウィンドウを常に手前に表示
+      alt: "'--always-on-top'フラグを使用"
+
+  time_limit:
+    label: 時間制限
+    info:
+      default: scrcpyセッションを制限（秒単位）
+      alt: "'--time-limit=${time}'フラグを使用"
+
+### config screen > additional flags section
+add_flags:
+  title: 追加フラグ
+  add: 追加
+  info: すでにオプションとして存在するフラグの使用は避けてください
+
+#connect tab
+connect_loc:
+  title: 接続
+  with_ip:
+    label: IPで接続
+    connect: 接続
+    connected: ${to}に接続済み
+
+  with_mdns:
+    label: MDNSデバイス (${count})
+    info:
+      i1: デバイスがPCとペアリングされていることを確認してください。
+      i2: デバイスが表示されない場合は、ワイヤレスADBをオフにしてからオンにしてみてください。
+      i3: MDNSデバイスは通常、ペアリングされていれば自動的に接続されます。
+
+  qr_pair:
+    label: QRペアリング
+    pair: デバイスをペアリング
+    status:
+      cancelled: ペアリングがキャンセルされました
+      success: ペアリングに成功しました
+      failed: ペアリングに失敗しました
+
+  unauthenticated:
+    info:
+      i1: スマートフォンを確認してください。
+      i2: デバッグを許可をクリックしてください。
+
+  failed:
+    info:
+      i1: デバイスがPCとペアリングされていることを確認してください。
+      i2: そうでない場合は、ワイヤレスAdbをオフにしてからオンにしてみてください。
+      i3: 'ペアリングされていない場合: '
+      i4: 1. ペアリングウィンドウを使用（右上のボタン）
+      i5: 2. デバイスをPCに接続し、デバッグを許可して再試行してください。
+
+### preview and test section
+test_config_loc:
+  title: 設定をテスト
+  preview: コマンドプレビュー
+
+#scrcpy manager tab
+scrcpy_manager_loc:
+  title: Scrcpyマネージャー
+  check: 更新を確認
+  current:
+    label: 現在
+    in_use: 使用中
+  exec:
+    label: 実行ファイルの場所を開く
+    info: 注意して変更してください
+  info_popup:
+    no_update: 利用可能な更新はありません
+    error: 更新の確認中にエラーが発生しました
+  updater:
+    label: 新しいバージョンが利用可能です
+    new_version: 新バージョン
+
+#settings tab
+settings_loc:
+  title: 設定
+  looks:
+    label: 外観
+    mode:
+      label: テーマモード
+      value:
+        dark: ダーク
+        light: ライト
+        system: システム
+    old_scheme:
+      label: Shadcnカラースキームを使用
+    corner_radius:
+      label: 角の半径
+    accent_color:
+      label: アクセントカラー
+    tint_level:
+      label: 色合いのレベル
+    dimness:
+      label: 薄暗さ
+    brightness:
+      label: 明るさ
+    surface_opacity:
+      label: 表面の不透明度
+      info: Linuxでちらつきを引き起こすことが知られています
+    surface_blur:
+      label: 表面のぼかし
+      info: Linuxでちらつきを引き起こすことが知られています
+
+  behavior:
+    label: アプリの動作
+    language:
+      label: 言語
+      info: 一部の言語はAIによって生成されています
+    minimize:
+      label: 閉じる時に最小化
+      value:
+        tray: トレイへ
+        taskbar: タスクバーへ
+    window_size:
+      label: ウィンドウサイズを記憶
+      info: 終了時にウィンドウサイズを記憶
+    auto_arrange:
+      label: scrcpyウィンドウの自動配置
+      info: 起動時にscrcpyウィンドウを自動的に配置
+    window_to_screen_ratio:
+      label: ウィンドウと画面の高さの比率
+      label_short: 高さ %
+      info: "scrcpyウィンドウの高さとプライマリスクリーンの高さの比率。最小: 0.4, 最大: 1.0, デフォルト: 0.88"
+
+## companion tab
+companion_loc:
+  title: コンパニオン
+  server:
+    label: サーバー設定
+    status: ステータス
+    endpoint:
+      label: サーバーエンドポイント
+    name:
+      label: サーバー名
+      info: 'デフォルト: Scrcpy GUI'
+    port:
+      label: サーバーポート
+      info: 'デフォルト: 8080'
+    secret:
+      label: サーバーAPIキー
+    auto_start:
+      label: 起動時にサーバーを開始
+
+  client:
+    clients: 接続中のクライアント (${count})
+    blocked: ブロック済みのクライアント (${count})
+    no_client: 接続中のクライアントなし
+    no_blocked: ブロック済みのクライアントなし
+
+  qr: コンパニオンアプリからQRコードをスキャン
+
+## about tab
+about_loc:
+  title: 概要
+  version: バージョン
+  author: 作成者
+  credits: クレジット
+
+# quit dialog
+quit_dialog_loc:
+  title: Scrcpy GUIを終了しますか？
+  kill_running:
+    label: 実行中のプロセスを終了しますか？
+    info: ${count} 個のscrcpy。ウィンドウのないscrcpyもすべて終了します
+  disconnect:
+    label: ワイヤレスADBを切断しますか？
+    info: ${count} 台のデバイス
+
+# home tab > device tile > disconnect dialog
+disconnect_dialog_loc:
+  title: ${name}を切断しますか？
+  has_running:
+    label: ${name}には実行中のscrcpyが${count}個あります
+    info: 切断するとscrcpyが終了します
+
+# config screen > close dialog
+close_dialog_loc:
+  not_allowed: 許可されていません！
+  overwrite: 上書きしますか？
+  name_exist: 名前はすでに存在します！
+  save: 設定を保存しますか？
+  command_preview: 'コマンドプレビュー:'
+  name: '名前:'
+
+# config screen > unsaved changes dialog
+unsaved_change_dialog_loc:
+  title: 終了を確認しますか？
+  contents: 保存されていない変更は失われます。
+
+# companion tab > disclaimer
+server_disclaimer_loc:
+  title: 免責事項
+  contents: 'セキュリティ警告: コンパニオンサーバーは暗号化されていない接続を使用します。\n\n自宅のWi-Fiなど、信頼できるプライベートネットワークに接続している場合にのみサーバーを起動してください。'
+
+# connect tab > ip history
+ip_history_loc:
+  title: 履歴
+  empty: 履歴なし
+
+# button
+button_label_loc:
+  ok: OK
+  confirm: 確認
+  close: 閉じる
+  cancel: キャンセル
+  stop: 停止
+  test_config: 設定をテスト
+  update: 更新
+  info: 情報
+  select_all: すべて選択
+  quit: 終了
+  discard: 破棄
+  overwrite: 上書き
+  save: 保存
+  clear: クリア
+  delete: 削除
+  server_agree: 理解しました、サーバーを開始
+  reorder: 並べ替え
+  stop_all: 全て停止
+  filter: フィルター
+  edit: 編集
+  override: オーバーライド
+  dont_show_again: "再表示しない"
+  sponsor: スポンサー
+
+# status
+status_loc:
+  failed: 失敗
+  unauth: 未認証
+  error: エラー
+  latest: 最新
+  closing: 閉じています
+  copied: コピーしました
+  running: 実行中
+  stopped: 停止済み
+  getting_info: 情報を取得中
+  no_devices_found: デバイスが見つかりません
+
+# common
+common_loc:
+  default: デフォルト
+  yes: はい
+  no: いいえ
+  bundled: バンドル版
+
+color_scheme_name_loc:
+  blue: 青
+  gray: グレー
+  green: 緑
+  neutral: ニュートラル
+  orange: オレンジ
+  red: 赤
+  rose: ローズ
+  slate: スレート
+  stone: ストーン
+  violet: バイオレット
+  yellow: イエロー
+  zinc: ジンク
+
+config_filters_loc:
+  label:
+    withApp: アプリあり
+    virt: 仮想ディスプレイ
+
+config_override_loc:
+  record:
+    label: 録画
+    open_folder: フォルダーを開く
+  landscape:
+    label: 横向き
+    info: 仮想ディスプレイのみ
+  mute:
+    label: ミュート
+
+auto_arrange_origin_loc:
+  title: 自動配置
+  alignments: 配置
+  off: オフ
+  top_left: 左上
+  top_right: 右上
+  center_left: 中央左
+  center_right: 中央右
+  bottom_left: 左下
+  bottom_right: 右下
