@@ -1,5 +1,7 @@
-import 'package:awesome_extensions/awesome_extensions.dart' show PaddingX;
+import 'package:animate_do/animate_do.dart';
+import 'package:awesome_extensions/awesome_extensions_dart.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/directory_utils.dart';
@@ -74,29 +76,40 @@ class _OverrideConfigPopoverState extends ConsumerState<OverrideConfigPopover> {
     final overrideNotifier = ref.read(configOverridesProvider.notifier);
 
     return ModalContainer(
+      padding: EdgeInsets.all(8),
       child: ConstrainedBox(
         constraints:
             BoxConstraints(maxWidth: sectionWidth / 2, maxHeight: sectionWidth),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
+          spacing: 8,
           children: [
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Config override').textLarge.bold.paddingOnly(bottom: 8),
+                Text(el.buttonLabelLoc.override).textSmall.bold,
                 Spacer(),
-                if (overrides.isNotEmpty)
-                  ClipRRect(
-                    borderRadius: theme.borderRadiusMd,
-                    child: DestructiveButton(
-                      density: ButtonDensity.dense,
-                      onPressed: overrideNotifier.clearOverride,
-                      child: Text('Clear'),
-                    ),
-                  )
+                IgnorePointer(
+                  ignoring: overrides.isEmpty,
+                  child: FadeIn(
+                      animate: overrides.isNotEmpty,
+                      duration: 200.milliseconds,
+                      child: ButtonStyleOverride(
+                        decoration: (context, states, value) {
+                          return value.copyWithIfBoxDecoration(
+                              borderRadius: theme.borderRadiusMd);
+                        },
+                        child: DestructiveButton(
+                          density: ButtonDensity.dense,
+                          onPressed: overrideNotifier.clearOverride,
+                          child: Text(el.buttonLabelLoc.clear),
+                        ),
+                      )),
+                )
               ],
             ),
+            Divider(),
             ButtonGroup(
               direction: Axis.vertical,
               children: [
@@ -113,7 +126,7 @@ class _OverrideConfigPopoverState extends ConsumerState<OverrideConfigPopover> {
                   child: Row(
                     spacing: 8,
                     children: [
-                      Text('Record'),
+                      Text(el.configOverrideLoc.record.label),
                       IconButton.ghost(
                         density: ButtonDensity.compact,
                         onPressed: () =>
@@ -133,7 +146,7 @@ class _OverrideConfigPopoverState extends ConsumerState<OverrideConfigPopover> {
                   ),
                   onPressed: () =>
                       overrideNotifier.toggleOverride(ScrcpyOverride.landscape),
-                  child: Text('Landscape'),
+                  child: Text(el.configOverrideLoc.landscape.label),
                 ),
                 SecondaryButton(
                   trailing: Checkbox(
@@ -145,7 +158,7 @@ class _OverrideConfigPopoverState extends ConsumerState<OverrideConfigPopover> {
                   ),
                   onPressed: () =>
                       overrideNotifier.toggleOverride(ScrcpyOverride.mute),
-                  child: Text('Mute'),
+                  child: Text(el.configOverrideLoc.mute.label),
                 ),
               ],
             ),

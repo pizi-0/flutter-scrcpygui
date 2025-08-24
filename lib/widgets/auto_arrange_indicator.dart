@@ -174,7 +174,7 @@ class _AutoArrangeOriginSelectorState
   @override
   Widget build(BuildContext context) {
     final origin = ref.watch(settingsProvider).behaviour.autoArrangeOrigin;
-    const double rowWidth = 160;
+    const double rowWidth = 180;
     const double spacing = 4;
     final row1Siblings = [
       AutoArrangeOrigin.topLeft,
@@ -182,7 +182,6 @@ class _AutoArrangeOriginSelectorState
     ];
     final row2Siblings = [
       AutoArrangeOrigin.centerLeft,
-      AutoArrangeOrigin.off,
       AutoArrangeOrigin.centerRight
     ];
     final row3Siblings = [
@@ -195,84 +194,25 @@ class _AutoArrangeOriginSelectorState
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(el.autoArrangeOriginLoc.alignments).textSmall,
-          Gap(8),
-          Divider(),
-          Gap(8),
-          Column(
-            spacing: 4,
+          Row(
+            spacing: 8,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                spacing: spacing,
-                children: [
-                  OriginBox(
-                    origin: AutoArrangeOrigin.topLeft,
-                    siblings: row1Siblings,
-                    totalWidth: rowWidth - spacing,
-                    hoveredOrigin: _hoveredOrigin,
-                    onHover: (hovering) =>
-                        _onHover(hovering, AutoArrangeOrigin.topLeft),
-                  ),
-                  OriginBox(
-                    origin: AutoArrangeOrigin.topRight,
-                    siblings: row1Siblings,
-                    totalWidth: rowWidth - spacing,
-                    hoveredOrigin: _hoveredOrigin,
-                    onHover: (hovering) =>
-                        _onHover(hovering, AutoArrangeOrigin.topRight),
-                  ),
-                ],
+              Expanded(
+                child: OverflowMarquee(
+                    duration: 1.5.seconds,
+                    delayDuration: 1.seconds,
+                    child: Text(el.autoArrangeOriginLoc.title, maxLines: 1)
+                        .textSmall
+                        .bold),
               ),
-              Row(
-                spacing: spacing,
-                children: [
-                  OriginBox(
-                    origin: AutoArrangeOrigin.centerLeft,
-                    siblings: row2Siblings,
-                    totalWidth: rowWidth - (spacing * 2),
-                    hoveredOrigin: _hoveredOrigin,
-                    onHover: (hovering) =>
-                        _onHover(hovering, AutoArrangeOrigin.centerLeft),
-                  ),
-                  OriginBox(
-                    origin: AutoArrangeOrigin.off,
-                    siblings: row2Siblings,
-                    totalWidth: rowWidth - (spacing * 2),
-                    hoveredOrigin: _hoveredOrigin,
-                    onHover: (hovering) =>
-                        _onHover(hovering, AutoArrangeOrigin.off),
-                  ),
-                  OriginBox(
-                    origin: AutoArrangeOrigin.centerRight,
-                    siblings: row2Siblings,
-                    totalWidth: rowWidth - (spacing * 2),
-                    hoveredOrigin: _hoveredOrigin,
-                    onHover: (hovering) =>
-                        _onHover(hovering, AutoArrangeOrigin.centerRight),
-                  ),
-                ],
-              ),
-              Row(
-                spacing: spacing,
-                children: [
-                  OriginBox(
-                    origin: AutoArrangeOrigin.bottomLeft,
-                    siblings: row3Siblings,
-                    totalWidth: rowWidth - spacing,
-                    hoveredOrigin: _hoveredOrigin,
-                    onHover: (hovering) =>
-                        _onHover(hovering, AutoArrangeOrigin.bottomLeft),
-                  ),
-                  OriginBox(
-                    origin: AutoArrangeOrigin.bottomRight,
-                    siblings: row3Siblings,
-                    totalWidth: rowWidth - spacing,
-                    hoveredOrigin: _hoveredOrigin,
-                    onHover: (hovering) =>
-                        _onHover(hovering, AutoArrangeOrigin.bottomRight),
-                  ),
-                ],
-              ),
+              Switch(
+                value: origin != AutoArrangeOrigin.off,
+                onChanged: (value) {
+                  ref.read(settingsProvider.notifier).toggleAutoArrange();
+                  Db.saveAppSettings(ref.read(settingsProvider));
+                },
+              )
             ],
           ),
           PgExpandable(
@@ -280,7 +220,71 @@ class _AutoArrangeOriginSelectorState
             child: Column(
               spacing: 8,
               children: [
-                SizedBox(),
+                Gap(4),
+                Divider(),
+                Row(
+                  spacing: spacing,
+                  children: [
+                    OriginBox(
+                      origin: AutoArrangeOrigin.topLeft,
+                      siblings: row1Siblings,
+                      totalWidth: rowWidth - spacing,
+                      hoveredOrigin: _hoveredOrigin,
+                      onHover: (hovering) =>
+                          _onHover(hovering, AutoArrangeOrigin.topLeft),
+                    ),
+                    OriginBox(
+                      origin: AutoArrangeOrigin.topRight,
+                      siblings: row1Siblings,
+                      totalWidth: rowWidth - spacing,
+                      hoveredOrigin: _hoveredOrigin,
+                      onHover: (hovering) =>
+                          _onHover(hovering, AutoArrangeOrigin.topRight),
+                    ),
+                  ],
+                ),
+                Row(
+                  spacing: spacing,
+                  children: [
+                    OriginBox(
+                      origin: AutoArrangeOrigin.centerLeft,
+                      siblings: row2Siblings,
+                      totalWidth: rowWidth - (spacing),
+                      hoveredOrigin: _hoveredOrigin,
+                      onHover: (hovering) =>
+                          _onHover(hovering, AutoArrangeOrigin.centerLeft),
+                    ),
+                    OriginBox(
+                      origin: AutoArrangeOrigin.centerRight,
+                      siblings: row2Siblings,
+                      totalWidth: rowWidth - (spacing),
+                      hoveredOrigin: _hoveredOrigin,
+                      onHover: (hovering) =>
+                          _onHover(hovering, AutoArrangeOrigin.centerRight),
+                    ),
+                  ],
+                ),
+                Row(
+                  spacing: spacing,
+                  children: [
+                    OriginBox(
+                      origin: AutoArrangeOrigin.bottomLeft,
+                      siblings: row3Siblings,
+                      totalWidth: rowWidth - spacing,
+                      hoveredOrigin: _hoveredOrigin,
+                      onHover: (hovering) =>
+                          _onHover(hovering, AutoArrangeOrigin.bottomLeft),
+                    ),
+                    OriginBox(
+                      origin: AutoArrangeOrigin.bottomRight,
+                      siblings: row3Siblings,
+                      totalWidth: rowWidth - spacing,
+                      hoveredOrigin: _hoveredOrigin,
+                      onHover: (hovering) =>
+                          _onHover(hovering, AutoArrangeOrigin.bottomRight),
+                    ),
+                  ],
+                ),
                 Divider(),
                 PgSubtitle(
                   showSubtitle: error,

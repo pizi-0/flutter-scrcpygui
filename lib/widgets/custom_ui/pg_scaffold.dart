@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -49,14 +50,17 @@ class PgScaffold extends ConsumerWidget {
             borderStyle: BorderStyle.none,
             child: Row(
               children: [
-                if (onBack == null) Gap(3),
+                if (onBack == null) Gap(2),
                 ...[
                   if (onBack != null)
                     IconButton.ghost(
                       onPressed: onBack,
-                      onSecondaryTapUp: (details) => ref
-                          .read(settingsProvider.notifier)
-                          .changeShowOnbackWarning(value: true),
+                      onSecondaryTapUp: (details) {
+                        ref
+                            .read(settingsProvider.notifier)
+                            .changeShowOnbackWarning(value: true);
+                        Db.saveAppSettings(ref.read(settingsProvider));
+                      },
                       icon: Icon(Icons.arrow_back,
                           color: onBack == null ? Colors.transparent : null),
                     ),

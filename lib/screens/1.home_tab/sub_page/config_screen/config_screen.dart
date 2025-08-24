@@ -310,7 +310,7 @@ class OnbackWarning extends ConsumerWidget {
         minWidth: sectionWidth,
       ),
       child: AlertDialog(
-        title: Text('Confirm exit?'),
+        title: Text(el.unsavedChangeDialogLoc.title),
         content: OutlinedContainer(
           child: ConstrainedBox(
             constraints: BoxConstraints(
@@ -319,26 +319,28 @@ class OnbackWarning extends ConsumerWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Text('Unsaved changes will be lost.'),
+              child: Text(el.unsavedChangeDialogLoc.contents),
             ),
           ),
         ),
         actions: [
           Checkbox(
-            leading: Text("Don't show again").textSmall.muted,
+            leading: Text(el.buttonLabelLoc.dontShowAgain).textSmall.muted,
             state: showWarningOnBack
                 ? CheckboxState.unchecked
                 : CheckboxState.checked,
-            onChanged: (v) =>
-                ref.read(settingsProvider.notifier).changeShowOnbackWarning(),
+            onChanged: (v) {
+              ref.read(settingsProvider.notifier).changeShowOnbackWarning();
+              Db.saveAppSettings(ref.read(settingsProvider));
+            },
           ),
           Spacer(),
           DestructiveButton(
-            child: Text('Confirm'),
+            child: Text(el.buttonLabelLoc.confirm),
             onPressed: () => context.pop(true),
           ),
           SecondaryButton(
-            child: Text('Cancel'),
+            child: Text(el.buttonLabelLoc.cancel),
             onPressed: () => context.pop(false),
           ),
         ],

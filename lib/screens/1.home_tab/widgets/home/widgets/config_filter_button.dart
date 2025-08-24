@@ -1,9 +1,10 @@
+import 'package:animate_do/animate_do.dart';
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config_tags.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:string_extensions/string_extensions.dart';
 
 class ConfigFilterButton extends ConsumerStatefulWidget {
   const ConfigFilterButton({super.key});
@@ -77,8 +78,27 @@ class _ConfigFilterPopoverState extends ConsumerState<ConfigFilterPopover> {
       constraints: BoxConstraints(maxWidth: 150),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        spacing: 4,
+        spacing: 8,
         children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(el.buttonLabelLoc.filter).textSmall.bold,
+              Spacer(),
+              IgnorePointer(
+                ignoring: filters.isEmpty,
+                child: FadeIn(
+                  duration: 200.milliseconds,
+                  animate: filters.isNotEmpty,
+                  child: DestructiveButton(
+                      density: ButtonDensity.dense,
+                      onPressed: () => ref.read(configTags.notifier).clearTag(),
+                      child: Text(el.buttonLabelLoc.clear)),
+                ),
+              )
+            ],
+          ),
+          Divider(),
           GridView.builder(
             itemCount: children.length,
             shrinkWrap: true,
@@ -89,21 +109,6 @@ class _ConfigFilterPopoverState extends ConsumerState<ConfigFilterPopover> {
               crossAxisCount: 3,
             ),
             itemBuilder: (context, index) => children[index],
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: Chip(
-                  style: filters.isEmpty
-                      ? ButtonStyle.secondary()
-                      : ButtonStyle.destructiveIcon(),
-                  onPressed: filters.isEmpty
-                      ? null
-                      : () => ref.read(configTags.notifier).clearTag(),
-                  child: Icon(Icons.clear).iconSmall(),
-                ),
-              ),
-            ],
           ),
         ],
       ),
