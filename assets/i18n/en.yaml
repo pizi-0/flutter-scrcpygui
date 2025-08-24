@@ -3,7 +3,7 @@
 home_loc:
   title: Home
   devices: 
-    label: Connected devices (${count})
+    label: Connected Devices (${count})
   
 device_tile_loc: 
   running_instances: Running (${count})
@@ -22,7 +22,7 @@ lounge_loc:
   pinned_apps:
     label: Pinned apps
   launcher:
-    label: App launcher
+    label: App Launcher
   running:
     label: Running instances (${count})
   app_tile:
@@ -138,7 +138,7 @@ mode_section:
   title: Mode
   save_folder: 
     label: Save folder
-    info: "Appends the save path to '--record=savepath/file' " 
+    info: "appends the save path to '--record=savepath/file' " 
 
   main_mode: 
     label: Mode
@@ -146,7 +146,7 @@ mode_section:
     record: Record
     info: 
       default: mirror or record, no flag for mirror
-      alt: "Uses the '--record=' flag"
+      alt: "uses the '--record=' flag"
   
   scrcpy_mode:
     both: Audio + video
@@ -154,7 +154,7 @@ mode_section:
     video_only: Video only
     info:
       default: defaults to both, no flag
-      alt: "Uses the '${command}' flag"
+      alt: "uses the '${command}' flag"
 
 ### config screen > video section
 video_section:
@@ -163,71 +163,71 @@ video_section:
     label: Displays
     info: 
       default: defaults to first available, no flag
-      alt: "Uses the '--display-id=' flag"
+      alt: "uses the '--display-id=' flag"
 
     virtual:
       label: Virtual display settings
       new_display: 
         label: New display
         info:
-          alt: "Uses the '--new-display' flag"
+          alt: "uses the '--new-display' flag"
       resolution: 
         label: Resolution
         info: 
           default: "defaults to device's resolution"
-          alt: "Appends resolution to the '--new-display=${res}' flag"
+          alt: "appends resolution to the '--new-display=${res}' flag"
       dpi: 
         label: DPI
         info: 
           default: "defaults to device's DPI"
-          alt: "Appends DPI to the '--new-display=${res}/${dpi}' flag"
+          alt: "appends DPI to the '--new-display=${res}/${dpi}' flag"
 
       deco:
         label: Disable system decorations
         info: 
           default: defaults with system decorations
-          alt: "Uses the '--no-vd-system-decorations' flag"
+          alt: "uses the '--no-vd-system-decorations' flag"
 
       preserve: 
         label: Preserve app
         info:
           default: apps are destroyed by default when a scrcpy session ends
-          alt: "Moves the app to the main display when the session ends; uses the '--no-vd-destroy-content' flag"
+          alt: "moves the app to the main display when the session ends; uses the '--no-vd-destroy-content' flag"
 
   codec:
     label: Codec
     info: 
       default: defaults to h264, no flag
-      alt: "Uses the '--video-codec=${codec}' flag"
+      alt: "uses the '--video-codec=${codec}' flag"
 
   encoder:
     label: Encoder
     info:
       default: defaults to first available, no flag
-      alt: "Uses the '--video-encoder=${encoder}' flag"
+      alt: "uses the '--video-encoder=${encoder}' flag"
 
   format:
     label: Format
     info: 
-      default: "Appends format to '--record=savepath/file${format}' "
+      default: "appends format to '--record=savepath/file${format}' "
 
   bitrate:
     label: Bitrate
     info: 
       default: defaults to 8M, no flag
-      alt: "Uses the '--video-bit-rate=${bitrate}M' flag"
+      alt: "uses the '--video-bit-rate=${bitrate}M' flag"
 
   fps_limit:
     label: FPS limit
     info:
       default: no flag unless set
-      alt: "Uses the '--max-fps=${fps}' flag"
+      alt: "uses the '--max-fps=${fps}' flag"
 
   resolution_scale: 
     label: Resolution scale
     info: 
       default: calculated based on device's resolution, no flag unless set
-      alt: "Uses the '--max-size=${size}' flag"
+      alt: "uses the '--max-size=${size}' flag"
 
 ### config screen > audio section
 audio_section:
@@ -236,38 +236,38 @@ audio_section:
     label: Duplicate audio
     info: 
       default: only for Android 13 and above
-      alt: "Uses the '--audio-dup' flag"
+      alt: "uses the '--audio-dup' flag"
 
   source:
     label: Source
     info:
       default: defaults to output, no flag
-      alt: "Uses the '${source}' flag"
+      alt: "uses the '${source}' flag"
       inCaseOfDup: implied to 'Playback' with '--audio-dup', no flag
 
   codec:
     label: Codec
     info: 
       default: defaults to opus, no flag
-      alt: "Uses the '--audio-codec=${codec}' flag"
+      alt: "uses the '--audio-codec=${codec}' flag"
       isAudioOnly: "Format: ${format}, requires Codec: ${codec}"
 
   encoder:
     label: Encoder
     info:
       default: defaults to first available, no flag
-      alt: "Uses the '--audio-encoder=${encoder}' flag"
+      alt: "uses the '--audio-encoder=${encoder}' flag"
 
   format:
     label: Format
     info: 
-      default: "Appends format to '--record=savepath/file.${format}' "
+      default: "appends format to '--record=savepath/file.${format}' "
 
   bitrate:
     label: Bitrate
     info: 
       default: defaults to 128k, no flag
-      alt: "Uses the '--audio-bit-rate=${bitrate}K' flag"
+      alt: "uses the '--audio-bit-rate=${bitrate}K' flag"
 
 ### config screen > app section
 app_section:
@@ -275,8 +275,8 @@ app_section:
   select: 
     label: Select an app
     info: 
-      alt: "Uses the '--start-app=${app}' flag"
-      fc: "Uses the '--start-app=+${app}' flag"
+      alt: "uses the '--start-app=${app}' flag"
+      fc: "uses the '--start-app=+${app}' flag"
   force_close:
     label: Force close app before starting
     info: 
@@ -290,31 +290,31 @@ device_section:
     label: Stay awake
     info:
       default: prevent the device from sleeping, only works with usb connection
-      alt: "Uses the '--stay-awake' flag"
+      alt: "uses the '--stay-awake' flag"
 
   show_touches:
     label: Show touches
     info:
       default: show finger touches, only works with physical touches on the device
-      alt: "Uses the '--show-touches' flag"
+      alt: "uses the '--show-touches' flag"
   
   off_display_start:
     label: Turn off display on start
     info:
       default: turn device display off, on scrcpy start
-      alt: "Uses the '--turn-screen-off' flag"
+      alt: "uses the '--turn-screen-off' flag"
 
   off_display_exit:
     label: Turn off display on exit
     info:
       default: turn device display off, on scrcpy exit
-      alt: "Uses the '--power-off-on-close' flag"
+      alt: "uses the '--power-off-on-close' flag"
 
   screensaver:
     label: Disable screensaver (HOST)
     info:
       default: disable screensaver
-      alt: "Uses the '--disable-screensaver' flag"
+      alt: "uses the '--disable-screensaver' flag"
 
 
 window_section:
@@ -323,31 +323,31 @@ window_section:
     label: Hide window
     info:
       default: start scrcpy with no window
-      alt: "Uses the '--no-window' flag"
+      alt: "uses the '--no-window' flag"
 
   borderless:
     label: Borderless
     info:
       default: disable window decorations
-      alt: "Uses the '--window-borderless' flag"
+      alt: "uses the '--window-borderless' flag"
   
   always_on_top:
     label: Always on top
     info:
       default: scrcpy window always on top
-      alt: "Uses the '--always-on-top' flag"
+      alt: "uses the '--always-on-top' flag"
 
   time_limit:
     label: Time limit
     info:
       default: limits scrcpy session, in seconds
-      alt: "Uses the '--time-limit=${time}' flag"
+      alt: "uses the '--time-limit=${time}' flag"
 
 ### config screen > additional flags section
 add_flags:
-  title: Additional flags
+  title: Additional Flags
   add: Add
-  info: Avoid using flags that are already available as options.
+  info: avoid using flags that are already available as options.
 
 
 
@@ -360,7 +360,7 @@ connect_loc:
     connected: Connected to ${to}
 
   with_mdns: 
-    label: MDNS devices (${count})
+    label: MDNS Devices (${count})
     info: 
       i1: Make sure your device is paired to your PC.
       i2: If your device is not showing, try turning Wireless ADB off and on.
@@ -400,7 +400,7 @@ scrcpy_manager_loc:
   check: Check for Updates
   current:
     label: Current
-    in_use: In Use
+    in_use: In use
   exec: 
     label: Open executable location
     info: Modify with care
@@ -445,7 +445,7 @@ settings_loc:
       info: Known to cause flickering in Linux  
   
   behavior: 
-    label: App behavior
+    label: App Behavior
     language:
       label: Language
       info: Some languages are machine-translated and may contain errors.
@@ -469,7 +469,7 @@ settings_loc:
 companion_loc:
   title: Companion
   server:
-    label: Setup server
+    label: Setup Server
     status: Status
     endpoint:
       label: Server endpoint
@@ -506,10 +506,10 @@ quit_dialog_loc:
   title: Quit Scrcpy GUI?
   kill_running:
     label: Stop running instances?
-    info: ${count} scrcpy instance(s). All instances, including those without a window, will be stopped. # NOTE: Consider using a pluralization library if available
+    info: ${count} scrcpy instance(s). Instances without a window will be stopped regardless.
   disconnect: 
     label: Disconnect wireless ADB?
-    info: ${count} device(s) # NOTE: Consider using a pluralization library if available
+    info: ${count} device(s) 
 
 # home tab > device tile > disconnect dialog
 disconnect_dialog_loc:

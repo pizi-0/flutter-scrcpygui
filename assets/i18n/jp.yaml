@@ -79,7 +79,7 @@ delete_config_dialog_loc:
 
 ## home_tab > device settings screen
 device_settings_loc:
-  title: 設定
+  title: デバイス設定
   info: 情報
   refresh: 情報を更新
   rename:
@@ -484,7 +484,7 @@ quit_dialog_loc:
   title: Scrcpy GUIを終了しますか？
   kill_running:
     label: 実行中のプロセスを終了しますか？
-    info: ${count} 個のscrcpy。ウィンドウのないscrcpyもすべて終了します
+    info: ${count} 個のscrcpy。ウィンドウのないインスタンスは、とにかく停止されます。
   disconnect:
     label: ワイヤレスADBを切断しますか？
     info: ${count} 台のデバイス

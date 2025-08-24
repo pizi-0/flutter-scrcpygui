@@ -2,7 +2,7 @@
 home_loc:
   title: Laman Utama
   devices:
-    label: Peranti yang disambungkan (${count})
+    label: Peranti yang Disambungkan (${count})
 
 device_tile_loc:
   running_instances: Sedang Berjalan (${count})
@@ -21,7 +21,7 @@ lounge_loc:
   pinned_apps:
     label: Aplikasi disemat
   launcher:
-    label: Pelancar aplikasi
+    label: Pelancar Aplikasi
   running:
     label: Instans sedang berjalan (${count})
   app_tile:
@@ -96,7 +96,7 @@ device_settings_loc:
 
   scrcpy_info:
     fetching: Mendapatkan maklumat scrcpy
-    label: Maklumat scrcpy
+    label: Maklumat Scrcpy
     name: 'Nama: ${name}'
     id: 'ID: ${id}'
     model: 'Model: ${model}'
@@ -380,7 +380,7 @@ test_config_loc:
 
 #scrcpy manager tab
 scrcpy_manager_loc:
-  title: Pengurus scrcpy
+  title: Pengurus Scrcpy
   check: Semak Kemas Kini
   current:
     label: Semasa
@@ -426,7 +426,7 @@ settings_loc:
       info: Dikenali menyebabkan kelipan di Linux
 
   behavior:
-    label: Tingkah laku aplikasi
+    label: Tingkah Laku Aplikasi
     language:
       label: Bahasa
       info: Sesetengah bahasa dijana oleh AI
@@ -450,7 +450,7 @@ settings_loc:
 companion_loc:
   title: Pendamping
   server:
-    label: Konfigurasi pelayan
+    label: Konfigurasi Pelayan
     status: Status
     endpoint:
       label: Titik akhir pelayan
@@ -486,10 +486,10 @@ quit_dialog_loc:
   title: Keluar dari GUI scrcpy?
   kill_running:
     label: Hentikan instans yang sedang berjalan?
-    info: ${count} instans scrcpy. Semua instans, termasuk yang tanpa tetingkap, akan dihentikan. # NOTA: Pertimbangkan untuk menggunakan pustaka pluralisasi jika tersedia
+    info: ${count} instans scrcpy. Instans tanpa tetingkap akan tetap dihentikan.
   disconnect:
     label: Putuskan Sambungan ADB Tanpa Wayar?
-    info: ${count} peranti # NOTA: Pertimbangkan untuk menggunakan pustaka pluralisasi jika tersedia
+    info: ${count} peranti
 
 # home tab > device tile > disconnect dialog
 disconnect_dialog_loc:
@@ -560,7 +560,7 @@ status_loc:
   copied: Disalin
   running: Sedang berjalan
   stopped: Dihentikan
-  getting_info: Mendapatkan maklumat
+  getting_info: Mendapatkan Maklumat
   no_devices_found: Tiada peranti ditemui
 
 # common

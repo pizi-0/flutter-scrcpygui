@@ -8873,7 +8873,7 @@ LocalizationMessages get en => LocalizationMessages(
         title: 'Home',
         devices: HomeLocDevices(
           label: ({required String count}) =>
-              '''Connected devices (${count})''',
+              '''Connected Devices (${count})''',
         ),
       ),
       deviceTileLoc: DeviceTileLoc(
@@ -8896,7 +8896,7 @@ LocalizationMessages get en => LocalizationMessages(
           label: 'Pinned apps',
         ),
         launcher: LoungeLocLauncher(
-          label: 'App launcher',
+          label: 'App Launcher',
         ),
         running: LoungeLocRunning(
           label: ({required String count}) =>
@@ -9023,7 +9023,7 @@ LocalizationMessages get en => LocalizationMessages(
         title: 'Mode',
         saveFolder: ModeSectionSaveFolder(
           label: 'Save folder',
-          info: '''Appends the save path to '--record=savepath/file' ''',
+          info: '''appends the save path to '--record=savepath/file' ''',
         ),
         mainMode: ModeSectionMainMode(
           label: 'Mode',
@@ -9031,7 +9031,7 @@ LocalizationMessages get en => LocalizationMessages(
           record: 'Record',
           info: ModeSectionMainModeInfo(
             default$: 'mirror or record, no flag for mirror',
-            alt: '''Uses the '--record=' flag''',
+            alt: '''uses the '--record=' flag''',
           ),
         ),
         scrcpyMode: ModeSectionScrcpyMode(
@@ -9041,7 +9041,7 @@ LocalizationMessages get en => LocalizationMessages(
           info: ModeSectionScrcpyModeInfo(
             default$: 'defaults to both, no flag',
             alt: ({required String command}) =>
-                '''Uses the '${command}' flag''',
+                '''uses the '${command}' flag''',
           ),
         ),
       ),
@@ -9051,14 +9051,14 @@ LocalizationMessages get en => LocalizationMessages(
           label: 'Displays',
           info: VideoSectionDisplaysInfo(
             default$: 'defaults to first available, no flag',
-            alt: '''Uses the '--display-id=' flag''',
+            alt: '''uses the '--display-id=' flag''',
           ),
           virtual: VideoSectionDisplaysVirtual(
             label: 'Virtual display settings',
             newDisplay: VideoSectionDisplaysVirtualNewDisplay(
               label: 'New display',
               info: VideoSectionDisplaysVirtualNewDisplayInfo(
-                alt: '''Uses the '--new-display' flag''',
+                alt: '''uses the '--new-display' flag''',
               ),
             ),
             resolution: VideoSectionDisplaysVirtualResolution(
@@ -9066,7 +9066,7 @@ LocalizationMessages get en => LocalizationMessages(
               info: VideoSectionDisplaysVirtualResolutionInfo(
                 default$: '''defaults to device's resolution''',
                 alt: ({required String res}) =>
-                    '''Appends resolution to the '--new-display=${res}' flag''',
+                    '''appends resolution to the '--new-display=${res}' flag''',
               ),
             ),
             dpi: VideoSectionDisplaysVirtualDpi(
@@ -9074,14 +9074,14 @@ LocalizationMessages get en => LocalizationMessages(
               info: VideoSectionDisplaysVirtualDpiInfo(
                 default$: '''defaults to device's DPI''',
                 alt: ({required String res, required String dpi}) =>
-                    '''Appends DPI to the '--new-display=${res}/${dpi}' flag''',
+                    '''appends DPI to the '--new-display=${res}/${dpi}' flag''',
               ),
             ),
             deco: VideoSectionDisplaysVirtualDeco(
               label: 'Disable system decorations',
               info: VideoSectionDisplaysVirtualDecoInfo(
                 default$: 'defaults with system decorations',
-                alt: '''Uses the '--no-vd-system-decorations' flag''',
+                alt: '''uses the '--no-vd-system-decorations' flag''',
               ),
             ),
             preserve: VideoSectionDisplaysVirtualPreserve(
@@ -9090,7 +9090,7 @@ LocalizationMessages get en => LocalizationMessages(
                 default$:
                     'apps are destroyed by default when a scrcpy session ends',
                 alt:
-                    '''Moves the app to the main display when the session ends; uses the '--no-vd-destroy-content' flag''',
+                    '''moves the app to the main display when the session ends; uses the '--no-vd-destroy-content' flag''',
               ),
             ),
           ),
@@ -9100,7 +9100,7 @@ LocalizationMessages get en => LocalizationMessages(
           info: VideoSectionCodecInfo(
             default$: 'defaults to h264, no flag',
             alt: ({required String codec}) =>
-                '''Uses the '--video-codec=${codec}' flag''',
+                '''uses the '--video-codec=${codec}' flag''',
           ),
         ),
         encoder: VideoSectionEncoder(
@@ -9108,14 +9108,14 @@ LocalizationMessages get en => LocalizationMessages(
           info: VideoSectionEncoderInfo(
             default$: 'defaults to first available, no flag',
             alt: ({required String encoder}) =>
-                '''Uses the '--video-encoder=${encoder}' flag''',
+                '''uses the '--video-encoder=${encoder}' flag''',
           ),
         ),
         format: VideoSectionFormat(
           label: 'Format',
           info: VideoSectionFormatInfo(
             default$: ({required String format}) =>
-                '''Appends format to '--record=savepath/file${format}' ''',
+                '''appends format to '--record=savepath/file${format}' ''',
           ),
         ),
         bitrate: VideoSectionBitrate(
@@ -9123,7 +9123,7 @@ LocalizationMessages get en => LocalizationMessages(
           info: VideoSectionBitrateInfo(
             default$: 'defaults to 8M, no flag',
             alt: ({required String bitrate}) =>
-                '''Uses the '--video-bit-rate=${bitrate}M' flag''',
+                '''uses the '--video-bit-rate=${bitrate}M' flag''',
           ),
         ),
         fpsLimit: VideoSectionFpsLimit(
@@ -9131,7 +9131,7 @@ LocalizationMessages get en => LocalizationMessages(
           info: VideoSectionFpsLimitInfo(
             default$: 'no flag unless set',
             alt: ({required String fps}) =>
-                '''Uses the '--max-fps=${fps}' flag''',
+                '''uses the '--max-fps=${fps}' flag''',
           ),
         ),
         resolutionScale: VideoSectionResolutionScale(
@@ -9140,7 +9140,7 @@ LocalizationMessages get en => LocalizationMessages(
             default$:
                 '''calculated based on device's resolution, no flag unless set''',
             alt: ({required String size}) =>
-                '''Uses the '--max-size=${size}' flag''',
+                '''uses the '--max-size=${size}' flag''',
           ),
         ),
       ),
@@ -9150,14 +9150,14 @@ LocalizationMessages get en => LocalizationMessages(
           label: 'Duplicate audio',
           info: AudioSectionDuplicateInfo(
             default$: 'only for Android 13 and above',
-            alt: '''Uses the '--audio-dup' flag''',
+            alt: '''uses the '--audio-dup' flag''',
           ),
         ),
         source: AudioSectionSource(
           label: 'Source',
           info: AudioSectionSourceInfo(
             default$: 'defaults to output, no flag',
-            alt: ({required String source}) => '''Uses the '${source}' flag''',
+            alt: ({required String source}) => '''uses the '${source}' flag''',
             inCaseOfDup:
                 '''implied to 'Playback' with '--audio-dup', no flag''',
           ),
@@ -9167,7 +9167,7 @@ LocalizationMessages get en => LocalizationMessages(
           info: AudioSectionCodecInfo(
             default$: 'defaults to opus, no flag',
             alt: ({required String codec}) =>
-                '''Uses the '--audio-codec=${codec}' flag''',
+                '''uses the '--audio-codec=${codec}' flag''',
             isAudioOnly: ({required String format, required String codec}) =>
                 '''Format: ${format}, requires Codec: ${codec}''',
           ),
@@ -9177,14 +9177,14 @@ LocalizationMessages get en => LocalizationMessages(
           info: AudioSectionEncoderInfo(
             default$: 'defaults to first available, no flag',
             alt: ({required String encoder}) =>
-                '''Uses the '--audio-encoder=${encoder}' flag''',
+                '''uses the '--audio-encoder=${encoder}' flag''',
           ),
         ),
         format: AudioSectionFormat(
           label: 'Format',
           info: AudioSectionFormatInfo(
             default$: ({required String format}) =>
-                '''Appends format to '--record=savepath/file.${format}' ''',
+                '''appends format to '--record=savepath/file.${format}' ''',
           ),
         ),
         bitrate: AudioSectionBitrate(
@@ -9192,7 +9192,7 @@ LocalizationMessages get en => LocalizationMessages(
           info: AudioSectionBitrateInfo(
             default$: 'defaults to 128k, no flag',
             alt: ({required String bitrate}) =>
-                '''Uses the '--audio-bit-rate=${bitrate}K' flag''',
+                '''uses the '--audio-bit-rate=${bitrate}K' flag''',
           ),
         ),
       ),
@@ -9202,9 +9202,9 @@ LocalizationMessages get en => LocalizationMessages(
           label: 'Select an app',
           info: AppSectionSelectInfo(
             alt: ({required String app}) =>
-                '''Uses the '--start-app=${app}' flag''',
+                '''uses the '--start-app=${app}' flag''',
             fc: ({required String app}) =>
-                '''Uses the '--start-app=+${app}' flag''',
+                '''uses the '--start-app=+${app}' flag''',
           ),
         ),
         forceClose: AppSectionForceClose(
@@ -9221,7 +9221,7 @@ LocalizationMessages get en => LocalizationMessages(
           info: DeviceSectionStayAwakeInfo(
             default$:
                 'prevent the device from sleeping, only works with usb connection',
-            alt: '''Uses the '--stay-awake' flag''',
+            alt: '''uses the '--stay-awake' flag''',
           ),
         ),
         showTouches: DeviceSectionShowTouches(
@@ -9229,28 +9229,28 @@ LocalizationMessages get en => LocalizationMessages(
           info: DeviceSectionShowTouchesInfo(
             default$:
                 'show finger touches, only works with physical touches on the device',
-            alt: '''Uses the '--show-touches' flag''',
+            alt: '''uses the '--show-touches' flag''',
           ),
         ),
         offDisplayStart: DeviceSectionOffDisplayStart(
           label: 'Turn off display on start',
           info: DeviceSectionOffDisplayStartInfo(
             default$: 'turn device display off, on scrcpy start',
-            alt: '''Uses the '--turn-screen-off' flag''',
+            alt: '''uses the '--turn-screen-off' flag''',
           ),
         ),
         offDisplayExit: DeviceSectionOffDisplayExit(
           label: 'Turn off display on exit',
           info: DeviceSectionOffDisplayExitInfo(
             default$: 'turn device display off, on scrcpy exit',
-            alt: '''Uses the '--power-off-on-close' flag''',
+            alt: '''uses the '--power-off-on-close' flag''',
           ),
         ),
         screensaver: DeviceSectionScreensaver(
           label: 'Disable screensaver (HOST)',
           info: DeviceSectionScreensaverInfo(
             default$: 'disable screensaver',
-            alt: '''Uses the '--disable-screensaver' flag''',
+            alt: '''uses the '--disable-screensaver' flag''',
           ),
         ),
       ),
@@ -9260,21 +9260,21 @@ LocalizationMessages get en => LocalizationMessages(
           label: 'Hide window',
           info: WindowSectionHideWindowInfo(
             default$: 'start scrcpy with no window',
-            alt: '''Uses the '--no-window' flag''',
+            alt: '''uses the '--no-window' flag''',
           ),
         ),
         borderless: WindowSectionBorderless(
           label: 'Borderless',
           info: WindowSectionBorderlessInfo(
             default$: 'disable window decorations',
-            alt: '''Uses the '--window-borderless' flag''',
+            alt: '''uses the '--window-borderless' flag''',
           ),
         ),
         alwaysOnTop: WindowSectionAlwaysOnTop(
           label: 'Always on top',
           info: WindowSectionAlwaysOnTopInfo(
             default$: 'scrcpy window always on top',
-            alt: '''Uses the '--always-on-top' flag''',
+            alt: '''uses the '--always-on-top' flag''',
           ),
         ),
         timeLimit: WindowSectionTimeLimit(
@@ -9282,14 +9282,14 @@ LocalizationMessages get en => LocalizationMessages(
           info: WindowSectionTimeLimitInfo(
             default$: 'limits scrcpy session, in seconds',
             alt: ({required String time}) =>
-                '''Uses the '--time-limit=${time}' flag''',
+                '''uses the '--time-limit=${time}' flag''',
           ),
         ),
       ),
       addFlags: AddFlags(
-        title: 'Additional flags',
+        title: 'Additional Flags',
         add: 'Add',
-        info: 'Avoid using flags that are already available as options.',
+        info: 'avoid using flags that are already available as options.',
       ),
       connectLoc: ConnectLoc(
         title: 'Connect',
@@ -9299,7 +9299,7 @@ LocalizationMessages get en => LocalizationMessages(
           connected: ({required String to}) => '''Connected to ${to}''',
         ),
         withMdns: ConnectLocWithMdns(
-          label: ({required String count}) => '''MDNS devices (${count})''',
+          label: ({required String count}) => '''MDNS Devices (${count})''',
           info: ConnectLocWithMdnsInfo(
             i1: 'Make sure your device is paired to your PC.',
             i2: 'If your device is not showing, try turning Wireless ADB off and on.',
@@ -9340,7 +9340,7 @@ LocalizationMessages get en => LocalizationMessages(
         check: 'Check for Updates',
         current: ScrcpyManagerLocCurrent(
           label: 'Current',
-          inUse: 'In Use',
+          inUse: 'In use',
         ),
         exec: ScrcpyManagerLocExec(
           label: 'Open executable location',
@@ -9395,7 +9395,7 @@ LocalizationMessages get en => LocalizationMessages(
           ),
         ),
         behavior: SettingsLocBehavior(
-          label: 'App behavior',
+          label: 'App Behavior',
           language: SettingsLocBehaviorLanguage(
             label: 'Language',
             info:
@@ -9427,7 +9427,7 @@ LocalizationMessages get en => LocalizationMessages(
       companionLoc: CompanionLoc(
         title: 'Companion',
         server: CompanionLocServer(
-          label: 'Setup server',
+          label: 'Setup Server',
           status: 'Status',
           endpoint: CompanionLocServerEndpoint(
             label: 'Server endpoint',
@@ -9466,7 +9466,7 @@ LocalizationMessages get en => LocalizationMessages(
         killRunning: QuitDialogLocKillRunning(
           label: 'Stop running instances?',
           info: ({required String count}) =>
-              '''${count} scrcpy instance(s). All instances, including those without a window, will be stopped.''',
+              '''${count} scrcpy instance(s). Instances without a window will be stopped regardless.''',
         ),
         disconnect: QuitDialogLocDisconnect(
           label: 'Disconnect wireless ADB?',
@@ -9595,7 +9595,7 @@ LocalizationMessages get es => LocalizationMessages(
         title: 'Inicio',
         devices: HomeLocDevices(
           label: ({required String count}) =>
-              '''Dispositivos conectados (${count})''',
+              '''Dispositivos Conectados (${count})''',
         ),
       ),
       deviceTileLoc: DeviceTileLoc(
@@ -9619,7 +9619,7 @@ LocalizationMessages get es => LocalizationMessages(
           label: 'Aplicaciones ancladas',
         ),
         launcher: LoungeLocLauncher(
-          label: 'Lanzador de aplicaciones',
+          label: 'Lanzador de Aplicaciones',
         ),
         running: LoungeLocRunning(
           label: ({required String count}) =>
@@ -9693,7 +9693,7 @@ LocalizationMessages get es => LocalizationMessages(
             '''¿Eliminar ${configname}?''',
       ),
       deviceSettingsLoc: DeviceSettingsLoc(
-        title: 'Ajustes del dispositivo',
+        title: 'Ajustes del Dispositivo',
         info: 'Información',
         refresh: 'Actualizar información',
         rename: DeviceSettingsLocRename(
@@ -9712,7 +9712,7 @@ LocalizationMessages get es => LocalizationMessages(
         doNothing: 'No hacer nada',
         scrcpyInfo: DeviceSettingsLocScrcpyInfo(
           fetching: 'Obteniendo información de scrcpy',
-          label: 'Información de scrcpy',
+          label: 'Información de Scrcpy',
           name: ({required String name}) => '''Nombre: ${name}''',
           id: ({required String id}) => '''ID: ${id}''',
           model: ({required String model}) => '''Modelo: ${model}''',
@@ -10015,7 +10015,7 @@ LocalizationMessages get es => LocalizationMessages(
         ),
       ),
       addFlags: AddFlags(
-        title: 'Indicadores adicionales',
+        title: 'Indicadores Adicionales',
         add: 'Añadir',
         info: 'evite usar indicadores que ya son una opción',
       ),
@@ -10061,11 +10061,11 @@ LocalizationMessages get es => LocalizationMessages(
         ),
       ),
       testConfigLoc: TestConfigLoc(
-        title: 'Probar Configuración',
+        title: 'Probar configuración',
         preview: 'Vista previa del comando',
       ),
       scrcpyManagerLoc: ScrcpyManagerLoc(
-        title: 'Administrador de scrcpy',
+        title: 'Administrador de Scrcpy',
         check: 'Buscar Actualizaciones',
         current: ScrcpyManagerLocCurrent(
           label: 'Actual',
@@ -10124,7 +10124,7 @@ LocalizationMessages get es => LocalizationMessages(
           ),
         ),
         behavior: SettingsLocBehavior(
-          label: 'Comportamiento de la aplicación',
+          label: 'Comportamiento de la Aplicación',
           language: SettingsLocBehaviorLanguage(
             label: 'Idioma',
             info: 'Algunos idiomas son generados por IA',
@@ -10155,7 +10155,7 @@ LocalizationMessages get es => LocalizationMessages(
       companionLoc: CompanionLoc(
         title: 'Compañero',
         server: CompanionLocServer(
-          label: 'Configuración del servidor',
+          label: 'Configuración del Servidor',
           status: 'Estado',
           endpoint: CompanionLocServerEndpoint(
             label: 'Endpoint del servidor',
@@ -10196,7 +10196,7 @@ LocalizationMessages get es => LocalizationMessages(
         killRunning: QuitDialogLocKillRunning(
           label: '¿Detener procesos en ejecución?',
           info: ({required String count}) =>
-              '''${count} instancia(s) de scrcpy. Se terminarán todas, incluidas las que no tienen ventana.''',
+              '''${count} instancia(s) de scrcpy. Las instancias sin ventana se detendrán de todos modos.''',
         ),
         disconnect: QuitDialogLocDisconnect(
           label: '¿Desconectar ADB inalámbrico?',
@@ -10239,7 +10239,7 @@ LocalizationMessages get es => LocalizationMessages(
         close: 'Cerrar',
         cancel: 'Cancelar',
         stop: 'Detener',
-        testConfig: 'Probar Configuración',
+        testConfig: 'Probar configuración',
         update: 'Actualizar',
         info: 'Información',
         selectAll: 'Seleccionar todo',
@@ -10267,7 +10267,7 @@ LocalizationMessages get es => LocalizationMessages(
         copied: 'Copiado',
         running: 'En ejecución',
         stopped: 'Detenido',
-        gettingInfo: 'Obteniendo información',
+        gettingInfo: 'Obteniendo Información',
         noDevicesFound: 'No se encontraron dispositivos',
       ),
       commonLoc: CommonLoc(
@@ -10310,7 +10310,7 @@ LocalizationMessages get es => LocalizationMessages(
         ),
       ),
       autoArrangeOriginLoc: AutoArrangeOriginLoc(
-        title: 'Auto-Organizar',
+        title: 'Auto-organizar',
         alignments: 'Alineaciones',
         off: 'Desactivado',
         topLeft: 'Arriba Izquierda',
@@ -10326,7 +10326,7 @@ LocalizationMessages get it => LocalizationMessages(
         title: 'Home',
         devices: HomeLocDevices(
           label: ({required String count}) =>
-              '''Dispositivi connessi (${count})''',
+              '''Dispositivi Connessi (${count})''',
         ),
       ),
       deviceTileLoc: DeviceTileLoc(
@@ -10350,7 +10350,7 @@ LocalizationMessages get it => LocalizationMessages(
           label: 'App bloccate',
         ),
         launcher: LoungeLocLauncher(
-          label: 'Avvio app',
+          label: 'Avvio App',
         ),
         running: LoungeLocRunning(
           label: ({required String count}) =>
@@ -10392,8 +10392,8 @@ LocalizationMessages get it => LocalizationMessages(
         ),
         info: LoungeLocInfo(
           emptySearch: 'Nessuna app trovata',
-          emptyPin: 'Nessuna app bloccata',
-          emptyInstance: 'Nessuna istanza in esecuzione',
+          emptyPin: 'Nessuna App Bloccata',
+          emptyInstance: 'Nessuna Istanza in Esecuzione',
         ),
       ),
       configLoc: ConfigLoc(
@@ -10443,7 +10443,7 @@ LocalizationMessages get it => LocalizationMessages(
         doNothing: 'Non fare nulla',
         scrcpyInfo: DeviceSettingsLocScrcpyInfo(
           fetching: 'Recupero informazioni scrcpy',
-          label: 'Informazioni scrcpy',
+          label: 'Informazioni Scrcpy',
           name: ({required String name}) => '''Nome: ${name}''',
           id: ({required String id}) => '''ID: ${id}''',
           model: ({required String model}) => '''Modello: ${model}''',
@@ -10743,7 +10743,7 @@ LocalizationMessages get it => LocalizationMessages(
         ),
       ),
       addFlags: AddFlags(
-        title: 'Flag aggiuntivi',
+        title: 'Flag Aggiuntivi',
         add: 'Aggiungi',
         info: '''evitare di usare flag che sono già un'opzione''',
       ),
@@ -10851,7 +10851,7 @@ LocalizationMessages get it => LocalizationMessages(
           ),
         ),
         behavior: SettingsLocBehavior(
-          label: 'Comportamento app',
+          label: 'Comportamento App',
           language: SettingsLocBehaviorLanguage(
             label: 'Lingua',
             info: '''Alcune lingue sono generate dall'IA''',
@@ -10882,7 +10882,7 @@ LocalizationMessages get it => LocalizationMessages(
       companionLoc: CompanionLoc(
         title: 'Companion',
         server: CompanionLocServer(
-          label: 'Impostazione server',
+          label: 'Impostazione Server',
           status: 'Stato',
           endpoint: CompanionLocServerEndpoint(
             label: 'Endpoint server',
@@ -10923,7 +10923,7 @@ LocalizationMessages get it => LocalizationMessages(
         killRunning: QuitDialogLocKillRunning(
           label: 'Arrestare le istanze in esecuzione?',
           info: ({required String count}) =>
-              '''${count} istanza(e) di scrcpy. Tutte le istanze, incluse quelle senza finestra, verranno arrestate.''',
+              '''${count} istanza(e) di scrcpy. Le istanze senza finestra verranno arrestate comunque.''',
         ),
         disconnect: QuitDialogLocDisconnect(
           label: 'Disconnettere ADB wireless?',
@@ -10993,7 +10993,7 @@ LocalizationMessages get it => LocalizationMessages(
         copied: 'Copiato',
         running: 'In esecuzione',
         stopped: 'Fermato',
-        gettingInfo: 'Recupero informazioni',
+        gettingInfo: 'Recupero Informazioni',
         noDevicesFound: 'Nessun dispositivo trovato',
       ),
       commonLoc: CommonLoc(
@@ -11052,7 +11052,7 @@ LocalizationMessages get ms => LocalizationMessages(
         title: 'Laman Utama',
         devices: HomeLocDevices(
           label: ({required String count}) =>
-              '''Peranti yang disambungkan (${count})''',
+              '''Peranti yang Disambungkan (${count})''',
         ),
       ),
       deviceTileLoc: DeviceTileLoc(
@@ -11076,7 +11076,7 @@ LocalizationMessages get ms => LocalizationMessages(
           label: 'Aplikasi disemat',
         ),
         launcher: LoungeLocLauncher(
-          label: 'Pelancar aplikasi',
+          label: 'Pelancar Aplikasi',
         ),
         running: LoungeLocRunning(
           label: ({required String count}) =>
@@ -11167,7 +11167,7 @@ LocalizationMessages get ms => LocalizationMessages(
         doNothing: 'Jangan buat apa-apa',
         scrcpyInfo: DeviceSettingsLocScrcpyInfo(
           fetching: 'Mendapatkan maklumat scrcpy',
-          label: 'Maklumat scrcpy',
+          label: 'Maklumat Scrcpy',
           name: ({required String name}) => '''Nama: ${name}''',
           id: ({required String id}) => '''ID: ${id}''',
           model: ({required String model}) => '''Model: ${model}''',
@@ -11517,7 +11517,7 @@ LocalizationMessages get ms => LocalizationMessages(
         preview: 'Pratonton Perintah',
       ),
       scrcpyManagerLoc: ScrcpyManagerLoc(
-        title: 'Pengurus scrcpy',
+        title: 'Pengurus Scrcpy',
         check: 'Semak Kemas Kini',
         current: ScrcpyManagerLocCurrent(
           label: 'Semasa',
@@ -11576,7 +11576,7 @@ LocalizationMessages get ms => LocalizationMessages(
           ),
         ),
         behavior: SettingsLocBehavior(
-          label: 'Tingkah laku aplikasi',
+          label: 'Tingkah Laku Aplikasi',
           language: SettingsLocBehaviorLanguage(
             label: 'Bahasa',
             info: 'Sesetengah bahasa dijana oleh AI',
@@ -11607,7 +11607,7 @@ LocalizationMessages get ms => LocalizationMessages(
       companionLoc: CompanionLoc(
         title: 'Pendamping',
         server: CompanionLocServer(
-          label: 'Konfigurasi pelayan',
+          label: 'Konfigurasi Pelayan',
           status: 'Status',
           endpoint: CompanionLocServerEndpoint(
             label: 'Titik akhir pelayan',
@@ -11647,7 +11647,7 @@ LocalizationMessages get ms => LocalizationMessages(
         killRunning: QuitDialogLocKillRunning(
           label: 'Hentikan instans yang sedang berjalan?',
           info: ({required String count}) =>
-              '''${count} instans scrcpy. Semua instans, termasuk yang tanpa tetingkap, akan dihentikan.''',
+              '''${count} instans scrcpy. Instans tanpa tetingkap akan tetap dihentikan.''',
         ),
         disconnect: QuitDialogLocDisconnect(
           label: 'Putuskan Sambungan ADB Tanpa Wayar?',
@@ -11718,7 +11718,7 @@ LocalizationMessages get ms => LocalizationMessages(
         copied: 'Disalin',
         running: 'Sedang berjalan',
         stopped: 'Dihentikan',
-        gettingInfo: 'Mendapatkan maklumat',
+        gettingInfo: 'Mendapatkan Maklumat',
         noDevicesFound: 'Tiada peranti ditemui',
       ),
       commonLoc: CommonLoc(
@@ -11866,7 +11866,7 @@ LocalizationMessages get jp => LocalizationMessages(
         contents: ({required String configname}) => '''${configname}を削除しますか？''',
       ),
       deviceSettingsLoc: DeviceSettingsLoc(
-        title: '設定',
+        title: 'デバイス設定',
         info: '情報',
         refresh: '情報を更新',
         rename: DeviceSettingsLocRename(
@@ -12348,7 +12348,7 @@ LocalizationMessages get jp => LocalizationMessages(
         killRunning: QuitDialogLocKillRunning(
           label: '実行中のプロセスを終了しますか？',
           info: ({required String count}) =>
-              '''${count} 個のscrcpy。ウィンドウのないscrcpyもすべて終了します''',
+              '''${count} 個のscrcpy。ウィンドウのないインスタンスは、とにかく停止されます。''',
         ),
         disconnect: QuitDialogLocDisconnect(
           label: 'ワイヤレスADBを切断しますか？',

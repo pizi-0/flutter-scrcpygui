@@ -2,7 +2,7 @@
 home_loc:
   title: Home
   devices:
-    label: Dispositivi connessi (${count})
+    label: Dispositivi Connessi (${count})
 
 device_tile_loc:
   running_instances: In esecuzione (${count})
@@ -21,7 +21,7 @@ lounge_loc:
   pinned_apps:
     label: App bloccate
   launcher:
-    label: Avvio app
+    label: Avvio App
   running:
     label: Istanze in esecuzione (${count})
   app_tile:
@@ -51,8 +51,8 @@ lounge_loc:
     show_app_name: Mostra nome app
   info:
     empty_search: Nessuna app trovata
-    empty_pin: Nessuna app bloccata
-    empty_instance: Nessuna istanza in esecuzione
+    empty_pin: Nessuna App Bloccata
+    empty_instance: Nessuna Istanza in Esecuzione
 
 
 config_loc:
@@ -96,7 +96,7 @@ device_settings_loc:
 
   scrcpy_info:
     fetching: Recupero informazioni scrcpy
-    label: Informazioni scrcpy
+    label: Informazioni Scrcpy
     name: 'Nome: ${name}'
     id: 'ID: ${id}'
     model: 'Modello: ${model}'
@@ -333,7 +333,7 @@ window_section:
 
 ### config screen > additional flags section
 add_flags:
-  title: Flag aggiuntivi
+  title: Flag Aggiuntivi
   add: Aggiungi
   info: evitare di usare flag che sono già un'opzione
 
@@ -426,7 +426,7 @@ settings_loc:
       info: Noto per causare sfarfallio su Linux
 
   behavior:
-    label: Comportamento app
+    label: Comportamento App
     language:
       label: Lingua
       info: Alcune lingue sono generate dall'IA
@@ -450,7 +450,7 @@ settings_loc:
 companion_loc:
   title: Companion
   server:
-    label: Impostazione server
+    label: Impostazione Server
     status: Stato
     endpoint:
       label: Endpoint server
@@ -485,10 +485,10 @@ quit_dialog_loc:
   title: Uscire da Scrcpy GUI?
   kill_running:
     label: Arrestare le istanze in esecuzione?
-    info: ${count} istanza(e) di scrcpy. Tutte le istanze, incluse quelle senza finestra, verranno arrestate. # NOTA: Considera l'uso di una libreria di pluralizzazione se disponibile
+    info: ${count} istanza(e) di scrcpy. Le istanze senza finestra verranno arrestate comunque.
   disconnect:
     label: Disconnettere ADB wireless?
-    info: ${count} dispositivo(i) # NOTA: Considera l'uso di una libreria di pluralizzazione se disponibile
+    info: ${count} dispositivo(i)
 
 # home tab > device tile > disconnect dialog
 disconnect_dialog_loc:
@@ -559,7 +559,7 @@ status_loc:
   copied: Copiato
   running: In esecuzione
   stopped: Fermato
-  getting_info: Recupero informazioni
+  getting_info: Recupero Informazioni
   no_devices_found: Nessun dispositivo trovato
   
 # common

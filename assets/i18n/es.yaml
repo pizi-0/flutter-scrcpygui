@@ -2,7 +2,7 @@
 home_loc:
   title: Inicio
   devices:
-    label: Dispositivos conectados (${count})
+    label: Dispositivos Conectados (${count})
 
 device_tile_loc:
   running_instances: En ejecución (${count})
@@ -21,7 +21,7 @@ lounge_loc:
   pinned_apps:
     label: Aplicaciones ancladas
   launcher:
-    label: Lanzador de aplicaciones
+    label: Lanzador de Aplicaciones
   running:
     label: Instancias en ejecución (${count})
   app_tile:
@@ -80,7 +80,7 @@ delete_config_dialog_loc:
 
 ## home_tab > device settings screen
 device_settings_loc:
-  title: Ajustes del dispositivo
+  title: Ajustes del Dispositivo
   info: Información
   refresh: Actualizar información
   rename:
@@ -96,7 +96,7 @@ device_settings_loc:
 
   scrcpy_info:
     fetching: Obteniendo información de scrcpy
-    label: Información de scrcpy
+    label: Información de Scrcpy
     name: 'Nombre: ${name}'
     id: 'ID: ${id}'
     model: 'Modelo: ${model}'
@@ -333,7 +333,7 @@ window_section:
 
 ### config screen > additional flags section
 add_flags:
-  title: Indicadores adicionales
+  title: Indicadores Adicionales
   add: Añadir
   info: evite usar indicadores que ya son una opción
 
@@ -375,12 +375,12 @@ connect_loc:
 
 ### preview and test section
 test_config_loc:
-  title: Probar Configuración
+  title: Probar configuración
   preview: Vista previa del comando
 
 #scrcpy manager tab
 scrcpy_manager_loc:
-  title: Administrador de scrcpy
+  title: Administrador de Scrcpy
   check: Buscar Actualizaciones
   current:
     label: Actual
@@ -426,7 +426,7 @@ settings_loc:
       info: Conocido por causar parpadeo en Linux
 
   behavior:
-    label: Comportamiento de la aplicación
+    label: Comportamiento de la Aplicación
     language:
       label: Idioma
       info: Algunos idiomas son generados por IA
@@ -450,7 +450,7 @@ settings_loc:
 companion_loc:
   title: Compañero
   server:
-    label: Configuración del servidor
+    label: Configuración del Servidor
     status: Estado
     endpoint:
       label: Endpoint del servidor
@@ -484,10 +484,10 @@ quit_dialog_loc:
   title: ¿Salir de la GUI de scrcpy?
   kill_running:
     label: ¿Detener procesos en ejecución?
-    info: ${count} instancia(s) de scrcpy. Se terminarán todas, incluidas las que no tienen ventana. # NOTE: Consider using a pluralization library if available
+    info: ${count} instancia(s) de scrcpy. Las instancias sin ventana se detendrán de todos modos.
   disconnect:
     label: ¿Desconectar ADB inalámbrico?
-    info: ${count} dispositivo(s) # NOTE: Consider using a pluralization library if available
+    info: ${count} dispositivo(s)
 
 # home tab > device tile > disconnect dialog
 disconnect_dialog_loc:
@@ -527,7 +527,7 @@ button_label_loc:
   close: Cerrar
   cancel: Cancelar
   stop: Detener
-  test_config: Probar Configuración
+  test_config: Probar configuración
   update: Actualizar
   info: Información
   select_all: Seleccionar todo
@@ -556,7 +556,7 @@ status_loc:
   copied: Copiado
   running: En ejecución
   stopped: Detenido
-  getting_info: Obteniendo información
+  getting_info: Obteniendo Información
   no_devices_found: No se encontraron dispositivos
 
 # common
@@ -596,7 +596,7 @@ config_override_loc:
     label: Silenciar
 
 auto_arrange_origin_loc:
-  title: Auto-Organizar
+  title: Auto-organizar
   alignments: Alineaciones
   off: Desactivado
   top_left: Arriba Izquierda
