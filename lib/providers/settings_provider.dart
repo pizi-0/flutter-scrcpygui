@@ -93,16 +93,15 @@ class SettingsNotifier extends Notifier<AppSettings> {
             showWarningOnBack: value ?? !state.behaviour.showWarningOnBack));
   }
 
-  void toggleAutoArrangeStatus() {
+  void toggleAutoArrange() {
     var currentBehaviour = state.behaviour;
 
-    final currentInt = currentBehaviour.autoArrangeOrigin.index;
-
-    final newStatus = AutoArrangeOrigin
-        .values[(currentInt + 1) % AutoArrangeOrigin.values.length];
-
     state = state.copyWith(
-        behaviour: currentBehaviour.copyWith(autoArrangeOrigin: newStatus));
+        behaviour: currentBehaviour.copyWith(
+            autoArrangeOrigin:
+                currentBehaviour.autoArrangeOrigin == AutoArrangeOrigin.off
+                    ? AutoArrangeOrigin.centerLeft
+                    : AutoArrangeOrigin.off));
   }
 
   void changeAutoArrangeOrigin(AutoArrangeOrigin status) {
