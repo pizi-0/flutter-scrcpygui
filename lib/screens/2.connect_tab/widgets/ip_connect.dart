@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'package:awesome_extensions/awesome_extensions.dart' show NumExtension;
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
@@ -37,10 +36,6 @@ class _IPConnectState extends ConsumerState<IPConnect>
         Expanded(
           child: TextField(
             filled: true,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'[0-9.:]')),
-              FilteringTextInputFormatter.deny('..')
-            ],
             placeholder:
                 Text('Ip:port(${el.commonLoc.default$.toLowerCase()}=5555)'),
             controller: widget.controller,
