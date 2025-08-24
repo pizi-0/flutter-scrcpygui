@@ -70,7 +70,7 @@ class PgScaffold extends ConsumerWidget {
                 Expanded(
                     child: Padding(
                   padding: onBack == null
-                      ? const EdgeInsets.all(6.0)
+                      ? const EdgeInsets.symmetric(horizontal: 6.0)
                       : EdgeInsets.zero,
                   child: Text(
                     title,
@@ -225,7 +225,7 @@ class PgScaffoldCustom extends ConsumerWidget {
                 Expanded(
                     child: Padding(
                   padding: onBack == null
-                      ? const EdgeInsets.all(11.0)
+                      ? const EdgeInsets.symmetric(horizontal: 11.0)
                       : EdgeInsets.zero,
                   child: title,
                 )),
