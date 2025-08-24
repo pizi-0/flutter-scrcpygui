@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/device_info_model.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/models/result/wireless_connect_result.dart';
