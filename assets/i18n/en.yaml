@@ -9,11 +9,11 @@ device_tile_loc:
   running_instances: Running (${count})
   context: 
     disconnect: Disconnect
-    to_wireless: To wireless
-    kill_running: Kill running scrcpy
+    to_wireless: Connect via Wireless
+    stop_running: Stop running scrcpy
     scrcpy: Scrcpy
     all: All
-    all_scrcpy: Kill all scrcpy
+    all_scrcpy: Stop all scrcpy
     manage: Manage
 
 lounge_loc:
@@ -30,8 +30,8 @@ lounge_loc:
       pin: Pin on ${config}
       unpin: Unpin
       force_close: Force close & start
-      and_start: On ${config}
-      select_config: Select a config first
+      and_start: On ${configuration}
+      select_config: Please select a configuration first
       start_on: Start on ${config}
       with_overrides: Start with overrides
       package_name: Package name
@@ -41,42 +41,42 @@ lounge_loc:
       apps: Apps
     missing_icon: Missing icons (${count})
   placeholders:
-    config: Select config
+    config: Select configuration
     app: Select app
     search: "Press '/' to search"
   tooltip:
-    missing_config: "Missing config: ${config}"
+    missing_config: "Missing configuration: ${config}"
     pin: Pin app/config pair
     on_config: "On: ${config}"
     hide_app_name: Hide app name
     show_app_name: Show app name
   info:
     empty_search: No apps found
-    empty_pin: No pinned apps
-    empty_instance: No running instance
+    empty_pin: No Pinned Apps
+    empty_instance: No Running Instances
 
     
 
 config_loc:
-  label: Configs (${count})
+  label: Configurations (${count})
   new: Create
-  select: Select a config
+  select: Select a configuration
   details: Show details
   start: Start
-  empty: No config found
+  empty: No configurations found
 
 # error dialog
 no_device_dialog_loc:
   title: Device
-  contentsEdit: No device selected. \nSelect a device to edit scrcpy config.
+  contentsEdit: No device selected. \nSelect a device to edit the scrcpy configuration.
   contentsStart: No device selected. \nSelect a device to start scrcpy.
-  contentsNew: No device selected. \nSelect a device to create scrcpy config.
+  contentsNew: No device selected. \nSelect a device to create a scrcpy configuration.
 
 
 
 no_config_dialog_loc:
-  title: Config
-  contents: No config selected.\nSelect a scrcpy config to start.
+  title: Configuration
+  contents: No configuration selected.\nSelect a scrcpy configuration to start.
 
 delete_config_dialog_loc:
   title: Confirm
@@ -84,14 +84,14 @@ delete_config_dialog_loc:
 
 ## home_tab > device settings screen
 device_settings_loc: 
-  title: Settings
+  title: Device Settings
   info: Info
   refresh: Refresh info
   rename: 
     label: Rename
     info: Press [Enter] to apply name
   auto_connect: 
-    label: Auto connect
+    label: Auto-connect
     info: Auto connect wireless device
   on_connected: 
     label: On connected
@@ -99,8 +99,8 @@ device_settings_loc:
   do_nothing: Do nothing
   
   scrcpy_info: 
-    fetching: Getting scrcpy info
-    label: Scrcpy info
+    fetching: Fetching scrcpy information
+    label: Scrcpy Information
     name: 'Name: ${name}'
     id: 'ID: ${id}'
     model: 'Model: ${model}'
@@ -112,18 +112,18 @@ device_settings_loc:
 
 ## home_tab > config manager
 config_manager_loc:
-  title: Configs manager
+  title: Configuration Manager
   
 
 ## home_tab > config screen
 config_screen_loc:
-  title: Config settings
+  title: Configuration Settings
   connection_lost: Lost connection to device
   similar_exist: Duplicate of ${configName}
 
 ## home_tab > config screen > test config
 log_screen_loc: 
-  title: Test log
+  title: Test Log
   dialog:
     title: Command
 
@@ -138,7 +138,7 @@ mode_section:
   title: Mode
   save_folder: 
     label: Save folder
-    info: "appends save path to '--record=savepath/file' " 
+    info: "Appends the save path to '--record=savepath/file' " 
 
   main_mode: 
     label: Mode
@@ -146,7 +146,7 @@ mode_section:
     record: Record
     info: 
       default: mirror or record, no flag for mirror
-      alt: "uses '--record=' flag "
+      alt: "Uses the '--record=' flag"
   
   scrcpy_mode:
     both: Audio + video
@@ -154,7 +154,7 @@ mode_section:
     video_only: Video only
     info:
       default: defaults to both, no flag
-      alt: "uses '${command}' flag "
+      alt: "Uses the '${command}' flag"
 
 ### config screen > video section
 video_section:
@@ -163,71 +163,71 @@ video_section:
     label: Displays
     info: 
       default: defaults to first available, no flag
-      alt: "uses '--display-id=' flag "
+      alt: "Uses the '--display-id=' flag"
 
     virtual:
       label: Virtual display settings
       new_display: 
         label: New display
         info:
-          alt: "uses '--new-display' flag"
+          alt: "Uses the '--new-display' flag"
       resolution: 
         label: Resolution
         info: 
           default: "defaults to device's resolution"
-          alt: "appends resolution to '--new-display=${res}' flag"
+          alt: "Appends resolution to the '--new-display=${res}' flag"
       dpi: 
         label: DPI
         info: 
           default: "defaults to device's DPI"
-          alt: "appends DPI to '--new-display=${res}/${dpi}' flag"
+          alt: "Appends DPI to the '--new-display=${res}/${dpi}' flag"
 
       deco:
         label: Disable system decorations
         info: 
           default: defaults with system decorations
-          alt: "uses '--no-vd-system-decorations' flag"
+          alt: "Uses the '--no-vd-system-decorations' flag"
 
       preserve: 
         label: Preserve app
         info:
           default: apps are destroyed by default when a scrcpy session ends
-          alt: "move app to main display when session ends; uses '--no-vd-destroy-content' flag"
+          alt: "Moves the app to the main display when the session ends; uses the '--no-vd-destroy-content' flag"
 
   codec:
     label: Codec
     info: 
       default: defaults to h264, no flag
-      alt: "uses '--video-codec=${codec}' flag "
+      alt: "Uses the '--video-codec=${codec}' flag"
 
   encoder:
     label: Encoder
     info:
       default: defaults to first available, no flag
-      alt: "uses '--video-encoder=${encoder}' flag "
+      alt: "Uses the '--video-encoder=${encoder}' flag"
 
   format:
     label: Format
     info: 
-      default: appends format to '--record=savepath/file${format}' "
+      default: "Appends format to '--record=savepath/file${format}' "
 
   bitrate:
     label: Bitrate
     info: 
       default: defaults to 8M, no flag
-      alt: "uses '--video-bit-rate=${bitrate}M' flag "
+      alt: "Uses the '--video-bit-rate=${bitrate}M' flag"
 
   fps_limit:
     label: FPS limit
     info:
       default: no flag unless set
-      alt: "uses '--max-fps=${fps}' flag "
+      alt: "Uses the '--max-fps=${fps}' flag"
 
   resolution_scale: 
     label: Resolution scale
     info: 
       default: calculated based on device's resolution, no flag unless set
-      alt: "uses '--max-size=${size}' flag "
+      alt: "Uses the '--max-size=${size}' flag"
 
 ### config screen > audio section
 audio_section:
@@ -236,38 +236,38 @@ audio_section:
     label: Duplicate audio
     info: 
       default: only for Android 13 and above
-      alt: "uses '--audio-dup' flag "
+      alt: "Uses the '--audio-dup' flag"
 
   source:
     label: Source
     info:
       default: defaults to output, no flag
-      alt: "uses '${source}' flag "
+      alt: "Uses the '${source}' flag"
       inCaseOfDup: implied to 'Playback' with '--audio-dup', no flag
 
   codec:
     label: Codec
     info: 
       default: defaults to opus, no flag
-      alt: "uses '--audio-codec=${codec}' flag "
+      alt: "Uses the '--audio-codec=${codec}' flag"
       isAudioOnly: "Format: ${format}, requires Codec: ${codec}"
 
   encoder:
     label: Encoder
     info:
       default: defaults to first available, no flag
-      alt: "uses '--audio-encoder=${encoder}' flag "
+      alt: "Uses the '--audio-encoder=${encoder}' flag"
 
   format:
     label: Format
     info: 
-      default: appends format to '--record=savepath/file.${format}' "
+      default: "Appends format to '--record=savepath/file.${format}' "
 
   bitrate:
     label: Bitrate
     info: 
       default: defaults to 128k, no flag
-      alt: "uses '--audio-bit-rate=${bitrate}K' flag "
+      alt: "Uses the '--audio-bit-rate=${bitrate}K' flag"
 
 ### config screen > app section
 app_section:
@@ -275,8 +275,8 @@ app_section:
   select: 
     label: Select an app
     info: 
-      alt: "uses '--start-app=${app}' flag "
-      fc: "uses '--start-app=+${app}' flag "
+      alt: "Uses the '--start-app=${app}' flag"
+      fc: "Uses the '--start-app=+${app}' flag"
   force_close:
     label: Force close app before starting
     info: 
@@ -290,31 +290,31 @@ device_section:
     label: Stay awake
     info:
       default: prevent the device from sleeping, only works with usb connection
-      alt: "uses '--stay-awake' flag "
+      alt: "Uses the '--stay-awake' flag"
 
   show_touches:
     label: Show touches
     info:
       default: show finger touches, only works with physical touches on the device
-      alt: "uses '--show-touches' flag "
+      alt: "Uses the '--show-touches' flag"
   
   off_display_start:
     label: Turn off display on start
     info:
       default: turn device display off, on scrcpy start
-      alt: "uses '--turn-screen-off' flag "
+      alt: "Uses the '--turn-screen-off' flag"
 
   off_display_exit:
     label: Turn off display on exit
     info:
       default: turn device display off, on scrcpy exit
-      alt: "uses '--power-off-on-close' flag "
+      alt: "Uses the '--power-off-on-close' flag"
 
   screensaver:
     label: Disable screensaver (HOST)
     info:
       default: disable screensaver
-      alt: "uses '--disable-screensaver' flag "
+      alt: "Uses the '--disable-screensaver' flag"
 
 
 window_section:
@@ -323,31 +323,31 @@ window_section:
     label: Hide window
     info:
       default: start scrcpy with no window
-      alt: "uses '--no-window' flag "
+      alt: "Uses the '--no-window' flag"
 
   borderless:
     label: Borderless
     info:
       default: disable window decorations
-      alt: "uses '--window-borderless' flag "
+      alt: "Uses the '--window-borderless' flag"
   
   always_on_top:
     label: Always on top
     info:
       default: scrcpy window always on top
-      alt: "uses '--always-on-top' flag "
+      alt: "Uses the '--always-on-top' flag"
 
   time_limit:
     label: Time limit
     info:
       default: limits scrcpy session, in seconds
-      alt: "uses '--time-limit=${time}' flag "
+      alt: "Uses the '--time-limit=${time}' flag"
 
 ### config screen > additional flags section
 add_flags:
   title: Additional flags
   add: Add
-  info: avoid using flags that are already an option
+  info: Avoid using flags that are already available as options.
 
 
 
@@ -383,30 +383,30 @@ connect_loc:
     info:
       i1: Make sure your device is paired to your PC.
       i2: Otherwise, try turning wireless Adb off and on.
-      i3: 'If not paired: '
-      i4: 1. Use the pair windows (top-right button) 
-      i5: 2. Plug you device into your PC, allow debugging, and retry.
+      i3: 'If not paired:'
+      i4: 1. Use the pairing window (top-right button) 
+      i5: 2. Plug your device into your PC, allow debugging, and retry.
 
 
 ### preview and test section
 test_config_loc:
-  title: Test config
+  title: Test Configuration
   preview: Command preview
 
 
 #scrcpy manager tab
 scrcpy_manager_loc:
   title: Scrcpy Manager
-  check: Check for update
+  check: Check for Updates
   current:
     label: Current
-    in_use: In-use
+    in_use: In Use
   exec: 
     label: Open executable location
     info: Modify with care
   info_popup:
-    no_update: No update available
-    error: Error checking for update
+    no_update: No updates available
+    error: Error checking for updates
   updater:
     label: New version available
     new_version: New version
@@ -433,12 +433,22 @@ settings_loc:
       label: Accent color
     tint_level: 
       label: Tint level
+    dimness:
+      label: Dimness
+    brightness: 
+      label: Brightness
+    surface_opacity: 
+      label: Surface opacity
+      info: Known to cause flickering in Linux    
+    surface_blur: 
+      label: Surface blur
+      info: Known to cause flickering in Linux  
   
   behavior: 
     label: App behavior
     language:
       label: Language
-      info: Some languages are AI generated
+      info: Some languages are machine-translated and may contain errors.
     minimize: 
       label: Minimize
       value: 
@@ -470,7 +480,7 @@ companion_loc:
       label: Server port
       info: 'Default: 8080'
     secret:
-      label: Server apikey
+      label: Server API Key
     auto_start:
       label: Start server on launch
 
@@ -480,7 +490,7 @@ companion_loc:
     no_client: No clients connected
     no_blocked: No blocked clients
 
-  qr: Scan the QR code from the companion app
+  qr: Scan QR code from the companion app
 
 
 ## about tab
@@ -494,19 +504,19 @@ about_loc:
 # quit dialog
 quit_dialog_loc:
   title: Quit Scrcpy GUI?
-  kill_running: 
-    label: Kill running?
-    info: ${count} scrcpy(s). Scrcpys with no window will be killed regardless
+  kill_running:
+    label: Stop running instances?
+    info: ${count} scrcpy instance(s). All instances, including those without a window, will be stopped. # NOTE: Consider using a pluralization library if available
   disconnect: 
     label: Disconnect wireless ADB?
-    info: ${count} device(s)
+    info: ${count} device(s) # NOTE: Consider using a pluralization library if available
 
 # home tab > device tile > disconnect dialog
 disconnect_dialog_loc:
   title: Disconnect ${name}?
   has_running:
-    label: ${name} has ${count} running scrcpy(s)
-    info: Disconnecting will kill the scrcpy(s)
+    label: ${name} has ${count} running scrcpy instance(s)
+    info: Disconnecting will stop the running scrcpy instance(s).
 
 
 # config screen > close dialog
@@ -514,10 +524,14 @@ close_dialog_loc:
   not_allowed: Not allowed!
   overwrite: Overwrite?
   name_exist: Name already exists!
-  save: Save config?
+  save: Save configuration?
   command_preview: 'Command preview:'
   name: 'Name:'
 
+# config screen > unsaved changes dialog
+unsaved_change_dialog_loc:
+  title: Confirm exit?
+  contents: Unsaved changes will be lost.
 
 # companion tab > disclaimer
 server_disclaimer_loc:
@@ -534,11 +548,12 @@ ip_history_loc:
 
 # button
 button_label_loc:
-  ok: Ok
+  ok: OK
+  confirm: Confirm
   close: Close
   cancel: Cancel
   stop: Stop
-  test_config: Test config
+  test_config: Test Configuration
   update: Update
   info: Info
   select_all: Select all
@@ -549,23 +564,25 @@ button_label_loc:
   clear: Clear
   delete: Delete  
   server_agree: I understand, start server
-  reorder: Reorder
-  stop_all: Stop all
+  reorder: Re-order
+  stop_all: Stop All
   filter: Filter
   edit: Edit
   override: Override
+  dont_show_again: "Don't Show Again"
+  sponsor: Sponsor
 
 # status 
 status_loc: 
   failed: Failed
-  unauth: Unauthenticated
+  unauth: Unauthorized
   error: Error
   latest: Latest
   closing: Closing
   copied: Copied
   running: Running
   stopped: Stopped
-  getting_info: Getting info
+  getting_info: Getting Information
   no_devices_found: No devices found
 
 # common
@@ -600,7 +617,7 @@ config_filters_loc:
 config_override_loc:
   record:
     label: Record
-    open_folder: Open folder
+    open_folder: Open Folder
   landscape: 
     label: Landscape
     info: Only for virtual display
@@ -608,12 +625,12 @@ config_override_loc:
     label: Mute
 
 auto_arrange_origin_loc:
-  title: Auto arrange origin
-  alignments: Alignments
+  title: Auto-Arrange
+  alignments: Alignment
   off: Off
-  top_left: Top left
-  top_right: Top right
-  center_left: Center left
-  center_right: Center right
-  bottom_left: Bottom left
-  bottom_right: Bottom right
+  top_left: Top Left
+  top_right: Top Right
+  center_left: Center Left
+  center_right: Center Right
+  bottom_left: Bottom Left
+  bottom_right: Bottom Right

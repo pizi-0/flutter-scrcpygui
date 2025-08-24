@@ -125,8 +125,8 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                   const Divider(),
                   PgListTile(
                     title: looks.themeMode == ThemeMode.dark
-                        ? 'Dimness'
-                        : 'Brightness',
+                        ? el.settingsLoc.looks.dimness.label
+                        : el.settingsLoc.looks.brightness.label,
                     trailing: ConstrainedBox(
                       constraints: const BoxConstraints(
                           minWidth: 180, maxWidth: 180, minHeight: 30),
@@ -181,8 +181,8 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
         ),
         const Divider(),
         PgListTile(
-          title: 'Surface opacity',
-          subtitle: 'Known to cause flickering in Linux',
+          title: el.settingsLoc.looks.surfaceOpacity.label,
+          subtitle: el.settingsLoc.looks.surfaceOpacity.info,
           showSubtitle: Platform.isLinux,
           trailing: ConstrainedBox(
             constraints: const BoxConstraints(
@@ -206,8 +206,8 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
         ),
         const Divider(),
         PgListTile(
-          title: 'Surface blur',
-          subtitle: 'Known to cause flickering in Linux',
+          title: el.settingsLoc.looks.surfaceBlur.label,
+          subtitle: el.settingsLoc.looks.surfaceBlur.info,
           showSubtitle: Platform.isLinux,
           trailing: ConstrainedBox(
             constraints: const BoxConstraints(

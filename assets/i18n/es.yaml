@@ -9,7 +9,7 @@ device_tile_loc:
   context:
     disconnect: Desconectar
     to_wireless: A inalámbrico
-    kill_running: Detener scrcpy en ejecución
+    stop_running: Detener scrcpy en ejecución
     scrcpy: Scrcpy
     all: Todos
     all_scrcpy: Detener todo scrcpy
@@ -32,27 +32,27 @@ lounge_loc:
       and_start: En ${config}
       select_config: Selecciona una configuración primero
       start_on: Iniciar en ${config}
-      with_overrides: Iniciar con modificaciones
+      with_overrides: Iniciar con anulaciones
       package_name: Nombre del paquete
       reset_icon: Restablecer icono
     sections:
       pinned: Ancladas
       apps: Aplicaciones
-    missing_icon: Iconos faltantes (${count})
+    missing_icon: Iconos no encontrados (${count})
   placeholders:
     config: Seleccionar configuración
     app: Seleccionar aplicación
     search: "Presiona '/' para buscar"
   tooltip:
-    missing_config: "Configuración faltante: ${config}"
+    missing_config: "Configuración no encontrada: ${config}"
     pin: Anclar par aplicación/configuración
     on_config: "En: ${config}"
     hide_app_name: Ocultar nombre de la aplicación
     show_app_name: Mostrar nombre de la aplicación
   info:
     empty_search: No se encontraron aplicaciones
-    empty_pin: No hay aplicaciones ancladas
-    empty_instance: Ninguna instancia en ejecución
+    empty_pin: No hay Aplicaciones Ancladas
+    empty_instance: Ninguna Instancia en Ejecución
 
 
 config_loc:
@@ -80,14 +80,14 @@ delete_config_dialog_loc:
 
 ## home_tab > device settings screen
 device_settings_loc:
-  title: Ajustes
+  title: Ajustes del dispositivo
   info: Información
   refresh: Actualizar información
   rename:
     label: Renombrar
     info: Presione [Enter] para aplicar el nombre
   auto_connect:
-    label: Conexión automática
+    label: Autoconexión
     info: Conectar automáticamente dispositivo inalámbrico
   on_connected:
     label: Al conectar
@@ -108,17 +108,17 @@ device_settings_loc:
 
 ## home_tab > config manager
 config_manager_loc:
-  title: Administrador de configuraciones
+  title: Administrador de Configuraciones
 
 ## home_tab > config screen
 config_screen_loc:
-  title: Ajustes de configuración
+  title: Ajustes de Configuración
   connection_lost: Conexión del dispositivo perdida
   similar_exist: Duplicado de ${configName}
 
 ## home_tab > config screen > test config
 log_screen_loc:
-  title: Registro de prueba
+  title: Registro de Prueba
   dialog:
     title: Comando
 
@@ -375,13 +375,13 @@ connect_loc:
 
 ### preview and test section
 test_config_loc:
-  title: Probar configuración
+  title: Probar Configuración
   preview: Vista previa del comando
 
 #scrcpy manager tab
 scrcpy_manager_loc:
   title: Administrador de scrcpy
-  check: Buscar actualizaciones
+  check: Buscar Actualizaciones
   current:
     label: Actual
     in_use: En uso
@@ -407,13 +407,23 @@ settings_loc:
         light: Claro
         system: Sistema
     old_scheme:
-      label: Usar esquema de colores antiguo
+      label: Usar esquema de colores Shadcn
     corner_radius:
       label: Radio de las esquinas
     accent_color:
       label: Color de acento
     tint_level:
       label: Nivel de tinte
+    dimness:
+      label: Atenuación
+    brightness:
+      label: Brillo
+    surface_opacity:
+      label: Opacidad de la superficie
+      info: Conocido por causar parpadeo en Linux
+    surface_blur:
+      label: Desenfoque de la superficie
+      info: Conocido por causar parpadeo en Linux
 
   behavior:
     label: Comportamiento de la aplicación
@@ -429,10 +439,10 @@ settings_loc:
       label: Recordar tamaño de ventana
       info: Recordar tamaño de ventana al salir
     auto_arrange:
-      label: Organizar ventanas scrcpy automáticamente
+      label: Auto organizar ventanas de scrcpy
       info: Organizar automáticamente las ventanas de scrcpy al iniciar
     window_to_screen_ratio:
-      label: Relación altura ventana/pantalla
+      label: Relación de altura ventana/pantalla
       label_short: Altura %
       info: "Relación de la altura de la ventana de scrcpy con la altura de la pantalla principal. Mín: 0.4, Máx: 1.0, Predeterminado: 0.88"
 
@@ -440,7 +450,7 @@ settings_loc:
 companion_loc:
   title: Compañero
   server:
-    label: Configurar servidor
+    label: Configuración del servidor
     status: Estado
     endpoint:
       label: Endpoint del servidor
@@ -453,13 +463,11 @@ companion_loc:
     secret:
       label: Clave API del servidor
     auto_start:
-      label: Iniciar servidor al arrancar
-
-  qr: Escanea el código QR desde la aplicación compañera
-
+      label: Iniciar servidor al iniciar
+  qr: Escanear QR desde la app compañera
   client:
-    clients: Conectados (${count})
-    blocked: Bloqueados (${count})
+    clients: Clientes conectados (${count})
+    blocked: Clientes bloqueados (${count})
     no_client: No hay clientes conectados
     no_blocked: No hay clientes bloqueados
 
@@ -475,18 +483,18 @@ about_loc:
 quit_dialog_loc:
   title: ¿Salir de la GUI de scrcpy?
   kill_running:
-    label: ¿Detener scrcpy en ejecución?
-    info: ${count} scrcpy(s). Las instancias sin ventana se cerrarán de todos modos
+    label: ¿Detener procesos en ejecución?
+    info: ${count} instancia(s) de scrcpy. Se terminarán todas, incluidas las que no tienen ventana. # NOTE: Consider using a pluralization library if available
   disconnect:
     label: ¿Desconectar ADB inalámbrico?
-    info: ${count} dispositivo(s)
+    info: ${count} dispositivo(s) # NOTE: Consider using a pluralization library if available
 
 # home tab > device tile > disconnect dialog
 disconnect_dialog_loc:
   title: ¿Desconectar ${name}?
   has_running:
-    label: ${name} tiene ${count} scrcpy(s) en ejecución
-    info: La desconexión detendrá scrcpy(s)
+    label: ${name} tiene ${count} instancia(s) de scrcpy en ejecución
+    info: La desconexión detendrá la(s) instancia(s) de scrcpy en ejecución.
 
 # config screen > close dialog
 close_dialog_loc:
@@ -496,6 +504,11 @@ close_dialog_loc:
   name_exist: ¡El nombre ya existe!
   command_preview: 'Vista previa del comando:'
   name: 'Nombre:'
+
+# config screen > unsaved changes dialog
+unsaved_change_dialog_loc:
+  title: ¿Confirmar salida?
+  contents: Los cambios no guardados se perderán.
 
 # companion tab > disclaimer
 server_disclaimer_loc:
@@ -509,11 +522,12 @@ ip_history_loc:
 
 # button
 button_label_loc:
-  ok: Aceptar
+  ok: OK
+  confirm: Confirmar
   close: Cerrar
   cancel: Cancelar
   stop: Detener
-  test_config: Probar configuración
+  test_config: Probar Configuración
   update: Actualizar
   info: Información
   select_all: Seleccionar todo
@@ -525,10 +539,12 @@ button_label_loc:
   delete: Eliminar
   server_agree: Entiendo, iniciar servidor
   reorder: Reordenar
-  stop_all: Detener todo
+  stop_all: Detener Todo
   filter: Filtrar
   edit: Editar
-  override: Modificar
+  override: Anular
+  dont_show_again: "No Mostrar de Nuevo"
+  sponsor: Patrocinar
 
 # status
 status_loc:
@@ -548,7 +564,7 @@ common_loc:
   default: Predeterminado
   yes: Sí
   no: No
-  bundled: Incluido
+  bundled: Integrado
 
 color_scheme_name_loc:
   blue: Azul
@@ -580,12 +596,12 @@ config_override_loc:
     label: Silenciar
 
 auto_arrange_origin_loc:
-  title: Origen de organización automática
+  title: Auto-Organizar
   alignments: Alineaciones
   off: Desactivado
-  top_left: Arriba a la izquierda
-  top_right: Arriba a la derecha
-  center_left: Centro a la izquierda
-  center_right: Centro a la derecha
-  bottom_left: Abajo a la izquierda
-  bottom_right: Abajo a la derecha
+  top_left: Arriba Izquierda
+  top_right: Arriba Derecha
+  center_left: Centro Izquierda
+  center_right: Centro Derecha
+  bottom_left: Abajo Izquierda
+  bottom_right: Abajo Derecha

@@ -81,7 +81,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
             child: Text(el.deviceTileLoc.context.allScrcpy),
           )
         ],
-        child: Text(el.deviceTileLoc.context.killRunning),
+        child: Text(el.deviceTileLoc.context.stopRunning),
       ),
       const MenuDivider(),
       MenuLabel(child: Text(el.deviceTileLoc.context.manage).xSmall().muted()),

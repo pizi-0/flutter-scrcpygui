@@ -9,7 +9,7 @@ device_tile_loc:
   context:
     disconnect: Putuskan Sambungan
     to_wireless: Ke Tanpa Wayar
-    kill_running: Hentikan scrcpy
+    stop_running: Hentikan scrcpy yang sedang berjalan
     scrcpy: Scrcpy
     all: Semua
     all_scrcpy: Hentikan semua scrcpy
@@ -19,7 +19,7 @@ lounge_loc:
   controls:
     label: Kawalan
   pinned_apps:
-    label: Aplikasi yang disemat
+    label: Aplikasi disemat
   launcher:
     label: Pelancar aplikasi
   running:
@@ -51,8 +51,8 @@ lounge_loc:
     show_app_name: Tunjukkan nama aplikasi
   info:
     empty_search: Tiada aplikasi ditemui
-    empty_pin: Tiada aplikasi yang di pin
-    empty_instance: Tiada instans sedang berjalan
+    empty_pin: Tiada Aplikasi Disemat
+    empty_instance: Tiada Instans Sedang Berjalan
 
 
 config_loc:
@@ -80,14 +80,14 @@ no_config_dialog_loc:
 
 ## home_tab > device settings screen
 device_settings_loc:
-  title: Tetapan
+  title: Tetapan Peranti
   info: Maklumat
   refresh: Muat Semula Maklumat
   rename:
     label: Namakan Semula
     info: Tekan [Enter] untuk menggunakan nama
   auto_connect:
-    label: Sambung Automatik
+    label: Sambungan-automatik
     info: Sambung peranti tanpa wayar secara automatik
   on_connected:
     label: Semasa Disambungkan
@@ -108,11 +108,11 @@ device_settings_loc:
 
 ## home_tab > config manager
 config_manager_loc:
-  title: Pengurus konfigurasi
+  title: Pengurus Konfigurasi
 
 ## home_tab > config screen
 config_screen_loc:
-  title: Tetapan konfigurasi
+  title: Tetapan Konfigurasi
   connection_lost: Sambungan ke peranti terputus
   similar_exist: Salinan daripada ${configName}
 
@@ -399,24 +399,34 @@ scrcpy_manager_loc:
 settings_loc:
   title: Tetapan
   looks:
-    label: Rupa
+    label: Penampilan
     mode:
-      label: Mod Tema
+      label: Mod tema
       value:
         dark: Gelap
         light: Cerah
         system: Sistem
     old_scheme:
-      label: Guna skema warna lama
+      label: Guna skema warna Shadcn
     corner_radius:
-      label: Jejari Sudut
+      label: Jejari sudut
     accent_color:
-      label: Warna Aksen
+      label: Warna aksen
     tint_level:
-      label: Tahap Warna
+      label: Tahap warna
+    dimness:
+      label: Keredupan
+    brightness:
+      label: Kecerahan
+    surface_opacity:
+      label: Kelegapan permukaan
+      info: Dikenali menyebabkan kelipan di Linux
+    surface_blur:
+      label: Kekaburan permukaan
+      info: Dikenali menyebabkan kelipan di Linux
 
   behavior:
-    label: Tingkah Laku Aplikasi
+    label: Tingkah laku aplikasi
     language:
       label: Bahasa
       info: Sesetengah bahasa dijana oleh AI
@@ -429,7 +439,7 @@ settings_loc:
       label: Ingat saiz tetingkap
       info: Ingat saiz tetingkap semasa keluar
     auto_arrange:
-      label: Susun tetingkap scrcpy secara automatik
+      label: Susun automatik tetingkap scrcpy
       info: Susun tetingkap scrcpy secara automatik semasa mula
     window_to_screen_ratio:
       label: Nisbah ketinggian tetingkap ke skrin
@@ -440,26 +450,26 @@ settings_loc:
 companion_loc:
   title: Pendamping
   server:
-    label: Konfigurasi server
+    label: Konfigurasi pelayan
     status: Status
     endpoint:
       label: Titik akhir pelayan
     name: 
-      label: Nama server
+      label: Nama pelayan
       info: 'Lalai: Scrcpy GUI'
     port: 
-      label: Port server
+      label: Port pelayan
       info: 'Lalai: 8080'
     secret:
-      label: Kunci API server
+      label: Kunci API Pelayan
     auto_start:
-      label: Mulakan server sewaktu aplikasi dilancarkan
+      label: Mulakan pelayan semasa pelancaran
 
   qr: Imbas kod QR daripada aplikasi pendamping
 
   client:
-    clients: Disambungkan (${count})
-    blocked: Disekat (${count})
+    clients: Klien disambungkan (${count})
+    blocked: Klien disekat (${count})
     no_client: Tiada klien disambungkan
     no_blocked: Tiada klien disekat
 
@@ -475,27 +485,32 @@ about_loc:
 quit_dialog_loc:
   title: Keluar dari GUI scrcpy?
   kill_running:
-    label: Hentikan yang Sedang Berjalan?
-    info: ${count} scrcpy. scrcpy tanpa tetingkap akan dihentikan juga
+    label: Hentikan instans yang sedang berjalan?
+    info: ${count} instans scrcpy. Semua instans, termasuk yang tanpa tetingkap, akan dihentikan. # NOTA: Pertimbangkan untuk menggunakan pustaka pluralisasi jika tersedia
   disconnect:
     label: Putuskan Sambungan ADB Tanpa Wayar?
-    info: ${count} peranti
+    info: ${count} peranti # NOTA: Pertimbangkan untuk menggunakan pustaka pluralisasi jika tersedia
 
 # home tab > device tile > disconnect dialog
 disconnect_dialog_loc:
   title: Putuskan Sambungan ${name}?
   has_running:
-    label: ${name} mempunyai ${count} scrcpy yang sedang berjalan
-    info: Memutuskan sambungan akan menghentikan scrcpy
+    label: ${name} mempunyai ${count} instans scrcpy yang sedang berjalan
+    info: Memutuskan sambungan akan menghentikan instans scrcpy yang sedang berjalan.
 
 # config screen > close dialog
 close_dialog_loc:
   not_allowed: Tidak Dibenarkan!
   overwrite: Timpa?
-  save: Simpan Konfigurasi?
+  save: Simpan konfigurasi?
   name_exist: Nama sudah wujud!
   command_preview: 'Pratonton Perintah:'
   name: 'Nama:'
+
+# config screen > unsaved changes dialog
+unsaved_change_dialog_loc:
+  title: Sahkan keluar?
+  contents: Perubahan yang tidak disimpan akan hilang.
 
 # companion tab > disclaimer
 server_disclaimer_loc:
@@ -509,7 +524,8 @@ ip_history_loc:
 
 # button
 button_label_loc:
-  ok: Ok
+  ok: OK
+  confirm: Sahkan
   close: Tutup
   cancel: Batal
   stop: Hentikan
@@ -525,10 +541,12 @@ button_label_loc:
   delete: Padam
   server_agree: Saya faham, mulakan pelayan
   reorder: Susun semula
-  stop_all: Hentikan semua
+  stop_all: Hentikan Semua
   filter: Tapis
   edit: Ubah
   override: Ubahsuai
+  dont_show_again: "Jangan Tunjuk Lagi"
+  sponsor: Taja
 
 
 
@@ -574,7 +592,7 @@ config_filters_loc:
 config_override_loc:
   record:
     label: Rakam
-    open_folder: Buka folder
+    open_folder: Buka Folder
   landscape:
     label: Lanskap
     info: Hanya untuk paparan maya
@@ -582,12 +600,12 @@ config_override_loc:
     label: Senyap
 
 auto_arrange_origin_loc:
-  title: Titik rujukan
+  title: Susun-Automatik
   alignments: Penjajaran
   off: Matikan
-  top_left: Kiri atas
-  top_right: Kanan atas
-  center_left: Tengah kiri
-  center_right: Tengah kanan
-  bottom_left: Kiri bawah
-  bottom_right: Kanan bawah
+  top_left: Atas Kiri
+  top_right: Atas Kanan
+  center_left: Tengah Kiri
+  center_right: Tengah Kanan
+  bottom_left: Bawah Kiri
+  bottom_right: Bawah Kanan

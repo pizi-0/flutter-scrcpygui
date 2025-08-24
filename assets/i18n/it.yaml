@@ -9,7 +9,7 @@ device_tile_loc:
   context:
     disconnect: Disconnetti
     to_wireless: A wireless
-    kill_running: Termina scrcpy in esecuzione
+    stop_running: Arresta scrcpy in esecuzione
     scrcpy: Scrcpy
     all: Tutti
     all_scrcpy: Termina tutti gli scrcpy
@@ -56,7 +56,7 @@ lounge_loc:
 
 
 config_loc:
-  label: Config (${count})
+  label: Configurazioni (${count})
   new: Crea
   select: Seleziona una configurazione
   details: Mostra dettagli
@@ -80,14 +80,14 @@ delete_config_dialog_loc:
 
 ## home_tab > device settings screen
 device_settings_loc:
-  title: Impostazioni
+  title: Impostazioni Dispositivo
   info: Info
   refresh: Aggiorna info
   rename:
     label: Rinomina
     info: Premi [Invio] per applicare il nome
   auto_connect:
-    label: Connessione automatica
+    label: Auto-connessione
     info: Connetti automaticamente il dispositivo wireless
   on_connected:
     label: Alla connessione
@@ -108,17 +108,17 @@ device_settings_loc:
 
 ## home_tab > config manager
 config_manager_loc:
-  title: Gestore configurazioni
+  title: Gestore Configurazioni
 
 ## home_tab > config screen
 config_screen_loc:
-  title: Impostazioni configurazione
+  title: Impostazioni Configurazione
   connection_lost: Connessione al dispositivo persa
   similar_exist: Duplicato di ${configName}
 
 ## home_tab > config screen > test config
 log_screen_loc:
-  title: Log di test
+  title: Log di Test
   dialog:
     title: Comando
 
@@ -375,13 +375,13 @@ connect_loc:
 
 ### preview and test section
 test_config_loc:
-  title: Prova configurazione
+  title: Prova Configurazione
   preview: Anteprima comando
 
 #scrcpy manager tab
 scrcpy_manager_loc:
   title: Gestione Scrcpy
-  check: Controlla aggiornamenti
+  check: Controlla Aggiornamenti
   current:
     label: Corrente
     in_use: In uso
@@ -407,13 +407,23 @@ settings_loc:
         light: Chiaro
         system: Sistema
     old_scheme:
-      label: Usa vecchio schema di colori
+      label: Usa schema colori Shadcn
     corner_radius:
       label: Raggio angoli
     accent_color:
-      label: Colore accento
+      label: Colore d'accento
     tint_level:
       label: Livello tinta
+    dimness:
+      label: Oscuramento
+    brightness:
+      label: Luminosità
+    surface_opacity:
+      label: Opacità superficie
+      info: Noto per causare sfarfallio su Linux
+    surface_blur:
+      label: Sfocatura superficie
+      info: Noto per causare sfarfallio su Linux
 
   behavior:
     label: Comportamento app
@@ -421,7 +431,7 @@ settings_loc:
       label: Lingua
       info: Alcune lingue sono generate dall'IA
     minimize:
-      label: Riduci a icona
+      label: Minimizza
       value:
         tray: a icona
         taskbar: a barra delle applicazioni
@@ -429,7 +439,7 @@ settings_loc:
       label: Ricorda dimensioni finestra
       info: Ricorda le dimensioni della finestra all'uscita
     auto_arrange:
-      label: Disponi automaticamente le finestre di scrcpy
+      label: Disponi automaticamente finestre scrcpy
       info: Disponi automaticamente le finestre di scrcpy all'avvio
     window_to_screen_ratio:
       label: Rapporto altezza finestra/schermo
@@ -440,15 +450,15 @@ settings_loc:
 companion_loc:
   title: Companion
   server:
-    label: Configura server
+    label: Impostazione server
     status: Stato
     endpoint:
-      label: Endpoint del server
+      label: Endpoint server
     name: 
-      label: Nome del server
+      label: Nome server
       info: 'Predefinito: Scrcpy GUI'
     port: 
-      label: Porta del server
+      label: Porta server
       info: 'Predefinito: 8080'
     secret:
       label: Chiave API del server
@@ -458,8 +468,8 @@ companion_loc:
   qr: Scansiona il codice QR dall'app companion
 
   client:
-    clients: Clienti (${count})
-    blocked: Bloccati (${count})
+    clients: Client connessi (${count})
+    blocked: Client bloccati (${count})
     no_client: Nessun client connesso
     no_blocked: Nessun client bloccato
 
@@ -474,11 +484,11 @@ about_loc:
 quit_dialog_loc:
   title: Uscire da Scrcpy GUI?
   kill_running:
-    label: Terminare in esecuzione?
-    info: ${count} scrcpy(s). Gli scrcpy senza finestra verranno terminati comunque
+    label: Arrestare le istanze in esecuzione?
+    info: ${count} istanza(e) di scrcpy. Tutte le istanze, incluse quelle senza finestra, verranno arrestate. # NOTA: Considera l'uso di una libreria di pluralizzazione se disponibile
   disconnect:
     label: Disconnettere ADB wireless?
-    info: ${count} dispositivo(i)
+    info: ${count} dispositivo(i) # NOTA: Considera l'uso di una libreria di pluralizzazione se disponibile
 
 # home tab > device tile > disconnect dialog
 disconnect_dialog_loc:
@@ -496,6 +506,11 @@ close_dialog_loc:
   command_preview: 'Anteprima comando:'
   name: 'Nome:'
 
+# config screen > unsaved changes dialog
+unsaved_change_dialog_loc:
+  title: Confermare l'uscita?
+  contents: Le modifiche non salvate andranno perse.
+
 # companion tab > disclaimer
 server_disclaimer_loc:
   title: Avviso
@@ -508,11 +523,12 @@ ip_history_loc:
 
 # button
 button_label_loc:
-  ok: Ok
+  ok: OK
+  confirm: Conferma
   close: Chiudi
   cancel: Annulla
   stop: Ferma
-  test_config: Prova configurazione
+  test_config: Prova Configurazione
   update: Aggiorna
   info: Info
   select_all: Seleziona tutto
@@ -524,10 +540,12 @@ button_label_loc:
   delete: Elimina
   server_agree: Capisco, avvia server
   reorder: Riordina
-  stop_all: Ferma tutto
+  stop_all: Ferma Tutto
   filter: Filtra
   edit: Modifica
   override: Ignora
+  dont_show_again: "Non Mostrare Più"
+  sponsor: Sponsorizza
 
 
   
@@ -573,7 +591,7 @@ config_filters_loc:
 config_override_loc:
   record:
     label: Registra
-    open_folder: Apri cartella
+    open_folder: Apri Cartella
   landscape:
     label: Orizzontale
     info: Solo per display virtuale
@@ -581,12 +599,12 @@ config_override_loc:
     label: Silenzia
 
 auto_arrange_origin_loc:
-  title: Punto di ancoraggio
+  title: Disposizione Automatica
   alignments: Allineamenti
   off: Spento
-  top_left: In alto a sinistra
-  top_right: In alto a destra
-  center_left: Al centro a sinistra
-  center_right: Al centro a destra
-  bottom_left: In basso a sinistra
-  bottom_right: In basso a destra
+  top_left: In Alto a Sinistra
+  top_right: In Alto a Destra
+  center_left: Centro a Sinistra
+  center_right: Centro a Destra
+  bottom_left: In Basso a Sinistra
+  bottom_right: In Basso a Destra
