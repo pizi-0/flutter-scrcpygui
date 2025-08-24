@@ -420,10 +420,10 @@ settings_loc:
       label: Kecerahan
     surface_opacity:
       label: Kelegapan permukaan
-      info: Dikenali menyebabkan kelipan di Linux
+      info: Dikenalpasti penyebab UI berkelip di Linux
     surface_blur:
       label: Kekaburan permukaan
-      info: Dikenali menyebabkan kelipan di Linux
+      info: Dikenalpasti penyebab UI berkelip di Linux
 
   behavior:
     label: Tingkah Laku Aplikasi
@@ -468,8 +468,8 @@ companion_loc:
   qr: Imbas kod QR daripada aplikasi pendamping
 
   client:
-    clients: Klien disambungkan (${count})
-    blocked: Klien disekat (${count})
+    clients: Disambungkan (${count})
+    blocked: Disekat (${count})
     no_client: Tiada klien disambungkan
     no_blocked: Tiada klien disekat
 

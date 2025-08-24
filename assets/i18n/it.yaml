@@ -468,8 +468,8 @@ companion_loc:
   qr: Scansiona il codice QR dall'app companion
 
   client:
-    clients: Client connessi (${count})
-    blocked: Client bloccati (${count})
+    clients: Connessi (${count})
+    blocked: Bloccati (${count})
     no_client: Nessun client connesso
     no_blocked: Nessun client bloccato
 

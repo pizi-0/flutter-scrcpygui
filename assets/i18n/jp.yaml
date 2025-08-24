@@ -465,8 +465,8 @@ companion_loc:
       label: 起動時にサーバーを開始
 
   client:
-    clients: 接続中のクライアント (${count})
-    blocked: ブロック済みのクライアント (${count})
+    clients: 接続中 (${count})
+    blocked: ブロック済み (${count})
     no_client: 接続中のクライアントなし
     no_blocked: ブロック済みのクライアントなし
 

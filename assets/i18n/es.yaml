@@ -466,8 +466,8 @@ companion_loc:
       label: Iniciar servidor al iniciar
   qr: Escanear QR desde la app compañera
   client:
-    clients: Clientes conectados (${count})
-    blocked: Clientes bloqueados (${count})
+    clients: Conectados (${count})
+    blocked: Bloqueados (${count})
     no_client: No hay clientes conectados
     no_blocked: No hay clientes bloqueados
 

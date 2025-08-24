@@ -179,7 +179,7 @@ class _AboutTabState extends ConsumerState<AboutTab> {
                       leading:
                           Icon(BootstrapIcons.heartFill, color: Colors.pink)
                               .iconXSmall(),
-                      child: Text('Sponsor'),
+                      child: Text(el.buttonLabelLoc.sponsor),
                     ),
                   ),
                 ],

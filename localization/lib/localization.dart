@@ -10176,10 +10176,8 @@ LocalizationMessages get es => LocalizationMessages(
           ),
         ),
         client: CompanionLocClient(
-          clients: ({required String count}) =>
-              '''Clientes conectados (${count})''',
-          blocked: ({required String count}) =>
-              '''Clientes bloqueados (${count})''',
+          clients: ({required String count}) => '''Conectados (${count})''',
+          blocked: ({required String count}) => '''Bloqueados (${count})''',
           noClient: 'No hay clientes conectados',
           noBlocked: 'No hay clientes bloqueados',
         ),
@@ -10903,10 +10901,8 @@ LocalizationMessages get it => LocalizationMessages(
           ),
         ),
         client: CompanionLocClient(
-          clients: ({required String count}) =>
-              '''Client connessi (${count})''',
-          blocked: ({required String count}) =>
-              '''Client bloccati (${count})''',
+          clients: ({required String count}) => '''Connessi (${count})''',
+          blocked: ({required String count}) => '''Bloccati (${count})''',
           noClient: 'Nessun client connesso',
           noBlocked: 'Nessun client bloccato',
         ),
@@ -11568,11 +11564,11 @@ LocalizationMessages get ms => LocalizationMessages(
           ),
           surfaceOpacity: SettingsLocLooksSurfaceOpacity(
             label: 'Kelegapan permukaan',
-            info: 'Dikenali menyebabkan kelipan di Linux',
+            info: 'Dikenalpasti penyebab UI berkelip di Linux',
           ),
           surfaceBlur: SettingsLocLooksSurfaceBlur(
             label: 'Kekaburan permukaan',
-            info: 'Dikenali menyebabkan kelipan di Linux',
+            info: 'Dikenalpasti penyebab UI berkelip di Linux',
           ),
         ),
         behavior: SettingsLocBehavior(
@@ -11628,9 +11624,8 @@ LocalizationMessages get ms => LocalizationMessages(
           ),
         ),
         client: CompanionLocClient(
-          clients: ({required String count}) =>
-              '''Klien disambungkan (${count})''',
-          blocked: ({required String count}) => '''Klien disekat (${count})''',
+          clients: ({required String count}) => '''Disambungkan (${count})''',
+          blocked: ({required String count}) => '''Disekat (${count})''',
           noClient: 'Tiada klien disambungkan',
           noBlocked: 'Tiada klien disekat',
         ),
@@ -12330,8 +12325,8 @@ LocalizationMessages get jp => LocalizationMessages(
           ),
         ),
         client: CompanionLocClient(
-          clients: ({required String count}) => '''接続中のクライアント (${count})''',
-          blocked: ({required String count}) => '''ブロック済みのクライアント (${count})''',
+          clients: ({required String count}) => '''接続中 (${count})''',
+          blocked: ({required String count}) => '''ブロック済み (${count})''',
           noClient: '接続中のクライアントなし',
           noBlocked: 'ブロック済みのクライアントなし',
         ),
