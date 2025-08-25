@@ -373,7 +373,6 @@ class OriginBox extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final selectedOrigin =
         ref.watch(settingsProvider).behaviour.autoArrangeOrigin;
     final isSelected = selectedOrigin == origin;
@@ -407,23 +406,15 @@ class OriginBox extends ConsumerWidget {
       curve: Curves.easeInOut,
       width: width,
       child: Button(
+        disableTransition: true,
         onHover: onHover,
-        style: origin == AutoArrangeOrigin.off && isSelected
-            ? ButtonStyle.destructive(
+        style: isSelected
+            ? ButtonStyle.primary(
                 density: ButtonDensity.dense,
               )
-            : isSelected
-                ? ButtonStyle.outline(
-                    density: ButtonDensity.dense,
-                  ).withBackgroundColor(
-                    color: theme.colorScheme.primary,
-                    hoverColor: theme.colorScheme.primary)
-                : ButtonStyle.outline(
-                    density: ButtonDensity.dense,
-                  ).withBackgroundColor(
-                    hoverColor: origin == AutoArrangeOrigin.off
-                        ? theme.colorScheme.destructive
-                        : theme.colorScheme.muted),
+            : ButtonStyle.outline(
+                density: ButtonDensity.dense,
+              ),
         onPressed: () {
           ref.read(settingsProvider.notifier).changeAutoArrangeOrigin(origin);
           Db.saveAppSettings(ref.read(settingsProvider));

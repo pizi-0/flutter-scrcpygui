@@ -6,6 +6,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../../../../../providers/config_provider.dart';
+import '../../../../../../widgets/custom_ui/pg_button.dart';
 
 class OverrideWidgets extends ConsumerStatefulWidget {
   const OverrideWidgets({super.key});
@@ -25,7 +26,7 @@ class _OverrideWidgetsState extends ConsumerState<OverrideWidgets> {
       children: [
         Chip(
           style: overrides.isNotEmpty
-              ? ButtonStyle.destructiveIcon()
+              ? PgButtonVariance.destructive
               : ButtonStyle.secondary(),
           onPressed: overrides.isEmpty
               ? null

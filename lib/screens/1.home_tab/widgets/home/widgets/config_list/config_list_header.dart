@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/app_grid_settings_provider.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_button.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -147,7 +148,7 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
           spacing: 8,
           children: [
             Chip(
-                style: ButtonStyle.destructiveIcon(),
+                style: PgButtonVariance.destructive,
                 child: Icon(Icons.close_rounded).iconSmall(),
                 onPressed: () => {
                       ref.read(configListStateProvider.notifier).state =

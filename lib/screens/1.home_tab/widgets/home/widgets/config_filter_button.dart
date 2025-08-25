@@ -148,7 +148,7 @@ class _ConfigFilterButtonBigState extends ConsumerState<ConfigFilterButtonBig> {
         children: [
           Chip(
             style: filters.isNotEmpty
-                ? ButtonStyle.destructiveIcon()
+                ? PgButtonVariance.destructive
                 : ButtonStyle.secondary(),
             onPressed: filters.isEmpty
                 ? null
