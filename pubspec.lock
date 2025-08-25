@@ -68,12 +68,11 @@ packages:
   awesome_extensions:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "264382e"
-      resolved-ref: "264382e6c363c8647f5c1c3a8c07da389ededdc7"
-      url: "https://github.com/shakthizen/awesome_extensions.git"
-    source: git
-    version: "2.0.24"
+      name: awesome_extensions
+      sha256: d61c85a583c753e106fcbff392c705c8cd72f6fcacc86ddd1bdcc0a6f498efb3
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.25"
   bonsoir:
     dependency: "direct main"
     description:
@@ -1523,5 +1522,5 @@ packages:
     source: hosted
     version: "2.1.0"
 sdks:
-  dart: ">=3.8.0 <4.0.0"
-  flutter: ">=3.32.0"
+  dart: ">=3.9.0 <4.0.0"
+  flutter: ">=3.35.0"

@@ -31,10 +31,7 @@ dependencies:
   animate_do: ^4.2.0
   animated_custom_dropdown: ^3.1.1
   archive: ^4.0.2
-  awesome_extensions:  
-    git: 
-      url: https://github.com/shakthizen/awesome_extensions.git
-      ref: 264382e
+  awesome_extensions: ^2.0.25
   bonsoir: ^6.0.1
   collection: ^1.19.0
   cupertino_icons: ^1.0.6
