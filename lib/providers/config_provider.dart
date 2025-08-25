@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/app_options.dart';
@@ -240,8 +241,11 @@ class ConfigTagNotifier extends Notifier<List<ConfigTag>> {
 
     if (f2.isNotEmpty) {
       final selectedConfig = ref.read(selectedConfigProvider);
+      final hiddenConfigs = ref.read(hiddenConfigsProvider);
+
       if (!f2.contains(selectedConfig)) {
-        ref.read(selectedConfigProvider.notifier).state = f2.first;
+        ref.read(selectedConfigProvider.notifier).state =
+            f2.firstWhereOrNull((c) => !hiddenConfigs.contains(c.id));
       }
     } else {
       ref.read(selectedConfigProvider.notifier).state = null;
