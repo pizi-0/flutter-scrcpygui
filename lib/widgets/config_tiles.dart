@@ -1,6 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_fix.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
 
@@ -55,7 +56,7 @@ class ConfigDropdownEnum<T extends StringEnum> extends ConsumerWidget {
                     )))
                 .toList(),
           )).call,
-        ),
+        ).fixDisabledStyle(),
       ),
     );
   }
@@ -123,7 +124,7 @@ class _ConfigDropdownOthersState extends State<ConfigDropdownOthers> {
                   children: widget.items,
                 ),
               ).call,
-            ),
+            ).fixDisabledStyle(),
           ),
         ),
       ],

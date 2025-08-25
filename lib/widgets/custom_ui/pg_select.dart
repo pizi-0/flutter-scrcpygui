@@ -1,3 +1,4 @@
+import 'package:scrcpygui/widgets/custom_ui/pg_fix.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class Select<T> extends StatefulWidget with SelectBase<T> {
@@ -278,7 +279,7 @@ class SelectState<T> extends State<Select<T>>
                 ],
               ),
             ),
-          ),
+          ).fixDisabledStyle(),
         ),
       ),
     );

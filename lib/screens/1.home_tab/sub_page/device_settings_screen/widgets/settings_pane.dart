@@ -6,6 +6,7 @@ import 'package:scrcpygui/models/device_info_model.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/device_settings_state_provider.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_fix.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -168,7 +169,7 @@ class _SettingsPaneState extends ConsumerState<SettingsPane> {
             ),
           ]),
         ).call,
-      ),
+      ).fixDisabledStyle(),
     );
   }
 
@@ -200,7 +201,7 @@ class _SettingsPaneState extends ConsumerState<SettingsPane> {
         width: 180,
         child: TextField(
           enabled: !state.loading,
-          filled: true,
+          filled: !state.loading,
           focusNode: textBox,
           placeholder: Text(deviceInfo?.deviceName ?? dev.modelName),
           controller: widget.nameController,
