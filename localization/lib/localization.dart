@@ -9357,7 +9357,7 @@ LocalizationMessages get zh => LocalizationMessages(
         title: '模式',
         saveFolder: ModeSectionSaveFolder(
           label: '保存文件夹',
-          info: '将保存路径附加到 --record=savepath/file',
+          info: '''将保存路径附加到 '--record=savepath/file' ''',
         ),
         mainMode: ModeSectionMainMode(
           label: '模式',
@@ -9501,7 +9501,7 @@ LocalizationMessages get zh => LocalizationMessages(
         format: AudioSectionFormat(
           label: '格式',
           info: AudioSectionFormatInfo(
-            default$: ({required String format}) => '''将格式附加到 --record=savepath/file.${format}''',
+            default$: ({required String format}) => '''将格式附加到 '--record=savepath/file.${format}' ''',
           ),
         ),
         bitrate: AudioSectionBitrate(
@@ -9524,7 +9524,7 @@ LocalizationMessages get zh => LocalizationMessages(
         forceClose: AppSectionForceClose(
           label: '启动前强制关闭应用',
           info: AppSectionForceCloseInfo(
-            alt: '在应用包名前添加 +',
+            alt: '''在应用包名前添加 '+' ''',
           ),
         ),
       ),
