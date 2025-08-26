@@ -1,0 +1,635 @@
+# home tab
+home_loc:
+  title: 首页
+  devices:
+    label: 已连接设备 (${count})
+
+device_tile_loc:
+  running_instances: 运行中 (${count})
+  context:
+    disconnect: 断开连接
+    to_wireless: 通过无线连接
+    stop_running: 停止运行 scrcpy
+    scrcpy: Scrcpy
+    all: 全部
+    all_scrcpy: 停止所有 scrcpy
+    manage: 管理
+
+lounge_loc:
+  controls:
+    label: 控制
+  pinned_apps:
+    label: 固定应用
+  launcher:
+    label: 应用启动器
+  running:
+    label: 运行实例 (${count})
+  app_tile:
+    context_menu:
+      pin: 在 ${config} 上固定
+      unpin: 取消固定
+      force_close: 强制关闭并启动
+      and_start: 在 ${configuration} 上
+      select_config: 请先选择配置
+      start_on: 在 ${config} 上启动
+      with_overrides: 使用覆盖启动
+      package_name: 包名
+      reset_icon: 重置图标
+    sections:
+      pinned: 已固定
+      apps: 应用
+    missing_icon: 缺失图标 (${count})
+  placeholders:
+    config: 选择配置
+    app: 选择应用
+    search: "按 '/' 搜索"
+  tooltip:
+    missing_config: "缺失配置: ${config}"
+    pin: 固定应用/配置对
+    on_config: "在: ${config}"
+    hide_app_name: 隐藏应用名称
+    show_app_name: 显示应用名称
+  info:
+    empty_search: 未找到应用
+    empty_pin: 无固定应用
+    empty_instance: 无运行实例
+
+
+
+config_loc:
+  label: 配置 (${count})
+  new: 创建
+  select: 选择配置
+  details: 显示详情
+  start: 启动
+  empty: 未找到配置
+
+# error dialog
+no_device_dialog_loc:
+  title: 设备
+  contentsEdit: 未选择设备。\n选择设备以编辑 scrcpy 配置。
+  contentsStart: 未选择设备。\n选择设备以启动 scrcpy。
+  contentsNew: 未选择设备。\n选择设备以创建 scrcpy 配置。
+
+
+
+no_config_dialog_loc:
+  title: 配置
+  contents: 未选择配置。\n选择 scrcpy 配置以启动。
+
+delete_config_dialog_loc:
+  title: 确认
+  contents: 删除 ${configname}？
+
+## home_tab > device settings screen
+device_settings_loc:
+  title: 设备设置
+  info: 信息
+  refresh: 刷新信息
+  rename:
+    label: 重命名
+    info: 按 [Enter] 应用名称
+  auto_connect:
+    label: 自动连接
+    info: 自动连接无线设备
+  on_connected:
+    label: 连接时
+    info: 设备连接时使用选定配置启动 (1) scrcpy
+  do_nothing: 不执行任何操作
+
+  scrcpy_info:
+    fetching: 获取 scrcpy 信息
+    label: Scrcpy 信息
+    name: '名称: ${name}'
+    id: 'ID: ${id}'
+    model: '型号: ${model}'
+    version: 'Android 版本: ${version}'
+    displays: 显示器 (${count})
+    cameras: 摄像头 (${count})
+    video_enc: 视频编码器 (${count})
+    audio_enc: 音频编码器 (${count})
+
+## home_tab > config manager
+config_manager_loc:
+  title: 配置管理器
+
+
+## home_tab > config screen
+config_screen_loc:
+  title: 配置设置
+  connection_lost: 与设备连接丢失
+  similar_exist: ${configName} 的副本
+
+## home_tab > config screen > test config
+log_screen_loc:
+  title: 测试日志
+  dialog:
+    title: 命令
+
+
+### config screen > rename section
+rename_section:
+  title: 重命名
+
+
+### config screen > mode section
+mode_section:
+  title: 模式
+  save_folder:
+    label: 保存文件夹
+    info: "将保存路径附加到 '--record=savepath/file' "
+
+  main_mode:
+    label: 模式
+    mirror: 镜像
+    record: 录制
+    info:
+      default: 镜像或录制，镜像无需标志
+      alt: "使用 '--record=' 标志"
+
+  scrcpy_mode:
+    both: 音频 + 视频
+    audio_only: 仅音频
+    video_only: 仅视频
+    info:
+      default: 默认为两者，无需标志
+      alt: "使用 '${command}' 标志"
+
+### config screen > video section
+video_section:
+  title: 视频
+  displays:
+    label: 显示器
+    info:
+      default: 默认为第一个可用，无需标志
+      alt: "使用 '--display-id=' 标志"
+
+    virtual:
+      label: 虚拟显示器设置
+      new_display:
+        label: 新显示器
+        info:
+          alt: "使用 '--new-display' 标志"
+      resolution:
+        label: 分辨率
+        info:
+          default: "默认为设备分辨率"
+          alt: "将分辨率附加到 '--new-display=${res}' 标志"
+      dpi:
+        label: DPI
+        info:
+          default: "默认为设备 DPI"
+          alt: "将 DPI 附加到 '--new-display=${res}/${dpi}' 标志"
+
+      deco:
+        label: 禁用系统装饰
+        info:
+          default: 默认启用系统装饰
+          alt: "使用 '--no-vd-system-decorations' 标志"
+
+      preserve:
+        label: 保留应用
+        info:
+          default: scrcpy 会话结束时应用默认被销毁
+          alt: "会话结束时将应用移动到主显示器；使用 '--no-vd-destroy-content' 标志"
+
+  codec:
+    label: 编解码器
+    info:
+      default: 默认为 h264，无需标志
+      alt: "使用 '--video-codec=${codec}' 标志"
+
+  encoder:
+    label: 编码器
+    info:
+      default: 默认为第一个可用，无需标志
+      alt: "使用 '--video-encoder=${encoder}' 标志"
+
+  format:
+    label: 格式
+    info:
+      default: "将格式附加到 --record=savepath/file${format}"
+
+  bitrate:
+    label: 比特率
+    info:
+      default: 默认为 8M，无需标志
+      alt: "使用 '--video-bit-rate=${bitrate}M' 标志"
+
+  fps_limit:
+    label: FPS 限制
+    info:
+      default: 除非设置否则无需标志
+      alt: "使用 '--max-fps=${fps}' 标志"
+
+  resolution_scale:
+    label: 分辨率缩放
+    info:
+      default: 基于设备分辨率计算，除非设置否则无需标志
+      alt: "使用 '--max-size=${size}' 标志"
+
+### config screen > audio section
+audio_section:
+  title: 音频
+  duplicate:
+    label: 重复音频
+    info:
+      default: 仅适用于 Android 13 及以上版本
+      alt: "使用 '--audio-dup' 标志"
+
+  source:
+    label: 源
+    info:
+      default: 默认为输出，无需标志
+      alt: "使用 '${source}' 标志"
+      inCaseOfDup: 使用 '--audio-dup' 时隐含为 '播放'，无需标志
+
+  codec:
+    label: 编解码器
+    info:
+      default: 默认为 opus，无需标志
+      alt: "使用 '--audio-codec=${codec}' 标志"
+      isAudioOnly: "格式: ${format}，需要编解码器: ${codec}"
+
+  encoder:
+    label: 编码器
+    info:
+      default: 默认为第一个可用，无需标志
+      alt: "使用 '--audio-encoder=${encoder}' 标志"
+
+  format:
+    label: 格式
+    info:
+      default: "将格式附加到 '--record=savepath/file.${format}' "
+
+  bitrate:
+    label: 比特率
+    info:
+      default: 默认为 128k，无需标志
+      alt: "使用 '--audio-bit-rate=${bitrate}K' 标志"
+
+### config screen > app section
+app_section:
+  title: 启动应用
+  select:
+    label: 选择应用
+    info:
+      alt: "使用 '--start-app=${app}' 标志"
+      fc: "使用 '--start-app=+${app}' 标志"
+  force_close:
+    label: 启动前强制关闭应用
+    info:
+      alt: "在应用包名前添加 '+' "
+
+
+### config screen > device section
+device_section:
+  title: 设备
+  stay_awake:
+    label: 保持唤醒
+    info:
+      default: 防止设备休眠，仅适用于 USB 连接
+      alt: "使用 '--stay-awake' 标志"
+
+  show_touches:
+    label: 显示触摸
+    info:
+      default: 显示手指触摸，仅适用于设备上的物理触摸
+      alt: "使用 '--show-touches' 标志"
+
+  off_display_start:
+    label: 启动时关闭显示器
+    info:
+      default: scrcpy 启动时关闭设备显示器
+      alt: "使用 '--turn-screen-off' 标志"
+
+  off_display_exit:
+    label: 退出时关闭显示器
+    info:
+      default: scrcpy 退出时关闭设备显示器
+      alt: "使用 '--power-off-on-close' 标志"
+
+  screensaver:
+    label: 禁用屏保 (主机)
+    info:
+      default: 禁用屏保
+      alt: "使用 '--disable-screensaver' 标志"
+
+
+window_section:
+  title: 窗口
+  hide_window:
+    label: 隐藏窗口
+    info:
+      default: 启动 scrcpy 时不显示窗口
+      alt: "使用 '--no-window' 标志"
+
+  borderless:
+    label: 无边框
+    info:
+      default: 禁用窗口装饰
+      alt: "使用 '--window-borderless' 标志"
+
+  always_on_top:
+    label: 始终置顶
+    info:
+      default: scrcpy 窗口始终置顶
+      alt: "使用 '--always-on-top' 标志"
+
+  time_limit:
+    label: 时间限制
+    info:
+      default: 限制 scrcpy 会话，以秒为单位
+      alt: "使用 '--time-limit=${time}' 标志"
+
+### config screen > additional flags section
+add_flags:
+  title: 附加标志
+  add: 添加
+  info: 避免使用已作为选项提供的标志。
+
+
+
+#connect tab
+connect_loc:
+  title: 连接
+  with_ip:
+    label: 通过 IP 连接
+    connect: 连接
+    connected: 已连接到 ${to}
+
+  with_mdns:
+    label: MDNS 设备 (${count})
+    info:
+      i1: 确保您的设备已与 PC 配对。
+      i2: 如果您的设备未显示，请尝试关闭并重新打开无线 ADB。
+      i3: 如果已配对，MDNS 设备通常会自动连接。
+
+  qr_pair:
+    label: 二维码配对
+    pair: 配对设备
+    status:
+      cancelled: 配对已取消
+      success: 配对成功
+      failed: 配对失败
+
+  unauthenticated:
+    info:
+      i1: 检查您的手机。
+      i2: 点击允许调试。
+
+  failed:
+    info:
+      i1: 确保您的设备已与 PC 配对。
+      i2: 否则，请尝试关闭并重新打开无线 ADB。
+      i3: '如果未配对:'
+      i4: 1. 使用配对窗口 (右上角按钮)
+      i5: 2. 将设备插入 PC，允许调试，然后重试。
+
+
+### preview and test section
+test_config_loc:
+  title: 测试配置
+  preview: 命令预览
+
+
+#scrcpy manager tab
+scrcpy_manager_loc:
+  title: Scrcpy 管理器
+  check: 检查更新
+  current:
+    label: 当前
+    in_use: 使用中
+  exec:
+    label: 打开可执行文件位置
+    info: 谨慎修改
+  info_popup:
+    no_update: 无可用更新
+    error: 检查更新时出错
+  updater:
+    label: 有新版本可用
+    new_version: 新版本
+
+
+
+
+#settings tab
+settings_loc:
+  title: 设置
+  looks:
+    label: 外观
+    mode:
+      label: 主题模式
+      value:
+        dark: 深色
+        light: 浅色
+        system: 系统
+    old_scheme:
+      label: 使用 Shadcn 配色方案
+    corner_radius:
+      label: 圆角半径
+    accent_color:
+      label: 强调色
+    tint_level:
+      label: 色调级别
+    dimness:
+      label: 暗度
+    brightness:
+      label: 亮度
+    surface_opacity:
+      label: 表面透明度
+      info: 在 Linux 中已知会导致闪烁
+    surface_blur:
+      label: 表面模糊
+      info: 在 Linux 中已知会导致闪烁
+
+  behavior:
+    label: 应用行为
+    language:
+      label: 语言
+      info: 某些语言是机器翻译的，可能包含错误。
+    minimize:
+      label: 最小化
+      value:
+        tray: 到系统托盘
+        taskbar: 到任务栏
+    window_size:
+      label: 记住窗口大小
+      info: 退出时记住窗口大小
+    auto_arrange:
+      label: 自动排列 scrcpy 窗口
+      info: 启动时自动排列 scrcpy 窗口
+    window_to_screen_ratio:
+      label: 窗口到屏幕高度比例
+      label_short: 高度 %
+      info: "scrcpy 窗口高度与主屏幕高度的比例。最小: 0.4，最大: 1.0，默认: 0.88"
+
+## companion tab
+companion_loc:
+  title: 伴侣应用
+  server:
+    label: 设置服务器
+    status: 状态
+    endpoint:
+      label: 服务器端点
+    name:
+      label: 服务器名称
+      info: '默认: Scrcpy GUI'
+    port:
+      label: 服务器端口
+      info: '默认: 8080'
+    secret:
+      label: 服务器 API 密钥
+    auto_start:
+      label: 启动时启动服务器
+
+  client:
+    clients: 已连接 (${count})
+    blocked: 已阻止 (${count})
+    no_client: 无客户端连接
+    no_blocked: 无已阻止的客户端
+
+  qr: 从伴侣应用扫描二维码
+
+
+## about tab
+about_loc:
+  title: 关于
+  version: 版本
+  author: 作者
+  credits: 致谢
+
+
+# quit dialog
+quit_dialog_loc:
+  title: 退出 Scrcpy GUI？
+  kill_running:
+    label: 停止运行实例？
+    info: ${count} 个 scrcpy 实例。无窗口的实例将被停止。
+  disconnect:
+    label: 断开无线 ADB？
+    info: ${count} 个设备
+
+# home tab > device tile > disconnect dialog
+disconnect_dialog_loc:
+  title: 断开 ${name}？
+  has_running:
+    label: ${name} 有 ${count} 个运行中的 scrcpy 实例
+    info: 断开连接将停止运行中的 scrcpy 实例。
+
+
+# config screen > close dialog
+close_dialog_loc:
+  not_allowed: 不允许！
+  overwrite: 覆盖？
+  name_exist: 名称已存在！
+  save: 保存配置？
+  command_preview: '命令预览:'
+  name: '名称:'
+
+# config screen > unsaved changes dialog
+unsaved_change_dialog_loc:
+  title: 确认退出？
+  contents: 未保存的更改将丢失。
+
+# companion tab > disclaimer
+server_disclaimer_loc:
+  title: 免责声明
+  contents: '安全警告: 伴侣服务器使用未加密连接。\n\n仅当您连接到您信任的私有网络（如家庭 Wi-Fi）时才启动服务器。'
+
+# connect tab > ip history
+
+ip_history_loc:
+  title: 历史记录
+  empty: 无历史记录
+
+
+
+# button
+button_label_loc:
+  ok: 确定
+  confirm: 确认
+  close: 关闭
+  cancel: 取消
+  stop: 停止
+  test_config: 测试配置
+  update: 更新
+  info: 信息
+  select_all: 全选
+  quit: 退出
+  discard: 丢弃
+  overwrite: 覆盖
+  save: 保存
+  clear: 清除
+  delete: 删除
+  server_agree: 我理解，启动服务器
+  reorder: 重新排序
+  stop_all: 全部停止
+  filter: 筛选
+  edit: 编辑
+  override: 覆盖
+  dont_show_again: "不再显示"
+  sponsor: 赞助
+
+# status
+status_loc:
+  failed: 失败
+  unauth: 未授权
+  error: 错误
+  latest: 最新
+  closing: 正在关闭
+  copied: 已复制
+  running: 运行中
+  stopped: 已停止
+  getting_info: 正在获取信息
+  no_devices_found: 未找到设备
+
+# common
+common_loc:
+  default: 默认
+  yes: 是
+  no: 否
+  bundled: 捆绑
+
+
+color_scheme_name_loc:
+  blue: 蓝色
+  gray: 灰色
+  green: 绿色
+  neutral: 中性
+  orange: 橙色
+  red: 红色
+  rose: 玫瑰色
+  slate: 石板色
+  stone: 石头色
+  violet: 紫色
+  yellow: 黄色
+  zinc: 锌色
+
+
+config_filters_loc:
+  label:
+    withApp: 带应用
+    virt: 虚拟显示器
+
+
+config_override_loc:
+  record:
+    label: 录制
+    open_folder: 打开文件夹
+  landscape:
+    label: 横屏
+    info: 仅适用于虚拟显示器
+  mute:
+    label: 静音
+
+auto_arrange_origin_loc:
+  title: 自动排列
+  alignments: 对齐
+  off: 关闭
+  top_left: 左上
+  top_right: 右上
+  center_left: 中左
+  center_right: 中右
+  bottom_left: 左下
+  bottom_right: 右下

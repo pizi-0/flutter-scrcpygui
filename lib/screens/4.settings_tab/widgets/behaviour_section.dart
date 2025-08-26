@@ -81,6 +81,10 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
         value: 'jp',
         child: Text('日本語'),
       ),
+      const SelectItemButton(
+        value: 'zh',
+        child: Text('简体中文'),
+      ),
     ];
 
     return PgSectionCard(
