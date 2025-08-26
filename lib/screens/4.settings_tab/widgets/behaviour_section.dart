@@ -78,7 +78,7 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
         child: Text('Bahasa Malaysia'),
       ),
       const SelectItemButton(
-        value: 'jp',
+        value: 'ja',
         child: Text('日本語'),
       ),
       const SelectItemButton(

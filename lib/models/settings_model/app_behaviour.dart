@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:localization/localization.dart';
+
 import 'auto_arrange_origin.dart';
 
 abstract interface class NamedEnum {
@@ -59,8 +61,22 @@ class AppBehaviour {
   }
 
   factory AppBehaviour.fromMap(Map<String, dynamic> map) {
+    String lang() {
+      String? code = map['languageCode'];
+
+      if (code == null) {
+        return 'en';
+      } else {
+        if (supportedLocales.where((l) => l.languageCode == code).isEmpty) {
+          return 'en';
+        }
+
+        return map['languageCode'];
+      }
+    }
+
     return AppBehaviour(
-      languageCode: map['languageCode'] ?? 'en',
+      languageCode: lang(),
       killNoWindowInstance: map['killNoWindowInstance'] ?? true,
       traySupport: map['traySupport'] ?? true,
       toastEnabled: map['toastEnabled'] ?? true,
