@@ -38,6 +38,14 @@ class _AppGridState extends ConsumerState<AppGrid> {
   @override
   void initState() {
     appSearchController.addListener(updateList);
+    ref.listenManual(
+      missingIconProvider,
+      (previous, next) {
+        if (next.isEmpty) {
+          ref.read(showMissingIconProvider.notifier).state = false;
+        }
+      },
+    );
     super.initState();
   }
 
