@@ -25,7 +25,7 @@ class TrayUtils {
       return 'assets/logo.ico';
     } else if (Platform.isLinux) {
       if (isFlatpak) {
-        return 'com.pizi.scrcpygui.png';
+        return 'com.pizi.scrcpygui';
       }
       return 'assets/logo.png';
     } else {
