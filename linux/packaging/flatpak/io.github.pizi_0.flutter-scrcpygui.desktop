@@ -6,6 +6,6 @@ Comment=A user friendly GUI for scrcpy
 Categories=Utility
 Keywords=scrcpy;android;mirroring;screencast
 
-Icon=com.pizi.scrcpygui
+Icon=io.github.pizi_0.flutter-scrcpygui
 Exec=scrcpygui
 Terminal=false

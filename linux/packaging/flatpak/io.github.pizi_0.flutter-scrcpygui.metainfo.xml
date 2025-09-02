@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
 <component type="desktop-application">
   <!--Created with jdAppStreamEdit 9.2-->
-  <id>com.pizi.scrcpygui</id>
+  <id>io.github.pizi_0.flutter-scrcpygui</id>
   <name>Scrcpy GUI</name>
   <summary>A user friendly GUI for scrcpy</summary>
-  <developer id="com.pizi">
+  <developer id="io.github.pizi-0">
     <name>pizi-0</name>
   </developer>
   <metadata_license>CC0-1.0</metadata_license>
@@ -65,7 +65,7 @@
     <control>touch</control>
   </recommends>
   <content_rating type="oars-1.1"/>
-  <launchable type="desktop-id">com.pizi.scrcpygui.desktop</launchable>
+  <launchable type="desktop-id">io.github.pizi_0.flutter-scrcpygui.desktop</launchable>
   <keywords>
     <keyword>scrcpy</keyword>
     <keyword>gui</keyword>

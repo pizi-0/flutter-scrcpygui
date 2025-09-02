@@ -25,7 +25,7 @@ class TrayUtils {
       return 'assets/logo.ico';
     } else if (Platform.isLinux) {
       if (isFlatpak) {
-        return 'com.pizi.scrcpygui';
+        return 'io.github.pizi_0.flutter-scrcpygui';
       }
       return 'assets/logo.png';
     } else {
