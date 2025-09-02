@@ -17,15 +17,27 @@ import '../providers/adb_provider.dart';
 import '../providers/config_provider.dart';
 import 'scrcpy_utils.dart';
 
+final isFlatpak = Platform.environment["FLATPAK_ID"] != null;
+
 class TrayUtils {
-  static final String _trayIcon =
-      Platform.isWindows ? 'assets/logo.ico' : 'assets/logo.png';
+  static String _trayIcon() {
+    if (Platform.isWindows) {
+      return 'assets/logo.ico';
+    } else if (Platform.isLinux) {
+      if (isFlatpak) {
+        return 'com.pizi.scrcpygui.png';
+      }
+      return 'assets/logo.png';
+    } else {
+      return 'assets/logo.png';
+    }
+  }
 
   static Future<void> initTray(WidgetRef ref, BuildContext context) async {
     final behaviour = ref.read(settingsProvider.select((s) => s.behaviour));
 
     if (behaviour.traySupport) {
-      await trayManager.setIcon(_trayIcon);
+      await trayManager.setIcon(_trayIcon());
       if (!Platform.isLinux) {
         await trayManager.setToolTip('Scrcpy GUI');
       }
