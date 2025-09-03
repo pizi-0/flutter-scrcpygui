@@ -12,6 +12,7 @@ import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/window_options.dar
 import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
 import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/device_settings_screen/device_settings_screen.dart';
+import 'package:scrcpygui/utils/directory_utils.dart';
 import 'package:scrcpygui/utils/themes.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:uuid/uuid.dart';
@@ -87,9 +88,10 @@ final ScrcpyConfig defaultMirror = ScrcpyConfig(
     size: ScrcpySize(),
   ),
   additionalFlags: '',
-  savePath: Platform.isLinux || Platform.isMacOS
-      ? Platform.environment['HOME']
-      : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}',
+  savePath: defaultSavePath ??
+      (Platform.isLinux || Platform.isMacOS
+          ? Platform.environment['HOME']
+          : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}'),
 );
 
 final ScrcpyConfig newConfig = ScrcpyConfig(
@@ -132,9 +134,10 @@ final ScrcpyConfig newConfig = ScrcpyConfig(
     size: ScrcpySize(),
   ),
   additionalFlags: '',
-  savePath: Platform.isLinux || Platform.isMacOS
-      ? Platform.environment['HOME']
-      : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}',
+  savePath: defaultSavePath ??
+      (Platform.isLinux || Platform.isMacOS
+          ? Platform.environment['HOME']
+          : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}'),
 );
 
 final ScrcpyConfig doNothing =
@@ -180,9 +183,10 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
     size: ScrcpySize(),
   ),
   additionalFlags: '',
-  savePath: Platform.isLinux || Platform.isMacOS
-      ? Platform.environment['HOME']
-      : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}',
+  savePath: defaultSavePath ??
+      (Platform.isLinux || Platform.isMacOS
+          ? Platform.environment['HOME']
+          : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}'),
 );
 
 final defaultTheme = AppTheme(

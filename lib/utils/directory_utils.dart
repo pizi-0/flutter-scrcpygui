@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
+import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+String? defaultSavePath;
 
 class DirectoryUtils {
   static var sep = Platform.pathSeparator;
@@ -45,5 +48,21 @@ class DirectoryUtils {
     Uri folder = Uri.file(p, windows: Platform.isWindows);
 
     await launchUrl(folder);
+  }
+
+  static Future<String> getDefaultSavePath() async {
+    if (Platform.isLinux) {
+      final dir = await getApplicationDocumentsDirectory();
+
+      if (isFlatpak) {
+        return dir.path;
+      }
+
+      return Platform.environment['HOME']!;
+    } else if (Platform.isMacOS) {
+      return Platform.environment['HOME']!;
+    } else {
+      return '${Platform.environment['USERPROFILE']}';
+    }
   }
 }

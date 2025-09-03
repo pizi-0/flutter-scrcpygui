@@ -17,8 +17,6 @@ import '../providers/adb_provider.dart';
 import '../providers/config_provider.dart';
 import 'scrcpy_utils.dart';
 
-final isFlatpak = Platform.environment["FLATPAK_ID"] != null;
-
 class TrayUtils {
   static String _trayIcon() {
     if (Platform.isWindows) {

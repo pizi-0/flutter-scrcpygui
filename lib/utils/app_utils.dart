@@ -147,3 +147,5 @@ class AppUtils {
 bool isWireless(String id) {
   return id.contains(':') || id.contains(adbMdns) || id.isIpv4;
 }
+
+bool isFlatpak = Platform.environment['FLATPAK_ID'] != null;

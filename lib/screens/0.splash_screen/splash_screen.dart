@@ -16,6 +16,7 @@ import 'package:scrcpygui/providers/scrcpy_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/connection_error_dialog.dart';
 // import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/const.dart';
+import 'package:scrcpygui/utils/directory_utils.dart';
 import 'package:scrcpygui/utils/setup.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -62,6 +63,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> _init() async {
     final start = DateTime.now().millisecondsSinceEpoch;
+
+    defaultSavePath = await DirectoryUtils.getDefaultSavePath();
 
     await SetupUtils.initScrcpy(ref);
 
