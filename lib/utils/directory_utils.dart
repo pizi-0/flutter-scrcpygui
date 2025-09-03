@@ -52,9 +52,8 @@ class DirectoryUtils {
 
   static Future<String> getDefaultSavePath() async {
     if (Platform.isLinux) {
-      final dir = await getApplicationDocumentsDirectory();
-
       if (isFlatpak) {
+        final dir = await getApplicationDocumentsDirectory();
         return dir.path;
       }
 
