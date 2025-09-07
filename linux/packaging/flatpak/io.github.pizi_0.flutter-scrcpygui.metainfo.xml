@@ -41,12 +41,13 @@
     </screenshot>
   </screenshots>
   <releases>
-    <release version="1.3.53" date="2025-09-03">
+    <release version="1.3.55" date="2025-09-07">
       <description>
         <ul>
           <li>Added Simplified Chinese</li>
           <li>fix Japanese language code</li>
           <li>fix app grid</li>
+          <li>fix scrcpy init error</li>
         </ul>
       </description>
     </release>
