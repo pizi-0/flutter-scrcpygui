@@ -75,7 +75,8 @@ class SetupUtils {
           return bundledVersionDir;
         });
 
-        if (newexec.path.endsWith(BUNDLED_VERSION)) {
+        if (newexec.path.split(Platform.pathSeparator).last ==
+            BUNDLED_VERSION) {
           await initScrcpy(ref);
         } else {
           ref.read(execDirProvider.notifier).state = newexec.path;
