@@ -7,7 +7,6 @@ import 'package:go_transitions/go_transitions.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/main_screen.dart';
-import 'package:scrcpygui/models/adb_devices.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_running_instance.dart';
 import 'package:scrcpygui/models/settings_model/app_settings.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
@@ -195,8 +194,7 @@ final _router = GoRouter(
                 ),
                 GoRoute(
                   path: DeviceControlPage.route,
-                  builder: (context, state) =>
-                      DeviceControlPage(device: state.extra as AdbDevices),
+                  builder: (context, state) => DeviceControlPage(),
                   pageBuilder: GoTransitions.cupertino.call,
                 ),
               ],

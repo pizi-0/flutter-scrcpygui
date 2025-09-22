@@ -3,9 +3,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:localization/localization.dart';
 import 'package:responsive_builder/responsive_builder.dart';
-import 'package:scrcpygui/models/adb_devices.dart';
-import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
@@ -20,8 +19,8 @@ final FocusNode controlPageKeyboardListenerNode =
 
 class DeviceControlPage extends ConsumerStatefulWidget {
   static const route = 'device-control';
-  final AdbDevices device;
-  const DeviceControlPage({super.key, required this.device});
+
+  const DeviceControlPage({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -29,13 +28,28 @@ class DeviceControlPage extends ConsumerStatefulWidget {
 }
 
 class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
-  ScrcpyConfig? config;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final connected = ref.watch(adbProvider);
-    final device = widget.device;
+    final device = ref.watch(selectedDeviceProvider);
+
+    if (device == null) {
+      return PgScaffoldCustom(
+          onBack: context.pop,
+          scaffoldBody: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 8,
+            children: [
+              Text('Device disconnected').small().muted(),
+              PrimaryButton(
+                onPressed: context.pop,
+                child: Text(el.buttonLabelLoc.close),
+              )
+            ],
+          ),
+          title: Text('Device disconnected').bold().xLarge());
+    }
 
     final deviceInfo = ref
         .watch(infoProvider)
@@ -66,7 +80,7 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
             text: TextSpan(
               style: TextStyle(
                   fontSize: theme.typography.xLarge.fontSize,
-                  fontWeight: theme.typography.bold.fontWeight,
+                  fontWeight: FontWeight.w900,
                   color: theme.colorScheme.foreground),
               children: [
                 TextSpan(text: 'Lounge'),
