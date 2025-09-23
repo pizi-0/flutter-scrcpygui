@@ -30,8 +30,6 @@ class DeviceControlPage extends ConsumerStatefulWidget {
 class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final connected = ref.watch(adbProvider);
     final device = ref.watch(selectedDeviceProvider);
 
     if (device == null) {
@@ -51,12 +49,6 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
           title: Text('Device disconnected').bold().xLarge());
     }
 
-    final deviceInfo = ref
-        .watch(infoProvider)
-        .firstWhereOrNull((info) => info.serialNo == device.serialNo);
-
-    final stillConnected = connected.where((c) => c.id == device.id).isNotEmpty;
-
     return KeyboardListener(
       focusNode: controlPageKeyboardListenerNode,
       autofocus: true,
@@ -75,44 +67,99 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
       child: GestureDetector(
         onTap: () => controlPageKeyboardListenerNode.requestFocus(),
         child: PgScaffoldCustom(
-          onBack: context.pop,
-          title: RichText(
-            text: TextSpan(
-              style: TextStyle(
-                  fontSize: theme.typography.xLarge.fontSize,
-                  fontWeight: FontWeight.w900,
-                  color: theme.colorScheme.foreground),
-              children: [
-                TextSpan(text: 'Lounge'),
-                TextSpan(text: ' / '),
-                WidgetSpan(
-                    baseline: TextBaseline.ideographic,
-                    child: isWireless(device.id)
-                        ? Icon(
-                            Icons.wifi_rounded,
-                            size: 22,
-                          )
-                        : Icon(Icons.usb_rounded)),
-                TextSpan(text: ' ${deviceInfo?.deviceName ?? device.modelName}')
-              ],
-            ),
-          ),
-          scaffoldBody: stillConnected
-              ? ResponsiveBuilder(
-                  builder: (context, sizingInfo) {
-                    return AnimatedSwitcher(
-                      duration: 200.milliseconds,
-                      child: sizingInfo.isMobile || sizingInfo.isTablet
-                          ? SmallControlPage(device: device)
-                          : BigControlPage2(device: device),
-                    );
-                  },
-                )
-              : Center(
-                  child: Text('Device disconnected'),
-                ),
-        ),
+            onBack: context.pop,
+            title: LoungeTItle(),
+            scaffoldBody: ResponsiveBuilder(
+              builder: (context, sizingInfo) {
+                return AnimatedSwitcher(
+                  duration: 200.milliseconds,
+                  child: sizingInfo.isMobile || sizingInfo.isTablet
+                      ? SmallControlPage(device: device)
+                      : BigControlPage2(device: device),
+                );
+              },
+            )),
       ),
+    );
+  }
+}
+
+class LoungeTItle extends ConsumerWidget {
+  const LoungeTItle({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final device = ref.watch(selectedDeviceProvider)!;
+    final connected = ref.watch(adbProvider);
+
+    final deviceInfo = ref
+        .watch(infoProvider)
+        .firstWhereOrNull((info) => info.serialNo == device.serialNo);
+
+    return Row(
+      spacing: 8,
+      children: [
+        Text('Lounge').bold.xLarge,
+        Text('/'),
+        if (connected.length > 1) ...[
+          Select(
+            filled: true,
+            onChanged: (value) {
+              ref.read(selectedDeviceProvider.notifier).state = value;
+            },
+            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            value: device,
+            popupWidthConstraint: PopoverConstraint.intrinsic,
+            popup: SelectPopup.noVirtualization(
+              items: SelectItemList(
+                  children: connected.map((e) {
+                final info = ref.read(infoProvider).firstWhereOrNull(
+                      (info) => info.serialNo == e.serialNo,
+                    );
+
+                return SelectItemButton(
+                  value: e,
+                  child: Basic(
+                    leading: isWireless(e.id)
+                        ? Icon(Icons.wifi_rounded).iconSmall()
+                        : Icon(Icons.usb_rounded).iconSmall(),
+                    title: Text(info?.deviceName ?? e.modelName),
+                    leadingAlignment: AlignmentGeometry.center,
+                    subtitle: Text(e.id),
+                  ),
+                );
+              }).toList()),
+            ).call,
+            itemBuilder: (context, dev) {
+              final info = ref.read(infoProvider).firstWhereOrNull(
+                    (info) => info.serialNo == dev.serialNo,
+                  );
+              return Row(
+                spacing: 4,
+                children: [
+                  isWireless(dev.id)
+                      ? Icon(Icons.wifi_rounded)
+                      : Icon(Icons.usb_rounded),
+                  Text(
+                    info?.deviceName ?? dev.modelName,
+                    overflow: TextOverflow.ellipsis,
+                  ).bold.xLarge,
+                ],
+              );
+            },
+          ),
+        ] else ...[
+          Row(
+            spacing: 4,
+            children: [
+              isWireless(device.id)
+                  ? Icon(Icons.wifi_rounded)
+                  : Icon(Icons.usb_rounded),
+              Text(deviceInfo?.deviceName ?? device.modelName).bold.xLarge,
+            ],
+          )
+        ]
+      ],
     );
   }
 }
