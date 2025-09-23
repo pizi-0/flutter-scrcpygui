@@ -99,10 +99,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
             WidgetSpan(
                 baseline: TextBaseline.ideographic,
                 child: isWireless(dev.id)
-                    ? Icon(
-                        Icons.wifi_rounded,
-                        size: 22,
-                      )
+                    ? Icon(Icons.wifi_rounded)
                     : Icon(Icons.usb_rounded)),
             TextSpan(text: ' ${deviceInfo?.deviceName ?? dev.modelName}')
           ],
