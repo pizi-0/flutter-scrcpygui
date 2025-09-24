@@ -1,6 +1,8 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/config_override_button.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
@@ -109,7 +111,10 @@ class _AppGridState extends ConsumerState<AppGrid> {
                 .contains(appSearchController.text.toLowerCase()))
         .toList();
 
-    final missingIcons = ref.watch(missingIconProvider);
+    final missingIcons = ref
+        .watch(missingIconProvider)
+        .where((e) => deviceInfo.appList.contains(e))
+        .toList();
     final showMissingIcon = ref.watch(showMissingIconProvider);
 
     return PgSectionCardNoScroll(
@@ -319,10 +324,22 @@ class _AppGridHeaderState extends ConsumerState<AppGridHeader> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final device = ref.watch(selectedDeviceProvider)!;
+
+    final deviceInfo = ref
+        .watch(infoProvider)
+        .firstWhereOrNull((i) => i.serialNo == device.serialNo);
 
     final gridSettings = ref.watch(appGridSettingsProvider);
     final gridSettingsNotifier = ref.read(appGridSettingsProvider.notifier);
-    final missingIcons = ref.watch(missingIconProvider);
+
+    final missingIcons = ref.watch(missingIconProvider).where((e) {
+      if (deviceInfo == null) {
+        return false;
+      }
+      return deviceInfo.appList.contains(e);
+    }).toList();
+
     final allConfigs = ref.watch(configsProvider);
     final config = ref.watch(controlPageConfigProvider);
     final showMissingIcon = ref.watch(showMissingIconProvider);
