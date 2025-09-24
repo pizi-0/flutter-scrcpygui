@@ -68,7 +68,7 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
         onTap: () => controlPageKeyboardListenerNode.requestFocus(),
         child: PgScaffoldCustom(
             onBack: context.pop,
-            title: LoungeTItle(),
+            title: LoungeTitle(),
             scaffoldBody: ResponsiveBuilder(
               builder: (context, sizingInfo) {
                 return AnimatedSwitcher(
@@ -84,11 +84,16 @@ class _DeviceControlPageState extends ConsumerState<DeviceControlPage> {
   }
 }
 
-class LoungeTItle extends ConsumerWidget {
-  const LoungeTItle({super.key});
+class LoungeTitle extends ConsumerStatefulWidget {
+  const LoungeTitle({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<LoungeTitle> createState() => _LoungeTitleState();
+}
+
+class _LoungeTitleState extends ConsumerState<LoungeTitle> {
+  @override
+  Widget build(BuildContext context) {
     final device = ref.watch(selectedDeviceProvider)!;
     final connected = ref.watch(adbProvider);
 
@@ -102,51 +107,58 @@ class LoungeTItle extends ConsumerWidget {
         Text('Lounge').bold.xLarge,
         Text('/'),
         if (connected.length > 1) ...[
-          Select(
-            filled: true,
-            onChanged: (value) {
-              ref.read(selectedDeviceProvider.notifier).state = value;
-            },
-            padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            value: device,
-            popupWidthConstraint: PopoverConstraint.intrinsic,
-            popup: SelectPopup.noVirtualization(
-              items: SelectItemList(
-                  children: connected.map((e) {
-                final info = ref.read(infoProvider).firstWhereOrNull(
-                      (info) => info.serialNo == e.serialNo,
-                    );
+          Expanded(
+            child: Align(
+              alignment: AlignmentGeometry.centerLeft,
+              child: Select(
+                filled: true,
+                onChanged: (value) {
+                  ref.read(selectedDeviceProvider.notifier).state = value;
+                },
+                padding: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                value: device,
+                popupWidthConstraint: PopoverConstraint.intrinsic,
+                popup: SelectPopup.noVirtualization(
+                  items: SelectItemList(
+                      children: connected.map((e) {
+                    final info = ref.read(infoProvider).firstWhereOrNull(
+                          (info) => info.serialNo == e.serialNo,
+                        );
 
-                return SelectItemButton(
-                  value: e,
-                  child: Basic(
-                    leading: isWireless(e.id)
-                        ? Icon(Icons.wifi_rounded).iconSmall()
-                        : Icon(Icons.usb_rounded).iconSmall(),
-                    title: Text(info?.deviceName ?? e.modelName),
-                    leadingAlignment: AlignmentGeometry.center,
-                    subtitle: Text(e.id),
-                  ),
-                );
-              }).toList()),
-            ).call,
-            itemBuilder: (context, dev) {
-              final info = ref.read(infoProvider).firstWhereOrNull(
-                    (info) => info.serialNo == dev.serialNo,
+                    return SelectItemButton(
+                      value: e,
+                      child: Basic(
+                        leading: isWireless(e.id)
+                            ? Icon(Icons.wifi_rounded).iconSmall()
+                            : Icon(Icons.usb_rounded).iconSmall(),
+                        title: Text(info?.deviceName ?? e.modelName),
+                        leadingAlignment: AlignmentGeometry.center,
+                        subtitle: Text(e.id),
+                      ),
+                    );
+                  }).toList()),
+                ).call,
+                itemBuilder: (context, dev) {
+                  final info = ref.read(infoProvider).firstWhereOrNull(
+                        (info) => info.serialNo == dev.serialNo,
+                      );
+                  return Row(
+                    spacing: 4,
+                    children: [
+                      isWireless(dev.id)
+                          ? Icon(Icons.wifi_rounded)
+                          : Icon(Icons.usb_rounded),
+                      Expanded(
+                        child: Text(
+                          info?.deviceName ?? dev.modelName,
+                          overflow: TextOverflow.ellipsis,
+                        ).bold.xLarge,
+                      ),
+                    ],
                   );
-              return Row(
-                spacing: 4,
-                children: [
-                  isWireless(dev.id)
-                      ? Icon(Icons.wifi_rounded)
-                      : Icon(Icons.usb_rounded),
-                  Text(
-                    info?.deviceName ?? dev.modelName,
-                    overflow: TextOverflow.ellipsis,
-                  ).bold.xLarge,
-                ],
-              );
-            },
+                },
+              ),
+            ),
           ),
         ] else ...[
           Row(
