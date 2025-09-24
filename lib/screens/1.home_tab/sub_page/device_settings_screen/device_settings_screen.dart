@@ -78,7 +78,6 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final deviceInfo = ref
         .watch(infoProvider)
         .firstWhereOrNull((info) => info.serialNo == dev.serialNo);
@@ -87,23 +86,28 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
 
     return PgScaffoldCustom(
       onBack: context.pop,
-      title: RichText(
-        text: TextSpan(
-          style: TextStyle(
-              fontSize: theme.typography.xLarge.fontSize,
-              fontWeight: FontWeight.bold,
-              color: theme.colorScheme.foreground),
-          children: [
-            TextSpan(text: el.deviceSettingsLoc.title),
-            TextSpan(text: ' / '),
-            WidgetSpan(
-                baseline: TextBaseline.ideographic,
-                child: isWireless(dev.id)
+      title: Row(
+        spacing: 8,
+        children: [
+          Text(el.deviceSettingsLoc.title).bold.xLarge,
+          Text('/'),
+          Expanded(
+            child: Row(
+              spacing: 4,
+              children: [
+                isWireless(dev.id)
                     ? Icon(Icons.wifi_rounded)
-                    : Icon(Icons.usb_rounded)),
-            TextSpan(text: ' ${deviceInfo?.deviceName ?? dev.modelName}')
-          ],
-        ),
+                    : Icon(Icons.usb_rounded),
+                Expanded(
+                  child: Text(deviceInfo?.deviceName ?? dev.modelName,
+                          overflow: TextOverflow.ellipsis)
+                      .bold
+                      .xLarge,
+                ),
+              ],
+            ),
+          )
+        ],
       ),
       leading: [
         PgExpandable(
