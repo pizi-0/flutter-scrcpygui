@@ -230,16 +230,7 @@ class PgScaffoldCustom extends ConsumerWidget {
                   child: title,
                 )),
                 Gap(3),
-                ...appBarTrailing ??
-                    [
-                      IconButton.ghost(
-                        onPressed: null,
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: Colors.transparent,
-                        ),
-                      ),
-                    ]
+                ...appBarTrailing ?? []
               ],
             ),
           ),
