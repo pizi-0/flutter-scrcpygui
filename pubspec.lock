@@ -788,6 +788,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  msvcredist:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: d46cb7bed55038d4648e28b04f5432e843bd1a24
+      url: "https://github.com/insertjokehere/flutter_msvcredist.git"
+    source: git
+    version: "0.1.0"
   nested:
     dependency: transitive
     description:

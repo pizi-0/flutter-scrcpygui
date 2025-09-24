@@ -62,6 +62,10 @@ dependencies:
   localization:
     path: ./localization
   logger: ^2.5.0
+  msvcredist:
+    git:
+      url: https://github.com/insertjokehere/flutter_msvcredist.git
+      ref: main
   package_info_plus: ^8.3.0
   page_transition: ^2.1.0
   path: ^1.9.1

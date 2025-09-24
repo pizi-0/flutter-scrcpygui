@@ -6,6 +6,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   bonsoir_windows
   encrypt_decrypt_plus
   irondash_engine_context
+  msvcredist
   screen_retriever_windows
   super_native_extensions
   tray_manager
