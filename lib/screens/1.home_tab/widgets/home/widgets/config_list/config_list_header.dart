@@ -51,7 +51,7 @@ class _ConfigListHeaderState extends ConsumerState<ConfigListHeader> {
       ),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: PgExpandable(
+        child: PgExpandable.vertical(
           expand: headerState.isOpen,
           title: ButtonGroup(
             children: [

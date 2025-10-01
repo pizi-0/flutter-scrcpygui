@@ -95,7 +95,7 @@ class _SettingsPaneState extends ConsumerState<SettingsPane> {
     final state = ref.watch(deviceSettingsStateProvider(dev));
     final theme = Theme.of(context);
 
-    return PgExpandable(
+    return PgExpandable.vertical(
         expand: state.autoLaunch,
         child: OutlinedContainer(
           backgroundColor: state.autoLaunch ? theme.colorScheme.accent : null,

@@ -110,8 +110,7 @@ class _DeviceSettingsScreenState extends ConsumerState<DeviceSettingsScreen> {
         ],
       ),
       leading: [
-        PgExpandable(
-          direction: Axis.horizontal,
+        PgExpandable.horizontal(
           expand: oldState != currentState,
           child: Padding(
             padding: const EdgeInsets.only(right: 8.0),

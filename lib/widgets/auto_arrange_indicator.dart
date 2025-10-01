@@ -215,7 +215,7 @@ class _AutoArrangeOriginSelectorState
               )
             ],
           ),
-          PgExpandable(
+          PgExpandable.vertical(
             expand: origin != AutoArrangeOrigin.off,
             child: Column(
               spacing: 8,

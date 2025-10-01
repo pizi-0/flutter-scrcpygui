@@ -7,24 +7,56 @@ class PgExpandable extends ConsumerWidget {
   final Widget child;
   final Widget? title;
   final Axis direction;
+  final AlignmentGeometry alignment;
+  final MainAxisAlignment childMainAxisAlignment;
+  final bool fillWidth;
+  final bool fillHeight;
 
-  const PgExpandable(
-      {super.key,
-      required this.expand,
-      required this.child,
-      this.title,
-      this.direction = Axis.vertical});
+  const PgExpandable({
+    required this.alignment,
+    required this.expand,
+    required this.child,
+    required this.direction,
+    required this.childMainAxisAlignment,
+    this.fillHeight = false,
+    this.fillWidth = false,
+    this.title,
+    super.key,
+  });
+
+  const PgExpandable.vertical({
+    required this.expand,
+    required this.child,
+    this.title,
+    this.alignment = AlignmentGeometry.topCenter,
+    this.childMainAxisAlignment = MainAxisAlignment.start,
+    this.fillWidth = false,
+    super.key,
+  })  : direction = Axis.vertical,
+        fillHeight = false;
+
+  const PgExpandable.horizontal({
+    required this.expand,
+    required this.child,
+    this.title,
+    this.alignment = AlignmentGeometry.centerLeft,
+    this.childMainAxisAlignment = MainAxisAlignment.start,
+    this.fillHeight = false,
+    super.key,
+  })  : direction = Axis.horizontal,
+        fillWidth = false;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     switch (direction) {
       case Axis.vertical:
         return Column(
+          mainAxisAlignment: childMainAxisAlignment,
           children: [
             if (title != null)
               Row(
                 children: [
-                  title!,
+                  Expanded(child: title!),
                 ],
               ),
             AnimatedSize(
@@ -32,6 +64,7 @@ class PgExpandable extends ConsumerWidget {
               duration: 200.milliseconds,
               child: SizedBox(
                 height: expand ? null : 0,
+                width: fillWidth ? double.maxFinite : null,
                 child: child,
               ),
             ),
@@ -39,17 +72,17 @@ class PgExpandable extends ConsumerWidget {
         );
       case Axis.horizontal:
         return Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: childMainAxisAlignment,
           children: [
             if (title != null)
               Row(
                 children: [
-                  title!,
+                  Expanded(child: title!),
                 ],
               ),
             AnimatedSize(
               duration: 200.milliseconds,
-              alignment: Alignment.centerLeft,
+              alignment: alignment,
               child: SizedBox(
                 width: expand ? null : 0,
                 child: child,

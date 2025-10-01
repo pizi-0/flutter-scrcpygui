@@ -72,8 +72,7 @@ class _ConfigManagerState extends ConsumerState<ConfigManager> {
       ).xLarge().bold(),
       onBack: context.pop,
       leading: [
-        PgExpandable(
-          direction: Axis.horizontal,
+        PgExpandable.horizontal(
           expand: !listEquals(oldHidden, hidden) ||
               !listEquals(oldList, reorderList),
           child: Padding(

@@ -177,7 +177,7 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
                 ),
               ),
             ),
-            PgExpandable(
+            PgExpandable.vertical(
               expand: behaviour.autoArrangeOrigin != AutoArrangeOrigin.off,
               child: Column(
                 children: [

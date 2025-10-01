@@ -227,8 +227,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
         ),
       ],
       leading: [
-        PgExpandable(
-          direction: Axis.horizontal,
+        PgExpandable.horizontal(
           expand: hasChanges && similar.isEmpty,
           child: Padding(
             padding: const EdgeInsets.only(right: 8.0),

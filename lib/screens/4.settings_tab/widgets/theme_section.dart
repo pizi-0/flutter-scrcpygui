@@ -116,7 +116,7 @@ class _ThemeSectionState extends ConsumerState<ThemeSection> {
                 ),
               ),
             ),
-            PgExpandable(
+            PgExpandable.vertical(
               expand: !looks.useOldScheme,
               child: Column(
                 spacing: 8,

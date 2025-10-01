@@ -2,6 +2,7 @@
 
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class PgListTile extends ConsumerWidget {
@@ -35,64 +36,69 @@ class PgListTile extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final expand = subtitle != null && showSubtitle;
 
-    return Row(
-      spacing: 8,
-      children: [
-        if (leading != null) leading!.iconMedium(),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: 4,
-            children: [
-              Basic(
-                leadingAlignment: Alignment.center,
-                title: Row(
-                  spacing: 8,
-                  children: titleOverflow
-                      ? [
-                          Expanded(
-                            child: OverflowMarquee(
-                                duration: 2.seconds,
-                                delayDuration: 1.seconds,
+    return PgExpandable.vertical(
+      fillWidth: true,
+      expand: expand,
+      title: Row(
+        spacing: 8,
+        children: [
+          if (leading != null) leading!.iconMedium(),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              spacing: expand ? 4 : 0,
+              children: [
+                Basic(
+                  leadingAlignment: Alignment.center,
+                  title: Row(
+                    spacing: 8,
+                    children: titleOverflow
+                        ? [
+                            Expanded(
+                              child: OverflowMarquee(
+                                  duration: 2.seconds,
+                                  delayDuration: 1.seconds,
+                                  child: dimTitle
+                                      ? Text(title).muted()
+                                      : Text(title)),
+                            ),
+                          ]
+                        : [
+                            Expanded(
                                 child: dimTitle
                                     ? Text(title).muted()
                                     : Text(title)),
-                          ),
-                        ]
-                      : [
-                          Expanded(
-                              child:
-                                  dimTitle ? Text(title).muted() : Text(title)),
-                        ],
-                ),
-                content: content,
-                trailing: trailing,
-              ),
-              if (showSubtitle && subtitle != null)
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 4.0, vertical: 2),
-                    child: Row(
-                      spacing: 4,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        if (showSubtitleLeading)
-                          const Icon(Icons.info_outline_rounded)
-                              .iconXSmall()
-                              .iconMutedForeground(),
-                        Expanded(child: Text(subtitle!).xSmall().muted()),
-                      ],
-                    ),
+                          ],
                   ),
-                ).withRoundCorners(
-                    backgroundColor: theme.colorScheme.muted,
-                    radius: theme.radiusXs)
-            ],
+                  content: content,
+                  trailing: trailing,
+                ),
+                SizedBox.shrink(),
+              ],
+            ),
           ),
+        ],
+      ),
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2),
+          child: Row(
+            spacing: 4,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              if (showSubtitleLeading)
+                const Icon(Icons.info_outline_rounded)
+                    .iconXSmall()
+                    .iconMutedForeground(),
+              if (subtitle != null)
+                Expanded(child: Text(subtitle!).xSmall().muted()),
+            ],
+          ).showIf(subtitle != null && expand),
         ),
-      ],
+      ).withRoundCorners(
+          backgroundColor: theme.colorScheme.muted, radius: theme.radiusXs),
     );
   }
 }

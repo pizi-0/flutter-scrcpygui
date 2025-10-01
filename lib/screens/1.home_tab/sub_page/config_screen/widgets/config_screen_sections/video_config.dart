@@ -206,7 +206,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
         ),
         Gap(8, crossAxisExtent: 8),
         const Divider(),
-        PgExpandable(
+        PgExpandable.vertical(
           expand: selectedConfig.videoOptions.displayId == 'new',
           child: Column(
             children: [
