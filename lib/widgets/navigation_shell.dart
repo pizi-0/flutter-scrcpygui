@@ -106,11 +106,16 @@ class TitleBar extends ConsumerWidget {
                 spacing: 8,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/logo.png',
-                    height: 20,
-                    width: 20,
-                  ).paddingOnly(left: 3),
+                  Padding(
+                    padding:
+                        EdgeInsetsGeometry.only(left: Platform.isMacOS ? 0 : 4),
+                    child: Image.asset(
+                      'assets/logo.png',
+                      height: 20,
+                      width: 20,
+                    ).paddingOnly(left: 3),
+                  ),
+                  if (!Platform.isMacOS) SizedBox(),
                   Text('Scrcpy GUI ($appversion)').fontSize(12),
                   const Text('by pizi-0')
                       .fontSize(8)
