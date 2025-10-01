@@ -232,7 +232,8 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
           child: Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: IconButton.primary(
-              trailing: Text(el.buttonLabelLoc.save),
+              trailing:
+                  Text(el.buttonLabelLoc.save).withPadding(top: 1, right: 2),
               density: ButtonDensity.dense,
               onPressed: _saveConfig,
               icon: Icon(Icons.save_rounded),
@@ -283,7 +284,6 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
                   const SizedBox(
                       width: sectionWidth, child: AdditionalFlagsConfig()),
                   const PreviewAndTest(),
-                  const SizedBox(height: 20),
                 ],
     );
   }

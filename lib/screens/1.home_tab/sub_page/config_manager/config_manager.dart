@@ -79,7 +79,8 @@ class _ConfigManagerState extends ConsumerState<ConfigManager> {
             padding: const EdgeInsets.only(right: 8.0),
             child: IconButton.primary(
               density: ButtonDensity.dense,
-              trailing: Text(el.buttonLabelLoc.save),
+              trailing:
+                  Text(el.buttonLabelLoc.save).withPadding(top: 1, right: 2),
               icon: Icon(Icons.save_rounded),
               onPressed: _save,
             ),

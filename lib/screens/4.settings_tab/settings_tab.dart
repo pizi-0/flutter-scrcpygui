@@ -26,7 +26,6 @@ class _SettingsTabState extends ConsumerState<SettingsTab> {
       children: const [
         ThemeSection(),
         BehaviourSection(),
-        Gap(0),
       ],
     );
   }
