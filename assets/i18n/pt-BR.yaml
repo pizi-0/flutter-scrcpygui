@@ -1,0 +1,607 @@
+# home tab
+home_loc:
+  title: Início
+  devices:
+    label: Dispositivos Conectados (${count})
+
+device_tile_loc:
+  running_instances: Em execução (${count})
+  context:
+    disconnect: Desconectar
+    to_wireless: Conectar via Wireless
+    stop_running: Parar scrcpy em execução
+    scrcpy: Scrcpy
+    all: Todos
+    all_scrcpy: Parar todos os scrcpy
+    manage: Gerenciar
+
+lounge_loc:
+  controls:
+    label: Controles
+  pinned_apps:
+    label: Aplicativos fixados
+  launcher:
+    label: Lançador de Aplicativos
+  running:
+    label: Instâncias em execução (${count})
+  app_tile:
+    context_menu:
+      pin: Fixar em ${config}
+      unpin: Desafixar
+      force_close: Forçar fechamento e iniciar
+      and_start: Em ${config}
+      select_config: Por favor, selecione uma configuração primeiro
+      start_on: Iniciar em ${config}
+      with_overrides: Iniciar com substituições
+      package_name: Nome do pacote
+      reset_icon: Redefinir ícone
+    sections:
+      pinned: Fixados
+      apps: Aplicativos
+    missing_icon: Ícones faltando (${count})
+  placeholders:
+    config: Selecionar configuração
+    app: Selecionar aplicativo
+    search: "Pressione '/' para pesquisar"
+  tooltip:
+    missing_config: "Configuração ausente: ${config}"
+    pin: Fixar par aplicativo/configuração
+    on_config: "Em: ${config}"
+    hide_app_name: Ocultar nome do aplicativo
+    show_app_name: Mostrar nome do aplicativo
+  info:
+    empty_search: Nenhum aplicativo encontrado
+    empty_pin: Nenhum Aplicativo Fixado
+    empty_instance: Nenhuma Instância em Execução
+
+config_loc:
+  label: Configurações (${count})
+  new: Criar
+  select: Selecione uma configuração
+  details: Mostrar detalhes
+  start: Iniciar
+  empty: Nenhuma configuração encontrada
+
+# error dialog
+no_device_dialog_loc:
+  title: Dispositivo
+  contentsEdit: Nenhum dispositivo selecionado. \nSelecione um dispositivo para editar a configuração do scrcpy.
+  contentsStart: Nenhum dispositivo selecionado. \nSelecione um dispositivo para iniciar o scrcpy.
+  contentsNew: Nenhum dispositivo selecionado. \nSelecione um dispositivo para criar uma configuração do scrcpy.
+
+no_config_dialog_loc:
+  title: Configuração
+  contents: Nenhuma configuração selecionada.\nSelecione uma configuração do scrcpy para iniciar.
+
+delete_config_dialog_loc:
+  title: Confirmar
+  contents: Excluir ${configname}?
+
+## home_tab > device settings screen
+device_settings_loc:
+  title: Configurações do Dispositivo
+  info: Informações
+  refresh: Atualizar informações
+  rename:
+    label: Renomear
+    info: Pressione [Enter] para aplicar o nome
+  auto_connect:
+    label: Conexão automática
+    info: Conectar dispositivo sem fio automaticamente
+  on_connected:
+    label: Ao conectar
+    info: Iniciar (1) scrcpy com a configuração selecionada na conexão do dispositivo
+  do_nothing: Não fazer nada
+
+  scrcpy_info:
+    fetching: Buscando informações do scrcpy
+    label: Informações do Scrcpy
+    name: 'Nome: ${name}'
+    id: 'ID: ${id}'
+    model: 'Modelo: ${model}'
+    version: 'Versão do Android: ${version}'
+    displays: Telas (${count})
+    cameras: Câmeras (${count})
+    video_enc: Codificadores de vídeo (${count})
+    audio_enc: Codificadores de áudio (${count})
+
+## home_tab > config manager
+config_manager_loc:
+  title: Gerenciador de Configurações
+
+## home_tab > config screen
+config_screen_loc:
+  title: Configurações de Configuração
+  connection_lost: Conexão com o dispositivo perdida
+  similar_exist: Duplicata de ${configName}
+
+## home_tab > config screen > test config
+log_screen_loc:
+  title: Log de Teste
+  dialog:
+    title: Comando
+
+### config screen > rename section
+rename_section:
+  title: Renomear
+
+### config screen > mode section
+mode_section:
+  title: Modo
+  save_folder:
+    label: Pasta para salvar
+    info: "anexa o caminho de salvamento a '--record=caminho/arquivo' "
+
+  main_mode:
+    label: Modo
+    mirror: Espelhar
+    record: Gravar
+    info:
+      default: espelhar ou gravar, sem flag para espelhar
+      alt: "usa a flag '--record=' "
+
+  scrcpy_mode:
+    both: Áudio + vídeo
+    audio_only: Apenas áudio
+    video_only: Apenas vídeo
+    info:
+      default: padrão para ambos, sem flag
+      alt: "usa a flag '${command}' "
+
+### config screen > video section
+video_section:
+  title: Vídeo
+  displays:
+    label: Telas
+    info:
+      default: padrão para a primeira disponível, sem flag
+      alt: "usa a flag '--display-id=' "
+    virtual:
+      label: Configurações de tela virtual
+      new_display:
+        label: Nova tela
+        info:
+          alt: "usa a flag '--new-display' "
+      resolution:
+        label: Resolução
+        info:
+          default: "padrão para a resolução do dispositivo"
+          alt: "anexa a resolução à flag '--new-display=${res}' "
+      dpi:
+        label: DPI
+        info:
+          default: "padrão para o DPI do dispositivo"
+          alt: "anexa o DPI à flag '--new-display=${res}/${dpi}' "
+      deco:
+        label: Desativar decorações do sistema
+        info:
+          default: padrão com decorações do sistema
+          alt: "usa a flag '--no-vd-system-decorations' "
+      preserve:
+        label: Preservar aplicativo
+        info:
+          default: os aplicativos são destruídos por padrão quando uma sessão do scrcpy termina
+          alt: "move o aplicativo para a tela principal quando a sessão termina; usa a flag '--no-vd-destroy-content' "
+
+  codec:
+    label: Codec
+    info:
+      default: padrão para h264, sem flag
+      alt: "usa a flag '--video-codec=${codec}' "
+
+  encoder:
+    label: Codificador
+    info:
+      default: padrão para o primeiro disponível, sem flag
+      alt: "usa a flag '--video-encoder=${encoder}' "
+
+  format:
+    label: Formato
+    info:
+      default: "anexa o formato a '--record=caminho/arquivo${format}' "
+
+  bitrate:
+    label: Taxa de bits
+    info:
+      default: padrão para 8M, sem flag
+      alt: "usa a flag '--video-bit-rate=${bitrate}M' "
+
+  fps_limit:
+    label: Limite de FPS
+    info:
+      default: sem flag a menos que definido
+      alt: "usa a flag '--max-fps=${fps}' "
+
+  resolution_scale:
+    label: Escala de resolução
+    info:
+      default: calculado com base na resolução do dispositivo, sem flag a menos que definido
+      alt: "usa a flag '--max-size=${size}' "
+
+### config screen > audio section
+audio_section:
+  title: Áudio
+  duplicate:
+    label: Duplicar áudio
+    info:
+      default: apenas para Android 13 e superior
+      alt: "usa a flag '--audio-dup' "
+
+  source:
+    label: Fonte
+    info:
+      default: padrão para saída, sem flag
+      alt: "usa a flag '${source}' "
+      inCaseOfDup: implícito para 'Reprodução' com '--audio-dup', sem flag
+
+  codec:
+    label: Codec
+    info:
+      default: padrão para opus, sem flag
+      alt: "usa a flag '--audio-codec=${codec}' "
+      isAudioOnly: "Formato: ${format}, requer Codec: ${codec}"
+
+  encoder:
+    label: Codificador
+    info:
+      default: padrão para o primeiro disponível, sem flag
+      alt: "usa a flag '--audio-encoder=${encoder}' "
+
+  format:
+    label: Formato
+    info:
+      default: "anexa o formato a '--record=caminho/arquivo.${format}' "
+
+  bitrate:
+    label: Taxa de bits
+    info:
+      default: padrão para 128k, sem flag
+      alt: "usa a flag '--audio-bit-rate=${bitrate}K' "
+
+### config screen > app section
+app_section:
+  title: Iniciar aplicativo
+  select:
+    label: Selecione um aplicativo
+    info:
+      alt: "usa a flag '--start-app=${app}' "
+      fc: "usa a flag '--start-app=+${app}' "
+  force_close:
+    label: Forçar fechamento do aplicativo antes de iniciar
+    info:
+      alt: "prefixe o nome do pacote do aplicativo com '+' "
+
+### config screen > device section
+device_section:
+  title: Dispositivo
+  stay_awake:
+    label: Manter ativo
+    info:
+      default: impede que o dispositivo durma, funciona apenas com conexão USB
+      alt: "usa a flag '--stay-awake' "
+
+  show_touches:
+    label: Mostrar toques
+    info:
+      default: mostra toques de dedo, funciona apenas com toques físicos no dispositivo
+      alt: "usa a flag '--show-touches' "
+
+  off_display_start:
+    label: Desligar tela ao iniciar
+    info:
+      default: desliga a tela do dispositivo, ao iniciar o scrcpy
+      alt: "usa a flag '--turn-screen-off' "
+
+  off_display_exit:
+    label: Desligar tela ao sair
+    info:
+      default: desliga a tela do dispositivo, ao sair do scrcpy
+      alt: "usa a flag '--power-off-on-close' "
+
+  screensaver:
+    label: Desativar protetor de tela (HOST)
+    info:
+      default: desativa o protetor de tela
+      alt: "usa a flag '--disable-screensaver' "
+
+window_section:
+  title: Janela
+  hide_window:
+    label: Ocultar janela
+    info:
+      default: inicia o scrcpy sem janela
+      alt: "usa a flag '--no-window' "
+
+  borderless:
+    label: Sem bordas
+    info:
+      default: desativa as decorações da janela
+      alt: "usa a flag '--window-borderless' "
+
+  always_on_top:
+    label: Sempre no topo
+    info:
+      default: janela do scrcpy sempre no topo
+      alt: "usa a flag '--always-on-top' "
+
+  time_limit:
+    label: Limite de tempo
+    info:
+      default: limita a sessão do scrcpy, em segundos
+      alt: "usa a flag '--time-limit=${time}' "
+
+### config screen > additional flags section
+add_flags:
+  title: Flags Adicionais
+  add: Adicionar
+  info: evite usar flags que já estão disponíveis como opções.
+
+#connect tab
+connect_loc:
+  title: Conectar
+  with_ip:
+    label: Conectar com IP
+    connect: Conectar
+    connected: Conectado a ${to}
+
+  with_mdns:
+    label: Dispositivos MDNS (${count})
+    info:
+      i1: Certifique-se de que seu dispositivo está pareado com seu PC.
+      i2: Se o seu dispositivo não estiver aparecendo, tente desligar e ligar o ADB sem fio.
+      i3: Dispositivos MDNS geralmente se conectarão automaticamente se pareados.
+
+  qr_pair:
+    label: Pareamento QR
+    pair: Parear dispositivo
+    status:
+      cancelled: Pareamento cancelado
+      success: Pareamento bem-sucedido
+      failed: Falha no pareamento
+
+  unauthenticated:
+    info:
+      i1: Verifique seu telefone.
+      i2: Clique em permitir depuração.
+
+  failed:
+    info:
+      i1: Certifique-se de que seu dispositivo está pareado com seu PC.
+      i2: Caso contrário, tente desligar e ligar o Adb sem fio.
+      i3: 'Se não estiver pareado:'
+      i4: 1. Use a janela de pareamento (botão superior direito)
+      i5: 2. Conecte seu dispositivo ao seu PC, permita a depuração e tente novamente.
+
+### preview and test section
+test_config_loc:
+  title: Testar Configuração
+  preview: Pré-visualização do comando
+
+#scrcpy manager tab
+scrcpy_manager_loc:
+  title: Gerenciador Scrcpy
+  check: Verificar Atualizações
+  current:
+    label: Atual
+    in_use: Em uso
+  exec:
+    label: Abrir local do executável
+    info: Modifique com cuidado
+  info_popup:
+    no_update: Nenhuma atualização disponível
+    error: Erro ao verificar atualizações
+  updater:
+    label: Nova versão disponível
+    new_version: Nova versão
+
+#settings tab
+settings_loc:
+  title: Configurações
+  looks:
+    label: Aparência
+    mode:
+      label: Modo do tema
+      value:
+        dark: Escuro
+        light: Claro
+        system: Sistema
+    old_scheme:
+      label: Usar esquema de cores Shadcn
+    corner_radius:
+      label: Raio do canto
+    accent_color:
+      label: Cor de destaque
+    tint_level:
+      label: Nível de tonalidade
+    dimness:
+      label: Escurecimento
+    brightness:
+      label: Brilho
+    surface_opacity:
+      label: Opacidade da superfície
+      info: Conhecido por causar cintilação no Linux
+    surface_blur:
+      label: Desfoque da superfície
+      info: Conhecido por causar cintilação no Linux
+
+  behavior:
+    label: Comportamento do Aplicativo
+    language:
+      label: Idioma
+      info: Alguns idiomas são traduzidos por máquina e podem conter erros.
+    minimize:
+      label: Minimizar
+      value:
+        tray: para a bandeja
+        taskbar: para a barra de tarefas
+    window_size:
+      label: Lembrar tamanho da janela
+      info: Lembrar o tamanho da janela ao sair
+    auto_arrange:
+      label: Organizar janelas do scrcpy automaticamente
+      info: Organiza automaticamente as janelas do scrcpy ao iniciar
+    window_to_screen_ratio:
+      label: Proporção de altura da janela para a tela
+      label_short: Altura %
+      info: "Proporção da altura da janela do scrcpy para a altura da tela principal. Mín: 0.4, Máx: 1.0, Padrão: 0.88"
+
+## companion tab
+companion_loc:
+  title: Companheiro
+  server:
+    label: Configurar Servidor
+    status: Status
+    endpoint:
+      label: Endpoint do servidor
+    name:
+      label: Nome do servidor
+      info: 'Padrão: Scrcpy GUI'
+    port:
+      label: Porta do servidor
+      info: 'Padrão: 8080'
+    secret:
+      label: Chave de API do Servidor
+    auto_start:
+      label: Iniciar servidor ao iniciar
+
+  client:
+    clients: Conectados (${count})
+    blocked: Bloqueados (${count})
+    no_client: Nenhum cliente conectado
+    no_blocked: Nenhum cliente bloqueado
+
+  qr: Escaneie o código QR do aplicativo companheiro
+
+## about tab
+about_loc:
+  title: Sobre
+  version: Versão
+  author: Autor
+  credits: Créditos
+
+# quit dialog
+quit_dialog_loc:
+  title: Sair do Scrcpy GUI?
+  kill_running:
+    label: Parar instâncias em execução?
+    info: ${count} instância(s) do scrcpy. Instâncias sem janela serão paradas de qualquer maneira.
+  disconnect:
+    label: Desconectar ADB sem fio?
+    info: ${count} dispositivo(s)
+
+# home tab > device tile > disconnect dialog
+disconnect_dialog_loc:
+  title: Desconectar ${name}?
+  has_running:
+    label: ${name} tem ${count} instância(s) do scrcpy em execução
+    info: Desconectar irá parar a(s) instância(s) do scrcpy em execução.
+
+# config screen > close dialog
+close_dialog_loc:
+  not_allowed: Não permitido!
+  overwrite: Sobrescrever?
+  name_exist: O nome já existe!
+  save: Salvar configuração?
+  command_preview: 'Pré-visualização do comando:'
+  name: 'Nome:'
+
+# config screen > unsaved changes dialog
+unsaved_change_dialog_loc:
+  title: Confirmar saída?
+  contents: As alterações não salvas serão perdidas.
+
+# companion tab > disclaimer
+server_disclaimer_loc:
+  title: Aviso
+  contents: 'Aviso de Segurança: O servidor companheiro usa uma conexão não criptografada.\n\nInicie o servidor apenas se estiver conectado a uma rede privada em que você confia, como o seu Wi-Fi de casa.'
+
+# connect tab > ip history
+ip_history_loc:
+  title: Histórico
+  empty: Sem histórico
+
+# button
+button_label_loc:
+  ok: OK
+  confirm: Confirmar
+  close: Fechar
+  cancel: Cancelar
+  stop: Parar
+  test_config: Testar Configuração
+  update: Atualizar
+  info: Informações
+  select_all: Selecionar tudo
+  quit: Sair
+  discard: Descartar
+  overwrite: Sobrescrever
+  save: Salvar
+  clear: Limpar
+  delete: Excluir
+  server_agree: Eu entendo, inicie o servidor
+  reorder: Reordenar
+  stop_all: Parar Tudo
+  filter: Filtrar
+  edit: Editar
+  override: Substituir
+  dont_show_again: "Não Mostrar Novamente"
+  sponsor: Patrocinar
+
+# status
+status_loc:
+  failed: Falhou
+  unauth: Não autorizado
+  error: Erro
+  latest: Mais recente
+  closing: Fechando
+  copied: Copiado
+  running: Em execução
+  stopped: Parado
+  getting_info: Obtendo Informações
+  no_devices_found: Nenhum dispositivo encontrado
+
+# common
+common_loc:
+  default: Padrão
+  yes: Sim
+  no: Não
+  bundled: Incluído
+
+color_scheme_name_loc:
+  blue: Azul
+  gray: Cinza
+  green: Verde
+  neutral: Neutro
+  orange: Laranja
+  red: Vermelho
+  rose: Rosa
+  slate: Ardósia
+  stone: Pedra
+  violet: Violeta
+  yellow: Amarelo
+  zinc: Zinco
+
+config_filters_loc:
+  label:
+    withApp: Com aplicativo
+    virt: Tela virtual
+
+config_override_loc:
+  record:
+    label: Gravar
+    open_folder: Abrir Pasta
+  landscape:
+    label: Paisagem
+    info: Apenas para tela virtual
+  mute:
+    label: Mudo
+
+auto_arrange_origin_loc:
+  title: Organizar Automaticamente
+  alignments: Alinhamento
+  off: Desligado
+  top_left: Superior Esquerdo
+  top_right: Superior Direito
+  center_left: Centro Esquerdo
+  center_right: Centro Direito
+  bottom_left: Inferior Esquerdo
+  bottom_right: Inferior Direito

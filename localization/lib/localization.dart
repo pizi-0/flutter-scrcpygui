@@ -11043,6 +11043,706 @@ LocalizationMessages get it => LocalizationMessages(
         bottomRight: 'In Basso a Destra',
       ),
     );
+LocalizationMessages get ja => LocalizationMessages(
+      homeLoc: HomeLoc(
+        title: 'ホーム',
+        devices: HomeLocDevices(
+          label: ({required String count}) => '''接続中のデバイス (${count})''',
+        ),
+      ),
+      deviceTileLoc: DeviceTileLoc(
+        runningInstances: ({required String count}) => '''実行中 (${count})''',
+        context: DeviceTileLocContext(
+          disconnect: '切断',
+          toWireless: 'ワイヤレスへ',
+          stopRunning: '実行中のscrcpyを停止',
+          scrcpy: 'Scrcpy',
+          all: 'すべて',
+          allScrcpy: 'すべてのscrcpyを強制終了',
+          manage: '管理',
+        ),
+      ),
+      loungeLoc: LoungeLoc(
+        controls: LoungeLocControls(
+          label: '操作',
+        ),
+        pinnedApps: LoungeLocPinnedApps(
+          label: 'ピン留めされたアプリ',
+        ),
+        launcher: LoungeLocLauncher(
+          label: 'アプリランチャー',
+        ),
+        running: LoungeLocRunning(
+          label: ({required String count}) => '''実行中のインスタンス (${count})''',
+        ),
+        appTile: LoungeLocAppTile(
+          contextMenu: LoungeLocAppTileContextMenu(
+            pin: ({required String config}) => '''${config} にピン留め''',
+            unpin: 'ピン留めを外す',
+            forceClose: '強制終了して開始',
+            andStart: (
+                    {required String configuration, required String config}) =>
+                '''${config} で''',
+            selectConfig: 'まず設定を選択してください',
+            startOn: ({required String config}) => '''${config} で開始''',
+            withOverrides: 'オーバーライドして開始',
+            packageName: 'パッケージ名',
+            resetIcon: 'アイコンをリセット',
+          ),
+          sections: LoungeLocAppTileSections(
+            pinned: 'ピン留め済み',
+            apps: 'アプリ',
+          ),
+          missingIcon: ({required String count}) => '''見つからないアイコン (${count})''',
+        ),
+        placeholders: LoungeLocPlaceholders(
+          config: '設定を選択',
+          app: 'アプリを選択',
+          search: '「/」を押して検索',
+        ),
+        tooltip: LoungeLocTooltip(
+          missingConfig: ({required String config}) =>
+              '''見つからない設定: ${config}''',
+          pin: 'アプリ/設定ペアをピン留め',
+          onConfig: ({required String config}) => '''設定: ${config}''',
+          hideAppName: 'アプリ名を非表示',
+          showAppName: 'アプリ名を表示',
+        ),
+        info: LoungeLocInfo(
+          emptySearch: 'アプリが見つかりません',
+          emptyPin: 'ピン留めされたアプリはありません',
+          emptyInstance: '実行中のインスタンスはありません',
+        ),
+      ),
+      configLoc: ConfigLoc(
+        label: ({required String count}) => '''設定 (${count})''',
+        new$: '作成',
+        select: '設定を選択',
+        details: '詳細を表示',
+        start: '開始',
+        empty: '設定が見つかりません',
+      ),
+      noDeviceDialogLoc: NoDeviceDialogLoc(
+        title: 'デバイス',
+        contentsEdit: '''デバイスが選択されていません。\nscrcpy設定を編集するにはデバイスを選択してください。''',
+        contentsStart: '''デバイスが選択されていません。\nscrcpyを開始するにはデバイスを選択してください。''',
+        contentsNew: '''デバイスが選択されていません。\nscrcpy設定を作成するにはデバイスを選択してください。''',
+      ),
+      noConfigDialogLoc: NoConfigDialogLoc(
+        title: '設定',
+        contents: '''設定が選択されていません。\n開始するscrcpy設定を選択してください。''',
+      ),
+      deleteConfigDialogLoc: DeleteConfigDialogLoc(
+        title: '確認',
+        contents: ({required String configname}) => '''${configname}を削除しますか？''',
+      ),
+      deviceSettingsLoc: DeviceSettingsLoc(
+        title: 'デバイス設定',
+        info: '情報',
+        refresh: '情報を更新',
+        rename: DeviceSettingsLocRename(
+          label: '名前を変更',
+          info: '[Enter]を押して名前を適用',
+        ),
+        autoConnect: DeviceSettingsLocAutoConnect(
+          label: '自動接続',
+          info: 'ワイヤレスデバイスを自動接続',
+        ),
+        onConnected: DeviceSettingsLocOnConnected(
+          label: '接続時',
+          info: 'デバイス接続時に選択した設定でscrcpyを(1)開始',
+        ),
+        doNothing: '何もしない',
+        scrcpyInfo: DeviceSettingsLocScrcpyInfo(
+          fetching: 'scrcpy情報を取得中',
+          label: 'Scrcpy情報',
+          name: ({required String name}) => '''名前: ${name}''',
+          id: ({required String id}) => '''ID: ${id}''',
+          model: ({required String model}) => '''モデル: ${model}''',
+          version: ({required String version}) =>
+              '''Androidバージョン: ${version}''',
+          displays: ({required String count}) => '''ディスプレイ (${count})''',
+          cameras: ({required String count}) => '''カメラ (${count})''',
+          videoEnc: ({required String count}) => '''ビデオエンコーダー (${count})''',
+          audioEnc: ({required String count}) => '''オーディオエンコーダー (${count})''',
+        ),
+      ),
+      configManagerLoc: ConfigManagerLoc(
+        title: '設定マネージャー',
+      ),
+      configScreenLoc: ConfigScreenLoc(
+        title: 'コンフィグ設定',
+        connectionLost: 'デバイスへの接続が失われました',
+        similarExist: ({required String configName}) => '''${configName}の複製''',
+      ),
+      logScreenLoc: LogScreenLoc(
+        title: 'テストログ',
+        dialog: LogScreenLocDialog(
+          title: 'コマンド',
+        ),
+      ),
+      renameSection: RenameSection(
+        title: '名前を変更',
+      ),
+      modeSection: ModeSection(
+        title: 'モード',
+        saveFolder: ModeSectionSaveFolder(
+          label: '保存フォルダー',
+          info: '''保存パスを'--record=保存パス/ファイル'に追加します''',
+        ),
+        mainMode: ModeSectionMainMode(
+          label: 'モード',
+          mirror: 'ミラー',
+          record: '録画',
+          info: ModeSectionMainModeInfo(
+            default$: 'ミラーまたは録画、ミラーにはフラグなし',
+            alt: ''''--record='フラグを使用''',
+          ),
+        ),
+        scrcpyMode: ModeSectionScrcpyMode(
+          both: '音声 + 映像',
+          audioOnly: '音声のみ',
+          videoOnly: '映像のみ',
+          info: ModeSectionScrcpyModeInfo(
+            default$: 'デフォルトは両方、フラグなし',
+            alt: ({required String command}) => ''''${command}'フラグを使用''',
+          ),
+        ),
+      ),
+      videoSection: VideoSection(
+        title: '映像',
+        displays: VideoSectionDisplays(
+          label: 'ディスプレイ',
+          info: VideoSectionDisplaysInfo(
+            default$: 'デフォルトは利用可能な最初のもの、フラグなし',
+            alt: ''''--display-id='フラグを使用''',
+          ),
+          virtual: VideoSectionDisplaysVirtual(
+            label: '仮想ディスプレイ設定',
+            newDisplay: VideoSectionDisplaysVirtualNewDisplay(
+              label: '新しいディスプレイ',
+              info: VideoSectionDisplaysVirtualNewDisplayInfo(
+                alt: ''''--new-display'フラグを使用''',
+              ),
+            ),
+            resolution: VideoSectionDisplaysVirtualResolution(
+              label: '解像度',
+              info: VideoSectionDisplaysVirtualResolutionInfo(
+                default$: 'デバイスの解像度にデフォルト設定',
+                alt: ({required String res}) =>
+                    '''解像度を'--new-display=${res}'フラグに追加''',
+              ),
+            ),
+            dpi: VideoSectionDisplaysVirtualDpi(
+              label: 'DPI',
+              info: VideoSectionDisplaysVirtualDpiInfo(
+                default$: 'デバイスのDPIにデフォルト設定',
+                alt: ({required String res, required String dpi}) =>
+                    '''DPIを'--new-display=${res}/${dpi}'フラグに追加''',
+              ),
+            ),
+            deco: VideoSectionDisplaysVirtualDeco(
+              label: 'システム装飾を無効化',
+              info: VideoSectionDisplaysVirtualDecoInfo(
+                default$: 'デフォルトはシステム装飾あり',
+                alt: ''''--no-vd-system-decorations'フラグを使用''',
+              ),
+            ),
+            preserve: VideoSectionDisplaysVirtualPreserve(
+              label: 'アプリを維持',
+              info: VideoSectionDisplaysVirtualPreserveInfo(
+                default$: 'scrcpyセッション終了時にアプリはデフォルトで破棄されます',
+                alt:
+                    '''セッション終了時にアプリをメインディスプレイに移動; '--no-vd-destroy-content'フラグを使用''',
+              ),
+            ),
+          ),
+        ),
+        codec: VideoSectionCodec(
+          label: 'コーデック',
+          info: VideoSectionCodecInfo(
+            default$: 'デフォルトはh264、フラグなし',
+            alt: ({required String codec}) =>
+                ''''--video-codec=${codec}'フラグを使用''',
+          ),
+        ),
+        encoder: VideoSectionEncoder(
+          label: 'エンコーダー',
+          info: VideoSectionEncoderInfo(
+            default$: 'デフォルトは利用可能な最初のもの、フラグなし',
+            alt: ({required String encoder}) =>
+                ''''--video-encoder=${encoder}'フラグを使用''',
+          ),
+        ),
+        format: VideoSectionFormat(
+          label: 'フォーマット',
+          info: VideoSectionFormatInfo(
+            default$: ({required String format}) =>
+                '''フォーマットを'--record=保存パス/ファイル${format}'に追加"''',
+          ),
+        ),
+        bitrate: VideoSectionBitrate(
+          label: 'ビットレート',
+          info: VideoSectionBitrateInfo(
+            default$: 'デフォルトは8M、フラグなし',
+            alt: ({required String bitrate}) =>
+                ''''--video-bit-rate=${bitrate}M'フラグを使用''',
+          ),
+        ),
+        fpsLimit: VideoSectionFpsLimit(
+          label: 'FPS制限',
+          info: VideoSectionFpsLimitInfo(
+            default$: '設定されない限りフラグなし',
+            alt: ({required String fps}) => ''''--max-fps=${fps}'フラグを使用''',
+          ),
+        ),
+        resolutionScale: VideoSectionResolutionScale(
+          label: '解像度スケール',
+          info: VideoSectionResolutionScaleInfo(
+            default$: 'デバイスの解像度に基づいて計算、設定されない限りフラグなし',
+            alt: ({required String size}) => ''''--max-size=${size}'フラグを使用''',
+          ),
+        ),
+      ),
+      audioSection: AudioSection(
+        title: '音声',
+        duplicate: AudioSectionDuplicate(
+          label: '音声を複製',
+          info: AudioSectionDuplicateInfo(
+            default$: 'Android 13以上のみ',
+            alt: ''''--audio-dup' フラグを使用''',
+          ),
+        ),
+        source: AudioSectionSource(
+          label: 'ソース',
+          info: AudioSectionSourceInfo(
+            default$: 'デフォルトは出力、フラグなし',
+            alt: ({required String source}) => ''''${source}'フラグを使用''',
+            inCaseOfDup: ''''--audio-dup' で'再生'に暗黙的に設定、フラグなし''',
+          ),
+        ),
+        codec: AudioSectionCodec(
+          label: 'コーデック',
+          info: AudioSectionCodecInfo(
+            default$: 'デフォルトはopus、フラグなし',
+            alt: ({required String codec}) =>
+                ''''--audio-codec=${codec}'フラグを使用''',
+            isAudioOnly: ({required String format, required String codec}) =>
+                '''フォーマット: ${format}、コーデック: ${codec}が必要''',
+          ),
+        ),
+        encoder: AudioSectionEncoder(
+          label: 'エンコーダー',
+          info: AudioSectionEncoderInfo(
+            default$: 'デフォルトは利用可能な最初のもの、フラグなし',
+            alt: ({required String encoder}) =>
+                ''''--audio-encoder=${encoder}'フラグを使用''',
+          ),
+        ),
+        format: AudioSectionFormat(
+          label: 'フォーマット',
+          info: AudioSectionFormatInfo(
+            default$: ({required String format}) =>
+                '''フォーマットを'--record=保存パス/ファイル.${format}'に追加"''',
+          ),
+        ),
+        bitrate: AudioSectionBitrate(
+          label: 'ビットレート',
+          info: AudioSectionBitrateInfo(
+            default$: 'デフォルトは128k、フラグなし',
+            alt: ({required String bitrate}) =>
+                ''''--audio-bit-rate=${bitrate}K'フラグを使用''',
+          ),
+        ),
+      ),
+      appSection: AppSection(
+        title: 'アプリを起動',
+        select: AppSectionSelect(
+          label: 'アプリを選択',
+          info: AppSectionSelectInfo(
+            alt: ({required String app}) => ''''--start-app=${app}'フラグを使用''',
+            fc: ({required String app}) => ''''--start-app=+${app}'フラグを使用''',
+          ),
+        ),
+        forceClose: AppSectionForceClose(
+          label: '起動前にアプリを強制終了',
+          info: AppSectionForceCloseInfo(
+            alt: '''アプリのパッケージ名の前に'+'を付ける''',
+          ),
+        ),
+      ),
+      deviceSection: DeviceSection(
+        title: 'デバイス',
+        stayAwake: DeviceSectionStayAwake(
+          label: 'スリープしない',
+          info: DeviceSectionStayAwakeInfo(
+            default$: 'デバイスのスリープを防止、USB接続時のみ動作',
+            alt: ''''--stay-awake'フラグを使用''',
+          ),
+        ),
+        showTouches: DeviceSectionShowTouches(
+          label: 'タッチを表示',
+          info: DeviceSectionShowTouchesInfo(
+            default$: '指のタッチを表示、デバイスでの物理的なタッチのみ動作',
+            alt: ''''--show-touches'フラグを使用''',
+          ),
+        ),
+        offDisplayStart: DeviceSectionOffDisplayStart(
+          label: '起動時にディスプレイをオフ',
+          info: DeviceSectionOffDisplayStartInfo(
+            default$: 'scrcpy起動時にデバイスのディスプレイをオフにする',
+            alt: ''''--turn-screen-off'フラグを使用''',
+          ),
+        ),
+        offDisplayExit: DeviceSectionOffDisplayExit(
+          label: '終了時にディスプレイをオフ',
+          info: DeviceSectionOffDisplayExitInfo(
+            default$: 'scrcpy終了時にデバイスのディスプレイをオフにする',
+            alt: ''''--power-off-on-close'フラグを使用''',
+          ),
+        ),
+        screensaver: DeviceSectionScreensaver(
+          label: 'スクリーンセーバーを無効化 (ホスト)',
+          info: DeviceSectionScreensaverInfo(
+            default$: 'スクリーンセーバーを無効化',
+            alt: ''''--disable-screensaver'フラグを使用''',
+          ),
+        ),
+      ),
+      windowSection: WindowSection(
+        title: 'ウィンドウ',
+        hideWindow: WindowSectionHideWindow(
+          label: 'ウィンドウを非表示',
+          info: WindowSectionHideWindowInfo(
+            default$: 'ウィンドウなしでscrcpyを起動',
+            alt: ''''--no-window'フラグを使用''',
+          ),
+        ),
+        borderless: WindowSectionBorderless(
+          label: 'ボーダーレス',
+          info: WindowSectionBorderlessInfo(
+            default$: 'ウィンドウの装飾を無効化',
+            alt: ''''--window-borderless'フラグを使用''',
+          ),
+        ),
+        alwaysOnTop: WindowSectionAlwaysOnTop(
+          label: '常に手前に表示',
+          info: WindowSectionAlwaysOnTopInfo(
+            default$: 'scrcpyウィンドウを常に手前に表示',
+            alt: ''''--always-on-top'フラグを使用''',
+          ),
+        ),
+        timeLimit: WindowSectionTimeLimit(
+          label: '時間制限',
+          info: WindowSectionTimeLimitInfo(
+            default$: 'scrcpyセッションを制限（秒単位）',
+            alt: ({required String time}) => ''''--time-limit=${time}'フラグを使用''',
+          ),
+        ),
+      ),
+      addFlags: AddFlags(
+        title: '追加フラグ',
+        add: '追加',
+        info: 'すでにオプションとして存在するフラグの使用は避けてください',
+      ),
+      connectLoc: ConnectLoc(
+        title: '接続',
+        withIp: ConnectLocWithIp(
+          label: 'IPで接続',
+          connect: '接続',
+          connected: ({required String to}) => '''${to}に接続済み''',
+        ),
+        withMdns: ConnectLocWithMdns(
+          label: ({required String count}) => '''MDNSデバイス (${count})''',
+          info: ConnectLocWithMdnsInfo(
+            i1: 'デバイスがPCとペアリングされていることを確認してください。',
+            i2: 'デバイスが表示されない場合は、ワイヤレスADBをオフにしてからオンにしてみてください。',
+            i3: 'MDNSデバイスは通常、ペアリングされていれば自動的に接続されます。',
+          ),
+        ),
+        qrPair: ConnectLocQrPair(
+          label: 'QRペアリング',
+          pair: 'デバイスをペアリング',
+          status: ConnectLocQrPairStatus(
+            cancelled: 'ペアリングがキャンセルされました',
+            success: 'ペアリングに成功しました',
+            failed: 'ペアリングに失敗しました',
+          ),
+        ),
+        unauthenticated: ConnectLocUnauthenticated(
+          info: ConnectLocUnauthenticatedInfo(
+            i1: 'スマートフォンを確認してください。',
+            i2: 'デバッグを許可をクリックしてください。',
+          ),
+        ),
+        failed: ConnectLocFailed(
+          info: ConnectLocFailedInfo(
+            i1: 'デバイスがPCとペアリングされていることを確認してください。',
+            i2: 'そうでない場合は、ワイヤレスAdbをオフにしてからオンにしてみてください。',
+            i3: 'ペアリングされていない場合: ',
+            i4: '1. ペアリングウィンドウを使用（右上のボタン）',
+            i5: '2. デバイスをPCに接続し、デバッグを許可して再試行してください。',
+          ),
+        ),
+      ),
+      testConfigLoc: TestConfigLoc(
+        title: '設定をテスト',
+        preview: 'コマンドプレビュー',
+      ),
+      scrcpyManagerLoc: ScrcpyManagerLoc(
+        title: 'Scrcpyマネージャー',
+        check: '更新を確認',
+        current: ScrcpyManagerLocCurrent(
+          label: '現在',
+          inUse: '使用中',
+        ),
+        exec: ScrcpyManagerLocExec(
+          label: '実行ファイルの場所を開く',
+          info: '注意して変更してください',
+        ),
+        infoPopup: ScrcpyManagerLocInfoPopup(
+          noUpdate: '利用可能な更新はありません',
+          error: '更新の確認中にエラーが発生しました',
+        ),
+        updater: ScrcpyManagerLocUpdater(
+          label: '新しいバージョンが利用可能です',
+          newVersion: '新バージョン',
+        ),
+      ),
+      settingsLoc: SettingsLoc(
+        title: '設定',
+        looks: SettingsLocLooks(
+          label: '外観',
+          mode: SettingsLocLooksMode(
+            label: 'テーマモード',
+            value: SettingsLocLooksModeValue(
+              dark: 'ダーク',
+              light: 'ライト',
+              system: 'システム',
+            ),
+          ),
+          oldScheme: SettingsLocLooksOldScheme(
+            label: 'Shadcnカラースキームを使用',
+          ),
+          cornerRadius: SettingsLocLooksCornerRadius(
+            label: '角の半径',
+          ),
+          accentColor: SettingsLocLooksAccentColor(
+            label: 'アクセントカラー',
+          ),
+          tintLevel: SettingsLocLooksTintLevel(
+            label: '色合いのレベル',
+          ),
+          dimness: SettingsLocLooksDimness(
+            label: '薄暗さ',
+          ),
+          brightness: SettingsLocLooksBrightness(
+            label: '明るさ',
+          ),
+          surfaceOpacity: SettingsLocLooksSurfaceOpacity(
+            label: '表面の不透明度',
+            info: 'Linuxでちらつきを引き起こすことが知られています',
+          ),
+          surfaceBlur: SettingsLocLooksSurfaceBlur(
+            label: '表面のぼかし',
+            info: 'Linuxでちらつきを引き起こすことが知られています',
+          ),
+        ),
+        behavior: SettingsLocBehavior(
+          label: 'アプリの動作',
+          language: SettingsLocBehaviorLanguage(
+            label: '言語',
+            info: '一部の言語はAIによって生成されています',
+          ),
+          minimize: SettingsLocBehaviorMinimize(
+            label: '閉じる時に最小化',
+            value: SettingsLocBehaviorMinimizeValue(
+              tray: 'トレイへ',
+              taskbar: 'タスクバーへ',
+            ),
+          ),
+          windowSize: SettingsLocBehaviorWindowSize(
+            label: 'ウィンドウサイズを記憶',
+            info: '終了時にウィンドウサイズを記憶',
+          ),
+          autoArrange: SettingsLocBehaviorAutoArrange(
+            label: 'scrcpyウィンドウの自動配置',
+            info: '起動時にscrcpyウィンドウを自動的に配置',
+          ),
+          windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
+            label: 'ウィンドウと画面の高さの比率',
+            labelShort: '高さ %',
+            info:
+                'scrcpyウィンドウの高さとプライマリスクリーンの高さの比率。最小: 0.4, 最大: 1.0, デフォルト: 0.88',
+          ),
+        ),
+      ),
+      companionLoc: CompanionLoc(
+        title: 'コンパニオン',
+        server: CompanionLocServer(
+          label: 'サーバー設定',
+          status: 'ステータス',
+          endpoint: CompanionLocServerEndpoint(
+            label: 'サーバーエンドポイント',
+          ),
+          name: CompanionLocServerName(
+            label: 'サーバー名',
+            info: 'デフォルト: Scrcpy GUI',
+          ),
+          port: CompanionLocServerPort(
+            label: 'サーバーポート',
+            info: 'デフォルト: 8080',
+          ),
+          secret: CompanionLocServerSecret(
+            label: 'サーバーAPIキー',
+          ),
+          autoStart: CompanionLocServerAutoStart(
+            label: '起動時にサーバーを開始',
+          ),
+        ),
+        client: CompanionLocClient(
+          clients: ({required String count}) => '''接続中 (${count})''',
+          blocked: ({required String count}) => '''ブロック済み (${count})''',
+          noClient: '接続中のクライアントなし',
+          noBlocked: 'ブロック済みのクライアントなし',
+        ),
+        qr: 'コンパニオンアプリからQRコードをスキャン',
+      ),
+      aboutLoc: AboutLoc(
+        title: '概要',
+        version: 'バージョン',
+        author: '作成者',
+        credits: 'クレジット',
+      ),
+      quitDialogLoc: QuitDialogLoc(
+        title: 'Scrcpy GUIを終了しますか？',
+        killRunning: QuitDialogLocKillRunning(
+          label: '実行中のプロセスを終了しますか？',
+          info: ({required String count}) =>
+              '''${count} 個のscrcpy。ウィンドウのないインスタンスは、とにかく停止されます。''',
+        ),
+        disconnect: QuitDialogLocDisconnect(
+          label: 'ワイヤレスADBを切断しますか？',
+          info: ({required String count}) => '''${count} 台のデバイス''',
+        ),
+      ),
+      disconnectDialogLoc: DisconnectDialogLoc(
+        title: ({required String name}) => '''${name}を切断しますか？''',
+        hasRunning: DisconnectDialogLocHasRunning(
+          label: ({required String name, required String count}) =>
+              '''${name}には実行中のscrcpyが${count}個あります''',
+          info: '切断するとscrcpyが終了します',
+        ),
+      ),
+      closeDialogLoc: CloseDialogLoc(
+        notAllowed: '許可されていません！',
+        overwrite: '上書きしますか？',
+        nameExist: '名前はすでに存在します！',
+        save: '設定を保存しますか？',
+        commandPreview: 'コマンドプレビュー:',
+        name: '名前:',
+      ),
+      unsavedChangeDialogLoc: UnsavedChangeDialogLoc(
+        title: '終了を確認しますか？',
+        contents: '保存されていない変更は失われます。',
+      ),
+      serverDisclaimerLoc: ServerDisclaimerLoc(
+        title: '免責事項',
+        contents:
+            '''セキュリティ警告: コンパニオンサーバーは暗号化されていない接続を使用します。\n\n自宅のWi-Fiなど、信頼できるプライベートネットワークに接続している場合にのみサーバーを起動してください。''',
+      ),
+      ipHistoryLoc: IpHistoryLoc(
+        title: '履歴',
+        empty: '履歴なし',
+      ),
+      buttonLabelLoc: ButtonLabelLoc(
+        ok: 'OK',
+        confirm: '確認',
+        close: '閉じる',
+        cancel: 'キャンセル',
+        stop: '停止',
+        testConfig: '設定をテスト',
+        update: '更新',
+        info: '情報',
+        selectAll: 'すべて選択',
+        quit: '終了',
+        discard: '破棄',
+        overwrite: '上書き',
+        save: '保存',
+        clear: 'クリア',
+        delete: '削除',
+        serverAgree: '理解しました、サーバーを開始',
+        reorder: '並べ替え',
+        stopAll: '全て停止',
+        filter: 'フィルター',
+        edit: '編集',
+        override: 'オーバーライド',
+        dontShowAgain: '再表示しない',
+        sponsor: 'スポンサー',
+      ),
+      statusLoc: StatusLoc(
+        failed: '失敗',
+        unauth: '未認証',
+        error: 'エラー',
+        latest: '最新',
+        closing: '閉じています',
+        copied: 'コピーしました',
+        running: '実行中',
+        stopped: '停止済み',
+        gettingInfo: '情報を取得中',
+        noDevicesFound: 'デバイスが見つかりません',
+      ),
+      commonLoc: CommonLoc(
+        default$: 'デフォルト',
+        yes: 'はい',
+        no: 'いいえ',
+        bundled: 'バンドル版',
+      ),
+      colorSchemeNameLoc: ColorSchemeNameLoc(
+        blue: '青',
+        gray: 'グレー',
+        green: '緑',
+        neutral: 'ニュートラル',
+        orange: 'オレンジ',
+        red: '赤',
+        rose: 'ローズ',
+        slate: 'スレート',
+        stone: 'ストーン',
+        violet: 'バイオレット',
+        yellow: 'イエロー',
+        zinc: 'ジンク',
+      ),
+      configFiltersLoc: ConfigFiltersLoc(
+        label: ConfigFiltersLocLabel(
+          withApp: 'アプリあり',
+          virt: '仮想ディスプレイ',
+        ),
+      ),
+      configOverrideLoc: ConfigOverrideLoc(
+        record: ConfigOverrideLocRecord(
+          label: '録画',
+          openFolder: 'フォルダーを開く',
+        ),
+        landscape: ConfigOverrideLocLandscape(
+          label: '横向き',
+          info: '仮想ディスプレイのみ',
+        ),
+        mute: ConfigOverrideLocMute(
+          label: 'ミュート',
+        ),
+      ),
+      autoArrangeOriginLoc: AutoArrangeOriginLoc(
+        title: '自動配置',
+        alignments: '配置',
+        off: 'オフ',
+        topLeft: '左上',
+        topRight: '右上',
+        centerLeft: '中央左',
+        centerRight: '中央右',
+        bottomLeft: '左下',
+        bottomRight: '右下',
+      ),
+    );
 LocalizationMessages get ms => LocalizationMessages(
       homeLoc: HomeLoc(
         title: 'Laman Utama',
@@ -12463,713 +13163,741 @@ LocalizationMessages get zh => LocalizationMessages(
         bottomRight: '右下',
       ),
     );
-LocalizationMessages get ja => LocalizationMessages(
+LocalizationMessages get pt_BR => LocalizationMessages(
       homeLoc: HomeLoc(
-        title: 'ホーム',
+        title: 'Início',
         devices: HomeLocDevices(
-          label: ({required String count}) => '''接続中のデバイス (${count})''',
+          label: ({required String count}) =>
+              '''Dispositivos Conectados (${count})''',
         ),
       ),
       deviceTileLoc: DeviceTileLoc(
-        runningInstances: ({required String count}) => '''実行中 (${count})''',
+        runningInstances: ({required String count}) =>
+            '''Em execução (${count})''',
         context: DeviceTileLocContext(
-          disconnect: '切断',
-          toWireless: 'ワイヤレスへ',
-          stopRunning: '実行中のscrcpyを停止',
+          disconnect: 'Desconectar',
+          toWireless: 'Conectar via Wireless',
+          stopRunning: 'Parar scrcpy em execução',
           scrcpy: 'Scrcpy',
-          all: 'すべて',
-          allScrcpy: 'すべてのscrcpyを強制終了',
-          manage: '管理',
+          all: 'Todos',
+          allScrcpy: 'Parar todos os scrcpy',
+          manage: 'Gerenciar',
         ),
       ),
       loungeLoc: LoungeLoc(
         controls: LoungeLocControls(
-          label: '操作',
+          label: 'Controles',
         ),
         pinnedApps: LoungeLocPinnedApps(
-          label: 'ピン留めされたアプリ',
+          label: 'Aplicativos fixados',
         ),
         launcher: LoungeLocLauncher(
-          label: 'アプリランチャー',
+          label: 'Lançador de Aplicativos',
         ),
         running: LoungeLocRunning(
-          label: ({required String count}) => '''実行中のインスタンス (${count})''',
+          label: ({required String count}) =>
+              '''Instâncias em execução (${count})''',
         ),
         appTile: LoungeLocAppTile(
           contextMenu: LoungeLocAppTileContextMenu(
-            pin: ({required String config}) => '''${config} にピン留め''',
-            unpin: 'ピン留めを外す',
-            forceClose: '強制終了して開始',
+            pin: ({required String config}) => '''Fixar em ${config}''',
+            unpin: 'Desafixar',
+            forceClose: 'Forçar fechamento e iniciar',
             andStart: (
                     {required String configuration, required String config}) =>
-                '''${config} で''',
-            selectConfig: 'まず設定を選択してください',
-            startOn: ({required String config}) => '''${config} で開始''',
-            withOverrides: 'オーバーライドして開始',
-            packageName: 'パッケージ名',
-            resetIcon: 'アイコンをリセット',
+                '''Em ${config}''',
+            selectConfig: 'Por favor, selecione uma configuração primeiro',
+            startOn: ({required String config}) => '''Iniciar em ${config}''',
+            withOverrides: 'Iniciar com substituições',
+            packageName: 'Nome do pacote',
+            resetIcon: 'Redefinir ícone',
           ),
           sections: LoungeLocAppTileSections(
-            pinned: 'ピン留め済み',
-            apps: 'アプリ',
+            pinned: 'Fixados',
+            apps: 'Aplicativos',
           ),
-          missingIcon: ({required String count}) => '''見つからないアイコン (${count})''',
+          missingIcon: ({required String count}) =>
+              '''Ícones faltando (${count})''',
         ),
         placeholders: LoungeLocPlaceholders(
-          config: '設定を選択',
-          app: 'アプリを選択',
-          search: '「/」を押して検索',
+          config: 'Selecionar configuração',
+          app: 'Selecionar aplicativo',
+          search: '''Pressione '/' para pesquisar''',
         ),
         tooltip: LoungeLocTooltip(
           missingConfig: ({required String config}) =>
-              '''見つからない設定: ${config}''',
-          pin: 'アプリ/設定ペアをピン留め',
-          onConfig: ({required String config}) => '''設定: ${config}''',
-          hideAppName: 'アプリ名を非表示',
-          showAppName: 'アプリ名を表示',
+              '''Configuração ausente: ${config}''',
+          pin: 'Fixar par aplicativo/configuração',
+          onConfig: ({required String config}) => '''Em: ${config}''',
+          hideAppName: 'Ocultar nome do aplicativo',
+          showAppName: 'Mostrar nome do aplicativo',
         ),
         info: LoungeLocInfo(
-          emptySearch: 'アプリが見つかりません',
-          emptyPin: 'ピン留めされたアプリはありません',
-          emptyInstance: '実行中のインスタンスはありません',
+          emptySearch: 'Nenhum aplicativo encontrado',
+          emptyPin: 'Nenhum Aplicativo Fixado',
+          emptyInstance: 'Nenhuma Instância em Execução',
         ),
       ),
       configLoc: ConfigLoc(
-        label: ({required String count}) => '''設定 (${count})''',
-        new$: '作成',
-        select: '設定を選択',
-        details: '詳細を表示',
-        start: '開始',
-        empty: '設定が見つかりません',
+        label: ({required String count}) => '''Configurações (${count})''',
+        new$: 'Criar',
+        select: 'Selecione uma configuração',
+        details: 'Mostrar detalhes',
+        start: 'Iniciar',
+        empty: 'Nenhuma configuração encontrada',
       ),
       noDeviceDialogLoc: NoDeviceDialogLoc(
-        title: 'デバイス',
-        contentsEdit: '''デバイスが選択されていません。\nscrcpy設定を編集するにはデバイスを選択してください。''',
-        contentsStart: '''デバイスが選択されていません。\nscrcpyを開始するにはデバイスを選択してください。''',
-        contentsNew: '''デバイスが選択されていません。\nscrcpy設定を作成するにはデバイスを選択してください。''',
+        title: 'Dispositivo',
+        contentsEdit:
+            '''Nenhum dispositivo selecionado. \nSelecione um dispositivo para editar a configuração do scrcpy.''',
+        contentsStart:
+            '''Nenhum dispositivo selecionado. \nSelecione um dispositivo para iniciar o scrcpy.''',
+        contentsNew:
+            '''Nenhum dispositivo selecionado. \nSelecione um dispositivo para criar uma configuração do scrcpy.''',
       ),
       noConfigDialogLoc: NoConfigDialogLoc(
-        title: '設定',
-        contents: '''設定が選択されていません。\n開始するscrcpy設定を選択してください。''',
+        title: 'Configuração',
+        contents:
+            '''Nenhuma configuração selecionada.\nSelecione uma configuração do scrcpy para iniciar.''',
       ),
       deleteConfigDialogLoc: DeleteConfigDialogLoc(
-        title: '確認',
-        contents: ({required String configname}) => '''${configname}を削除しますか？''',
+        title: 'Confirmar',
+        contents: ({required String configname}) =>
+            '''Excluir ${configname}?''',
       ),
       deviceSettingsLoc: DeviceSettingsLoc(
-        title: 'デバイス設定',
-        info: '情報',
-        refresh: '情報を更新',
+        title: 'Configurações do Dispositivo',
+        info: 'Informações',
+        refresh: 'Atualizar informações',
         rename: DeviceSettingsLocRename(
-          label: '名前を変更',
-          info: '[Enter]を押して名前を適用',
+          label: 'Renomear',
+          info: 'Pressione [Enter] para aplicar o nome',
         ),
         autoConnect: DeviceSettingsLocAutoConnect(
-          label: '自動接続',
-          info: 'ワイヤレスデバイスを自動接続',
+          label: 'Conexão automática',
+          info: 'Conectar dispositivo sem fio automaticamente',
         ),
         onConnected: DeviceSettingsLocOnConnected(
-          label: '接続時',
-          info: 'デバイス接続時に選択した設定でscrcpyを(1)開始',
+          label: 'Ao conectar',
+          info:
+              'Iniciar (1) scrcpy com a configuração selecionada na conexão do dispositivo',
         ),
-        doNothing: '何もしない',
+        doNothing: 'Não fazer nada',
         scrcpyInfo: DeviceSettingsLocScrcpyInfo(
-          fetching: 'scrcpy情報を取得中',
-          label: 'Scrcpy情報',
-          name: ({required String name}) => '''名前: ${name}''',
+          fetching: 'Buscando informações do scrcpy',
+          label: 'Informações do Scrcpy',
+          name: ({required String name}) => '''Nome: ${name}''',
           id: ({required String id}) => '''ID: ${id}''',
-          model: ({required String model}) => '''モデル: ${model}''',
+          model: ({required String model}) => '''Modelo: ${model}''',
           version: ({required String version}) =>
-              '''Androidバージョン: ${version}''',
-          displays: ({required String count}) => '''ディスプレイ (${count})''',
-          cameras: ({required String count}) => '''カメラ (${count})''',
-          videoEnc: ({required String count}) => '''ビデオエンコーダー (${count})''',
-          audioEnc: ({required String count}) => '''オーディオエンコーダー (${count})''',
+              '''Versão do Android: ${version}''',
+          displays: ({required String count}) => '''Telas (${count})''',
+          cameras: ({required String count}) => '''Câmeras (${count})''',
+          videoEnc: ({required String count}) =>
+              '''Codificadores de vídeo (${count})''',
+          audioEnc: ({required String count}) =>
+              '''Codificadores de áudio (${count})''',
         ),
       ),
       configManagerLoc: ConfigManagerLoc(
-        title: '設定マネージャー',
+        title: 'Gerenciador de Configurações',
       ),
       configScreenLoc: ConfigScreenLoc(
-        title: 'コンフィグ設定',
-        connectionLost: 'デバイスへの接続が失われました',
-        similarExist: ({required String configName}) => '''${configName}の複製''',
+        title: 'Configurações de Configuração',
+        connectionLost: 'Conexão com o dispositivo perdida',
+        similarExist: ({required String configName}) =>
+            '''Duplicata de ${configName}''',
       ),
       logScreenLoc: LogScreenLoc(
-        title: 'テストログ',
+        title: 'Log de Teste',
         dialog: LogScreenLocDialog(
-          title: 'コマンド',
+          title: 'Comando',
         ),
       ),
       renameSection: RenameSection(
-        title: '名前を変更',
+        title: 'Renomear',
       ),
       modeSection: ModeSection(
-        title: 'モード',
+        title: 'Modo',
         saveFolder: ModeSectionSaveFolder(
-          label: '保存フォルダー',
-          info: '''保存パスを'--record=保存パス/ファイル'に追加します''',
+          label: 'Pasta para salvar',
+          info:
+              '''anexa o caminho de salvamento a '--record=caminho/arquivo' ''',
         ),
         mainMode: ModeSectionMainMode(
-          label: 'モード',
-          mirror: 'ミラー',
-          record: '録画',
+          label: 'Modo',
+          mirror: 'Espelhar',
+          record: 'Gravar',
           info: ModeSectionMainModeInfo(
-            default$: 'ミラーまたは録画、ミラーにはフラグなし',
-            alt: ''''--record='フラグを使用''',
+            default$: 'espelhar ou gravar, sem flag para espelhar',
+            alt: '''usa a flag '--record=' ''',
           ),
         ),
         scrcpyMode: ModeSectionScrcpyMode(
-          both: '音声 + 映像',
-          audioOnly: '音声のみ',
-          videoOnly: '映像のみ',
+          both: 'Áudio + vídeo',
+          audioOnly: 'Apenas áudio',
+          videoOnly: 'Apenas vídeo',
           info: ModeSectionScrcpyModeInfo(
-            default$: 'デフォルトは両方、フラグなし',
-            alt: ({required String command}) => ''''${command}'フラグを使用''',
+            default$: 'padrão para ambos, sem flag',
+            alt: ({required String command}) => '''usa a flag '${command}' ''',
           ),
         ),
       ),
       videoSection: VideoSection(
-        title: '映像',
+        title: 'Vídeo',
         displays: VideoSectionDisplays(
-          label: 'ディスプレイ',
+          label: 'Telas',
           info: VideoSectionDisplaysInfo(
-            default$: 'デフォルトは利用可能な最初のもの、フラグなし',
-            alt: ''''--display-id='フラグを使用''',
+            default$: 'padrão para a primeira disponível, sem flag',
+            alt: '''usa a flag '--display-id=' ''',
           ),
           virtual: VideoSectionDisplaysVirtual(
-            label: '仮想ディスプレイ設定',
+            label: 'Configurações de tela virtual',
             newDisplay: VideoSectionDisplaysVirtualNewDisplay(
-              label: '新しいディスプレイ',
+              label: 'Nova tela',
               info: VideoSectionDisplaysVirtualNewDisplayInfo(
-                alt: ''''--new-display'フラグを使用''',
+                alt: '''usa a flag '--new-display' ''',
               ),
             ),
             resolution: VideoSectionDisplaysVirtualResolution(
-              label: '解像度',
+              label: 'Resolução',
               info: VideoSectionDisplaysVirtualResolutionInfo(
-                default$: 'デバイスの解像度にデフォルト設定',
+                default$: 'padrão para a resolução do dispositivo',
                 alt: ({required String res}) =>
-                    '''解像度を'--new-display=${res}'フラグに追加''',
+                    '''anexa a resolução à flag '--new-display=${res}' ''',
               ),
             ),
             dpi: VideoSectionDisplaysVirtualDpi(
               label: 'DPI',
               info: VideoSectionDisplaysVirtualDpiInfo(
-                default$: 'デバイスのDPIにデフォルト設定',
+                default$: 'padrão para o DPI do dispositivo',
                 alt: ({required String res, required String dpi}) =>
-                    '''DPIを'--new-display=${res}/${dpi}'フラグに追加''',
+                    '''anexa o DPI à flag '--new-display=${res}/${dpi}' ''',
               ),
             ),
             deco: VideoSectionDisplaysVirtualDeco(
-              label: 'システム装飾を無効化',
+              label: 'Desativar decorações do sistema',
               info: VideoSectionDisplaysVirtualDecoInfo(
-                default$: 'デフォルトはシステム装飾あり',
-                alt: ''''--no-vd-system-decorations'フラグを使用''',
+                default$: 'padrão com decorações do sistema',
+                alt: '''usa a flag '--no-vd-system-decorations' ''',
               ),
             ),
             preserve: VideoSectionDisplaysVirtualPreserve(
-              label: 'アプリを維持',
+              label: 'Preservar aplicativo',
               info: VideoSectionDisplaysVirtualPreserveInfo(
-                default$: 'scrcpyセッション終了時にアプリはデフォルトで破棄されます',
+                default$:
+                    'os aplicativos são destruídos por padrão quando uma sessão do scrcpy termina',
                 alt:
-                    '''セッション終了時にアプリをメインディスプレイに移動; '--no-vd-destroy-content'フラグを使用''',
+                    '''move o aplicativo para a tela principal quando a sessão termina; usa a flag '--no-vd-destroy-content' ''',
               ),
             ),
           ),
         ),
         codec: VideoSectionCodec(
-          label: 'コーデック',
+          label: 'Codec',
           info: VideoSectionCodecInfo(
-            default$: 'デフォルトはh264、フラグなし',
+            default$: 'padrão para h264, sem flag',
             alt: ({required String codec}) =>
-                ''''--video-codec=${codec}'フラグを使用''',
+                '''usa a flag '--video-codec=${codec}' ''',
           ),
         ),
         encoder: VideoSectionEncoder(
-          label: 'エンコーダー',
+          label: 'Codificador',
           info: VideoSectionEncoderInfo(
-            default$: 'デフォルトは利用可能な最初のもの、フラグなし',
+            default$: 'padrão para o primeiro disponível, sem flag',
             alt: ({required String encoder}) =>
-                ''''--video-encoder=${encoder}'フラグを使用''',
+                '''usa a flag '--video-encoder=${encoder}' ''',
           ),
         ),
         format: VideoSectionFormat(
-          label: 'フォーマット',
+          label: 'Formato',
           info: VideoSectionFormatInfo(
             default$: ({required String format}) =>
-                '''フォーマットを'--record=保存パス/ファイル${format}'に追加"''',
+                '''anexa o formato a '--record=caminho/arquivo${format}' ''',
           ),
         ),
         bitrate: VideoSectionBitrate(
-          label: 'ビットレート',
+          label: 'Taxa de bits',
           info: VideoSectionBitrateInfo(
-            default$: 'デフォルトは8M、フラグなし',
+            default$: 'padrão para 8M, sem flag',
             alt: ({required String bitrate}) =>
-                ''''--video-bit-rate=${bitrate}M'フラグを使用''',
+                '''usa a flag '--video-bit-rate=${bitrate}M' ''',
           ),
         ),
         fpsLimit: VideoSectionFpsLimit(
-          label: 'FPS制限',
+          label: 'Limite de FPS',
           info: VideoSectionFpsLimitInfo(
-            default$: '設定されない限りフラグなし',
-            alt: ({required String fps}) => ''''--max-fps=${fps}'フラグを使用''',
+            default$: 'sem flag a menos que definido',
+            alt: ({required String fps}) =>
+                '''usa a flag '--max-fps=${fps}' ''',
           ),
         ),
         resolutionScale: VideoSectionResolutionScale(
-          label: '解像度スケール',
+          label: 'Escala de resolução',
           info: VideoSectionResolutionScaleInfo(
-            default$: 'デバイスの解像度に基づいて計算、設定されない限りフラグなし',
-            alt: ({required String size}) => ''''--max-size=${size}'フラグを使用''',
+            default$:
+                'calculado com base na resolução do dispositivo, sem flag a menos que definido',
+            alt: ({required String size}) =>
+                '''usa a flag '--max-size=${size}' ''',
           ),
         ),
       ),
       audioSection: AudioSection(
-        title: '音声',
+        title: 'Áudio',
         duplicate: AudioSectionDuplicate(
-          label: '音声を複製',
+          label: 'Duplicar áudio',
           info: AudioSectionDuplicateInfo(
-            default$: 'Android 13以上のみ',
-            alt: ''''--audio-dup' フラグを使用''',
+            default$: 'apenas para Android 13 e superior',
+            alt: '''usa a flag '--audio-dup' ''',
           ),
         ),
         source: AudioSectionSource(
-          label: 'ソース',
+          label: 'Fonte',
           info: AudioSectionSourceInfo(
-            default$: 'デフォルトは出力、フラグなし',
-            alt: ({required String source}) => ''''${source}'フラグを使用''',
-            inCaseOfDup: ''''--audio-dup' で'再生'に暗黙的に設定、フラグなし''',
+            default$: 'padrão para saída, sem flag',
+            alt: ({required String source}) => '''usa a flag '${source}' ''',
+            inCaseOfDup:
+                '''implícito para 'Reprodução' com '--audio-dup', sem flag''',
           ),
         ),
         codec: AudioSectionCodec(
-          label: 'コーデック',
+          label: 'Codec',
           info: AudioSectionCodecInfo(
-            default$: 'デフォルトはopus、フラグなし',
+            default$: 'padrão para opus, sem flag',
             alt: ({required String codec}) =>
-                ''''--audio-codec=${codec}'フラグを使用''',
+                '''usa a flag '--audio-codec=${codec}' ''',
             isAudioOnly: ({required String format, required String codec}) =>
-                '''フォーマット: ${format}、コーデック: ${codec}が必要''',
+                '''Formato: ${format}, requer Codec: ${codec}''',
           ),
         ),
         encoder: AudioSectionEncoder(
-          label: 'エンコーダー',
+          label: 'Codificador',
           info: AudioSectionEncoderInfo(
-            default$: 'デフォルトは利用可能な最初のもの、フラグなし',
+            default$: 'padrão para o primeiro disponível, sem flag',
             alt: ({required String encoder}) =>
-                ''''--audio-encoder=${encoder}'フラグを使用''',
+                '''usa a flag '--audio-encoder=${encoder}' ''',
           ),
         ),
         format: AudioSectionFormat(
-          label: 'フォーマット',
+          label: 'Formato',
           info: AudioSectionFormatInfo(
             default$: ({required String format}) =>
-                '''フォーマットを'--record=保存パス/ファイル.${format}'に追加"''',
+                '''anexa o formato a '--record=caminho/arquivo.${format}' ''',
           ),
         ),
         bitrate: AudioSectionBitrate(
-          label: 'ビットレート',
+          label: 'Taxa de bits',
           info: AudioSectionBitrateInfo(
-            default$: 'デフォルトは128k、フラグなし',
+            default$: 'padrão para 128k, sem flag',
             alt: ({required String bitrate}) =>
-                ''''--audio-bit-rate=${bitrate}K'フラグを使用''',
+                '''usa a flag '--audio-bit-rate=${bitrate}K' ''',
           ),
         ),
       ),
       appSection: AppSection(
-        title: 'アプリを起動',
+        title: 'Iniciar aplicativo',
         select: AppSectionSelect(
-          label: 'アプリを選択',
+          label: 'Selecione um aplicativo',
           info: AppSectionSelectInfo(
-            alt: ({required String app}) => ''''--start-app=${app}'フラグを使用''',
-            fc: ({required String app}) => ''''--start-app=+${app}'フラグを使用''',
+            alt: ({required String app}) =>
+                '''usa a flag '--start-app=${app}' ''',
+            fc: ({required String app}) =>
+                '''usa a flag '--start-app=+${app}' ''',
           ),
         ),
         forceClose: AppSectionForceClose(
-          label: '起動前にアプリを強制終了',
+          label: 'Forçar fechamento do aplicativo antes de iniciar',
           info: AppSectionForceCloseInfo(
-            alt: '''アプリのパッケージ名の前に'+'を付ける''',
+            alt: '''prefixe o nome do pacote do aplicativo com '+' ''',
           ),
         ),
       ),
       deviceSection: DeviceSection(
-        title: 'デバイス',
+        title: 'Dispositivo',
         stayAwake: DeviceSectionStayAwake(
-          label: 'スリープしない',
+          label: 'Manter ativo',
           info: DeviceSectionStayAwakeInfo(
-            default$: 'デバイスのスリープを防止、USB接続時のみ動作',
-            alt: ''''--stay-awake'フラグを使用''',
+            default$:
+                'impede que o dispositivo durma, funciona apenas com conexão USB',
+            alt: '''usa a flag '--stay-awake' ''',
           ),
         ),
         showTouches: DeviceSectionShowTouches(
-          label: 'タッチを表示',
+          label: 'Mostrar toques',
           info: DeviceSectionShowTouchesInfo(
-            default$: '指のタッチを表示、デバイスでの物理的なタッチのみ動作',
-            alt: ''''--show-touches'フラグを使用''',
+            default$:
+                'mostra toques de dedo, funciona apenas com toques físicos no dispositivo',
+            alt: '''usa a flag '--show-touches' ''',
           ),
         ),
         offDisplayStart: DeviceSectionOffDisplayStart(
-          label: '起動時にディスプレイをオフ',
+          label: 'Desligar tela ao iniciar',
           info: DeviceSectionOffDisplayStartInfo(
-            default$: 'scrcpy起動時にデバイスのディスプレイをオフにする',
-            alt: ''''--turn-screen-off'フラグを使用''',
+            default$: 'desliga a tela do dispositivo, ao iniciar o scrcpy',
+            alt: '''usa a flag '--turn-screen-off' ''',
           ),
         ),
         offDisplayExit: DeviceSectionOffDisplayExit(
-          label: '終了時にディスプレイをオフ',
+          label: 'Desligar tela ao sair',
           info: DeviceSectionOffDisplayExitInfo(
-            default$: 'scrcpy終了時にデバイスのディスプレイをオフにする',
-            alt: ''''--power-off-on-close'フラグを使用''',
+            default$: 'desliga a tela do dispositivo, ao sair do scrcpy',
+            alt: '''usa a flag '--power-off-on-close' ''',
           ),
         ),
         screensaver: DeviceSectionScreensaver(
-          label: 'スクリーンセーバーを無効化 (ホスト)',
+          label: 'Desativar protetor de tela (HOST)',
           info: DeviceSectionScreensaverInfo(
-            default$: 'スクリーンセーバーを無効化',
-            alt: ''''--disable-screensaver'フラグを使用''',
+            default$: 'desativa o protetor de tela',
+            alt: '''usa a flag '--disable-screensaver' ''',
           ),
         ),
       ),
       windowSection: WindowSection(
-        title: 'ウィンドウ',
+        title: 'Janela',
         hideWindow: WindowSectionHideWindow(
-          label: 'ウィンドウを非表示',
+          label: 'Ocultar janela',
           info: WindowSectionHideWindowInfo(
-            default$: 'ウィンドウなしでscrcpyを起動',
-            alt: ''''--no-window'フラグを使用''',
+            default$: 'inicia o scrcpy sem janela',
+            alt: '''usa a flag '--no-window' ''',
           ),
         ),
         borderless: WindowSectionBorderless(
-          label: 'ボーダーレス',
+          label: 'Sem bordas',
           info: WindowSectionBorderlessInfo(
-            default$: 'ウィンドウの装飾を無効化',
-            alt: ''''--window-borderless'フラグを使用''',
+            default$: 'desativa as decorações da janela',
+            alt: '''usa a flag '--window-borderless' ''',
           ),
         ),
         alwaysOnTop: WindowSectionAlwaysOnTop(
-          label: '常に手前に表示',
+          label: 'Sempre no topo',
           info: WindowSectionAlwaysOnTopInfo(
-            default$: 'scrcpyウィンドウを常に手前に表示',
-            alt: ''''--always-on-top'フラグを使用''',
+            default$: 'janela do scrcpy sempre no topo',
+            alt: '''usa a flag '--always-on-top' ''',
           ),
         ),
         timeLimit: WindowSectionTimeLimit(
-          label: '時間制限',
+          label: 'Limite de tempo',
           info: WindowSectionTimeLimitInfo(
-            default$: 'scrcpyセッションを制限（秒単位）',
-            alt: ({required String time}) => ''''--time-limit=${time}'フラグを使用''',
+            default$: 'limita a sessão do scrcpy, em segundos',
+            alt: ({required String time}) =>
+                '''usa a flag '--time-limit=${time}' ''',
           ),
         ),
       ),
       addFlags: AddFlags(
-        title: '追加フラグ',
-        add: '追加',
-        info: 'すでにオプションとして存在するフラグの使用は避けてください',
+        title: 'Flags Adicionais',
+        add: 'Adicionar',
+        info: 'evite usar flags que já estão disponíveis como opções.',
       ),
       connectLoc: ConnectLoc(
-        title: '接続',
+        title: 'Conectar',
         withIp: ConnectLocWithIp(
-          label: 'IPで接続',
-          connect: '接続',
-          connected: ({required String to}) => '''${to}に接続済み''',
+          label: 'Conectar com IP',
+          connect: 'Conectar',
+          connected: ({required String to}) => '''Conectado a ${to}''',
         ),
         withMdns: ConnectLocWithMdns(
-          label: ({required String count}) => '''MDNSデバイス (${count})''',
+          label: ({required String count}) =>
+              '''Dispositivos MDNS (${count})''',
           info: ConnectLocWithMdnsInfo(
-            i1: 'デバイスがPCとペアリングされていることを確認してください。',
-            i2: 'デバイスが表示されない場合は、ワイヤレスADBをオフにしてからオンにしてみてください。',
-            i3: 'MDNSデバイスは通常、ペアリングされていれば自動的に接続されます。',
+            i1: 'Certifique-se de que seu dispositivo está pareado com seu PC.',
+            i2: 'Se o seu dispositivo não estiver aparecendo, tente desligar e ligar o ADB sem fio.',
+            i3: 'Dispositivos MDNS geralmente se conectarão automaticamente se pareados.',
           ),
         ),
         qrPair: ConnectLocQrPair(
-          label: 'QRペアリング',
-          pair: 'デバイスをペアリング',
+          label: 'Pareamento QR',
+          pair: 'Parear dispositivo',
           status: ConnectLocQrPairStatus(
-            cancelled: 'ペアリングがキャンセルされました',
-            success: 'ペアリングに成功しました',
-            failed: 'ペアリングに失敗しました',
+            cancelled: 'Pareamento cancelado',
+            success: 'Pareamento bem-sucedido',
+            failed: 'Falha no pareamento',
           ),
         ),
         unauthenticated: ConnectLocUnauthenticated(
           info: ConnectLocUnauthenticatedInfo(
-            i1: 'スマートフォンを確認してください。',
-            i2: 'デバッグを許可をクリックしてください。',
+            i1: 'Verifique seu telefone.',
+            i2: 'Clique em permitir depuração.',
           ),
         ),
         failed: ConnectLocFailed(
           info: ConnectLocFailedInfo(
-            i1: 'デバイスがPCとペアリングされていることを確認してください。',
-            i2: 'そうでない場合は、ワイヤレスAdbをオフにしてからオンにしてみてください。',
-            i3: 'ペアリングされていない場合: ',
-            i4: '1. ペアリングウィンドウを使用（右上のボタン）',
-            i5: '2. デバイスをPCに接続し、デバッグを許可して再試行してください。',
+            i1: 'Certifique-se de que seu dispositivo está pareado com seu PC.',
+            i2: 'Caso contrário, tente desligar e ligar o Adb sem fio.',
+            i3: 'Se não estiver pareado:',
+            i4: '1. Use a janela de pareamento (botão superior direito)',
+            i5: '2. Conecte seu dispositivo ao seu PC, permita a depuração e tente novamente.',
           ),
         ),
       ),
       testConfigLoc: TestConfigLoc(
-        title: '設定をテスト',
-        preview: 'コマンドプレビュー',
+        title: 'Testar Configuração',
+        preview: 'Pré-visualização do comando',
       ),
       scrcpyManagerLoc: ScrcpyManagerLoc(
-        title: 'Scrcpyマネージャー',
-        check: '更新を確認',
+        title: 'Gerenciador Scrcpy',
+        check: 'Verificar Atualizações',
         current: ScrcpyManagerLocCurrent(
-          label: '現在',
-          inUse: '使用中',
+          label: 'Atual',
+          inUse: 'Em uso',
         ),
         exec: ScrcpyManagerLocExec(
-          label: '実行ファイルの場所を開く',
-          info: '注意して変更してください',
+          label: 'Abrir local do executável',
+          info: 'Modifique com cuidado',
         ),
         infoPopup: ScrcpyManagerLocInfoPopup(
-          noUpdate: '利用可能な更新はありません',
-          error: '更新の確認中にエラーが発生しました',
+          noUpdate: 'Nenhuma atualização disponível',
+          error: 'Erro ao verificar atualizações',
         ),
         updater: ScrcpyManagerLocUpdater(
-          label: '新しいバージョンが利用可能です',
-          newVersion: '新バージョン',
+          label: 'Nova versão disponível',
+          newVersion: 'Nova versão',
         ),
       ),
       settingsLoc: SettingsLoc(
-        title: '設定',
+        title: 'Configurações',
         looks: SettingsLocLooks(
-          label: '外観',
+          label: 'Aparência',
           mode: SettingsLocLooksMode(
-            label: 'テーマモード',
+            label: 'Modo do tema',
             value: SettingsLocLooksModeValue(
-              dark: 'ダーク',
-              light: 'ライト',
-              system: 'システム',
+              dark: 'Escuro',
+              light: 'Claro',
+              system: 'Sistema',
             ),
           ),
           oldScheme: SettingsLocLooksOldScheme(
-            label: 'Shadcnカラースキームを使用',
+            label: 'Usar esquema de cores Shadcn',
           ),
           cornerRadius: SettingsLocLooksCornerRadius(
-            label: '角の半径',
+            label: 'Raio do canto',
           ),
           accentColor: SettingsLocLooksAccentColor(
-            label: 'アクセントカラー',
+            label: 'Cor de destaque',
           ),
           tintLevel: SettingsLocLooksTintLevel(
-            label: '色合いのレベル',
+            label: 'Nível de tonalidade',
           ),
           dimness: SettingsLocLooksDimness(
-            label: '薄暗さ',
+            label: 'Escurecimento',
           ),
           brightness: SettingsLocLooksBrightness(
-            label: '明るさ',
+            label: 'Brilho',
           ),
           surfaceOpacity: SettingsLocLooksSurfaceOpacity(
-            label: '表面の不透明度',
-            info: 'Linuxでちらつきを引き起こすことが知られています',
+            label: 'Opacidade da superfície',
+            info: 'Conhecido por causar cintilação no Linux',
           ),
           surfaceBlur: SettingsLocLooksSurfaceBlur(
-            label: '表面のぼかし',
-            info: 'Linuxでちらつきを引き起こすことが知られています',
+            label: 'Desfoque da superfície',
+            info: 'Conhecido por causar cintilação no Linux',
           ),
         ),
         behavior: SettingsLocBehavior(
-          label: 'アプリの動作',
+          label: 'Comportamento do Aplicativo',
           language: SettingsLocBehaviorLanguage(
-            label: '言語',
-            info: '一部の言語はAIによって生成されています',
+            label: 'Idioma',
+            info:
+                'Alguns idiomas são traduzidos por máquina e podem conter erros.',
           ),
           minimize: SettingsLocBehaviorMinimize(
-            label: '閉じる時に最小化',
+            label: 'Minimizar',
             value: SettingsLocBehaviorMinimizeValue(
-              tray: 'トレイへ',
-              taskbar: 'タスクバーへ',
+              tray: 'para a bandeja',
+              taskbar: 'para a barra de tarefas',
             ),
           ),
           windowSize: SettingsLocBehaviorWindowSize(
-            label: 'ウィンドウサイズを記憶',
-            info: '終了時にウィンドウサイズを記憶',
+            label: 'Lembrar tamanho da janela',
+            info: 'Lembrar o tamanho da janela ao sair',
           ),
           autoArrange: SettingsLocBehaviorAutoArrange(
-            label: 'scrcpyウィンドウの自動配置',
-            info: '起動時にscrcpyウィンドウを自動的に配置',
+            label: 'Organizar janelas do scrcpy automaticamente',
+            info: 'Organiza automaticamente as janelas do scrcpy ao iniciar',
           ),
           windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
-            label: 'ウィンドウと画面の高さの比率',
-            labelShort: '高さ %',
+            label: 'Proporção de altura da janela para a tela',
+            labelShort: 'Altura %',
             info:
-                'scrcpyウィンドウの高さとプライマリスクリーンの高さの比率。最小: 0.4, 最大: 1.0, デフォルト: 0.88',
+                'Proporção da altura da janela do scrcpy para a altura da tela principal. Mín: 0.4, Máx: 1.0, Padrão: 0.88',
           ),
         ),
       ),
       companionLoc: CompanionLoc(
-        title: 'コンパニオン',
+        title: 'Companheiro',
         server: CompanionLocServer(
-          label: 'サーバー設定',
-          status: 'ステータス',
+          label: 'Configurar Servidor',
+          status: 'Status',
           endpoint: CompanionLocServerEndpoint(
-            label: 'サーバーエンドポイント',
+            label: 'Endpoint do servidor',
           ),
           name: CompanionLocServerName(
-            label: 'サーバー名',
-            info: 'デフォルト: Scrcpy GUI',
+            label: 'Nome do servidor',
+            info: 'Padrão: Scrcpy GUI',
           ),
           port: CompanionLocServerPort(
-            label: 'サーバーポート',
-            info: 'デフォルト: 8080',
+            label: 'Porta do servidor',
+            info: 'Padrão: 8080',
           ),
           secret: CompanionLocServerSecret(
-            label: 'サーバーAPIキー',
+            label: 'Chave de API do Servidor',
           ),
           autoStart: CompanionLocServerAutoStart(
-            label: '起動時にサーバーを開始',
+            label: 'Iniciar servidor ao iniciar',
           ),
         ),
         client: CompanionLocClient(
-          clients: ({required String count}) => '''接続中 (${count})''',
-          blocked: ({required String count}) => '''ブロック済み (${count})''',
-          noClient: '接続中のクライアントなし',
-          noBlocked: 'ブロック済みのクライアントなし',
+          clients: ({required String count}) => '''Conectados (${count})''',
+          blocked: ({required String count}) => '''Bloqueados (${count})''',
+          noClient: 'Nenhum cliente conectado',
+          noBlocked: 'Nenhum cliente bloqueado',
         ),
-        qr: 'コンパニオンアプリからQRコードをスキャン',
+        qr: 'Escaneie o código QR do aplicativo companheiro',
       ),
       aboutLoc: AboutLoc(
-        title: '概要',
-        version: 'バージョン',
-        author: '作成者',
-        credits: 'クレジット',
+        title: 'Sobre',
+        version: 'Versão',
+        author: 'Autor',
+        credits: 'Créditos',
       ),
       quitDialogLoc: QuitDialogLoc(
-        title: 'Scrcpy GUIを終了しますか？',
+        title: 'Sair do Scrcpy GUI?',
         killRunning: QuitDialogLocKillRunning(
-          label: '実行中のプロセスを終了しますか？',
+          label: 'Parar instâncias em execução?',
           info: ({required String count}) =>
-              '''${count} 個のscrcpy。ウィンドウのないインスタンスは、とにかく停止されます。''',
+              '''${count} instância(s) do scrcpy. Instâncias sem janela serão paradas de qualquer maneira.''',
         ),
         disconnect: QuitDialogLocDisconnect(
-          label: 'ワイヤレスADBを切断しますか？',
-          info: ({required String count}) => '''${count} 台のデバイス''',
+          label: 'Desconectar ADB sem fio?',
+          info: ({required String count}) => '''${count} dispositivo(s)''',
         ),
       ),
       disconnectDialogLoc: DisconnectDialogLoc(
-        title: ({required String name}) => '''${name}を切断しますか？''',
+        title: ({required String name}) => '''Desconectar ${name}?''',
         hasRunning: DisconnectDialogLocHasRunning(
           label: ({required String name, required String count}) =>
-              '''${name}には実行中のscrcpyが${count}個あります''',
-          info: '切断するとscrcpyが終了します',
+              '''${name} tem ${count} instância(s) do scrcpy em execução''',
+          info:
+              'Desconectar irá parar a(s) instância(s) do scrcpy em execução.',
         ),
       ),
       closeDialogLoc: CloseDialogLoc(
-        notAllowed: '許可されていません！',
-        overwrite: '上書きしますか？',
-        nameExist: '名前はすでに存在します！',
-        save: '設定を保存しますか？',
-        commandPreview: 'コマンドプレビュー:',
-        name: '名前:',
+        notAllowed: 'Não permitido!',
+        overwrite: 'Sobrescrever?',
+        nameExist: 'O nome já existe!',
+        save: 'Salvar configuração?',
+        commandPreview: 'Pré-visualização do comando:',
+        name: 'Nome:',
       ),
       unsavedChangeDialogLoc: UnsavedChangeDialogLoc(
-        title: '終了を確認しますか？',
-        contents: '保存されていない変更は失われます。',
+        title: 'Confirmar saída?',
+        contents: 'As alterações não salvas serão perdidas.',
       ),
       serverDisclaimerLoc: ServerDisclaimerLoc(
-        title: '免責事項',
+        title: 'Aviso',
         contents:
-            '''セキュリティ警告: コンパニオンサーバーは暗号化されていない接続を使用します。\n\n自宅のWi-Fiなど、信頼できるプライベートネットワークに接続している場合にのみサーバーを起動してください。''',
+            '''Aviso de Segurança: O servidor companheiro usa uma conexão não criptografada.\n\nInicie o servidor apenas se estiver conectado a uma rede privada em que você confia, como o seu Wi-Fi de casa.''',
       ),
       ipHistoryLoc: IpHistoryLoc(
-        title: '履歴',
-        empty: '履歴なし',
+        title: 'Histórico',
+        empty: 'Sem histórico',
       ),
       buttonLabelLoc: ButtonLabelLoc(
         ok: 'OK',
-        confirm: '確認',
-        close: '閉じる',
-        cancel: 'キャンセル',
-        stop: '停止',
-        testConfig: '設定をテスト',
-        update: '更新',
-        info: '情報',
-        selectAll: 'すべて選択',
-        quit: '終了',
-        discard: '破棄',
-        overwrite: '上書き',
-        save: '保存',
-        clear: 'クリア',
-        delete: '削除',
-        serverAgree: '理解しました、サーバーを開始',
-        reorder: '並べ替え',
-        stopAll: '全て停止',
-        filter: 'フィルター',
-        edit: '編集',
-        override: 'オーバーライド',
-        dontShowAgain: '再表示しない',
-        sponsor: 'スポンサー',
+        confirm: 'Confirmar',
+        close: 'Fechar',
+        cancel: 'Cancelar',
+        stop: 'Parar',
+        testConfig: 'Testar Configuração',
+        update: 'Atualizar',
+        info: 'Informações',
+        selectAll: 'Selecionar tudo',
+        quit: 'Sair',
+        discard: 'Descartar',
+        overwrite: 'Sobrescrever',
+        save: 'Salvar',
+        clear: 'Limpar',
+        delete: 'Excluir',
+        serverAgree: 'Eu entendo, inicie o servidor',
+        reorder: 'Reordenar',
+        stopAll: 'Parar Tudo',
+        filter: 'Filtrar',
+        edit: 'Editar',
+        override: 'Substituir',
+        dontShowAgain: 'Não Mostrar Novamente',
+        sponsor: 'Patrocinar',
       ),
       statusLoc: StatusLoc(
-        failed: '失敗',
-        unauth: '未認証',
-        error: 'エラー',
-        latest: '最新',
-        closing: '閉じています',
-        copied: 'コピーしました',
-        running: '実行中',
-        stopped: '停止済み',
-        gettingInfo: '情報を取得中',
-        noDevicesFound: 'デバイスが見つかりません',
+        failed: 'Falhou',
+        unauth: 'Não autorizado',
+        error: 'Erro',
+        latest: 'Mais recente',
+        closing: 'Fechando',
+        copied: 'Copiado',
+        running: 'Em execução',
+        stopped: 'Parado',
+        gettingInfo: 'Obtendo Informações',
+        noDevicesFound: 'Nenhum dispositivo encontrado',
       ),
       commonLoc: CommonLoc(
-        default$: 'デフォルト',
-        yes: 'はい',
-        no: 'いいえ',
-        bundled: 'バンドル版',
+        default$: 'Padrão',
+        yes: 'Sim',
+        no: 'Não',
+        bundled: 'Incluído',
       ),
       colorSchemeNameLoc: ColorSchemeNameLoc(
-        blue: '青',
-        gray: 'グレー',
-        green: '緑',
-        neutral: 'ニュートラル',
-        orange: 'オレンジ',
-        red: '赤',
-        rose: 'ローズ',
-        slate: 'スレート',
-        stone: 'ストーン',
-        violet: 'バイオレット',
-        yellow: 'イエロー',
-        zinc: 'ジンク',
+        blue: 'Azul',
+        gray: 'Cinza',
+        green: 'Verde',
+        neutral: 'Neutro',
+        orange: 'Laranja',
+        red: 'Vermelho',
+        rose: 'Rosa',
+        slate: 'Ardósia',
+        stone: 'Pedra',
+        violet: 'Violeta',
+        yellow: 'Amarelo',
+        zinc: 'Zinco',
       ),
       configFiltersLoc: ConfigFiltersLoc(
         label: ConfigFiltersLocLabel(
-          withApp: 'アプリあり',
-          virt: '仮想ディスプレイ',
+          withApp: 'Com aplicativo',
+          virt: 'Tela virtual',
         ),
       ),
       configOverrideLoc: ConfigOverrideLoc(
         record: ConfigOverrideLocRecord(
-          label: '録画',
-          openFolder: 'フォルダーを開く',
+          label: 'Gravar',
+          openFolder: 'Abrir Pasta',
         ),
         landscape: ConfigOverrideLocLandscape(
-          label: '横向き',
-          info: '仮想ディスプレイのみ',
+          label: 'Paisagem',
+          info: 'Apenas para tela virtual',
         ),
         mute: ConfigOverrideLocMute(
-          label: 'ミュート',
+          label: 'Mudo',
         ),
       ),
       autoArrangeOriginLoc: AutoArrangeOriginLoc(
-        title: '自動配置',
-        alignments: '配置',
-        off: 'オフ',
-        topLeft: '左上',
-        topRight: '右上',
-        centerLeft: '中央左',
-        centerRight: '中央右',
-        bottomLeft: '左下',
-        bottomRight: '右下',
+        title: 'Organizar Automaticamente',
+        alignments: 'Alinhamento',
+        off: 'Desligado',
+        topLeft: 'Superior Esquerdo',
+        topRight: 'Superior Direito',
+        centerLeft: 'Centro Esquerdo',
+        centerRight: 'Centro Direito',
+        bottomLeft: 'Inferior Esquerdo',
+        bottomRight: 'Inferior Direito',
       ),
     );
 Map<Locale, LocalizationMessages> get _languageMap => {
       Locale('en'): en,
       Locale('es'): es,
       Locale('it'): it,
+      Locale('ja'): ja,
       Locale('ms'): ms,
       Locale('zh'): zh,
-      Locale('ja'): ja,
+      Locale('pt', 'BR'): pt_BR,
     };
 
 final Map<Locale, LocalizationMessages> _providersLanguagesMap = {};
@@ -13324,14 +14052,15 @@ List<LocalizationsDelegate> localizationsDelegatesWithProviders(
   ];
 }
 
-// Supported locales: en, es, it, ms, zh, ja
+// Supported locales: en, es, it, ja, ms, zh, pt_BR
 List<Locale> get supportedLocales => [
       Locale('en'),
       Locale('es'),
       Locale('it'),
+      Locale('ja'),
       Locale('ms'),
       Locale('zh'),
-      Locale('ja'),
+      Locale('pt', 'BR'),
     ];
 
 List<Locale> supportedLocalesWithProviders(

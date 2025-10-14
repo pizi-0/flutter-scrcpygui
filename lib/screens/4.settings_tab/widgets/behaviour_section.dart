@@ -5,6 +5,7 @@ import 'package:localization/localization.dart';
 import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/models/settings_model/app_behaviour.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:scrcpygui/utils/locales.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
@@ -60,33 +61,6 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
     final theme = Theme.of(context);
     final behaviour = ref.watch(settingsProvider).behaviour;
 
-    final langDD = [
-      const SelectItemButton(
-        value: 'en',
-        child: Text('English'),
-      ),
-      const SelectItemButton(
-        value: 'es',
-        child: Text('Español'),
-      ),
-      const SelectItemButton(
-        value: 'it',
-        child: Text('Italiano'),
-      ),
-      const SelectItemButton(
-        value: 'ms',
-        child: Text('Bahasa Malaysia'),
-      ),
-      const SelectItemButton(
-        value: 'ja',
-        child: Text('日本語'),
-      ),
-      const SelectItemButton(
-        value: 'zh',
-        child: Text('简体中文'),
-      ),
-    ];
-
     return PgSectionCard(
       label: el.settingsLoc.behavior.label,
       children: [
@@ -105,9 +79,12 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
 
                 await Db.saveAppSettings(ref.read(settingsProvider));
               },
-              itemBuilder: (context, value) =>
-                  langDD.firstWhere((lang) => lang.value == value).child,
-              popup: SelectPopup(items: SelectItemList(children: langDD)).call,
+              itemBuilder: (context, value) => Locales.dropdown
+                  .firstWhere((lang) => lang.value == value)
+                  .child,
+              popup:
+                  SelectPopup(items: SelectItemList(children: Locales.dropdown))
+                      .call,
             ),
           ),
         ),

@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
 import 'package:localization/localization.dart';
 
 import 'auto_arrange_origin.dart';
@@ -67,7 +66,7 @@ class AppBehaviour {
       if (code == null) {
         return 'en';
       } else {
-        if (supportedLocales.where((l) => l.languageCode == code).isEmpty) {
+        if (supportedLocales.where((l) => l.toLanguageTag() == code).isEmpty) {
           return 'en';
         }
 

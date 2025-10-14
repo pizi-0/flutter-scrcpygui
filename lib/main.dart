@@ -115,7 +115,8 @@ class _MyAppState extends ConsumerState<MyApp> {
 
     return ShadcnApp.router(
       supportedLocales: supportedLocales,
-      locale: Locale(behaviour.languageCode, ''),
+      locale: Locale(behaviour.languageCode,
+          behaviour.languageCode.split('-').lastOrNull ?? ''),
       localizationsDelegates: [
         ...localizationsDelegates,
         const ShadcnLocalizationsDelegate()
