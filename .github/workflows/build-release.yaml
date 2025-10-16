@@ -46,7 +46,7 @@ jobs:
         if: matrix.platform == 'linux'
         run: |
           sudo apt-get update
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y plocate libayatana-appindicator3-dev 
+          sudo apt-get install -y libayatana-appindicator3-dev
           sed -i -e 's|    - assets/exec/windows/|#   - assets/exec/windows/|' \
                  -e 's|    - assets/exec/mac-intel/|#   - assets/exec/mac-intel/|' \
                  -e 's|    - assets/exec/mac-apple/|#   - assets/exec/mac-apple/|' pubspec.yaml
@@ -82,10 +82,11 @@ jobs:
 
       - name: Build AppImage
         if: matrix.platform == 'linux'
+        uses: bluefireteam/melos-action@v3
         run: |
-          fastforge package \
+          dart ../../packages/fastforge/bin/main.dart package \
             --platform=linux \
-            --targets=appimage 
+            --targets appimage
 
 
 
