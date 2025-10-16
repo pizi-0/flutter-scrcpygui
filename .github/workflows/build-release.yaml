@@ -30,6 +30,9 @@ jobs:
           flutter-version: 3.35.1
           cache: true
 
+      - name: Setup melos   
+        uses: bluefireteam/melos-action@v3
+
       - name: Prepare pubspec.yaml for Windows
         if: matrix.platform == 'windows'
         shell: pwsh
@@ -70,8 +73,6 @@ jobs:
         # Extracts version from pubspec.yaml (e.g., 1.2.3+4) and sets it as an output
         run: echo "APP_VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
 
-      - name: Install FastForge
-        run: dart pub global activate fastforge
 
       - name: Install AppImageTool
         if: matrix.platform == 'linux'
@@ -82,7 +83,6 @@ jobs:
 
       - name: Build AppImage
         if: matrix.platform == 'linux'
-        uses: bluefireteam/melos-action@v3
         run: |
           dart ../../packages/fastforge/bin/main.dart package \
             --platform=linux \
