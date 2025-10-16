@@ -46,7 +46,7 @@ jobs:
         if: matrix.platform == 'linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libayatana-appindicator3-dev plocate
+          sudo apt-get DEBIAN_FRONTEND=noninteractive install -y plocate libayatana-appindicator3-dev 
           sed -i -e 's|    - assets/exec/windows/|#   - assets/exec/windows/|' \
                  -e 's|    - assets/exec/mac-intel/|#   - assets/exec/mac-intel/|' \
                  -e 's|    - assets/exec/mac-apple/|#   - assets/exec/mac-apple/|' pubspec.yaml
