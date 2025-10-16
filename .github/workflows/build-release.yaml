@@ -1,4 +1,4 @@
-name: Build Platform-Specific Artifacts
+name: Build Platform-Specific Artifacts (Release)
 
 on:
   workflow_dispatch:
