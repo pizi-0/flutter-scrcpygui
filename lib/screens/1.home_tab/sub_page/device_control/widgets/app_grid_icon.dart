@@ -84,6 +84,10 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
       return;
     }
 
+    if (noIconApps.contains(widget.app)) {
+      return;
+    }
+
     // If not found locally, try to fetch it
     if (!noIconApps.contains(widget.app)) {
       setState(() {
