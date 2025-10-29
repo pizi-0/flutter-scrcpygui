@@ -4,6 +4,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/utils/directory_utils.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -111,7 +112,8 @@ class SaveFolderFlag extends ConsumerWidget {
       child: SecondaryButton(
         trailing: const Icon(Icons.folder),
         onPressed: () async {
-          final res = await FilePicker.platform.getDirectoryPath();
+          final res = await FilePicker.platform
+              .getDirectoryPath(initialDirectory: defaultSavePath);
 
           if (res != null) {
             ref.read(configScreenConfig.notifier).setModeConfig(savePath: res);

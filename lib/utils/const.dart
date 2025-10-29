@@ -1,7 +1,5 @@
 // ignore_for_file: constant_identifier_names
 
-import 'dart:io';
-
 import 'package:logger/logger.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/app_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
@@ -88,10 +86,7 @@ final ScrcpyConfig defaultMirror = ScrcpyConfig(
     size: ScrcpySize(),
   ),
   additionalFlags: '',
-  savePath: defaultSavePath ??
-      (Platform.isLinux || Platform.isMacOS
-          ? Platform.environment['HOME']
-          : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}'),
+  savePath: defaultSavePath,
 );
 
 final ScrcpyConfig newConfig = ScrcpyConfig(
@@ -134,10 +129,7 @@ final ScrcpyConfig newConfig = ScrcpyConfig(
     size: ScrcpySize(),
   ),
   additionalFlags: '',
-  savePath: defaultSavePath ??
-      (Platform.isLinux || Platform.isMacOS
-          ? Platform.environment['HOME']
-          : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}'),
+  savePath: defaultSavePath,
 );
 
 final ScrcpyConfig doNothing =
@@ -183,10 +175,7 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
     size: ScrcpySize(),
   ),
   additionalFlags: '',
-  savePath: defaultSavePath ??
-      (Platform.isLinux || Platform.isMacOS
-          ? Platform.environment['HOME']
-          : '${Platform.environment['HOMEDRIVE']}${Platform.environment['HOMEPATH']}'),
+  savePath: defaultSavePath,
 );
 
 final defaultTheme = AppTheme(

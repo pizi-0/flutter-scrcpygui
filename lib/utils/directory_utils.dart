@@ -57,9 +57,9 @@ class DirectoryUtils {
         return dir.path;
       }
 
-      return Platform.environment['HOME']!;
+      return '${Platform.environment['HOME']}';
     } else if (Platform.isMacOS) {
-      return Platform.environment['HOME']!;
+      return '${Platform.environment['HOME']}';
     } else {
       return '${Platform.environment['USERPROFILE']}';
     }
