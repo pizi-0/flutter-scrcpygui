@@ -13,8 +13,14 @@
 ## ⬇️ Get the App
 
 ### [Latest Releases](https://github.com/pizi-0/flutter-scrcpygui/releases)
+Download the latest pre-built binaries from the [releases page](https://github.com/pizi-0/flutter-scrcpygui/releases).
 
-Download the latest pre-built binaries from the releases page.
+#### Winget (Windows)
+```
+winget install pizi.scrcpygui
+```
+
+
 
 ### Build from Source
 
