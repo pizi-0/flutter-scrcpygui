@@ -3,6 +3,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/device_info_model.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_display.dart';
 import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
@@ -11,11 +12,9 @@ import 'package:string_extensions/string_extensions.dart';
 
 import 'package:scrcpygui/providers/adb_provider.dart';
 
-import '../../../../../../db/db.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../../../../models/scrcpy_related/scrcpy_enum.dart';
 import '../../../../../../providers/config_provider.dart';
-import '../../../../../../providers/device_info_provider.dart';
 import '../../../../../../providers/version_provider.dart';
 import '../../../../../../utils/adb_utils.dart';
 import '../../../../../../utils/command_runner.dart';
@@ -37,6 +36,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   late TextEditingController vdDPIController;
 
   bool loading = false;
+  List<ScrcpyDisplay> onRefreshedDisplays = [];
 
   @override
   void initState() {
@@ -116,13 +116,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
       final res = await CommandRunner.runScrcpyCommand(workDir, dev,
           args: ['--list-displays']);
 
-      final displays = getDisplays(res.stdout);
-
-      final updatedInfo = info.copyWith(displays: displays);
-
-      ref.read(infoProvider.notifier).addOrEditDeviceInfo(updatedInfo);
-
-      await Db.saveDeviceInfos(ref.read(infoProvider));
+      onRefreshedDisplays = getDisplays(res.stdout);
     } finally {
       loading = false;
       setState(() {});
@@ -164,8 +158,10 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   Widget _buildDisplaySelector(ScrcpyConfig selectedConfig, DeviceInfo info) {
     final showInfo = ref.watch(configScreenShowInfo);
 
-    final displays =
-        info.displays.where((d) => (int.tryParse(d.id) ?? 11) < 10).toList();
+    Set<ScrcpyDisplay> displays =
+        info.displays.where((d) => (int.tryParse(d.id) ?? 11) < 10).toSet();
+
+    displays.addAll(onRefreshedDisplays);
 
     final displayDD = [
       ...displays.map((d) => (d.id, d.id)),
