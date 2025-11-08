@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/device_info_model.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_display.dart';
+import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_expandable.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
@@ -116,7 +117,18 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
       final res = await CommandRunner.runScrcpyCommand(workDir, dev,
           args: ['--list-displays']);
 
-      onRefreshedDisplays = getDisplays(res.stdout);
+      final displays = getDisplays(res.stdout);
+
+      final updatedInfo = info.copyWith(displays: displays);
+
+      ref.read(infoProvider.notifier).addOrEditDeviceInfo(updatedInfo);
+
+      final currentSelectedId =
+          ref.read(configScreenConfig)?.videoOptions.displayId ?? '0';
+
+      if (displays.where((d) => d.id == currentSelectedId).isEmpty) {
+        ref.read(configScreenConfig.notifier).setVideoConfig(displayId: '0');
+      }
     } finally {
       loading = false;
       setState(() {});
@@ -158,10 +170,7 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
   Widget _buildDisplaySelector(ScrcpyConfig selectedConfig, DeviceInfo info) {
     final showInfo = ref.watch(configScreenShowInfo);
 
-    Set<ScrcpyDisplay> displays =
-        info.displays.where((d) => (int.tryParse(d.id) ?? 11) < 10).toSet();
-
-    displays.addAll(onRefreshedDisplays);
+    final displays = info.displays;
 
     final displayDD = [
       ...displays.map((d) => (d.id, d.id)),
@@ -392,7 +401,8 @@ class _VideoConfigState extends ConsumerState<VideoConfig> {
 
     final displaySize = info.displays
         .firstWhere(
-            (f) => f.id == selectedConfig.videoOptions.displayId.toString())
+            (f) => f.id == selectedConfig.videoOptions.displayId.toString(),
+            orElse: () => info.displays.firstWhere((d) => d.id == '0'))
         .resolution
         .split('x');
 
