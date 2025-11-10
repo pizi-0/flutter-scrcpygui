@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:scrcpygui/providers/version_provider.dart';
+import 'package:scrcpygui/utils/command_runner.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -103,7 +105,10 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
   }
 
   Future<void> _pair(Stream<BonsoirDiscoveryEvent> stream) async {
+    final workDir = ref.read(execDirProvider);
     late String pairRes;
+    int retries = 30;
+    bool adbMdnsSearch = true;
 
     final toPair = (await stream.firstWhere(
         (e) => e is BonsoirDiscoveryServiceFoundEvent,
@@ -113,6 +118,20 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
       if (mounted) {
         loading = true;
         setState(() {});
+      }
+
+      while (adbMdnsSearch && mounted) {
+        if (retries < 0) break;
+
+        final res = await CommandRunner.runAdbCommand(workDir,
+            args: ['mdns', 'services']);
+
+        if (res.stdout.toString().contains(toPair.service.name)) break;
+        await Future.delayed(const Duration(seconds: 1));
+        retries--;
+
+        logger.i(
+            "${toPair.service.name} not found in 'adb mdns services'; Retrying ($retries)");
       }
 
       pairRes = await AdbUtils.pairWithCode(
