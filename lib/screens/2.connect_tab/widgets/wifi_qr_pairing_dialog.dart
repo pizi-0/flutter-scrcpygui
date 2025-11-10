@@ -102,26 +102,48 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
     );
   }
 
-  Future<void> _pair(Stream<BonsoirDiscoveryEvent> stream) async {
-    late String pairRes;
-
-    final toPair = (await stream.firstWhere(
-        (e) => e is BonsoirDiscoveryServiceFoundEvent,
-        orElse: () => BonsoirDiscoveryUnknownEvent()));
-
-    if (toPair is BonsoirDiscoveryServiceFoundEvent) {
+Future<void> _pair(Stream<BonsoirDiscoveryEvent> stream) async {
+  late String pairRes;
+  
+  final foundEvent = await stream.firstWhere(
+    (e) => e is BonsoirDiscoveryServiceFoundEvent,
+    orElse: () => BonsoirDiscoveryUnknownEvent(),
+  );
+  
+  if (foundEvent is BonsoirDiscoveryServiceFoundEvent) {
+    foundEvent.service.resolve(discovery.serviceResolver);
+    
+    // Now wait for the resolved event
+    final toPair = await stream.firstWhere(
+      (e) {
+        if (e is BonsoirDiscoveryServiceResolvedEvent) {
+          return e.service.name == foundEvent.service.name && 
+                 e.service.port > 0 && 
+                 e.service.host != null;
+        }
+        return false;
+      },
+      orElse: () => BonsoirDiscoveryUnknownEvent(),
+    );
+    
+    if (toPair is BonsoirDiscoveryServiceResolvedEvent) {
       if (mounted) {
         loading = true;
         setState(() {});
       }
-
+      
       pairRes = await AdbUtils.pairWithCode(
-          toPair.service.name, id.removeSpecial, ref);
-      context.pop(pairRes.contains('Successfully paired to'));
+        toPair.service.name, id.removeSpecial, ref);
+        context.pop(pairRes.contains('Successfully paired to'));
     } else {
       if (mounted) {
         context.pop();
       }
     }
+  } else {
+    if (mounted) {
+      context.pop();
+    }
   }
+}
 }
