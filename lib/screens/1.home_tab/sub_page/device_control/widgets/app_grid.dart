@@ -275,7 +275,8 @@ class _AppGridState extends ConsumerState<AppGrid> {
                           ),
                         )
                       ]
-                    ]
+                    ],
+                    SliverPadding(padding: EdgeInsetsGeometry.only(bottom: 8))
                   ],
                 ),
           AppGridHeader(
@@ -345,6 +346,7 @@ class _AppGridHeaderState extends ConsumerState<AppGridHeader> {
     final showMissingIcon = ref.watch(showMissingIconProvider);
 
     return OutlinedContainer(
+      borderRadius: theme.borderRadiusMd,
       surfaceOpacity: theme.surfaceOpacity,
       surfaceBlur: theme.surfaceBlur,
       borderStyle: BorderStyle.none,

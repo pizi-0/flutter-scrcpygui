@@ -151,7 +151,8 @@ class TitleBar extends ConsumerWidget {
           if (!Platform.isMacOS) ...[
             VerticalDivider(indent: 16, endIndent: 16),
             const TitleBarButton()
-          ]
+          ],
+          Gap(4),
         ],
       ),
     );
