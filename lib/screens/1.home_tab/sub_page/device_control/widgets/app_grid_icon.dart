@@ -29,8 +29,6 @@ import '../../../../../utils/scrcpy_utils.dart';
 import '../../../../../widgets/custom_ui/pg_section_card.dart';
 import '../device_control_page.dart';
 
-const imageScale = 0.2;
-
 class AppGridIcon extends ConsumerStatefulWidget {
   const AppGridIcon({
     super.key,
@@ -63,6 +61,17 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
   void initState() {
     super.initState();
     _loadOrFetchIcon();
+  }
+
+  void evictCache(File file) {
+    final gridSettings = ref.read(appGridSettingsProvider);
+    final ImageProvider originalImage = FileImage(file);
+    final ResizeImage resizeImage =
+        ResizeImage(originalImage, width: gridSettings.gridExtent.ceil());
+
+    resizeImage.obtainKey(ImageConfiguration.empty).then(
+          (key) => PaintingBinding.instance.imageCache.evict(key),
+        );
   }
 
   Future<void> _loadOrFetchIcon() async {
@@ -204,9 +213,10 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                             child: _iconFile != null
                                 ? ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
-                                    child: Image(
-                                      image: FileImage(_iconFile!,
-                                          scale: imageScale),
+                                    child: Image.file(
+                                      _iconFile!,
+                                      cacheWidth:
+                                          gridSettings.gridExtent.ceil(),
                                       key: UniqueKey(),
                                       fit: BoxFit.cover,
                                       errorBuilder:
@@ -321,7 +331,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
               controlPageKeyboardListenerNode.requestFocus();
 
               if (_iconFile != null) {
-                await FileImage(_iconFile!, scale: imageScale).evict();
+                evictCache(_iconFile!);
               }
 
               if (mounted) {
@@ -527,7 +537,7 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
 
           imageFile = await ImageUtils.byteToPngFile(byte, path, maxSize: 256);
           if (_iconFile != null) {
-            await FileImage(_iconFile!, scale: imageScale).evict();
+            evictCache(_iconFile!);
             _iconFile = null;
           }
           _iconFile = imageFile;
