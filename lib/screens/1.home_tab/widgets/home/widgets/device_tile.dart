@@ -139,6 +139,7 @@ class _DeviceTileState extends ConsumerState<DeviceTile> {
                               extra: widget.device);
                         },
                       ),
+                      Gap(4),
                       IconButton.ghost(
                         icon: const Icon(Icons.settings),
                         onPressed: () => context
