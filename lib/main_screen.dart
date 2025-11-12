@@ -16,12 +16,10 @@ import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
-import 'package:scrcpygui/utils/ip_comparison_extensions.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/utils/server_utils_ws.dart';
 import 'package:scrcpygui/widgets/navigation_shell.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:string_extensions/string_extensions.dart';
 import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -178,25 +176,13 @@ class _MainScreenState extends ConsumerState<MainScreen>
       _startAutoLaunchConfig();
       _startRunningInstancePing();
 
+      final effectiveIp = await getEffectiveIp(ref);
+      ref.read(companionServerProvider.notifier).setEndpoint(effectiveIp);
+
       if (companionSettings.startOnLaunch) {
         try {
-          final savedEndpoint = ref.read(companionServerProvider).endpoint;
-          final interfaces = await getInterfaces();
-          final candidates =
-              interfaces.map((e) => e.addresses.first.address).toList();
-
-          if (savedEndpoint != '' && savedEndpoint.isIpv4) {
-            final closest = savedEndpoint.findClosest(candidates);
-
-            if (closest != null) {
-              await _serverUtils.startServer(ref,
-                  ipAddress: InternetAddress(closest));
-            } else {
-              await _serverUtils.startServer(ref);
-            }
-          } else {
-            await _serverUtils.startServer(ref);
-          }
+          await _serverUtils.startServer(ref,
+              ipAddress: InternetAddress(effectiveIp));
 
           final serverState = ref.read(companionServerStateProvider);
           ref.read(companionServerProvider.notifier)

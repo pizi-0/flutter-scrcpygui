@@ -27,6 +27,10 @@ class CompanionServerNotifier extends Notifier<CompanionServerSettings> {
     state = state.copyWith(endpoint: endpoint);
   }
 
+  void setAdapter(String adapter) {
+    state = state.copyWith(adapter: adapter);
+  }
+
   void setPort(String port) {
     state = state.copyWith(port: port);
   }

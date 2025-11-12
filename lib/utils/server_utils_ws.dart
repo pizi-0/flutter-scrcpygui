@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:encrypt_decrypt_plus/encrypt_decrypt/xor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/companion_server/client_payload.dart';
@@ -14,6 +15,7 @@ import 'package:scrcpygui/models/companion_server/data/pairs_payload.dart';
 import 'package:scrcpygui/models/companion_server/server_payload.dart';
 import 'package:scrcpygui/providers/companion_server_state_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
+import 'package:scrcpygui/utils/ip_comparison_extensions.dart';
 import 'package:string_extensions/string_extensions.dart';
 
 import '../providers/adb_provider.dart';
@@ -347,4 +349,35 @@ Future<List<NetworkInterface>> getInterfaces() async {
   return interfaces
       .where((i) => !i.name.toLowerCase().containsAny(virtNetwork))
       .toList();
+}
+
+Future<String> getEffectiveIp(WidgetRef ref) async {
+  String res = '0.0.0.0';
+  final companionSettings = ref.read(companionServerProvider);
+  final interfaces = await getInterfaces();
+
+  if (companionSettings.adapter != '') {
+    res = interfaces
+            .firstWhereOrNull((i) => i.name == companionSettings.adapter)
+            ?.addresses
+            .first
+            .address ??
+        '0.0.0.0';
+  }
+
+  if (res != '0.0.0.0') {
+    return res;
+  }
+
+  if (companionSettings.endpoint != '' && companionSettings.endpoint.isIpv4) {
+    final closest = companionSettings.endpoint
+        .findClosest(interfaces.map((e) => e.addresses.first.address).toList());
+
+    if (closest != null) {
+      return closest;
+    }
+    return companionSettings.endpoint;
+  } else {
+    return interfaces.firstOrNull?.addresses.firstOrNull?.address ?? '0.0.0.0';
+  }
 }
