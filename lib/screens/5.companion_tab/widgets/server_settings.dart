@@ -3,11 +3,11 @@
 import 'dart:io';
 
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:collection/collection.dart';
 import 'package:encrypt_decrypt_plus/encrypt_decrypt/xor.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:scrcpygui/utils/ip_comparison_extensions.dart';
 import 'package:scrcpygui/utils/server_utils_ws.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:string_extensions/string_extensions.dart';
@@ -17,7 +17,6 @@ import '../../../db/db.dart';
 import '../../../providers/companion_server_state_provider.dart';
 import '../../../providers/server_settings_provider.dart';
 import '../../../utils/const.dart';
-import '../../../utils/ipv4_input_formatter.dart';
 import '../../../widgets/config_tiles.dart';
 import '../../../widgets/custom_ui/pg_section_card.dart';
 
@@ -38,7 +37,6 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
   TextEditingController secretController = TextEditingController();
   final serverUtils = ServerUtilsWs();
   List<NetworkInterface> interfaces = [];
-  List<String> _currentSuggestions = [];
 
   @override
   void initState() {
@@ -87,19 +85,7 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
 
   Future<void> _setIp() async {
     interfaces = await getInterfaces();
-    final savedEndpoint = ref.read(companionServerProvider).endpoint;
-
-    if (savedEndpoint != '' && savedEndpoint.isIpv4) {
-      final closest = savedEndpoint.findClosest(
-          interfaces.map((e) => e.addresses.first.address).toList());
-
-      if (closest != null) {
-        ipController.text = closest;
-      }
-    } else {
-      ipController.text =
-          interfaces.firstOrNull?.addresses.firstOrNull?.address ?? '0.0.0.0';
-    }
+    ipController.text = await getEffectiveIp(ref);
   }
 
   @override
@@ -115,8 +101,8 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
   Widget build(BuildContext context) {
     final serverState = ref.watch(companionServerStateProvider);
     final companionSettings = ref.watch(companionServerProvider);
-
     final isServerRunning = serverState.isRunning;
+    final theme = Theme.of(context);
 
     return PgSectionCardNoScroll(
       cardPadding: EdgeInsets.all(0),
@@ -160,16 +146,60 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
               ),
               Divider(),
               ConfigCustom(
+                title: 'Network adapter',
+                dimTitle: false,
+                child: Row(
+                  spacing: 2,
+                  children: [
+                    Expanded(
+                      child: Select(
+                        onChanged: (value) => _onChangeAdapter(value),
+                        filled: !isServerRunning,
+                        enabled: interfaces.isNotEmpty && !isServerRunning,
+                        padding: _adjustedPadding(isServerRunning),
+                        value: companionSettings.adapter == ''
+                            ? interfaces
+                                    .firstWhereOrNull((i) =>
+                                        i.addresses.first.address ==
+                                        companionSettings.endpoint)
+                                    ?.name ??
+                                ''
+                            : companionSettings.adapter,
+                        popup: SelectPopup(
+                          items: SelectItemBuilder(
+                            childCount: interfaces.length,
+                            builder: (context, index) => SelectItemButton(
+                                value: interfaces[index].name,
+                                child: Text(interfaces[index].name)),
+                          ),
+                        ).call,
+                        itemBuilder: (context, value) => Text(value),
+                      ),
+                    ),
+                    Button(
+                      style:
+                          ButtonStyle.ghost(density: ButtonDensity.iconDense),
+                      onPressed: () async {
+                        interfaces = await getInterfaces();
+                        setState(() {});
+                      },
+                      child: Icon(Icons.refresh_rounded),
+                    )
+                  ],
+                ),
+              ),
+              Divider(),
+              ConfigCustom(
                 title: el.companionLoc.server.endpoint.label,
                 dimTitle: false,
-                child: AutoComplete(
-                  suggestions: _currentSuggestions,
-                  child: TextField(
-                    inputFormatters: [IPv4InputFormatter()],
-                    enabled: !isServerRunning,
-                    onChanged: _updateSuggestions,
-                    controller: ipController,
-                    filled: !isServerRunning,
+                child: OutlinedContainer(
+                  borderRadius: theme.borderRadiusMd,
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                    child: Text(
+                      companionSettings.endpoint,
+                      style: theme.typography.small,
+                    ),
                   ),
                 ),
               ),
@@ -268,6 +298,14 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
     );
   }
 
+  EdgeInsetsGeometry _adjustedPadding(bool isServerRunning) {
+    return EdgeInsets.fromLTRB(
+        isServerRunning ? 11 : 12,
+        isServerRunning ? 7 : 8,
+        isServerRunning ? 7 : 8,
+        isServerRunning ? 8 : 9);
+  }
+
   Future<void> _toggleServer(bool isServerRunning) async {
     final companionSettingsNotifier =
         ref.read(companionServerProvider.notifier);
@@ -349,28 +387,28 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
     }
   }
 
+  void _onChangeAdapter(String? value) {
+    final adapterIp = interfaces
+            .firstWhereOrNull(
+                (iface) => iface.name == value && iface.addresses.isNotEmpty)
+            ?.addresses
+            .first
+            .address ??
+        '0.0.0.0';
+
+    ref.read(companionServerProvider.notifier)
+      ..setEndpoint(adapterIp)
+      ..setAdapter(value ?? '');
+
+    ipController.text = adapterIp;
+    setState(() {});
+  }
+
   Future<void> _toggleAutoStart() async {
     final companionSettingsNotifier =
         ref.read(companionServerProvider.notifier);
 
     companionSettingsNotifier.setStartOnLaunch();
     await Db.saveCompanionServerSettings(ref.read(companionServerProvider));
-  }
-
-  void _updateSuggestions(String value) {
-    String? currentWord = ipController.currentWord;
-    if (currentWord == null || currentWord.isEmpty) {
-      setState(() {
-        _currentSuggestions = [];
-      });
-      return;
-    }
-    setState(() {
-      _currentSuggestions = interfaces
-          .map((i) => i.addresses.first.address)
-          .where((element) =>
-              element.toLowerCase().contains(currentWord.toLowerCase()))
-          .toList();
-    });
   }
 }

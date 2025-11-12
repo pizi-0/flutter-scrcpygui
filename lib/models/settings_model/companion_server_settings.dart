@@ -9,6 +9,7 @@ class CompanionServerSettings {
   final String id;
   final String name;
   final String endpoint;
+  final String adapter;
   final String secret;
   final String port;
   final bool startOnLaunch;
@@ -18,6 +19,7 @@ class CompanionServerSettings {
     required this.id,
     required this.name,
     required this.endpoint,
+    required this.adapter,
     required this.secret,
     required this.port,
     required this.startOnLaunch,
@@ -27,6 +29,7 @@ class CompanionServerSettings {
   CompanionServerSettings copyWith({
     String? name,
     String? endpoint,
+    String? adapter,
     String? secret,
     String? port,
     bool? startOnLaunch,
@@ -37,6 +40,7 @@ class CompanionServerSettings {
       id: id ?? this.id,
       name: name ?? this.name,
       endpoint: endpoint ?? this.endpoint,
+      adapter: adapter ?? this.adapter,
       secret: secret ?? this.secret,
       port: port ?? this.port,
       startOnLaunch: startOnLaunch ?? this.startOnLaunch,
@@ -48,6 +52,7 @@ class CompanionServerSettings {
     return <String, dynamic>{
       'id': id,
       'name': name,
+      'adapter': adapter,
       'endpoint': endpoint,
       'secret': secret,
       'port': port,
@@ -71,6 +76,7 @@ class CompanionServerSettings {
       id: map['id'] as String,
       name: map['name'] as String,
       endpoint: map['endpoint'] as String,
+      adapter: map['adapter'] ?? '',
       secret: map['secret'] as String,
       port: map['port'] as String,
       startOnLaunch: map['startOnLaunch'] as bool,

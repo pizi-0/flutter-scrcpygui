@@ -203,6 +203,7 @@ final defaultCompanionServerSettings = CompanionServerSettings(
   port: '8080',
   startOnLaunch: false,
   endpoint: '',
+  adapter: '',
   secret: 'scrcpygui-is-okay',
   blocklist: [],
 );
