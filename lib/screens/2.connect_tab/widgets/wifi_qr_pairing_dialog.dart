@@ -1,5 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+
+import 'package:awesome_extensions/awesome_extensions_dart.dart';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -26,11 +29,14 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
   late BonsoirDiscovery discovery;
   final String id = const Uuid().v1();
   bool loading = false;
-  late Stream<BonsoirDiscoveryEvent>? stream;
+  late final Stream<BonsoirDiscoveryEvent>? stream;
+
+  final StreamController<String> progressStream = StreamController<String>();
 
   @override
   void initState() {
     super.initState();
+
     try {
       discovery = BonsoirDiscovery(type: adbPairMdns);
     } on Exception catch (e) {
@@ -48,22 +54,36 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
   @override
   void dispose() {
     discovery.stop();
+    progressStream.close();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: sectionWidth),
+      constraints: const BoxConstraints(maxWidth: sectionWidth - 50),
       child: AlertDialog(
-        title: Text(el.connectLoc.qrPair.pair),
+        title: Row(
+          spacing: 8,
+          children: [
+            Expanded(child: Text(el.connectLoc.qrPair.pair)),
+            Tooltip(
+                waitDuration: 0.milliseconds,
+                tooltip: TooltipContainer(
+                  child: Text(
+                      '[Developer option] > [Wireless debugging] > [Pair device with QR code]'),
+                ).call,
+                child: Icon(Icons.help_rounded)),
+          ],
+        ),
         content: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           spacing: 10,
           children: [
-            const Text(
-                '[Developer option] > [Wireless debugging] > [Pair device with QR code]'),
+            SizedBox.shrink(),
             Center(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -72,11 +92,14 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
                   width: 200,
                   child: Stack(
                     children: [
-                      QrImageView(
-                        data:
-                            'WIFI:T:ADB;S:ADB_WIFI_$id;P:${id.removeSpecial};',
-                        size: 200,
-                        backgroundColor: Colors.white,
+                      ClipRRect(
+                        borderRadius: theme.borderRadiusMd,
+                        child: QrImageView(
+                          data:
+                              'WIFI:T:ADB;S:ADB_WIFI_$id;P:${id.removeSpecial};',
+                          size: 200,
+                          backgroundColor: Colors.white,
+                        ),
                       ),
                       if (loading)
                         SizedBox.expand(
@@ -95,6 +118,21 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
           ],
         ),
         actions: [
+          Expanded(
+            child: StreamBuilder(
+              stream: progressStream.stream,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(
+                    snapshot.data ?? '',
+                    style: theme.typography.small,
+                  ).muted.italic;
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            ),
+          ),
           SecondaryButton(
             child: Text(el.buttonLabelLoc.close),
             onPressed: () => context.pop(),
@@ -108,30 +146,35 @@ class _WifiQrPairingState extends ConsumerState<WifiQrPairing> {
     final workDir = ref.read(execDirProvider);
     late String pairRes;
     int retries = 30;
-    bool adbMdnsSearch = true;
+
+    progressStream.add('Scan the QR code to start');
 
     final toPair = (await stream.firstWhere(
         (e) => e is BonsoirDiscoveryServiceFoundEvent,
         orElse: () => BonsoirDiscoveryUnknownEvent()));
 
     if (toPair is BonsoirDiscoveryServiceFoundEvent) {
+      progressStream.add('Found device');
       if (mounted) {
         loading = true;
         setState(() {});
       }
 
-      while (adbMdnsSearch && mounted) {
+      while (mounted) {
         if (retries < 0) break;
 
         final res = await CommandRunner.runAdbCommand(workDir,
             args: ['mdns', 'services']);
 
         if (res.stdout.toString().contains(toPair.service.name)) break;
-        await Future.delayed(const Duration(seconds: 1));
-        retries--;
 
         logger.i(
             "${toPair.service.name} not found in 'adb mdns services'; Retrying ($retries)");
+        progressStream
+            .add('Awaiting adb mdns services. Attempt ${30 - retries}');
+
+        await Future.delayed(const Duration(seconds: 1));
+        retries--;
       }
 
       pairRes = await AdbUtils.pairWithCode(
