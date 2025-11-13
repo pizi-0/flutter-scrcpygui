@@ -373,6 +373,10 @@ connect_loc:
       cancelled: Pairing cancelled
       success: Pairing successful
       failed: Pairing failed
+    progress:
+      scan: Scan the QR code to start
+      found: Adb pairing found
+      awaiting: Awaiting adb mdns services. Attempt ${attempt}
 
   unauthenticated: 
     info:
