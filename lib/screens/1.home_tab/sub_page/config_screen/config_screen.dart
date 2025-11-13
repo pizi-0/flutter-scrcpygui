@@ -246,8 +246,12 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
           : el.configScreenLoc.title,
       children: selectedDevice == null
           ? [
-              Center(
-                child: Text(el.configScreenLoc.connectionLost),
+              SizedBox(
+                width: MediaQuery.sizeOf(context).width,
+                height: MediaQuery.sizeOf(context).height - 110,
+                child: Center(
+                  child: Text(el.configScreenLoc.connectionLost).muted,
+                ),
               )
             ]
           : deviceInfo == null
