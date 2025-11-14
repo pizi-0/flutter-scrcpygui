@@ -8,13 +8,15 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 
 import 'package:animate_do/animate_do.dart';
-import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:awesome_extensions/awesome_extensions_dart.dart';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/device_info_provider.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/sub_page/log_screen/log_screen.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/utils/server_utils_ws.dart';
@@ -27,6 +29,7 @@ import 'providers/adb_provider.dart';
 import 'providers/companion_server_state_provider.dart';
 import 'providers/scrcpy_provider.dart';
 import 'providers/server_settings_provider.dart';
+import 'screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/preview_and_test.dart';
 import 'utils/automation_utils.dart';
 import 'utils/bonsoir_utils.dart';
 import 'utils/const.dart';
@@ -70,6 +73,9 @@ class _MainScreenState extends ConsumerState<MainScreen>
   void dispose() {
     windowManager.removeListener(this);
     trayManager.removeListener(this);
+    GoRouter.of(context)
+        .routeInformationProvider
+        .removeListener(_killTestInstance);
     autoDevicesPingTimer?.cancel();
     autoLaunchConfigTimer?.cancel();
     runningInstancePingTimer?.cancel();
@@ -171,6 +177,10 @@ class _MainScreenState extends ConsumerState<MainScreen>
       },
     );
 
+    GoRouter.of(context)
+        .routeInformationProvider
+        .addListener(_killTestInstance);
+
     WidgetsBinding.instance.addPostFrameCallback((a) async {
       _startAutoDevicesPing();
       _startAutoLaunchConfig();
@@ -209,6 +219,18 @@ class _MainScreenState extends ConsumerState<MainScreen>
         }
       }
     });
+  }
+
+  Future<void> _killTestInstance() async {
+    final testInstance = ref.read(testInstanceProvider);
+    final currentRoute = GoRouter.of(context).state.path;
+
+    if (testInstance != null &&
+        !(currentRoute?.contains(LogScreen.route) ?? false)) {
+      ref.read(testInstanceProvider.notifier).state = null;
+      ref.read(scrcpyInstanceProvider.notifier).removeInstance(testInstance);
+      ScrcpyUtils.killServer(testInstance);
+    }
   }
 
   void _startAutoDevicesPing() {
