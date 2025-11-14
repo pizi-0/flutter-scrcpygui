@@ -4,6 +4,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/automation_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/scrcpy_provider.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
@@ -30,7 +31,9 @@ class AutomationUtils {
     for (final t in task) {
       final running = ref.read(scrcpyInstanceProvider);
       if (connected.where((d) => d.id == t.deviceId).isNotEmpty) {
-        if (running.where((inst) => inst.device.id == t.deviceId && inst.config.id == t.configId).isEmpty) {
+        final behaviour = ref.read(settingsProvider).behaviour;
+        
+        if (running.where((inst) => inst.device.id == t.deviceId && (behaviour.skipAutoStartIfInstanceRunning || inst.config.id == t.configId)).isEmpty) {
           final configToLaunch = allConfigs.firstWhereOrNull((c) => c.id == t.configId);
 
           final device = connected.firstWhereOrNull((d) => d.id == t.deviceId);

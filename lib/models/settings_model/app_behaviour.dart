@@ -30,6 +30,8 @@ class AppBehaviour {
   final AutoArrangeOrigin autoArrangeOrigin;
   final double windowToScreenHeightRatio;
   final bool showWarningOnBack;
+  final bool skipAutoStartIfInstanceRunning;
+  final bool newInstanceReplacesExisting;
 
   AppBehaviour({
     required this.languageCode,
@@ -42,6 +44,8 @@ class AppBehaviour {
     required this.autoArrangeOrigin,
     this.windowToScreenHeightRatio = 0.88,
     this.showWarningOnBack = true,
+    this.skipAutoStartIfInstanceRunning = false,
+    this.newInstanceReplacesExisting = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -56,6 +60,8 @@ class AppBehaviour {
       'autoArrangeOrigin': autoArrangeOrigin.index,
       'windowToScreenHeightRatio': windowToScreenHeightRatio,
       'showWarningOnBack': showWarningOnBack,
+      'skipAutoStartIfInstanceRunning': skipAutoStartIfInstanceRunning,
+      'newInstanceReplacesExisting': newInstanceReplacesExisting,
     };
   }
 
@@ -89,6 +95,10 @@ class AppBehaviour {
       windowToScreenHeightRatio:
           (map['windowToScreenHeightRatio'] as num?)?.toDouble() ?? 0.88,
       showWarningOnBack: map['showWarningOnBack'] ?? true,
+      skipAutoStartIfInstanceRunning:
+          map['skipAutoStartIfInstanceRunning'] as bool? ?? false,
+      newInstanceReplacesExisting:
+          map['newInstanceReplacesExisting'] as bool? ?? false,
     );
   }
 
@@ -108,6 +118,8 @@ class AppBehaviour {
     AutoArrangeOrigin? autoArrangeOrigin,
     double? windowToScreenHeightRatio,
     bool? showWarningOnBack,
+    bool? skipAutoStartIfInstanceRunning,
+    bool? newInstanceReplacesExisting,
   }) {
     return AppBehaviour(
       languageCode: languageCode ?? this.languageCode,
@@ -121,12 +133,16 @@ class AppBehaviour {
       windowToScreenHeightRatio:
           windowToScreenHeightRatio ?? this.windowToScreenHeightRatio,
       showWarningOnBack: showWarningOnBack ?? this.showWarningOnBack,
+      skipAutoStartIfInstanceRunning: skipAutoStartIfInstanceRunning ??
+          this.skipAutoStartIfInstanceRunning,
+      newInstanceReplacesExisting:
+          newInstanceReplacesExisting ?? this.newInstanceReplacesExisting,
     );
   }
 
   @override
   String toString() {
-    return 'AppBehaviour(languageCode: $languageCode, killNoWindowInstance: $killNoWindowInstance, traySupport: $traySupport, toastEnabled: $toastEnabled, minimizeAction: $minimizeAction, hideDefaultConfig: $hideDefaultConfig, rememberWinSize: $rememberWinSize, autoArrangeOrigin: $autoArrangeOrigin, windowToScreenHeightRatio: $windowToScreenHeightRatio, showWarningOnBack: $showWarningOnBack)';
+    return 'AppBehaviour(languageCode: $languageCode, killNoWindowInstance: $killNoWindowInstance, traySupport: $traySupport, toastEnabled: $toastEnabled, minimizeAction: $minimizeAction, hideDefaultConfig: $hideDefaultConfig, rememberWinSize: $rememberWinSize, autoArrangeOrigin: $autoArrangeOrigin, windowToScreenHeightRatio: $windowToScreenHeightRatio, showWarningOnBack: $showWarningOnBack, skipAutoStartIfInstanceRunning: $skipAutoStartIfInstanceRunning, newInstanceReplacesExisting: $newInstanceReplacesExisting)';
   }
 
   @override
@@ -142,7 +158,9 @@ class AppBehaviour {
         other.rememberWinSize == rememberWinSize &&
         other.autoArrangeOrigin == autoArrangeOrigin &&
         other.windowToScreenHeightRatio == windowToScreenHeightRatio &&
-        other.showWarningOnBack == showWarningOnBack;
+        other.showWarningOnBack == showWarningOnBack &&
+        other.skipAutoStartIfInstanceRunning == skipAutoStartIfInstanceRunning &&
+        other.newInstanceReplacesExisting == newInstanceReplacesExisting;
   }
 
   @override
@@ -156,6 +174,8 @@ class AppBehaviour {
         rememberWinSize.hashCode ^
         autoArrangeOrigin.hashCode ^
         windowToScreenHeightRatio.hashCode ^
-        showWarningOnBack.hashCode;
+        showWarningOnBack.hashCode ^
+        skipAutoStartIfInstanceRunning.hashCode ^
+        newInstanceReplacesExisting.hashCode;
   }
 }
