@@ -175,6 +175,29 @@ class EditingConfigNotifier extends Notifier<ScrcpyConfig?> {
     );
   }
 
+  void setControlConfig(
+      {MouseMode? mouseMode,
+      bool? mouseNoHover,
+      KeyboardMode? keyboardMode,
+      bool? keyboardDisableRepeat,
+      GamepadMode? gamepadMode}) {
+    final current = state!.controlOptions;
+
+    state = state!.copyWith(
+        controlOptions: current.copyWith(
+      mouseMode: mouseMode ?? current.mouseMode,
+      mouseNoHover: (mouseMode ?? current.mouseMode) != MouseMode.sdk
+          ? false
+          : mouseNoHover ?? current.mouseNoHover,
+      keyboardMode: keyboardMode ?? current.keyboardMode,
+      keyboardDisableRepeat:
+          (keyboardMode ?? current.keyboardMode) != KeyboardMode.sdk
+              ? false
+              : keyboardDisableRepeat ?? current.keyboardDisableRepeat,
+      gamepadMode: gamepadMode ?? current.gamepadMode,
+    ));
+  }
+
   void setAdditionalFlags({String? additionalFlags}) {
     final current = state!.additionalFlags;
     state = state!.copyWith(additionalFlags: additionalFlags ?? current);

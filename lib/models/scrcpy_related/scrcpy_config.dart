@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/app_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/control_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/device_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/video_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config_tags.dart';
@@ -22,6 +23,7 @@ class ScrcpyConfig {
   final SAppOptions appOptions;
   final SDeviceOptions deviceOptions;
   final SWindowOptions windowOptions;
+  final SControlOptions controlOptions;
   final String additionalFlags;
 
   //tags are auto generated
@@ -38,6 +40,7 @@ class ScrcpyConfig {
     required this.appOptions,
     required this.deviceOptions,
     required this.windowOptions,
+    required this.controlOptions,
     required this.additionalFlags,
     this.savePath,
     this.tags = const [],
@@ -88,6 +91,7 @@ class ScrcpyConfig {
     SAppOptions? appOptions,
     SDeviceOptions? deviceOptions,
     SWindowOptions? windowOptions,
+    SControlOptions? controlOptions,
     String? additionalFlags,
     String? savePath,
   }) {
@@ -101,6 +105,7 @@ class ScrcpyConfig {
       appOptions: appOptions ?? this.appOptions,
       deviceOptions: deviceOptions ?? this.deviceOptions,
       windowOptions: windowOptions ?? this.windowOptions,
+      controlOptions: controlOptions ?? this.controlOptions,
       additionalFlags: additionalFlags ?? this.additionalFlags,
       savePath: savePath ?? this.savePath,
     );
@@ -117,6 +122,7 @@ class ScrcpyConfig {
       'appOptions': appOptions.toMap(),
       'deviceOptions': deviceOptions.toMap(),
       'windowOptions': windowOptions.toMap(),
+      'controlOptions': controlOptions.toMap(),
       'additionalFlags': additionalFlags,
       'savePath': savePath,
     };
@@ -139,6 +145,10 @@ class ScrcpyConfig {
           SDeviceOptions.fromMap(map['deviceOptions'] as Map<String, dynamic>),
       windowOptions:
           SWindowOptions.fromMap(map['windowOptions'] as Map<String, dynamic>),
+      controlOptions: map['controlOptions'] != null
+          ? SControlOptions.fromMap(
+              map['controlOptions'] as Map<String, dynamic>)
+          : defaultControlOptions,
       additionalFlags: map['additionalFlags'],
       savePath: map['savePath'] != null ? map['savePath'] as String : null,
     );

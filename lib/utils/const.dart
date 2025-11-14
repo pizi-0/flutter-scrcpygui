@@ -3,6 +3,7 @@
 import 'package:logger/logger.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/app_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/audio_options.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/control_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/device_options.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/position_and_size.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/video_options.dart';
@@ -85,6 +86,7 @@ final ScrcpyConfig defaultMirror = ScrcpyConfig(
     position: ScrcpyPosition(),
     size: ScrcpySize(),
   ),
+  controlOptions: defaultControlOptions,
   additionalFlags: '',
   savePath: defaultSavePath,
 );
@@ -128,6 +130,7 @@ final ScrcpyConfig newConfig = ScrcpyConfig(
     position: ScrcpyPosition(),
     size: ScrcpySize(),
   ),
+  controlOptions: defaultControlOptions,
   additionalFlags: '',
   savePath: defaultSavePath,
 );
@@ -174,6 +177,7 @@ final ScrcpyConfig defaultRecord = ScrcpyConfig(
     position: ScrcpyPosition(),
     size: ScrcpySize(),
   ),
+  controlOptions: defaultControlOptions,
   additionalFlags: '',
   savePath: defaultSavePath,
 );
