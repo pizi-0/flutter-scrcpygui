@@ -47,6 +47,7 @@ class _LogScreenState extends ConsumerState<LogScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final width = MediaQuery.sizeOf(context).width;
     ref.watch(settingsProvider.select((sett) => sett.behaviour.languageCode));
 
@@ -57,7 +58,12 @@ class _LogScreenState extends ConsumerState<LogScreen> {
       children: [
         PgSectionCard(
           constraints: BoxConstraints(maxWidth: width),
-          children: logs.map((l) => Text(l.trim())).toList(),
+          children: logs
+              .map((l) => Text(
+                    l.trim(),
+                    style: theme.typography.small,
+                  ))
+              .toList(),
         )
       ],
     );
