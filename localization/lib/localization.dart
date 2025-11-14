@@ -5484,6 +5484,7 @@ class ConnectLocQrPair {
     required this.label,
     required this.pair,
     required this.status,
+    required this.progress,
   });
   factory ConnectLocQrPair.fromJson(Map<String, dynamic> json) {
     return ConnectLocQrPair(
@@ -5491,16 +5492,21 @@ class ConnectLocQrPair {
       pair: (json['pair'] ?? '').toString(),
       status: ConnectLocQrPairStatus.fromJson(
           (json['status'] as Map).cast<String, dynamic>()),
+      progress: ConnectLocQrPairProgress.fromJson(
+          (json['progress'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
   final String pair;
   final ConnectLocQrPairStatus status;
 
+  final ConnectLocQrPairProgress progress;
+
   Map<String, Object> get _content => {
         r'''label''': label,
         r'''pair''': pair,
         r'''status''': status,
+        r'''progress''': progress,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -5550,6 +5556,61 @@ class ConnectLocQrPairStatus {
         r'''cancelled''': cancelled,
         r'''success''': success,
         r'''failed''': failed,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ConnectLocQrPairProgress {
+  const ConnectLocQrPairProgress({
+    required this.scan,
+    required this.found,
+    required String Function({required String attempt}) awaiting,
+  }) : _awaiting = awaiting;
+  factory ConnectLocQrPairProgress.fromJson(Map<String, dynamic> json) {
+    return ConnectLocQrPairProgress(
+      scan: (json['scan'] ?? '').toString(),
+      found: (json['found'] ?? '').toString(),
+      awaiting: ({required String attempt}) => (json['awaiting'] ?? '')
+          .toString()
+          .replaceAll(r'${attempt}', attempt)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String scan;
+  final String found;
+  String awaiting({required String attempt}) => _awaiting(attempt: attempt);
+
+  final String Function({required String attempt}) _awaiting;
+
+  Map<String, Object> get _content => {
+        r'''scan''': scan,
+        r'''found''': found,
+        r'''awaiting''': awaiting,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -6649,6 +6710,8 @@ class SettingsLocBehavior {
     required this.windowSize,
     required this.autoArrange,
     required this.windowToScreenRatio,
+    required this.skipAutoStart,
+    required this.newInstanceReplace,
   });
   factory SettingsLocBehavior.fromJson(Map<String, dynamic> json) {
     return SettingsLocBehavior(
@@ -6663,6 +6726,10 @@ class SettingsLocBehavior {
           (json['auto_arrange'] as Map).cast<String, dynamic>()),
       windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio.fromJson(
           (json['window_to_screen_ratio'] as Map).cast<String, dynamic>()),
+      skipAutoStart: SettingsLocBehaviorSkipAutoStart.fromJson(
+          (json['skip_auto_start'] as Map).cast<String, dynamic>()),
+      newInstanceReplace: SettingsLocBehaviorNewInstanceReplace.fromJson(
+          (json['new_instance_replace'] as Map).cast<String, dynamic>()),
     );
   }
   final String label;
@@ -6676,6 +6743,10 @@ class SettingsLocBehavior {
 
   final SettingsLocBehaviorWindowToScreenRatio windowToScreenRatio;
 
+  final SettingsLocBehaviorSkipAutoStart skipAutoStart;
+
+  final SettingsLocBehaviorNewInstanceReplace newInstanceReplace;
+
   Map<String, Object> get _content => {
         r'''label''': label,
         r'''language''': language,
@@ -6683,6 +6754,8 @@ class SettingsLocBehavior {
         r'''window_size''': windowSize,
         r'''auto_arrange''': autoArrange,
         r'''window_to_screen_ratio''': windowToScreenRatio,
+        r'''skip_auto_start''': skipAutoStart,
+        r'''new_instance_replace''': newInstanceReplace,
       };
   T getContent<T>(String key) {
     final Object? value = _content[key];
@@ -6959,6 +7032,97 @@ class SettingsLocBehaviorWindowToScreenRatio {
   Map<String, Object> get _content => {
         r'''label''': label,
         r'''label_short''': labelShort,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class SettingsLocBehaviorSkipAutoStart {
+  const SettingsLocBehaviorSkipAutoStart({
+    required this.label,
+    required this.info,
+  });
+  factory SettingsLocBehaviorSkipAutoStart.fromJson(Map<String, dynamic> json) {
+    return SettingsLocBehaviorSkipAutoStart(
+      label: (json['label'] ?? '').toString(),
+      info: (json['info'] ?? '').toString(),
+    );
+  }
+  final String label;
+  final String info;
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class SettingsLocBehaviorNewInstanceReplace {
+  const SettingsLocBehaviorNewInstanceReplace({
+    required this.label,
+    required this.info,
+  });
+  factory SettingsLocBehaviorNewInstanceReplace.fromJson(
+      Map<String, dynamic> json) {
+    return SettingsLocBehaviorNewInstanceReplace(
+      label: (json['label'] ?? '').toString(),
+      info: (json['info'] ?? '').toString(),
+    );
+  }
+  final String label;
+  final String info;
+  Map<String, Object> get _content => {
+        r'''label''': label,
         r'''info''': info,
       };
   T getContent<T>(String key) {
@@ -9314,6 +9478,12 @@ LocalizationMessages get en => LocalizationMessages(
             success: 'Pairing successful',
             failed: 'Pairing failed',
           ),
+          progress: ConnectLocQrPairProgress(
+            scan: 'Scan the QR code to start',
+            found: 'Adb pairing found',
+            awaiting: ({required String attempt}) =>
+                '''Awaiting adb mdns services. Attempt ${attempt}''',
+          ),
         ),
         unauthenticated: ConnectLocUnauthenticated(
           info: ConnectLocUnauthenticatedInfo(
@@ -9421,6 +9591,16 @@ LocalizationMessages get en => LocalizationMessages(
             labelShort: 'Height %',
             info:
                 'Ratio of scrcpy window height to primary screen height. Min: 0.4, Max: 1.0, Default: 0.88',
+          ),
+          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
+            label: 'Skip auto-start if already running',
+            info:
+                'When a device is connected and scrcpy is set to start automatically, do not start it if there is already an instance running for that device.',
+          ),
+          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
+            label: 'New instances replace existing instances',
+            info:
+                'When manually running a new instance of scrcpy, all existing instances for the same device are stopped.',
           ),
         ),
       ),
@@ -10043,6 +10223,11 @@ LocalizationMessages get es => LocalizationMessages(
             success: 'Emparejamiento exitoso',
             failed: 'Emparejamiento fallido',
           ),
+          progress: ConnectLocQrPairProgress(
+            scan: '',
+            found: '',
+            awaiting: ({required String attempt}) => '',
+          ),
         ),
         unauthenticated: ConnectLocUnauthenticated(
           info: ConnectLocUnauthenticatedInfo(
@@ -10149,6 +10334,14 @@ LocalizationMessages get es => LocalizationMessages(
             labelShort: 'Altura %',
             info:
                 'Relación de la altura de la ventana de scrcpy con la altura de la pantalla principal. Mín: 0.4, Máx: 1.0, Predeterminado: 0.88',
+          ),
+          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
+            label: '',
+            info: '',
+          ),
+          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
+            label: '',
+            info: '',
           ),
         ),
       ),
@@ -10768,6 +10961,11 @@ LocalizationMessages get it => LocalizationMessages(
             success: 'Associazione riuscita',
             failed: 'Associazione fallita',
           ),
+          progress: ConnectLocQrPairProgress(
+            scan: '',
+            found: '',
+            awaiting: ({required String attempt}) => '',
+          ),
         ),
         unauthenticated: ConnectLocUnauthenticated(
           info: ConnectLocUnauthenticatedInfo(
@@ -10874,6 +11072,14 @@ LocalizationMessages get it => LocalizationMessages(
             labelShort: 'Altezza %',
             info:
                 '''Rapporto tra l'altezza della finestra di scrcpy e l'altezza dello schermo primario. Min: 0.4, Max: 1.0, Predefinito: 0.88''',
+          ),
+          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
+            label: '',
+            info: '',
+          ),
+          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
+            label: '',
+            info: '',
           ),
         ),
       ),
@@ -11468,6 +11674,11 @@ LocalizationMessages get ja => LocalizationMessages(
             success: 'ペアリングに成功しました',
             failed: 'ペアリングに失敗しました',
           ),
+          progress: ConnectLocQrPairProgress(
+            scan: '',
+            found: '',
+            awaiting: ({required String attempt}) => '',
+          ),
         ),
         unauthenticated: ConnectLocUnauthenticated(
           info: ConnectLocUnauthenticatedInfo(
@@ -11574,6 +11785,14 @@ LocalizationMessages get ja => LocalizationMessages(
             labelShort: '高さ %',
             info:
                 'scrcpyウィンドウの高さとプライマリスクリーンの高さの比率。最小: 0.4, 最大: 1.0, デフォルト: 0.88',
+          ),
+          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
+            label: '',
+            info: '',
+          ),
+          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
+            label: '',
+            info: '',
           ),
         ),
       ),
@@ -12191,6 +12410,11 @@ LocalizationMessages get ms => LocalizationMessages(
             success: 'Pemasangan Berjaya',
             failed: 'Pemasangan Gagal',
           ),
+          progress: ConnectLocQrPairProgress(
+            scan: '',
+            found: '',
+            awaiting: ({required String attempt}) => '',
+          ),
         ),
         unauthenticated: ConnectLocUnauthenticated(
           info: ConnectLocUnauthenticatedInfo(
@@ -12297,6 +12521,14 @@ LocalizationMessages get ms => LocalizationMessages(
             labelShort: 'Tinggi %',
             info:
                 'Nisbah ketinggian tetingkap scrcpy kepada ketinggian skrin utama. Min: 0.4, Maks: 1.0, Lalai: 0.88',
+          ),
+          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
+            label: '',
+            info: '',
+          ),
+          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
+            label: '',
+            info: '',
           ),
         ),
       ),
@@ -12889,6 +13121,11 @@ LocalizationMessages get zh => LocalizationMessages(
             success: '配对成功',
             failed: '配对失败',
           ),
+          progress: ConnectLocQrPairProgress(
+            scan: '',
+            found: '',
+            awaiting: ({required String attempt}) => '',
+          ),
         ),
         unauthenticated: ConnectLocUnauthenticated(
           info: ConnectLocUnauthenticatedInfo(
@@ -12994,6 +13231,14 @@ LocalizationMessages get zh => LocalizationMessages(
             label: '窗口到屏幕高度比例',
             labelShort: '高度 %',
             info: 'scrcpy 窗口高度与主屏幕高度的比例。最小: 0.4，最大: 1.0，默认: 0.88',
+          ),
+          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
+            label: '',
+            info: '',
+          ),
+          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
+            label: '',
+            info: '',
           ),
         ),
       ),
@@ -13613,6 +13858,11 @@ LocalizationMessages get pt_BR => LocalizationMessages(
             success: 'Pareamento bem-sucedido',
             failed: 'Falha no pareamento',
           ),
+          progress: ConnectLocQrPairProgress(
+            scan: '',
+            found: '',
+            awaiting: ({required String attempt}) => '',
+          ),
         ),
         unauthenticated: ConnectLocUnauthenticated(
           info: ConnectLocUnauthenticatedInfo(
@@ -13720,6 +13970,14 @@ LocalizationMessages get pt_BR => LocalizationMessages(
             labelShort: 'Altura %',
             info:
                 'Proporção da altura da janela do scrcpy para a altura da tela principal. Mín: 0.4, Máx: 1.0, Padrão: 0.88',
+          ),
+          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
+            label: '',
+            info: '',
+          ),
+          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
+            label: '',
+            info: '',
           ),
         ),
       ),

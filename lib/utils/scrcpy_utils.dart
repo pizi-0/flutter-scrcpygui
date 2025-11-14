@@ -180,6 +180,16 @@ class ScrcpyUtils {
       await Db.saveDeviceInfos(ref.read(infoProvider));
     }
 
+    final behaviour = ref.read(settingsProvider).behaviour;
+
+    if (behaviour.newInstanceReplacesExisting) {
+      final running = ref.read(scrcpyInstanceProvider);
+      for (final inst in running.where((i) => i.device.id == device.id)) {
+        await ScrcpyUtils.killServer(inst);
+        ref.read(scrcpyInstanceProvider.notifier).removeInstance(inst);
+      }
+    }
+
     final inst = await _startServer(ref, device, selectedConfig,
         isTest: isTest, customInstanceName: customInstanceName, env: env);
 

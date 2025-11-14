@@ -243,6 +243,50 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
             ),
           ),
         ),
+        const Divider(),
+        InkWell(
+          onTap: _toggleSkipAutoStartIfInstanceRunning,
+          child: PgListTile(
+            title: el.settingsLoc.behavior.skipAutoStart.label,
+            subtitle: el.settingsLoc.behavior.skipAutoStart.info,
+            showSubtitle: true,
+            trailing: ConstrainedBox(
+              constraints:
+                  BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Checkbox(
+                  state: behaviour.skipAutoStartIfInstanceRunning
+                      ? CheckboxState.checked
+                      : CheckboxState.unchecked,
+                  onChanged: (b) => _toggleSkipAutoStartIfInstanceRunning(),
+                ),
+              ),
+            ),
+          ),
+        ),
+        const Divider(),
+        InkWell(
+          onTap: _toggleNewInstanceReplacesExisting,
+          child: PgListTile(
+            title: el.settingsLoc.behavior.newInstanceReplace.label,
+            subtitle: el.settingsLoc.behavior.newInstanceReplace.info,
+            showSubtitle: true,
+            trailing: ConstrainedBox(
+              constraints:
+                  BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: Checkbox(
+                  state: behaviour.newInstanceReplacesExisting
+                      ? CheckboxState.checked
+                      : CheckboxState.unchecked,
+                  onChanged: (b) => _toggleNewInstanceReplacesExisting(),
+                ),
+              ),
+            ),
+          ),
+        ),
         // Divider(),
         // InkWell(
         //   onTap: () async {
@@ -293,6 +337,16 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
 
   Future<void> _toggleRememberWinSize() async {
     ref.read(settingsProvider.notifier).changeRememberWinSize();
+    await Db.saveAppSettings(ref.read(settingsProvider));
+  }
+
+  Future<void> _toggleSkipAutoStartIfInstanceRunning() async {
+    ref.read(settingsProvider.notifier).changeSkipAutoStartIfInstanceRunning();
+    await Db.saveAppSettings(ref.read(settingsProvider));
+  }
+
+  Future<void> _toggleNewInstanceReplacesExisting() async {
+    ref.read(settingsProvider.notifier).changeNewInstanceReplacesExisting();
     await Db.saveAppSettings(ref.read(settingsProvider));
   }
 }

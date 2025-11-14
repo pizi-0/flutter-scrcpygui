@@ -117,6 +117,22 @@ class SettingsNotifier extends Notifier<AppSettings> {
     state = state.copyWith(
         behaviour: currentBehaviour.copyWith(windowToScreenHeightRatio: ratio));
   }
+
+  void changeSkipAutoStartIfInstanceRunning({bool? value}) {
+    var currentBehaviour = state.behaviour;
+
+    state = state.copyWith(
+        behaviour: currentBehaviour.copyWith(
+            skipAutoStartIfInstanceRunning: value ?? !state.behaviour.skipAutoStartIfInstanceRunning));
+  }
+
+  void changeNewInstanceReplacesExisting({bool? value}) {
+    var currentBehaviour = state.behaviour;
+
+    state = state.copyWith(
+        behaviour: currentBehaviour.copyWith(
+            newInstanceReplacesExisting: value ?? !state.behaviour.newInstanceReplacesExisting));
+  }
 }
 
 final settingsProvider =

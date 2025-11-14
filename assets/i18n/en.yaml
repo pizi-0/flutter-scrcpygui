@@ -468,6 +468,13 @@ settings_loc:
       label: Window to screen height ratio
       label_short: Height %
       info: "Ratio of scrcpy window height to primary screen height. Min: 0.4, Max: 1.0, Default: 0.88"
+    skip_auto_start:
+      label: Skip auto-start if already running
+      info: When a device is connected and scrcpy is set to start automatically, do not start it if there is already an instance running for that device.
+    new_instance_replace:
+      label: New instances replace existing instances
+      info: When manually running a new instance of scrcpy, all existing instances for the same device are stopped.
+
 
 ## companion tab
 companion_loc:
