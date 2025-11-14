@@ -8,7 +8,7 @@ class PgScaffold extends ConsumerWidget {
   final List<Widget> footers;
   final List<Widget>? appBarTrailing;
   final List<Widget>? leading;
-
+  final bool padBottom;
   final bool showLoading;
   final bool wrap;
   final Function()? onBack;
@@ -22,6 +22,7 @@ class PgScaffold extends ConsumerWidget {
     this.leading,
     this.appBarTrailing,
     this.onBack,
+    this.padBottom = false,
     this.showLoading = false,
     this.wrap = true,
   });
@@ -153,7 +154,7 @@ class PgScaffold extends ConsumerWidget {
                     runSpacing: 8,
                     children: children,
                   ),
-                  Gap(8)
+                  Gap(padBottom ? 50 : 8)
                 ],
               )),
             ),
