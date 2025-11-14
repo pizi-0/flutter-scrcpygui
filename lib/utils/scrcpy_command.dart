@@ -41,6 +41,11 @@ class ScrcpyCommand {
             .append(_noBorder(config)) // no border
             .append(_alwaysOnTop(config)) // always ontop
             .append(_timeLimit(config)) // time limit
+            .append(_mouseMode(config))
+            .append(_mouseNoHover(config))
+            .append(_keyboardMode(config))
+            .append(_keyboardDisableRepeat(config))
+            .append(_gamepadMode(config))
             .append(_position(config))
             .append(_size(config))
             .append(_startApp(config)) // start app
@@ -288,5 +293,29 @@ class ScrcpyCommand {
     }
 
     return '';
+  }
+
+  // control options
+
+  static String _mouseMode(ScrcpyConfig config) {
+    return config.controlOptions.mouseMode.command;
+  }
+
+  static String _mouseNoHover(ScrcpyConfig config) {
+    return config.controlOptions.mouseNoHover ? ' --no-mouse-hover' : '';
+  }
+
+  static String _keyboardMode(ScrcpyConfig config) {
+    return config.controlOptions.keyboardMode.command;
+  }
+
+  static String _keyboardDisableRepeat(ScrcpyConfig config) {
+    return config.controlOptions.keyboardDisableRepeat
+        ? ' --no-key-repeat'
+        : '';
+  }
+
+  static String _gamepadMode(ScrcpyConfig config) {
+    return config.controlOptions.gamepadMode.command;
   }
 }

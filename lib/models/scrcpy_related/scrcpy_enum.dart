@@ -70,3 +70,35 @@ enum AudioSource implements StringEnum {
 }
 
 enum ScrcpyOverride { record, landscape, mute }
+
+enum MouseMode implements StringEnum {
+  sdk('sdk', ''),
+  uhid('uhid', ' --mouse=uhid'),
+  aoa('aoa', ' --mouse=aoa'),
+  disabled('disabled', ' --mouse=disabled');
+
+  @override
+  final String value, command;
+  const MouseMode(this.value, this.command);
+}
+
+enum KeyboardMode implements StringEnum {
+  sdk('sdk', ''),
+  uhid('uhid', ' --keyboard=uhid'),
+  aoa('aoa', ' --keyboard=aoa'),
+  disabled('disabled', ' --keyboard=disabled');
+
+  @override
+  final String value, command;
+  const KeyboardMode(this.value, this.command);
+}
+
+enum GamepadMode implements StringEnum {
+  disabled('disabled', ''),
+  uhid('uhid', ' --gamepad=uhid'),
+  aoa('aoa', ' --gamepad=aoa');
+
+  @override
+  final String value, command;
+  const GamepadMode(this.value, this.command);
+}

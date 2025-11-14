@@ -16,6 +16,7 @@ import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/app_config.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/control_config.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/additional_flags.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/widgets/config_screen_sections/audio_config.dart';
@@ -177,6 +178,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
         conf.id != selectedConfig.id);
 
     return PgScaffold(
+      padBottom: true,
       onBack: () async {
         bool exit = true;
 
@@ -285,6 +287,7 @@ class _ConfigScreenState extends ConsumerState<ConfigScreen> {
                   const SizedBox(width: sectionWidth, child: AppConfig()),
                   const SizedBox(width: sectionWidth, child: DeviceConfig()),
                   const SizedBox(width: sectionWidth, child: WindowConfig()),
+                  const SizedBox(width: sectionWidth, child: ControlConfig()),
                   const SizedBox(
                       width: sectionWidth, child: AdditionalFlagsConfig()),
                   const PreviewAndTest(),
