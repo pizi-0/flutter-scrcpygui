@@ -10,6 +10,7 @@ class ScrcpyRunningInstance {
   final Process process;
   final String instanceName;
   final DateTime startTime;
+  final bool autoLaunched;
 
   ScrcpyRunningInstance({
     required this.instanceName,
@@ -18,5 +19,6 @@ class ScrcpyRunningInstance {
     required this.config,
     required this.scrcpyPID,
     required this.startTime,
+    required this.autoLaunched,
   });
 }
