@@ -33,7 +33,7 @@ class AutomationUtils {
       if (connected.where((d) => d.id == t.deviceId).isNotEmpty) {
         final behaviour = ref.read(settingsProvider).behaviour;
         
-        if (running.where((inst) => inst.device.id == t.deviceId && (behaviour.skipAutoStartIfInstanceRunning || inst.config.id == t.configId)).isEmpty) {
+        if (running.where((inst) => inst.device.id == t.deviceId && ((behaviour.skipAutoStartIfInstanceRunning && !inst.autoLaunched) || inst.config.id == t.configId)).isEmpty) {
           final configToLaunch = allConfigs.firstWhereOrNull((c) => c.id == t.configId);
 
           final device = connected.firstWhereOrNull((d) => d.id == t.deviceId);
@@ -50,6 +50,7 @@ class AutomationUtils {
             selectedConfig: configToLaunch,
             customInstanceName:
                 hasApp ? '${configToLaunch.appOptions.selectedApp!.name} (${configToLaunch.configName})' : '',
+            autoLaunched: true,
           );
         }
       }

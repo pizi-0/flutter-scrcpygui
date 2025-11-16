@@ -85,7 +85,8 @@ class ScrcpyUtils {
       WidgetRef ref, AdbDevices selectedDevice, ScrcpyConfig config,
       {bool isTest = true,
       String customInstanceName = '',
-      Map<String, String>? env}) async {
+      Map<String, String>? env,
+      bool autoLaunched = false}) async {
     ScrcpyConfig selectedConfig = config;
     final workDir = ref.read(execDirProvider);
     final runningInstance = ref.read(scrcpyInstanceProvider);
@@ -138,6 +139,7 @@ class ScrcpyUtils {
       process: process,
       instanceName: customName,
       startTime: now,
+      autoLaunched: autoLaunched,
     );
 
     return instance;
@@ -165,7 +167,8 @@ class ScrcpyUtils {
       required ScrcpyConfig selectedConfig,
       bool isTest = false,
       String customInstanceName = '',
-      Map<String, String>? env}) async {
+      Map<String, String>? env,
+      bool autoLaunched = false}) async {
     AdbDevices device = selectedDevice ?? ref.read(selectedDeviceProvider)!;
 
     final deviceInfo = ref
@@ -182,7 +185,7 @@ class ScrcpyUtils {
 
     final behaviour = ref.read(settingsProvider).behaviour;
 
-    if (behaviour.newInstanceReplacesExisting) {
+    if (!autoLaunched && behaviour.newInstanceReplacesExisting) {
       final running = ref.read(scrcpyInstanceProvider);
       for (final inst in running.where((i) => i.device.id == device.id)) {
         await ScrcpyUtils.killServer(inst);
@@ -191,7 +194,7 @@ class ScrcpyUtils {
     }
 
     final inst = await _startServer(ref, device, selectedConfig,
-        isTest: isTest, customInstanceName: customInstanceName, env: env);
+        isTest: isTest, customInstanceName: customInstanceName, env: env, autoLaunched: autoLaunched);
 
     ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
   }
