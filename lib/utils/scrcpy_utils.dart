@@ -7,6 +7,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_config/position_and_size.dart';
+import 'package:scrcpygui/providers/automation_provider.dart';
 import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/providers/settings_provider.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
@@ -170,6 +171,7 @@ class ScrcpyUtils {
       Map<String, String>? env,
       bool autoLaunched = false}) async {
     AdbDevices device = selectedDevice ?? ref.read(selectedDeviceProvider)!;
+    ref.read(pauseAutoLaunchProvider.notifier).state = true;
 
     final deviceInfo = ref
         .read(infoProvider)
@@ -194,9 +196,13 @@ class ScrcpyUtils {
     }
 
     final inst = await _startServer(ref, device, selectedConfig,
-        isTest: isTest, customInstanceName: customInstanceName, env: env, autoLaunched: autoLaunched);
+        isTest: isTest,
+        customInstanceName: customInstanceName,
+        env: env,
+        autoLaunched: autoLaunched);
 
     ref.read(scrcpyInstanceProvider.notifier).addInstance(inst);
+    ref.read(pauseAutoLaunchProvider.notifier).state = false;
   }
 
   static Future<void> killServer(ScrcpyRunningInstance instance,

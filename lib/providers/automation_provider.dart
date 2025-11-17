@@ -48,3 +48,5 @@ final autoConnectProvider =
 final autoLaunchProvider =
     StateNotifierProvider<AutoLaunchNotifier, List<ConfigAutomation>>(
         (ref) => AutoLaunchNotifier([]));
+
+final pauseAutoLaunchProvider = StateProvider<bool>((ref) => false);

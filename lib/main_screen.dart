@@ -14,6 +14,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/providers/automation_provider.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/sub_page/log_screen/log_screen.dart';
@@ -240,14 +241,14 @@ class _MainScreenState extends ConsumerState<MainScreen>
   }
 
   void _startAutoLaunchConfig() {
-    bool isRunning = false;
     autoLaunchConfigTimer = Timer.periodic(1.seconds, (_) async {
-      if (isRunning) return;
-      isRunning = true;
+      bool shouldPause = ref.read(pauseAutoLaunchProvider);
+      if (shouldPause) return;
+
       try {
         await AutomationUtils.autoLaunchConfigRunner(ref);
       } finally {
-        isRunning = false;
+        ref.read(pauseAutoLaunchProvider.notifier).state = false;
       }
     });
   }
