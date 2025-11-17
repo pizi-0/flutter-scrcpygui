@@ -1,7 +1,6 @@
 name: Build Platform-Specific Artifacts
 
 on:
-  # 1. MODIFICATION: Define an input for the OS selection
   workflow_dispatch:
     inputs:
       os:
@@ -17,10 +16,9 @@ on:
 
 jobs:
   build:
+    # run matrix for all supported OS entries, but skip jobs depending on the workflow input
     strategy:
       matrix:
-        os: ${{ fromJSON(github.event.inputs.os == 'all' && '["windows-latest", "ubuntu-22.04", "macos-latest"]' || format('["{0}"]', github.event.inputs.os)) }}
-        
         include:
           - os: windows-latest
             platform: windows
@@ -28,6 +26,12 @@ jobs:
             platform: linux
           - os: macos-latest
             platform: macos
+
+    # Only run a matrix job when:
+    # - workflow was NOT triggered via workflow_dispatch (e.g. normal CI), OR
+    # - the workflow_dispatch input is 'all', OR
+    # - the selected input matches this matrix.os
+    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.os == 'all' || github.event.inputs.os == matrix.os }}
 
     runs-on: ${{ matrix.os }}
 
