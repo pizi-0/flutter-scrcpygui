@@ -15,26 +15,9 @@ on:
           - macos-latest
 
 jobs:
-  build:
-    # run matrix for all supported OS entries, but skip jobs depending on the workflow input
-    strategy:
-      matrix:
-        include:
-          - os: windows-latest
-            platform: windows
-          - os: ubuntu-22.04
-            platform: linux
-          - os: macos-latest
-            platform: macos
-
-    # Only run a matrix job when:
-    # - workflow was NOT triggered via workflow_dispatch (e.g. normal CI), OR
-    # - the workflow_dispatch input is 'all', OR
-    # - the selected input matches this matrix.os
-    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.os == 'all' || github.event.inputs.os == matrix.os }}
-
-    runs-on: ${{ matrix.os }}
-
+  build-windows:
+    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.os == 'all' || github.event.inputs.os == 'windows-latest' }}
+    runs-on: windows-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -47,7 +30,6 @@ jobs:
           cache: true
 
       - name: Prepare pubspec.yaml for Windows
-        if: matrix.platform == 'windows'
         shell: pwsh
         run: |
           (Get-Content pubspec.yaml) | ForEach-Object {
@@ -58,18 +40,71 @@ jobs:
           echo "--- Modified pubspec.yaml for Windows build ---"
           type pubspec.yaml
 
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build application (Windows)
+        run: flutter build windows --release
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: build/windows/x64/runner/Release/
+          if-no-files-found: error
+
+  build-linux:
+    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.os == 'all' || github.event.inputs.os == 'ubuntu-22.04' }}
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: 3.35.1
+          cache: true
+
       - name: Prepare pubspec.yaml for Linux
-        if: matrix.platform == 'linux'
         run: |
-          sudo apt-get install libayatana-appindicator3-dev
+          sudo apt-get update
+          sudo apt-get install -y libayatana-appindicator3-dev
           sed -i -e 's|    - assets/exec/windows/|#   - assets/exec/windows/|' \
                  -e 's|    - assets/exec/mac-intel/|#   - assets/exec/mac-intel/|' \
                  -e 's|    - assets/exec/mac-apple/|#   - assets/exec/mac-apple/|' pubspec.yaml
           echo "--- Modified pubspec.yaml for Linux build ---"
           cat pubspec.yaml
 
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build application (Linux)
+        run: flutter build linux --release
+
+      - name: Upload Linux Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: build/linux/x64/release/bundle/
+          if-no-files-found: error
+
+  build-macos:
+    if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.os == 'all' || github.event.inputs.os == 'macos-latest' }}
+    runs-on: macos-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          flutter-version: 3.35.1
+          cache: true
+
       - name: Prepare pubspec.yaml for macOS
-        if: matrix.platform == 'macos'
         run: |
           sed -i '' -e 's|    - assets/exec/windows/|#   - assets/exec/windows/|' \
                     -e 's|    - assets/exec/linux/|#   - assets/exec/linux/|' pubspec.yaml
@@ -79,39 +114,18 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build application
-        run: flutter build ${{ matrix.platform }} --release
+      - name: Build application (macOS)
+        run: flutter build macos --release
 
-      - name: Upload Windows Artifact
-        if: matrix.platform == 'windows'
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-build
-          path: build/windows/x64/runner/Release/
-          if-no-files-found: error
-
-      - name: Upload Linux Artifact
-        if: matrix.platform == 'linux'
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-build
-          path: build/linux/x64/release/bundle/
-          if-no-files-found: error
-          
       - name: Zip macOS App Bundle
-        if: matrix.platform == 'macos'
         run: |
           APP_PATH="build/macos/Build/Products/Release/Scrcpy GUI.app"
           ZIP_NAME="macos-Scrcpy-GUI.zip"
-          
-          cd $(dirname "$APP_PATH")
-          
+          cd "$(dirname "$APP_PATH")"
           zip -r "$ZIP_NAME" "$(basename "$APP_PATH")"
-          
           echo "Zip file created at: $(pwd)/$ZIP_NAME"
 
       - name: Upload macOS Artifact
-        if: matrix.platform == 'macos'
         uses: actions/upload-artifact@v4
         with:
           name: macos-build
