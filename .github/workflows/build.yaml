@@ -1,14 +1,26 @@
 name: Build Platform-Specific Artifacts
 
 on:
+  # 1. MODIFICATION: Define an input for the OS selection
   workflow_dispatch:
+    inputs:
+      os:
+        description: 'OS to build for (windows-latest, ubuntu-22.04, macos-latest)'
+        required: false
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - windows-latest
+          - ubuntu-22.04
+          - macos-latest
 
 jobs:
   build:
     strategy:
-      # This matrix builds the app on all three major desktop platforms
       matrix:
-        os: [windows-latest, ubuntu-22.04, macos-latest]
+        os: ${{ (github.event.inputs.os == 'all' || !github.event.inputs.os) && fromJSON('["windows-latest", "ubuntu-22.04", "macos-latest"]') || fromJSON(format('["{0}"]', github.event.inputs.os)) }}
+        
         include:
           - os: windows-latest
             platform: windows
@@ -81,12 +93,23 @@ jobs:
           name: linux-build
           path: build/linux/x64/release/bundle/
           if-no-files-found: error
+          
+      - name: Zip macOS App Bundle
+        if: matrix.platform == 'macos'
+        run: |
+          APP_PATH="build/macos/Build/Products/Release/Scrcpy GUI.app"
+          ZIP_NAME="macos-Scrcpy-GUI.zip"
+          
+          cd $(dirname "$APP_PATH")
+          
+          zip -r "$ZIP_NAME" "$(basename "$APP_PATH")"
+          
+          echo "Zip file created at: $(pwd)/$ZIP_NAME"
 
       - name: Upload macOS Artifact
         if: matrix.platform == 'macos'
         uses: actions/upload-artifact@v4
         with:
           name: macos-build
-          path: build/macos/Build/Products/Release/Scrcpy GUI.app
-          compression-level: 0
+          path: build/macos/Build/Products/Release/macos-Scrcpy-GUI.zip
           if-no-files-found: error
