@@ -187,7 +187,7 @@ class ScrcpyUtils {
 
     final behaviour = ref.read(settingsProvider).behaviour;
 
-    if (!autoLaunched && behaviour.newInstanceReplacesExisting) {
+    if (!autoLaunched && behaviour.newInstanceReplacesExisting && !isTest) {
       final running = ref.read(scrcpyInstanceProvider);
       for (final inst in running.where((i) => i.device.id == device.id)) {
         await ScrcpyUtils.killServer(inst);
