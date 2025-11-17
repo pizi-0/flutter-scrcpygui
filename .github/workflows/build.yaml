@@ -19,7 +19,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: ${{ (github.event.inputs.os == 'all' || !github.event.inputs.os) && fromJSON('["windows-latest", "ubuntu-22.04", "macos-latest"]') || fromJSON(format('["{0}"]', github.event.inputs.os)) }}
+        os: ${{ fromJSON(github.event.inputs.os == 'all' && '["windows-latest", "ubuntu-22.04", "macos-latest"]' || format('["{0}"]', github.event.inputs.os)) }}
         
         include:
           - os: windows-latest
