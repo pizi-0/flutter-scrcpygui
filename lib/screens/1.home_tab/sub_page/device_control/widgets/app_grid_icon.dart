@@ -77,13 +77,17 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
   Future<void> _loadOrFetchIcon() async {
     if (!mounted) return;
 
-    final noIconApps = ref.read(missingIconProvider);
+    final noIconApps = ref
+        .read(missingIconProvider.notifier)
+        .getMissingAppForDevice(widget.device.serialNo);
     File? existingIcon = await IconDb.getIconFile(widget.app.packageName);
     File? fetchedIcon;
 
     if (existingIcon != null) {
       if (noIconApps.contains(widget.app)) {
-        ref.read(missingIconProvider.notifier).removeApp(widget.app);
+        ref
+            .read(missingIconProvider.notifier)
+            .removeMissing(widget.device.serialNo, widget.app);
       }
       if (mounted) {
         setState(() {
@@ -105,7 +109,9 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
       fetchedIcon = await IconDb.fetchAndSaveIcon(widget.app.packageName);
       if (fetchedIcon == null) {
         if (mounted) {
-          ref.read(missingIconProvider.notifier).addApp(widget.app);
+          ref
+              .read(missingIconProvider.notifier)
+              .addMissing(widget.device.serialNo, widget.app);
         }
       }
     }
@@ -354,7 +360,9 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
                 _iconFile = fetchedIcon;
 
                 if (_iconFile == null) {
-                  ref.read(missingIconProvider.notifier).addApp(widget.app);
+                  ref
+                      .read(missingIconProvider.notifier)
+                      .addMissing(widget.device.serialNo, widget.app);
                 }
 
                 setState(() {});
@@ -541,8 +549,13 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
             _iconFile = null;
           }
           _iconFile = imageFile;
-          if (ref.read(missingIconProvider).contains(widget.app)) {
-            ref.read(missingIconProvider.notifier).removeApp(widget.app);
+          if (ref
+              .read(missingIconProvider.notifier)
+              .getMissingAppForDevice(widget.device.serialNo)
+              .contains(widget.app)) {
+            ref
+                .read(missingIconProvider.notifier)
+                .removeMissing(widget.device.serialNo, widget.app);
           }
           break;
         }
@@ -662,4 +675,52 @@ class _AppGridIconState extends ConsumerState<AppGridIcon> {
       setState(() {});
     }
   }
+
+  // Future<void> extractIcon() async {
+  //   final deviceId = widget.device.id;
+  //   final workDir = ref.read(execDirProvider);
+  //   final adbPath = CommandRunner.getExecutablePath(workDir, 'adb');
+  //   final iconDir = await IconDb.getIconsDirectory();
+  //   final pullDir = await getDownloadsDirectory();
+
+  //   final res =
+  //       await CommandRunner.runAdbShellCommand(workDir, widget.device, args: [
+  //     'pm',
+  //     'path',
+  //     widget.app.packageName,
+  //   ]);
+
+  //   print(res.stdout);
+  //   print(res.stderr);
+
+  //   final lines = res.stdout.toString().split('\n');
+
+  //   String apkPath = '';
+
+  //   if (lines.length > 1) {
+  //     apkPath =
+  //         lines.firstWhereOrNull((l) => l.contains('base.apk')) ?? lines.first;
+  //   }
+
+  //   final apkLoc = await CommandRunner.runAdbCommand(workDir, args: [
+  //     '-s',
+  //     deviceId,
+  //     'pull',
+  //     apkPath.replaceFirst('package:', ''),
+  //     p.join(pullDir!.path, '${widget.app.packageName}.apk'),
+  //   ]);
+
+  //   final iconData = await getAppIcon(
+  //       apkPath: p.join(pullDir.path, '${widget.app.packageName}.apk'),
+  //       deleteApkAfterProcessing: true);
+
+  //   File iconFile = File(p.join(iconDir.path, '${widget.app.packageName}.png'));
+
+  //   if (!iconFile.existsSync()) {
+  //     await iconFile.writeAsBytes(iconData);
+  //   }
+
+  //   print(apkLoc.stdout);
+  //   print(apkLoc.stderr);
+  // }
 }
