@@ -47,6 +47,7 @@ dependencies:
   flutter_confetti: ^0.5.1
   flutter_context_menu: ^0.3.0
   flutter_riverpod: ^2.5.1
+  flutter_rust_bridge: 2.11.1
   flutter_single_instance: ^1.2.3
   fpdart: ^1.1.1
   go_router: ^16.1.0
@@ -72,6 +73,8 @@ dependencies:
   path_provider: ^2.1.4
   qr_flutter: ^4.1.0
   responsive_builder: ^0.7.1
+  rust_lib_scrcpygui:
+    path: rust_builder
   screen_retriever: ^0.2.0
   shadcn_flutter: ^0.0.39
   shared_preferences: ^2.3.1
@@ -91,6 +94,8 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
   flutter_test:
+    sdk: flutter
+  integration_test:
     sdk: flutter
 
 # For information on the generic Dart part of this file, see the

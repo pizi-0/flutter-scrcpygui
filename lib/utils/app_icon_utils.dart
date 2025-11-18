@@ -1,10 +1,21 @@
 import 'dart:io';
 
+import 'package:collection/collection.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:scrcpygui/models/adb_devices.dart';
+import 'package:scrcpygui/models/missing_icon_model.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_app_list.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/version_provider.dart';
+import 'package:scrcpygui/src/rust/api/apkex.dart';
 import 'package:scrcpygui/utils/const.dart';
+
+import '../providers/missing_icon_provider.dart';
+import 'command_runner.dart';
 
 class IconScraper {
   static String googlePlayUrl(String packageIdentifier) {
@@ -92,6 +103,119 @@ class IconDb {
     } catch (e) {
       logger.e('Error fetching and saving icon for $packageIdentifier: $e');
       return null;
+    }
+  }
+}
+
+class IconExtractor {
+  static Future<void> runner(WidgetRef ref) async {
+    List<MissingIcon> toExtract = [...ref.read(iconsToExtractProvider)];
+    final workDir = ref.read(execDirProvider);
+    final connected = ref.read(adbProvider);
+
+    while (toExtract.isNotEmpty) {
+      toExtract = [...ref.read(iconsToExtractProvider)];
+
+      for (final missing in toExtract) {
+        final device =
+            connected.firstWhereOrNull((c) => c.serialNo == missing.serialNo);
+        if (device == null) continue;
+
+        for (final app in missing.apps) {
+          try {
+            logger.i(
+                'Pulling APK for ${app.packageName} from device ${device.serialNo}');
+
+            final apkPath = await _pullApk(workDir, device: device, app: app);
+
+            if (apkPath == null) {
+              logger.w('Failed to pull APK for ${app.packageName}');
+              continue;
+            }
+
+            logger.i(
+                'Extracting icon for ${app.packageName} from device ${device.serialNo}');
+
+            final success = await _pullIcon(apkPath: apkPath);
+            if (success ?? false) {
+              ref
+                  .read(missingIconProvider.notifier)
+                  .removeMissing(device.serialNo, app);
+            }
+
+            ref.read(iconsToExtractProvider.notifier).removeApp(app);
+          } catch (e) {
+            logger.e(
+                'Failed to extract icon for ${app.packageName} on ${device.serialNo}: $e');
+            // Optionally, remove the app from the queue to prevent retrying a failing app
+            ref.read(iconsToExtractProvider.notifier).removeApp(app);
+          }
+        }
+      }
+    }
+  }
+
+  static Future<String?> _pullApk(String workDir,
+      {required AdbDevices device, required ScrcpyApp app}) async {
+    try {
+      final pullDir = await getTemporaryDirectory();
+
+      final res =
+          await CommandRunner.runAdbShellCommand(workDir, device, args: [
+        'pm',
+        'path',
+        app.packageName,
+      ]);
+
+      final lines = res.stdout.toString().split('\n');
+
+      String apkPath = '';
+
+      if (lines.length > 1) {
+        apkPath = lines.firstWhereOrNull((l) => l.contains('base.apk')) ??
+            lines.first;
+      }
+
+      await CommandRunner.runAdbCommand(workDir, args: [
+        '-s',
+        device.id,
+        'pull',
+        apkPath.replaceFirst('package:', ''),
+        p.join(pullDir.path, '${app.packageName}.apk'),
+      ]);
+
+      File apkFile = File(p.join(pullDir.path, '${app.packageName}.apk'));
+
+      if (!apkFile.existsSync()) {
+        return null;
+      }
+
+      return apkFile.path;
+    } on Exception catch (e) {
+      logger.e('Error pulling APK for ${app.packageName}: $e');
+      return null;
+    }
+  }
+
+  static Future<bool?> _pullIcon({required String apkPath}) async {
+    try {
+      final iconDir = await IconDb.getIconsDirectory();
+      final packageName = p.basenameWithoutExtension(apkPath);
+
+      final iconData =
+          await getAppIcon(apkPath: apkPath, deleteApkAfterProcessing: true);
+
+      File iconFile = File(p.join(iconDir.path, '$packageName.png'));
+
+      if (!iconFile.existsSync()) {
+        await iconFile.writeAsBytes(iconData, flush: true);
+      }
+      logger.i('Icon for $packageName saved at ${iconFile.path}');
+
+      return true;
+    } catch (e) {
+      logger.e('Error pulling icon from $apkPath: $e');
+      rethrow; // Rethrow to be caught by the runner
     }
   }
 }
