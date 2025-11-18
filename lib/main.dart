@@ -27,7 +27,10 @@ import 'package:scrcpygui/utils/custom_scheme.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'src/rust/frb_generated.dart';
+
 void main() async {
+  await RustLib.init();
   WidgetsFlutterBinding.ensureInitialized();
 
   await windowManager.ensureInitialized();
