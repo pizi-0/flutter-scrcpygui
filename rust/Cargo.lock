@@ -922,6 +922,7 @@ version = "0.1.0"
 dependencies = [
  "apk-info",
  "flutter_rust_bridge",
+ "openssl",
 ]
 
 [[package]]
