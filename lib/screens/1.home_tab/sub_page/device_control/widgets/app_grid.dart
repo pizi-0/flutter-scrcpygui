@@ -2,6 +2,7 @@ import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
+import 'package:scrcpygui/models/missing_icon_model.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/config_override_button.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
@@ -112,9 +113,10 @@ class _AppGridState extends ConsumerState<AppGrid> {
         .toList();
 
     final missingIcons = ref
-        .watch(missingIconProvider)
-        .where((e) => deviceInfo.appList.contains(e))
-        .toList();
+            .watch(missingIconProvider)
+            .firstWhereOrNull((missing) => missing.serialNo == device.serialNo)
+            ?.apps ??
+        [];
     final showMissingIcon = ref.watch(showMissingIconProvider);
 
     return PgSectionCardNoScroll(
@@ -158,16 +160,34 @@ class _AppGridState extends ConsumerState<AppGrid> {
                         padding: EdgeInsetsGeometry.symmetric(horizontal: 8),
                         sliver: SliverToBoxAdapter(
                           child: Container(
-                              margin: EdgeInsets.only(bottom: 8),
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 16),
-                              decoration: BoxDecoration(
-                                color: theme.colorScheme.muted,
-                                borderRadius: theme.borderRadiusSm,
-                              ),
-                              child: Text(el.loungeLoc.appTile.missingIcon(
-                                      count: '${missingIcons.length}'))
-                                  .textSmall),
+                            margin: EdgeInsets.only(bottom: 8),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 16),
+                            decoration: BoxDecoration(
+                              color: theme.colorScheme.muted,
+                              borderRadius: theme.borderRadiusSm,
+                            ),
+                            child: Row(
+                              children: [
+                                Text(el.loungeLoc.appTile.missingIcon(
+                                        count: '${missingIcons.length}'))
+                                    .textSmall,
+                                Spacer(),
+                                Button(
+                                  style: ButtonStyle.ghost(
+                                      density: ButtonDensity.compact),
+                                  onPressed: () {
+                                    ref
+                                        .read(iconsToExtractProvider.notifier)
+                                        .addMissing(MissingIcon(
+                                            serialNo: widget.device.serialNo,
+                                            apps: missingIcons));
+                                  },
+                                  child: Text('Extract').textSmall,
+                                )
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                       SliverPadding(
@@ -327,19 +347,14 @@ class _AppGridHeaderState extends ConsumerState<AppGridHeader> {
     final theme = Theme.of(context);
     final device = ref.watch(selectedDeviceProvider)!;
 
-    final deviceInfo = ref
-        .watch(infoProvider)
-        .firstWhereOrNull((i) => i.serialNo == device.serialNo);
-
     final gridSettings = ref.watch(appGridSettingsProvider);
     final gridSettingsNotifier = ref.read(appGridSettingsProvider.notifier);
 
-    final missingIcons = ref.watch(missingIconProvider).where((e) {
-      if (deviceInfo == null) {
-        return false;
-      }
-      return deviceInfo.appList.contains(e);
-    }).toList();
+    final missingIcons = ref
+            .watch(missingIconProvider)
+            .firstWhereOrNull((missing) => missing.serialNo == device.serialNo)
+            ?.apps ??
+        [];
 
     final allConfigs = ref.watch(configsProvider);
     final config = ref.watch(controlPageConfigProvider);
