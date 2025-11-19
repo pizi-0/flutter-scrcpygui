@@ -11,7 +11,6 @@ import 'package:scrcpygui/models/missing_icon_model.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_info/scrcpy_app_list.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
-import 'package:scrcpygui/src/rust/api/apkex.dart';
 import 'package:scrcpygui/utils/const.dart';
 
 import '../providers/missing_icon_provider.dart';
@@ -111,6 +110,7 @@ class IconExtractor {
   static Future<void> runner(WidgetRef ref) async {
     List<MissingIcon> toExtract = [...ref.read(iconsToExtractProvider)];
     final workDir = ref.read(execDirProvider);
+    final eifaDir = ref.read(eifaDirProvider);
     final connected = ref.read(adbProvider);
 
     while (toExtract.isNotEmpty) {
@@ -136,7 +136,7 @@ class IconExtractor {
             logger.i(
                 'Extracting icon for ${app.packageName} from device ${device.serialNo}');
 
-            final success = await _pullIcon(apkPath: apkPath);
+            final success = await _pullIcon(eifaDir: eifaDir, apkPath: apkPath);
             if (success ?? false) {
               ref
                   .read(missingIconProvider.notifier)
@@ -197,22 +197,18 @@ class IconExtractor {
     }
   }
 
-  static Future<bool?> _pullIcon({required String apkPath}) async {
+  static Future<bool?> _pullIcon(
+      {required String eifaDir, required String apkPath}) async {
     try {
       final iconDir = await IconDb.getIconsDirectory();
-      final packageName = p.basenameWithoutExtension(apkPath);
 
-      final iconData =
-          await getAppIcon(apkPath: apkPath, deleteApkAfterProcessing: true);
+      final res = await CommandRunner.runEifaRun(eifaDir,
+          args: [apkPath, iconDir.path]);
 
-      File iconFile = File(p.join(iconDir.path, '$packageName.png'));
+      logger.i('out: ${res.stdout}');
+      logger.e('err: ${res.stderr}');
 
-      if (!iconFile.existsSync()) {
-        await iconFile.writeAsBytes(iconData, flush: true);
-      }
-      logger.i('Icon for $packageName saved at ${iconFile.path}');
-
-      return true;
+      return res.exitCode == 0;
     } catch (e) {
       logger.e('Error pulling icon from $apkPath: $e');
       rethrow; // Rethrow to be caught by the runner

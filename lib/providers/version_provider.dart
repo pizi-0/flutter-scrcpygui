@@ -9,3 +9,5 @@ final appVersionProvider = StateProvider((ref) => "");
 final scrcpyVersionProvider = StateProvider<String>((ref) => BUNDLED_VERSION);
 
 final execDirProvider = StateProvider((ref) => '');
+
+final eifaDirProvider = StateProvider((ref) => '');

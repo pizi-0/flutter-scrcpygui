@@ -16,8 +16,6 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - rust_lib_scrcpygui (0.0.1):
-    - FlutterMacOS
   - screen_retriever_macos (0.0.1):
     - FlutterMacOS
   - shared_preferences_foundation (0.0.1):
@@ -41,7 +39,6 @@ DEPENDENCIES:
   - irondash_engine_context (from `Flutter/ephemeral/.symlinks/plugins/irondash_engine_context/macos`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
-  - rust_lib_scrcpygui (from `Flutter/ephemeral/.symlinks/plugins/rust_lib_scrcpygui/macos`)
   - screen_retriever_macos (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - super_native_extensions (from `Flutter/ephemeral/.symlinks/plugins/super_native_extensions/macos`)
@@ -66,8 +63,6 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos
   path_provider_foundation:
     :path: Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin
-  rust_lib_scrcpygui:
-    :path: Flutter/ephemeral/.symlinks/plugins/rust_lib_scrcpygui/macos
   screen_retriever_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos
   shared_preferences_foundation:
@@ -90,7 +85,6 @@ SPEC CHECKSUMS:
   irondash_engine_context: 893c7d96d20ce361d7e996f39d360c4c2f9869ba
   package_info_plus: f0052d280d17aa382b932f399edf32507174e870
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
-  rust_lib_scrcpygui: 5599dbe416863fbc6b19441e0c770e267a2d4278
   screen_retriever_macos: 452e51764a9e1cdb74b3c541238795849f21557f
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   super_native_extensions: c2795d6d9aedf4a79fae25cb6160b71b50549189
