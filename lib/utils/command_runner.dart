@@ -55,4 +55,14 @@ class CommandRunner {
     return Process.start(scrcpyPath, ['-s', device.id, ...args],
         workingDirectory: workDir, environment: env);
   }
+
+  static Future<ProcessResult> runEifaRun(String eifaDir,
+      {List<String> args = const []}) async {
+    final eifaPath = _getExecutablePath(eifaDir, 'eifa');
+
+    return Process.run(eifaPath, args,
+        stdoutEncoding: Utf8Codec(),
+        stderrEncoding: Utf8Codec(),
+        workingDirectory: eifaDir);
+  }
 }

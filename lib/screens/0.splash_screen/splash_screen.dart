@@ -67,6 +67,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     defaultSavePath = await DirectoryUtils.getDefaultSavePath();
 
     await SetupUtils.initScrcpy(ref);
+    await SetupUtils.initEifa(ref);
 
     ref.read(appVersionProvider.notifier).state =
         await AppUtils.getAppVersion();

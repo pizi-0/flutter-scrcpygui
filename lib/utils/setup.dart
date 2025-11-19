@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path/path.dart' as p;
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/directory_utils.dart';
@@ -30,16 +31,32 @@ class SetupUtils {
       Directory("$appDir/data/flutter_assets/assets/exec/linux/scrcpy")
           .listSync();
 
+  static List<FileSystemEntity> get getEifaLinux =>
+      Directory("$appDir/data/flutter_assets/assets/exec/linux/eifa")
+          .listSync();
+
   static List<FileSystemEntity> get getWindowsExec =>
       Directory("$appDir\\data\\flutter_assets\\assets\\exec\\windows\\scrcpy")
+          .listSync();
+
+  static List<FileSystemEntity> get getEifaWindows =>
+      Directory("$appDir\\data\\flutter_assets\\assets\\exec\\windows\\eifa")
           .listSync();
 
   static List<FileSystemEntity> get getIntelMacExec => Directory(
           "$macAppDir/Frameworks/App.framework/Versions/A/Resources/flutter_assets/assets/exec/mac-intel/scrcpy")
       .listSync();
 
+  static List<FileSystemEntity> get getEifaIntelMac => Directory(
+          "$macAppDir/Frameworks/App.framework/Versions/A/Resources/flutter_assets/assets/exec/mac-intel/eifa")
+      .listSync();
+
   static List<FileSystemEntity> get getAppleMacExec => Directory(
           "$macAppDir/Frameworks/App.framework/Versions/A/Resources/flutter_assets/assets/exec/mac-apple/scrcpy")
+      .listSync();
+
+  static List<FileSystemEntity> get getEifaAppleMac => Directory(
+          "$macAppDir/Frameworks/App.framework/Versions/A/Resources/flutter_assets/assets/exec/mac-apple/eifa")
       .listSync();
 
   static Future<void> initScrcpy(WidgetRef ref) async {
@@ -89,6 +106,30 @@ class SetupUtils {
     }
   }
 
+  static Future<void> initEifa(WidgetRef ref) async {
+    final execDir = await DirectoryUtils.getExecDir();
+    final eifaDir = Directory(p.join(execDir.path, 'eifa'));
+    if (!eifaDir.existsSync()) {
+      await eifaDir.create();
+    }
+
+    final hasEifa = eifaDir.listSync().isNotEmpty;
+
+    if (!hasEifa) {
+      final eifaPath = await _getEifaExecPath();
+      final eifaByte = File(eifaPath.first.path).readAsBytesSync();
+      String filename = 'eifa';
+
+      File file = File(p.join(eifaDir.path, filename));
+
+      await file.writeAsBytes(eifaByte, flush: true);
+
+      await _markAsExecutable('eifa', eifaDir.path);
+    }
+
+    ref.read(eifaDirProvider.notifier).state = eifaDir.path;
+  }
+
   static Future<void> saveCurrentScrcpyVersion(String version) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(PKEY_SCRCPYVERSION, version);
@@ -136,36 +177,25 @@ class SetupUtils {
 
       logger.i('Scrcpy setup done!');
 
-      _markAsExecutable(bundledVersionDir.path);
+      await _markAsExecutable('scrcpy', bundledVersionDir.path);
+      await _markAsExecutable('adb', bundledVersionDir.path);
     } on Exception catch (e) {
       logger.e('Error setting up bundled scrcpy', error: e);
     }
   }
 
-  static Future<void> _markAsExecutable(String path) async {
+  static Future<void> _markAsExecutable(String exec, String path) async {
     if (Platform.isLinux || Platform.isMacOS) {
       try {
-        logger.i('Marking adb as executable...');
+        logger.i('Marking $exec as executable...');
 
-        final adb =
-            await Process.run('chmod', ['+x', 'adb'], workingDirectory: path);
-        if (adb.stdout.isNotEmpty) {
-          logger.i('out: ${adb.stdout}');
+        final res =
+            await Process.run('chmod', ['+x', exec], workingDirectory: path);
+        if (res.stdout.isNotEmpty) {
+          logger.i('out: ${res.stdout}');
         }
-        if (adb.stderr.isNotEmpty) {
-          logger.i('err: ${adb.stderr}');
-        }
-
-        logger.i('Marking scrcpy as executable...');
-
-        final scrcpy = await Process.run('chmod', ['+x', 'scrcpy'],
-            workingDirectory: path);
-
-        if (scrcpy.stdout.isNotEmpty) {
-          logger.i('out: ${scrcpy.stdout}');
-        }
-        if (scrcpy.stderr.isNotEmpty) {
-          logger.i('err: ${scrcpy.stderr}');
+        if (res.stderr.isNotEmpty) {
+          logger.i('err: ${res.stderr}');
         }
       } on Exception catch (_) {
         rethrow;
@@ -193,6 +223,31 @@ class SetupUtils {
       return getAppleMacExec;
     } else if (Platform.isWindows) {
       return getWindowsExec;
+    } else {
+      throw Exception('Unsupported platform');
+    }
+  }
+
+  static Future<List<FileSystemEntity>> _getEifaExecPath() async {
+    logger.i('OS: ${Platform.operatingSystem}');
+
+    if (Platform.isLinux) {
+      final info = await DeviceInfoPlugin().linuxInfo;
+      logger.i(info.prettyName);
+
+      return getEifaLinux;
+    } else if (Platform.isMacOS) {
+      final info = await DeviceInfoPlugin().macOsInfo;
+      final arch = info.arch;
+
+      logger.i('Arch: $arch');
+
+      if (arch == 'x86_64') {
+        return getEifaIntelMac;
+      }
+      return getEifaAppleMac;
+    } else if (Platform.isWindows) {
+      return getEifaWindows;
     } else {
       throw Exception('Unsupported platform');
     }
