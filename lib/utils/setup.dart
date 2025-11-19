@@ -27,18 +27,19 @@ class SetupUtils {
   }
 
   static List<FileSystemEntity> get getLinuxExec =>
-      Directory("$appDir/data/flutter_assets/assets/exec/linux").listSync();
+      Directory("$appDir/data/flutter_assets/assets/exec/linux/scrcpy")
+          .listSync();
 
   static List<FileSystemEntity> get getWindowsExec =>
-      Directory("$appDir\\data\\flutter_assets\\assets\\exec\\windows")
+      Directory("$appDir\\data\\flutter_assets\\assets\\exec\\windows\\scrcpy")
           .listSync();
 
   static List<FileSystemEntity> get getIntelMacExec => Directory(
-          "$macAppDir/Frameworks/App.framework/Versions/A/Resources/flutter_assets/assets/exec/mac-intel")
+          "$macAppDir/Frameworks/App.framework/Versions/A/Resources/flutter_assets/assets/exec/mac-intel/scrcpy")
       .listSync();
 
   static List<FileSystemEntity> get getAppleMacExec => Directory(
-          "$macAppDir/Frameworks/App.framework/Versions/A/Resources/flutter_assets/assets/exec/mac-apple")
+          "$macAppDir/Frameworks/App.framework/Versions/A/Resources/flutter_assets/assets/exec/mac-apple/scrcpy")
       .listSync();
 
   static Future<void> initScrcpy(WidgetRef ref) async {
