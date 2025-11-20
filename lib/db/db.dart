@@ -223,8 +223,6 @@ class Db {
   static Future<List<ConnectAutomation>> getAutoConnect() async {
     final prefs = await SharedPreferences.getInstance();
 
-    prefs.remove(PKEY_AUTO_CONNECT);
-
     return (prefs.getStringList(PKEY_AUTO_CONNECT) ?? [])
         .map((e) => ConnectAutomation.fromJson(e))
         .toList();
