@@ -13,6 +13,7 @@ import 'package:scrcpygui/providers/adb_provider.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 
+import '../providers/icon_extractor_provider.dart';
 import '../providers/missing_icon_provider.dart';
 import 'command_runner.dart';
 
@@ -122,6 +123,10 @@ class IconExtractor {
         if (device == null) continue;
 
         for (final app in missing.apps) {
+          ref
+              .read(iconExtractorProgressProvider.notifier)
+              .updateCurrent(device.serialNo, app.packageName);
+
           try {
             logger.i(
                 'Pulling APK for ${app.packageName} from device ${device.serialNo}');
@@ -131,6 +136,9 @@ class IconExtractor {
             if (apkPath == null) {
               logger.w('Failed to pull APK for ${app.packageName}');
               ref.read(iconsToExtractProvider.notifier).removeApp(app);
+              ref
+                  .read(iconExtractorProgressProvider.notifier)
+                  .updateFailed(app, 'Failed to pull APK from device');
               continue;
             }
 
@@ -140,14 +148,23 @@ class IconExtractor {
             final success = await _pullIcon(eifaDir: eifaDir, apkPath: apkPath);
             if (success ?? false) {
               ref
+                  .read(iconExtractorProgressProvider.notifier)
+                  .updateSuccessful(app);
+              ref
                   .read(missingIconProvider.notifier)
                   .removeMissing(device.serialNo, app);
+            } else {
+              ref
+                  .read(iconExtractorProgressProvider.notifier)
+                  .updateFailed(app, 'Extraction with Eifa failed');
             }
-
             ref.read(iconsToExtractProvider.notifier).removeApp(app);
           } catch (e) {
             logger.e(
                 'Failed to extract icon for ${app.packageName} on ${device.serialNo}: $e');
+            ref
+                .read(iconExtractorProgressProvider.notifier)
+                .updateFailed(app, e.toString());
             // Optionally, remove the app from the queue to prevent retrying a failing app
             ref.read(iconsToExtractProvider.notifier).removeApp(app);
           }
