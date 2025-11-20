@@ -130,6 +130,7 @@ class IconExtractor {
 
             if (apkPath == null) {
               logger.w('Failed to pull APK for ${app.packageName}');
+              ref.read(iconsToExtractProvider.notifier).removeApp(app);
               continue;
             }
 
@@ -180,7 +181,7 @@ class IconExtractor {
         '-s',
         device.id,
         'pull',
-        apkPath.replaceFirst('package:', ''),
+        apkPath.replaceFirst('package:', '').trim(),
         p.join(pullDir.path, '${app.packageName}.apk'),
       ]);
 
