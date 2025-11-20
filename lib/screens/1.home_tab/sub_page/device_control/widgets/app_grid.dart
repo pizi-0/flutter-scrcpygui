@@ -16,6 +16,7 @@ import '../../../../../providers/app_config_pair_provider.dart';
 import '../../../../../providers/app_grid_settings_provider.dart';
 import '../../../../../providers/config_provider.dart';
 import '../../../../../providers/device_info_provider.dart';
+import '../../../../../providers/icon_extractor_provider.dart';
 import '../../../../../providers/missing_icon_provider.dart';
 import '../../../../../providers/version_provider.dart';
 import '../../../../../utils/command_runner.dart';
