@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart' as p;
+import 'package:scrcpygui/db/db.dart';
 import 'package:scrcpygui/providers/version_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/directory_utils.dart';
@@ -117,7 +118,9 @@ class SetupUtils {
     final hasEifa = eifaDir.listSync().isNotEmpty &&
         eifaDir.listSync().any((ent) => ent.path.endsWith(filename));
 
-    if (!hasEifa) {
+    final inUseEifaVersion = await Db.getEifaVersion();
+
+    if (!hasEifa || inUseEifaVersion != EIFA_VERSION) {
       final eifaPath = await _getEifaExecPath();
       final eifaByte = File(eifaPath.first.path).readAsBytesSync();
 
@@ -126,6 +129,7 @@ class SetupUtils {
       await file.writeAsBytes(eifaByte, flush: true);
 
       await _markAsExecutable('eifa', eifaDir.path);
+      await Db.saveEifaVersion(EIFA_VERSION);
     }
 
     ref.read(eifaDirProvider.notifier).state = eifaDir.path;

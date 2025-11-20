@@ -13,6 +13,7 @@ import '../models/adb_devices.dart';
 import '../models/scrcpy_related/scrcpy_config.dart';
 import '../models/settings_model/app_settings.dart';
 import '../providers/config_provider.dart';
+import '../providers/version_provider.dart';
 import '../utils/const.dart';
 import '../utils/prefs_key.dart';
 
@@ -268,6 +269,25 @@ class Db {
       return AppGridSettings(gridExtent: 80, hideName: false);
     } else {
       return AppGridSettings.fromJson(res);
+    }
+  }
+
+  static Future<String> saveEifaVersion(String version) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setString(PKEY_EIFA_VERSION, version);
+    return version;
+  }
+
+  static Future<String> getEifaVersion() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final res = prefs.getString(PKEY_EIFA_VERSION);
+
+    if (res == null) {
+      return EIFA_VERSION;
+    } else {
+      return res;
     }
   }
 }
