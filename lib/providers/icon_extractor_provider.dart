@@ -102,7 +102,6 @@ class IconExtractorProgressNotifier
 
   void updateSuccessful(ScrcpyApp app) {
     final updatedSuccessful = [...state.successful, app];
-    print(updatedSuccessful);
     state = state.copyWith(
       successful: updatedSuccessful,
     );
