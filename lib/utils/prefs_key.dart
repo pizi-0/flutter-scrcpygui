@@ -33,3 +33,5 @@ const PKEY_AUTO_CONNECT = 'auto-connect';
 const PKEY_AUTO_LAUNCH = 'auto-launch';
 
 const PKEY_APPGRID_SETTINGS = 'appgrid-settings';
+
+const PKEY_EIFA_VERSION = 'eifa-version';
