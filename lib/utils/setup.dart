@@ -113,12 +113,13 @@ class SetupUtils {
       await eifaDir.create();
     }
 
-    final hasEifa = eifaDir.listSync().isNotEmpty;
+    String filename = Platform.isWindows ? 'eifa.exe' : 'eifa';
+    final hasEifa = eifaDir.listSync().isNotEmpty &&
+        eifaDir.listSync().any((ent) => ent.path.endsWith(filename));
 
     if (!hasEifa) {
       final eifaPath = await _getEifaExecPath();
       final eifaByte = File(eifaPath.first.path).readAsBytesSync();
-      String filename = 'eifa';
 
       File file = File(p.join(eifaDir.path, filename));
 
