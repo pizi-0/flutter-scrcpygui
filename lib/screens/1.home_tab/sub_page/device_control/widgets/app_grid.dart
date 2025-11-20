@@ -162,21 +162,30 @@ class _AppGridState extends ConsumerState<AppGrid> {
                         sliver: SliverToBoxAdapter(
                           child: Container(
                             margin: EdgeInsets.only(bottom: 8),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 4, horizontal: 16),
                             decoration: BoxDecoration(
                               color: theme.colorScheme.muted,
                               borderRadius: theme.borderRadiusSm,
                             ),
                             child: Row(
                               children: [
-                                Text(el.loungeLoc.appTile.missingIcon(
-                                        count: '${missingIcons.length}'))
-                                    .textSmall,
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 4, horizontal: 16),
+                                  child: Text(el.loungeLoc.appTile.missingIcon(
+                                          count: '${missingIcons.length}'))
+                                      .textSmall,
+                                ),
                                 Spacer(),
                                 Button(
-                                  style: ButtonStyle.ghost(
-                                      density: ButtonDensity.compact),
+                                  style: ButtonStyle.destructive(
+                                          density: ButtonDensity.dense)
+                                      .withBorderRadius(
+                                          borderRadius: theme.borderRadiusSm,
+                                          hoverBorderRadius:
+                                              theme.borderRadiusSm)
+                                      .withBackgroundColor(
+                                          color: Colors.red,
+                                          hoverColor: Colors.red.shade700),
                                   onPressed: () {
                                     ref
                                         .read(iconsToExtractProvider.notifier)
@@ -184,7 +193,8 @@ class _AppGridState extends ConsumerState<AppGrid> {
                                             serialNo: widget.device.serialNo,
                                             apps: missingIcons));
                                   },
-                                  child: Text('Extract').textSmall,
+                                  child:
+                                      Text('Extract icon from apk').textSmall,
                                 )
                               ],
                             ),
