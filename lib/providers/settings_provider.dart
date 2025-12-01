@@ -123,7 +123,8 @@ class SettingsNotifier extends Notifier<AppSettings> {
 
     state = state.copyWith(
         behaviour: currentBehaviour.copyWith(
-            skipAutoStartIfInstanceRunning: value ?? !state.behaviour.skipAutoStartIfInstanceRunning));
+            skipAutoStartIfInstanceRunning:
+                value ?? !state.behaviour.skipAutoStartIfInstanceRunning));
   }
 
   void changeNewInstanceReplacesExisting({bool? value}) {
@@ -131,7 +132,17 @@ class SettingsNotifier extends Notifier<AppSettings> {
 
     state = state.copyWith(
         behaviour: currentBehaviour.copyWith(
-            newInstanceReplacesExisting: value ?? !state.behaviour.newInstanceReplacesExisting));
+            newInstanceReplacesExisting:
+                value ?? !state.behaviour.newInstanceReplacesExisting));
+  }
+
+  void changeHideIconExtractorDisclaimer({bool? value}) {
+    var currentBehaviour = state.behaviour;
+
+    state = state.copyWith(
+        behaviour: currentBehaviour.copyWith(
+            hideIconExtractorDisclaimer:
+                value ?? !state.behaviour.hideIconExtractorDisclaimer));
   }
 }
 

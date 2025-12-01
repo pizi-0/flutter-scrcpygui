@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/missing_icon_model.dart';
 import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/settings_provider.dart';
+import 'package:scrcpygui/screens/1.home_tab/sub_page/device_control/widgets/icon_extractor_disclaimer_dialog.dart';
 import 'package:scrcpygui/screens/1.home_tab/widgets/home/widgets/config_override_button.dart';
 import 'package:scrcpygui/utils/adb_utils.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
@@ -184,17 +186,42 @@ class _AppGridState extends ConsumerState<AppGrid> {
                                           hoverBorderRadius:
                                               theme.borderRadiusSm)
                                       .withBackgroundColor(
-                                          color: Colors.red,
-                                          hoverColor: Colors.red.shade700),
-                                  onPressed: () {
+                                          color: Colors.red.shade800,
+                                          hoverColor: Colors.red),
+                                  onPressed: () async {
+                                    final hideDisclaimer = ref
+                                        .read(settingsProvider)
+                                        .behaviour
+                                        .hideIconExtractorDisclaimer;
+
+                                    if (!hideDisclaimer) {
+                                      final res = await showDialog(
+                                        context: context,
+                                        builder: (context) =>
+                                            IconExtractorDisclaimerDialog(),
+                                      );
+
+                                      if (res == null || res == false) {
+                                        return;
+                                      }
+                                    }
+
                                     ref
                                         .read(iconsToExtractProvider.notifier)
                                         .addMissing(MissingIcon(
                                             serialNo: widget.device.serialNo,
                                             apps: missingIcons));
                                   },
-                                  child:
-                                      Text('Extract icon from apk').textSmall,
+                                  onSecondaryTapUp: (details) {
+                                    ref
+                                        .read(settingsProvider.notifier)
+                                        .changeHideIconExtractorDisclaimer(
+                                            value: false);
+                                    Db.saveAppSettings(
+                                      ref.read(settingsProvider),
+                                    );
+                                  },
+                                  child: Text('Extract icon').textSmall,
                                 )
                               ],
                             ),

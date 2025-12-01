@@ -290,4 +290,10 @@ class Db {
       return res;
     }
   }
+
+  static Future<void> hideIconExtractorDisclaimerDialog() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setBool(PKEY_HIDE_ICON_EXTRACTOR_DISCLAIMER, true);
+  }
 }

@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+
 import 'package:localization/localization.dart';
 
 import 'auto_arrange_origin.dart';
@@ -32,6 +33,7 @@ class AppBehaviour {
   final bool showWarningOnBack;
   final bool skipAutoStartIfInstanceRunning;
   final bool newInstanceReplacesExisting;
+  final bool hideIconExtractorDisclaimer;
 
   AppBehaviour({
     required this.languageCode,
@@ -46,6 +48,7 @@ class AppBehaviour {
     this.showWarningOnBack = true,
     this.skipAutoStartIfInstanceRunning = false,
     this.newInstanceReplacesExisting = false,
+    this.hideIconExtractorDisclaimer = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -62,6 +65,7 @@ class AppBehaviour {
       'showWarningOnBack': showWarningOnBack,
       'skipAutoStartIfInstanceRunning': skipAutoStartIfInstanceRunning,
       'newInstanceReplacesExisting': newInstanceReplacesExisting,
+      'hideIconExtractorDisclaimer': hideIconExtractorDisclaimer,
     };
   }
 
@@ -81,25 +85,26 @@ class AppBehaviour {
     }
 
     return AppBehaviour(
-      languageCode: lang(),
-      killNoWindowInstance: map['killNoWindowInstance'] ?? true,
-      traySupport: map['traySupport'] ?? true,
-      toastEnabled: map['toastEnabled'] ?? true,
-      minimizeAction: map['minimizeAction'] == null
-          ? MinimizeAction.toTaskBar
-          : MinimizeAction.values[map['minimizeAction']],
-      hideDefaultConfig: map['hideDefaultConfig'] ?? false,
-      rememberWinSize: map['rememberWinSize'] ?? false,
-      autoArrangeOrigin:
-          AutoArrangeOrigin.values[map['autoArrangeOrigin'] ?? 0],
-      windowToScreenHeightRatio:
-          (map['windowToScreenHeightRatio'] as num?)?.toDouble() ?? 0.88,
-      showWarningOnBack: map['showWarningOnBack'] ?? true,
-      skipAutoStartIfInstanceRunning:
-          map['skipAutoStartIfInstanceRunning'] as bool? ?? false,
-      newInstanceReplacesExisting:
-          map['newInstanceReplacesExisting'] as bool? ?? false,
-    );
+        languageCode: lang(),
+        killNoWindowInstance: map['killNoWindowInstance'] ?? true,
+        traySupport: map['traySupport'] ?? true,
+        toastEnabled: map['toastEnabled'] ?? true,
+        minimizeAction: map['minimizeAction'] == null
+            ? MinimizeAction.toTaskBar
+            : MinimizeAction.values[map['minimizeAction']],
+        hideDefaultConfig: map['hideDefaultConfig'] ?? false,
+        rememberWinSize: map['rememberWinSize'] ?? false,
+        autoArrangeOrigin:
+            AutoArrangeOrigin.values[map['autoArrangeOrigin'] ?? 0],
+        windowToScreenHeightRatio:
+            (map['windowToScreenHeightRatio'] as num?)?.toDouble() ?? 0.88,
+        showWarningOnBack: map['showWarningOnBack'] ?? true,
+        skipAutoStartIfInstanceRunning:
+            map['skipAutoStartIfInstanceRunning'] as bool? ?? false,
+        newInstanceReplacesExisting:
+            map['newInstanceReplacesExisting'] as bool? ?? false,
+        hideIconExtractorDisclaimer:
+            map['hideIconExtractorDisclaimer'] as bool? ?? false);
   }
 
   String toJson() => json.encode(toMap());
@@ -120,6 +125,7 @@ class AppBehaviour {
     bool? showWarningOnBack,
     bool? skipAutoStartIfInstanceRunning,
     bool? newInstanceReplacesExisting,
+    bool? hideIconExtractorDisclaimer,
   }) {
     return AppBehaviour(
       languageCode: languageCode ?? this.languageCode,
@@ -133,16 +139,18 @@ class AppBehaviour {
       windowToScreenHeightRatio:
           windowToScreenHeightRatio ?? this.windowToScreenHeightRatio,
       showWarningOnBack: showWarningOnBack ?? this.showWarningOnBack,
-      skipAutoStartIfInstanceRunning: skipAutoStartIfInstanceRunning ??
-          this.skipAutoStartIfInstanceRunning,
+      skipAutoStartIfInstanceRunning:
+          skipAutoStartIfInstanceRunning ?? this.skipAutoStartIfInstanceRunning,
       newInstanceReplacesExisting:
           newInstanceReplacesExisting ?? this.newInstanceReplacesExisting,
+      hideIconExtractorDisclaimer:
+          hideIconExtractorDisclaimer ?? this.hideIconExtractorDisclaimer,
     );
   }
 
   @override
   String toString() {
-    return 'AppBehaviour(languageCode: $languageCode, killNoWindowInstance: $killNoWindowInstance, traySupport: $traySupport, toastEnabled: $toastEnabled, minimizeAction: $minimizeAction, hideDefaultConfig: $hideDefaultConfig, rememberWinSize: $rememberWinSize, autoArrangeOrigin: $autoArrangeOrigin, windowToScreenHeightRatio: $windowToScreenHeightRatio, showWarningOnBack: $showWarningOnBack, skipAutoStartIfInstanceRunning: $skipAutoStartIfInstanceRunning, newInstanceReplacesExisting: $newInstanceReplacesExisting)';
+    return 'AppBehaviour(languageCode: $languageCode, killNoWindowInstance: $killNoWindowInstance, traySupport: $traySupport, toastEnabled: $toastEnabled, minimizeAction: $minimizeAction, hideDefaultConfig: $hideDefaultConfig, rememberWinSize: $rememberWinSize, autoArrangeOrigin: $autoArrangeOrigin, windowToScreenHeightRatio: $windowToScreenHeightRatio, showWarningOnBack: $showWarningOnBack, skipAutoStartIfInstanceRunning: $skipAutoStartIfInstanceRunning, newInstanceReplacesExisting: $newInstanceReplacesExisting, hideIconExtractorDisclaimer: $hideIconExtractorDisclaimer)';
   }
 
   @override
@@ -159,8 +167,10 @@ class AppBehaviour {
         other.autoArrangeOrigin == autoArrangeOrigin &&
         other.windowToScreenHeightRatio == windowToScreenHeightRatio &&
         other.showWarningOnBack == showWarningOnBack &&
-        other.skipAutoStartIfInstanceRunning == skipAutoStartIfInstanceRunning &&
-        other.newInstanceReplacesExisting == newInstanceReplacesExisting;
+        other.skipAutoStartIfInstanceRunning ==
+            skipAutoStartIfInstanceRunning &&
+        other.newInstanceReplacesExisting == newInstanceReplacesExisting &&
+        other.hideIconExtractorDisclaimer == hideIconExtractorDisclaimer;
   }
 
   @override
@@ -176,6 +186,7 @@ class AppBehaviour {
         windowToScreenHeightRatio.hashCode ^
         showWarningOnBack.hashCode ^
         skipAutoStartIfInstanceRunning.hashCode ^
-        newInstanceReplacesExisting.hashCode;
+        newInstanceReplacesExisting.hashCode ^
+        hideIconExtractorDisclaimer.hashCode;
   }
 }
