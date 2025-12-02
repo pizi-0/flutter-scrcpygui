@@ -72,6 +72,7 @@ class SControlOptions {
     return other.mouseMode == mouseMode &&
         other.mouseNoHover == mouseNoHover &&
         other.keyboardMode == keyboardMode &&
+        other.keyboardDisableRepeat == keyboardDisableRepeat &&
         other.gamepadMode == gamepadMode;
   }
 
@@ -80,6 +81,7 @@ class SControlOptions {
     return mouseMode.hashCode ^
         mouseNoHover.hashCode ^
         keyboardMode.hashCode ^
+        keyboardDisableRepeat.hashCode ^
         gamepadMode.hashCode;
   }
 }

@@ -161,7 +161,7 @@ class ScrcpyConfig {
 
   @override
   String toString() {
-    return 'Name: $configName, Mode: $scrcpyMode,${isRecording ? ' Recording: $isRecording,' : ''} Video options: $videoOptions, Audio options: $audioOptions, Device options: $deviceOptions, Window options: $windowOptions,${savePath == null ? '' : ' Save path: $savePath,'} Additional flags: [ $additionalFlags ]';
+    return 'ScrcpyConfig(id: $id, configName: $configName, scrcpyMode: $scrcpyMode, isRecording: $isRecording, videoOptions: $videoOptions, audioOptions: $audioOptions, appOptions: $appOptions, deviceOptions: $deviceOptions, windowOptions: $windowOptions, controlOptions: $controlOptions, additionalFlags: $additionalFlags, tags: $tags, savePath: $savePath)';
   }
 
   @override
@@ -176,6 +176,7 @@ class ScrcpyConfig {
         other.appOptions == appOptions &&
         other.deviceOptions == deviceOptions &&
         other.windowOptions == windowOptions &&
+        other.controlOptions == controlOptions &&
         other.additionalFlags == additionalFlags &&
         other.savePath == savePath;
   }
@@ -191,6 +192,7 @@ class ScrcpyConfig {
         deviceOptions.hashCode ^
         windowOptions.hashCode ^
         additionalFlags.hashCode ^
+        controlOptions.hashCode ^
         savePath.hashCode;
   }
 
@@ -203,6 +205,7 @@ class ScrcpyConfig {
         other.deviceOptions == deviceOptions &&
         other.windowOptions == windowOptions &&
         other.additionalFlags == additionalFlags &&
+        other.controlOptions == controlOptions &&
         other.savePath == savePath;
   }
 }
