@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 const BUNDLED_VERSION = '3.2';
 
-const EIFA_VERSION = '1.0.0';
+const EIFA_VERSION = '1.0.1';
 
 final appVersionProvider = StateProvider((ref) => "");
 
