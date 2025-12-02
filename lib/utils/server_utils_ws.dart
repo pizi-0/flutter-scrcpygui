@@ -38,12 +38,12 @@ class ServerUtilsWs {
 
   Future<void> _bindServer(WidgetRef ref, {InternetAddress? ipAddress}) async {
     try {
-      final deviceIp = ipAddress ?? await _getDeviceIp();
+      final deviceIp = ipAddress ?? await getEffectiveIp(ref);
 
       final companionSettings = ref.read(companionServerProvider);
 
       serverSocket = await ServerSocket.bind(
-          deviceIp.address, companionSettings.port.toInt() ?? 8080);
+          deviceIp, companionSettings.port.toInt() ?? 8080);
 
       final ip = serverSocket?.address.address ?? '0.0.0.0';
       final port = serverSocket?.port.toString() ?? '8080';
@@ -318,37 +318,33 @@ class ServerUtilsWs {
   }
 }
 
-Future<InternetAddress> _getDeviceIp() async {
-  List<NetworkInterface> interfaces =
-      await NetworkInterface.list(type: InternetAddressType.IPv4);
+// Future<InternetAddress> _getDeviceIp() async {
+//   List<NetworkInterface> interfaces =
+//       await NetworkInterface.list(type: InternetAddressType.IPv4);
 
-  final virtNetwork = ['vmnet', 'virtual'];
+//   final virtNetwork = ['vmnet', 'virtual'];
 
-  for (final interface in interfaces) {
-    if (interface.name.toLowerCase().containsAny(virtNetwork)) {
-      continue;
-    }
+//   for (final interface in interfaces) {
+//     if (interface.name.toLowerCase().containsAny(virtNetwork)) {
+//       continue;
+//     }
 
-    for (final address in interface.addresses) {
-      if (address.type == InternetAddressType.IPv4 && !address.isLinkLocal) {
-        logger.i('Device IP: ${address.address}');
-        return address;
-      }
-    }
-  }
+//     for (final address in interface.addresses) {
+//       if (address.type == InternetAddressType.IPv4 && !address.isLinkLocal) {
+//         logger.i('Device IP: ${address.address}');
+//         return address;
+//       }
+//     }
+//   }
 
-  throw Exception('No IPv4 address found');
-}
+//   throw Exception('No IPv4 address found');
+// }
 
 Future<List<NetworkInterface>> getInterfaces() async {
   List<NetworkInterface> interfaces =
       await NetworkInterface.list(type: InternetAddressType.IPv4);
 
-  final virtNetwork = ['vmnet', 'virtual'];
-
-  return interfaces
-      .where((i) => !i.name.toLowerCase().containsAny(virtNetwork))
-      .toList();
+  return interfaces;
 }
 
 Future<String> getEffectiveIp(WidgetRef ref) async {
