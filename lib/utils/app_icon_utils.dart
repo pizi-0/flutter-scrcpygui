@@ -159,6 +159,7 @@ class IconExtractor {
                   .updateFailed(app, 'Extraction with Eifa failed');
             }
             ref.read(iconsToExtractProvider.notifier).removeApp(app);
+            _removeApk(apkPath);
           } catch (e) {
             logger.e(
                 'Failed to extract icon for ${app.packageName} on ${device.serialNo}: $e');
@@ -230,6 +231,18 @@ class IconExtractor {
     } catch (e) {
       logger.e('Error pulling icon from $apkPath: $e');
       rethrow; // Rethrow to be caught by the runner
+    }
+  }
+
+  static Future<void> _removeApk(String apkPath) async {
+    try {
+      final apkFile = File(apkPath);
+      if (await apkFile.exists()) {
+        await apkFile.delete();
+        logger.i('Deleted temporary APK file at $apkPath');
+      }
+    } catch (e) {
+      logger.e('Error deleting APK file at $apkPath: $e');
     }
   }
 }
