@@ -9714,12 +9714,14 @@ LocalizationMessages get ms => LocalizationMessages(
                 'Nisbah ketinggian tetingkap scrcpy kepada ketinggian skrin utama. Min: 0.4, Maks: 1.0, Lalai: 0.88',
           ),
           skipAutoStart: SettingsLocBehaviorSkipAutoStart(
-            label: '',
-            info: '',
+            label: 'Langkau mula-automatik jika sudah berjalan',
+            info:
+                'Apabila peranti disambungkan dan scrcpy ditetapkan untuk dimulakan secara automatik, jangan mulakannya jika sudah ada tikaian yang berjalan untuk peranti itu.',
           ),
           newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
-            label: '',
-            info: '',
+            label: 'Tikaian baru menggantikan tikaian sedia ada',
+            info:
+                'Apabila menjalankan tikaian baru scrcpy secara manual, semua tikaian sedia ada untuk peranti yang sama dihentikan.',
           ),
         ),
       ),
@@ -10438,12 +10440,13 @@ LocalizationMessages get ja => LocalizationMessages(
                 'scrcpyウィンドウの高さとプライマリスクリーンの高さの比率。最小: 0.4, 最大: 1.0, デフォルト: 0.88',
           ),
           skipAutoStart: SettingsLocBehaviorSkipAutoStart(
-            label: '',
-            info: '',
+            label: '実行中の場合は自動起動をスキップ',
+            info:
+                'デバイスが接続され、scrcpyが自動的に起動するように設定されている場合、そのデバイスに対してすでにインスタンスが実行中であれば起動しません。',
           ),
           newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
-            label: '',
-            info: '',
+            label: '新しいインスタンスが既存のインスタンスを置き換える',
+            info: 'scrcpyの新しいインスタンスを手動で実行すると、同じデバイスの既存のすべてのインスタンスが停止します。',
           ),
         ),
       ),
@@ -11157,12 +11160,12 @@ LocalizationMessages get zh => LocalizationMessages(
             info: 'scrcpy 窗口高度与主屏幕高度的比例。最小: 0.4，最大: 1.0，默认: 0.88',
           ),
           skipAutoStart: SettingsLocBehaviorSkipAutoStart(
-            label: '',
-            info: '',
+            label: '如果已在运行则跳过自动启动',
+            info: '当设备连接且scrcpy设置为自动启动时，如果该设备已有实例在运行，则不启动。',
           ),
           newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
-            label: '',
-            info: '',
+            label: '新实例替换现有实例',
+            info: '当手动运行scrcpy的新实例时，将停止同一设备的所有现有实例。',
           ),
         ),
       ),
@@ -11412,7 +11415,7 @@ LocalizationMessages get en => LocalizationMessages(
         contents: IconExtractorDisclaimerLocContents(
           p1: 'This is an experimental feature, with sets of limitations:',
           l1: 'Pulling apk can take a long time, depending on the size of the apk.',
-          l2: 'Adaptive icons is not supported, resulting in missing icons.',
+          l2: 'Adaptive icons are not supported, resulting in missing icons.',
           l3: 'Extracted icons may be of lower resolution.',
         ),
       ),
@@ -12652,12 +12655,14 @@ LocalizationMessages get it => LocalizationMessages(
                 '''Rapporto tra l'altezza della finestra di scrcpy e l'altezza dello schermo primario. Min: 0.4, Max: 1.0, Predefinito: 0.88''',
           ),
           skipAutoStart: SettingsLocBehaviorSkipAutoStart(
-            label: '',
-            info: '',
+            label: 'Salta avvio automatico se già in esecuzione',
+            info:
+                '''Quando un dispositivo è connesso e scrcpy è impostato per l'avvio automatico, non avviarlo se è già in esecuzione un'istanza per quel dispositivo.''',
           ),
           newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
-            label: '',
-            info: '',
+            label: 'Le nuove istanze sostituiscono quelle esistenti',
+            info:
+                'Quando si esegue manualmente una nuova istanza di scrcpy, tutte le istanze esistenti per lo stesso dispositivo vengono arrestate.',
           ),
         ),
       ),
@@ -13403,12 +13408,14 @@ LocalizationMessages get es => LocalizationMessages(
                 'Relación de la altura de la ventana de scrcpy con la altura de la pantalla principal. Mín: 0.4, Máx: 1.0, Predeterminado: 0.88',
           ),
           skipAutoStart: SettingsLocBehaviorSkipAutoStart(
-            label: '',
-            info: '',
+            label: 'Omitir inicio automático si ya está en ejecución',
+            info:
+                'Cuando un dispositivo está conectado y scrcpy está configurado para iniciarse automáticamente, no lo inicie si ya hay una instancia en ejecución para ese dispositivo.',
           ),
           newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
-            label: '',
-            info: '',
+            label: 'Las nuevas instancias reemplazan a las existentes',
+            info:
+                'Al ejecutar manualmente una nueva instancia de scrcpy, se detienen todas las instancias existentes para el mismo dispositivo.',
           ),
         ),
       ),
@@ -14153,12 +14160,14 @@ LocalizationMessages get pt_BR => LocalizationMessages(
                 'Proporção da altura da janela do scrcpy para a altura da tela principal. Mín: 0.4, Máx: 1.0, Padrão: 0.88',
           ),
           skipAutoStart: SettingsLocBehaviorSkipAutoStart(
-            label: '',
-            info: '',
+            label: 'Pular início automático se já estiver em execução',
+            info:
+                'Quando um dispositivo é conectado e o scrcpy está configurado para iniciar automaticamente, não o inicie se já houver uma instância em execução para esse dispositivo.',
           ),
           newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
-            label: '',
-            info: '',
+            label: 'Novas instâncias substituem as existentes',
+            info:
+                'Ao executar manualmente uma nova instância do scrcpy, todas as instâncias existentes para o mesmo dispositivo são paradas.',
           ),
         ),
       ),

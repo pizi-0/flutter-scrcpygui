@@ -60,7 +60,7 @@ icon_extractor_disclaimer_loc:
   contents:
     p1: "This is an experimental feature, with sets of limitations:"
     l1: Pulling apk can take a long time, depending on the size of the apk.
-    l2: Adaptive icons is not supported, resulting in missing icons.
+    l2: Adaptive icons are not supported, resulting in missing icons.
     l3: Extracted icons may be of lower resolution.
 
 

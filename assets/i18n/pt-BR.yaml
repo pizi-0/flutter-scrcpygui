@@ -453,6 +453,13 @@ settings_loc:
       label: Proporção de altura da janela para a tela
       label_short: Altura %
       info: "Proporção da altura da janela do scrcpy para a altura da tela principal. Mín: 0.4, Máx: 1.0, Padrão: 0.88"
+    skip_auto_start:
+      label: Pular início automático se já estiver em execução
+      info: Quando um dispositivo é conectado e o scrcpy está configurado para iniciar automaticamente, não o inicie se já houver uma instância em execução para esse dispositivo.
+    new_instance_replace:
+      label: Novas instâncias substituem as existentes
+      info: Ao executar manualmente uma nova instância do scrcpy, todas as instâncias existentes para o mesmo dispositivo são paradas.
+
 
 ## companion tab
 companion_loc:

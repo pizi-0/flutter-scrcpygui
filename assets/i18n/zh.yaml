@@ -471,6 +471,13 @@ settings_loc:
       label: 窗口到屏幕高度比例
       label_short: 高度 %
       info: "scrcpy 窗口高度与主屏幕高度的比例。最小: 0.4，最大: 1.0，默认: 0.88"
+    skip_auto_start:
+      label: 如果已在运行则跳过自动启动
+      info: 当设备连接且scrcpy设置为自动启动时，如果该设备已有实例在运行，则不启动。
+    new_instance_replace:
+      label: 新实例替换现有实例
+      info: 当手动运行scrcpy的新实例时，将停止同一设备的所有现有实例。
+
 
 ## companion tab
 companion_loc:

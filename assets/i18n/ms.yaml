@@ -453,6 +453,13 @@ settings_loc:
       label: Nisbah ketinggian tetingkap ke skrin
       label_short: Tinggi %
       info: "Nisbah ketinggian tetingkap scrcpy kepada ketinggian skrin utama. Min: 0.4, Maks: 1.0, Lalai: 0.88"
+    skip_auto_start:
+      label: Langkau mula-automatik jika sudah berjalan
+      info: Apabila peranti disambungkan dan scrcpy ditetapkan untuk dimulakan secara automatik, jangan mulakannya jika sudah ada tikaian yang berjalan untuk peranti itu.
+    new_instance_replace:
+      label: Tikaian baru menggantikan tikaian sedia ada
+      info: Apabila menjalankan tikaian baru scrcpy secara manual, semua tikaian sedia ada untuk peranti yang sama dihentikan.
+
 
 ## companion tab
 companion_loc:

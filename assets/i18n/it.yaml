@@ -453,6 +453,13 @@ settings_loc:
       label: Rapporto altezza finestra/schermo
       label_short: Altezza %
       info: "Rapporto tra l'altezza della finestra di scrcpy e l'altezza dello schermo primario. Min: 0.4, Max: 1.0, Predefinito: 0.88"
+    skip_auto_start:
+      label: Salta avvio automatico se già in esecuzione
+      info: Quando un dispositivo è connesso e scrcpy è impostato per l'avvio automatico, non avviarlo se è già in esecuzione un'istanza per quel dispositivo.
+    new_instance_replace:
+      label: Le nuove istanze sostituiscono quelle esistenti
+      info: Quando si esegue manualmente una nuova istanza di scrcpy, tutte le istanze esistenti per lo stesso dispositivo vengono arrestate.
+
 
 ## companion tab
 companion_loc:

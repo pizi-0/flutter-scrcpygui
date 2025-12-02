@@ -453,6 +453,13 @@ settings_loc:
       label: ウィンドウと画面の高さの比率
       label_short: 高さ %
       info: "scrcpyウィンドウの高さとプライマリスクリーンの高さの比率。最小: 0.4, 最大: 1.0, デフォルト: 0.88"
+    skip_auto_start:
+      label: 実行中の場合は自動起動をスキップ
+      info: デバイスが接続され、scrcpyが自動的に起動するように設定されている場合、そのデバイスに対してすでにインスタンスが実行中であれば起動しません。
+    new_instance_replace:
+      label: 新しいインスタンスが既存のインスタンスを置き換える
+      info: scrcpyの新しいインスタンスを手動で実行すると、同じデバイスの既存のすべてのインスタンスが停止します。
+
 
 ## companion tab
 companion_loc:
