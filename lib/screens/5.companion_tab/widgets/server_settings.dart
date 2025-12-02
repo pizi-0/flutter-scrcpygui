@@ -84,8 +84,19 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
   }
 
   Future<void> _setIp() async {
+    final preferredInterface = ref.read(companionServerProvider).adapter;
     interfaces = await getInterfaces();
     ipController.text = await getEffectiveIp(ref);
+
+    if (preferredInterface.isNotEmpty) {
+      if (interfaces
+          .where((iface) => iface.name == preferredInterface)
+          .isNotEmpty) {
+        _onChangeAdapter(preferredInterface);
+      } else {
+        _onChangeAdapter(interfaces.first.name);
+      }
+    }
   }
 
   @override
@@ -170,10 +181,16 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
                             childCount: interfaces.length,
                             builder: (context, index) => SelectItemButton(
                                 value: interfaces[index].name,
-                                child: Text(interfaces[index].name)),
+                                child: OverflowMarquee(
+                                    duration: 2.seconds,
+                                    delayDuration: 500.milliseconds,
+                                    child: Text(interfaces[index].name))),
                           ),
                         ).call,
-                        itemBuilder: (context, value) => Text(value),
+                        itemBuilder: (context, value) => OverflowMarquee(
+                            duration: 2.seconds,
+                            delayDuration: 500.milliseconds,
+                            child: Text(value)),
                       ),
                     ),
                     Button(
