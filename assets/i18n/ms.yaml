@@ -54,6 +54,14 @@ lounge_loc:
     empty_pin: Tiada Aplikasi Disemat
     empty_instance: Tiada Instans Sedang Berjalan
 
+icon_extractor_disclaimer_loc:
+  title: Penafian
+  contents:
+    p1: "Ini adalah ciri percubaan, dengan beberapa batasan:"
+    l1: Menarik apk boleh mengambil masa yang lama, bergantung pada saiz apk.
+    l2: Ikon suai tidak disokong, mengakibatkan ikon hilang.
+    l3: Ikon yang diekstrak mungkin beresolusi lebih rendah.
+
 
 config_loc:
   label: Konfigurasi (${count})
@@ -547,6 +555,7 @@ button_label_loc:
   override: Ubahsuai
   dont_show_again: "Jangan Tunjuk Lagi"
   sponsor: Taja
+  extract_icons: Ekstrak Ikon
 
 
 

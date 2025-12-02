@@ -54,6 +54,14 @@ lounge_loc:
     empty_pin: No hay Aplicaciones Ancladas
     empty_instance: Ninguna Instancia en Ejecución
 
+icon_extractor_disclaimer_loc:
+  title: Descargo de responsabilidad
+  contents:
+    p1: "Esta es una característica experimental, con una serie de limitaciones:"
+    l1: Extraer el apk puede llevar mucho tiempo, dependiendo del tamaño del apk.
+    l2: Los iconos adaptativos no son compatibles, lo que resulta en iconos faltantes.
+    l3: Los iconos extraídos pueden ser de menor resolución.
+
 
 config_loc:
   label: Configuraciones (${count})
@@ -545,6 +553,7 @@ button_label_loc:
   override: Anular
   dont_show_again: "No Mostrar de Nuevo"
   sponsor: Patrocinar
+  extract_icons: Extraer iconos
 
 # status
 status_loc:

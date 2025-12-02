@@ -54,6 +54,15 @@ lounge_loc:
     empty_pin: Nenhum Aplicativo Fixado
     empty_instance: Nenhuma Instância em Execução
 
+icon_extractor_disclaimer_loc:
+  title: Isenção de Responsabilidade
+  contents:
+    p1: "Este é um recurso experimental, com um conjunto de limitações:"
+    l1: Puxar o apk pode demorar muito tempo, dependendo do tamanho do apk.
+    l2: Ícones adaptáveis não são suportados, resultando em ícones ausentes.
+    l3: Os ícones extraídos podem ter uma resolução mais baixa.
+
+
 config_loc:
   label: Configurações (${count})
   new: Criar
@@ -545,6 +554,8 @@ button_label_loc:
   override: Substituir
   dont_show_again: "Não Mostrar Novamente"
   sponsor: Patrocinar
+  extract_icons: Extrair Ícones
+
 
 # status
 status_loc:

@@ -26,7 +26,7 @@ class _IconExtractorDisclaimerDialogState
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: sectionWidth),
       child: AlertDialog(
-        title: Text('Disclaimer'),
+        title: Text(el.iconExtractorDisclaimerLoc.title),
         content: OutlinedContainer(
           padding: EdgeInsets.all(16),
           child: Column(
@@ -34,15 +34,13 @@ class _IconExtractorDisclaimerDialogState
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 4,
             children: [
-              Text('This is an experimental feature, with sets of limitations:')
-                  .bold,
+              Text(el.iconExtractorDisclaimerLoc.contents.p1).bold,
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('- '),
                   Expanded(
-                    child: Text(
-                        'Pulling apk can take a long time, depending on the size of the apk.'),
+                    child: Text(el.iconExtractorDisclaimerLoc.contents.l1),
                   ),
                 ],
               ),
@@ -51,8 +49,7 @@ class _IconExtractorDisclaimerDialogState
                 children: [
                   Text('- '),
                   Expanded(
-                    child: Text(
-                        'Adaptive icons is not supported, resulting in missing icons.'),
+                    child: Text(el.iconExtractorDisclaimerLoc.contents.l2),
                   ),
                 ],
               ),
@@ -61,7 +58,7 @@ class _IconExtractorDisclaimerDialogState
                 children: [
                   Text('- '),
                   Expanded(
-                    child: Text('Extracted icons may be of lower resolution.'),
+                    child: Text(el.iconExtractorDisclaimerLoc.contents.l3),
                   ),
                 ],
               ),

@@ -54,6 +54,14 @@ lounge_loc:
     empty_pin: Nessuna App Bloccata
     empty_instance: Nessuna Istanza in Esecuzione
 
+icon_extractor_disclaimer_loc:
+  title: Disclaimer
+  contents:
+    p1: "Questa è una funzione sperimentale, con una serie di limitazioni:"
+    l1: L'estrazione dell'apk può richiedere molto tempo, a seconda delle dimensioni dell'apk.
+    l2: Le icone adattive non sono supportate, causando la mancanza di icone.
+    l3: Le icone estratte potrebbero avere una risoluzione inferiore.
+
 
 config_loc:
   label: Configurazioni (${count})
@@ -546,6 +554,7 @@ button_label_loc:
   override: Ignora
   dont_show_again: "Non Mostrare Più"
   sponsor: Sponsorizza
+  extract_icons: Estrai icone
 
 
   

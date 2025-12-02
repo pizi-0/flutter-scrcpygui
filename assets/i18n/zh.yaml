@@ -55,6 +55,14 @@ lounge_loc:
     empty_instance: 无运行实例
 
 
+icon_extractor_disclaimer_loc:
+  title: 免责声明
+  contents:
+    p1: "这是一个实验性功能，存在一些限制："
+    l1: 拉取apk可能需要很长时间，具体取决于apk的大小。
+    l2: 不支持自适应图标，导致图标丢失。
+    l3: 提取的图标分辨率可能较低。
+
 
 config_loc:
   label: 配置 (${count})
@@ -570,6 +578,8 @@ button_label_loc:
   override: 覆盖
   dont_show_again: "不再显示"
   sponsor: 赞助
+  extract_icons: 提取图标
+
 
 # status
 status_loc:

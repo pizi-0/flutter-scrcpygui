@@ -54,6 +54,15 @@ lounge_loc:
     empty_pin: ピン留めされたアプリはありません
     empty_instance: 実行中のインスタンスはありません
 
+icon_extractor_disclaimer_loc:
+  title: 免責事項
+  contents:
+    p1: "これは実験的な機能であり、いくつかの制限があります："
+    l1: apkのサイズによっては、apkのプルに時間がかかることがあります。
+    l2: アダプティブアイコンはサポートされていないため、アイコンが欠落します。
+    l3: 抽出されたアイコンは解像度が低い場合があります。
+
+
 config_loc:
   label: 設定 (${count})
   new: 作成
@@ -545,6 +554,7 @@ button_label_loc:
   override: オーバーライド
   dont_show_again: "再表示しない"
   sponsor: スポンサー
+  extract_icons: アイコンを抽出
 
 # status
 status_loc:

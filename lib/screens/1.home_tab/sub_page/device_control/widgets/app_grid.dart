@@ -221,7 +221,8 @@ class _AppGridState extends ConsumerState<AppGrid> {
                                       ref.read(settingsProvider),
                                     );
                                   },
-                                  child: Text('Extract icon').textSmall,
+                                  child: Text(el.buttonLabelLoc.extractIcons)
+                                      .textSmall,
                                 )
                               ],
                             ),

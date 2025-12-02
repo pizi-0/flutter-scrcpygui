@@ -55,7 +55,14 @@ lounge_loc:
     empty_pin: No Pinned Apps
     empty_instance: No Running Instances
 
-    
+icon_extractor_disclaimer_loc:
+  title: Disclaimer
+  contents:
+    p1: "This is an experimental feature, with sets of limitations:"
+    l1: Pulling apk can take a long time, depending on the size of the apk.
+    l2: Adaptive icons is not supported, resulting in missing icons.
+    l3: Extracted icons may be of lower resolution.
+
 
 config_loc:
   label: Configurations (${count})
@@ -582,6 +589,7 @@ button_label_loc:
   override: Override
   dont_show_again: "Don't Show Again"
   sponsor: Sponsor
+  extract_icons: Extract Icons
 
 # status 
 status_loc: 
