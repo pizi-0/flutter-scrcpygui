@@ -313,6 +313,7 @@ device_section:
       default: deshabilita el protector de pantalla
       alt: "usa el indicador '--disable-screensaver' "
 
+
 window_section:
   title: Ventana
   hide_window:
@@ -338,6 +339,44 @@ window_section:
     info:
       default: limita la sesión de scrcpy, en segundos
       alt: "usa el indicador '--time-limit=${time}' "
+
+control_section:
+  title: Control
+  info:
+    if_aoa: "(Solo USB)"
+  mouse:
+    title: Ratón
+    mode:
+      label: Modo de ratón
+      info:
+        default: por defecto sdk, sin indicador
+        alt: "usa el indicador '${command}' "
+    mouse_hover:
+      label: Desactivar hover del ratón
+      info:
+        default: desactiva el efecto hover del ratón
+        alt: "usa el indicador '--no-mouse-hover' "
+        blocked: solo para modo sdk
+  keyboard:
+    title: Teclado
+    mode:
+      label: Modo de teclado
+      info:
+        default: por defecto sdk, sin indicador
+        alt: "usa el indicador '${command}' "
+    key_repeat:
+      label: Desactivar repetición de tecla
+      info:
+        default: evita el envío de eventos de tecla repetidos al mantener presionada una tecla
+        alt: "usa el indicador '--no-key-repeat' "
+        blocked: solo para modo sdk
+  gamepad:
+    title: Mando
+    mode:
+      label: Modo de mando
+      info:
+        default: desactivado por defecto, sin indicador
+        alt: "usa el indicador '${command}' "
 
 ### config screen > additional flags section
 add_flags:

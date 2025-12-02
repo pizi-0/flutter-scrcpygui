@@ -339,6 +339,44 @@ window_section:
       default: scrcpyセッションを制限（秒単位）
       alt: "'--time-limit=${time}'フラグを使用"
 
+control_section:
+  title: 操作
+  info:
+    if_aoa: "(USBのみ)"
+  mouse:
+    title: マウス
+    mode:
+      label: マウスモード
+      info:
+        default: デフォルトはsdk、フラグなし
+        alt: "'${command}' フラグを使用"
+    mouse_hover:
+      label: マウスホバーを無効にする
+      info:
+        default: マウスホバー効果を無効にする
+        alt: "'--no-mouse-hover'フラグを使用"
+        blocked: sdkモードのみ
+  keyboard:
+    title: キーボード
+    mode:
+      label: キーボードモード
+      info:
+        default: デフォルトはsdk、フラグなし
+        alt: "'${command}' フラグを使用"
+    key_repeat:
+      label: キーリピートを無効にする
+      info:
+        default: キーを長押ししたときに繰り返しキーイベントが転送されないようにする
+        alt: "'--no-key-repeat'フラグを使用"
+        blocked: sdkモードのみ
+  gamepad:
+    title: ゲームパッド
+    mode:
+      label: ゲームパッドモード
+      info:
+        default: デフォルトで無効、フラグなし
+        alt: "'${command}' フラグを使用"
+
 ### config screen > additional flags section
 add_flags:
   title: 追加フラグ

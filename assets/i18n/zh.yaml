@@ -350,6 +350,44 @@ window_section:
       default: 限制 scrcpy 会话，以秒为单位
       alt: "使用 '--time-limit=${time}' 标志"
 
+control_section:
+  title: 控制
+  info:
+    if_aoa: "(仅限USB)"
+  mouse:
+    title: 鼠标
+    mode:
+      label: 鼠标模式
+      info:
+        default: 默认为sdk，无标志
+        alt: "使用 --mouse=${command} 标志"
+    mouse_hover:
+      label: 禁用鼠标悬停
+      info:
+        default: 禁用鼠标悬停效果
+        alt: "使用 '--no-mouse-hover' 标志"
+        blocked: 仅适用于sdk模式
+  keyboard:
+    title: 键盘
+    mode:
+      label: 键盘模式
+      info:
+        default: 默认为sdk，无标志
+        alt: "使用 --keyboard=${command} 标志"
+    key_repeat:
+      label: 禁用按键重复
+      info:
+        default: 防止在按住某个键时转发重复的按键事件
+        alt: "使用 '--no-key-repeat' 标志"
+        blocked: 仅适用于sdk模式
+  gamepad:
+    title: 游戏手柄
+    mode:
+      label: 游戏手柄模式
+      info:
+        default: 默认禁用，无标志
+        alt: "使用 --gamepad=${command} 标志"
+
 ### config screen > additional flags section
 add_flags:
   title: 附加标志

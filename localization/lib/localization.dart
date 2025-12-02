@@ -5303,6 +5303,753 @@ class WindowSectionTimeLimitInfo {
   }
 }
 
+class ControlSection {
+  const ControlSection({
+    required this.title,
+    required this.info,
+    required this.mouse,
+    required this.keyboard,
+    required this.gamepad,
+  });
+  factory ControlSection.fromJson(Map<String, dynamic> json) {
+    return ControlSection(
+      title: (json['title'] ?? '').toString(),
+      info: ControlSectionInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+      mouse: ControlSectionMouse.fromJson(
+          (json['mouse'] as Map).cast<String, dynamic>()),
+      keyboard: ControlSectionKeyboard.fromJson(
+          (json['keyboard'] as Map).cast<String, dynamic>()),
+      gamepad: ControlSectionGamepad.fromJson(
+          (json['gamepad'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String title;
+  final ControlSectionInfo info;
+
+  final ControlSectionMouse mouse;
+
+  final ControlSectionKeyboard keyboard;
+
+  final ControlSectionGamepad gamepad;
+
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''info''': info,
+        r'''mouse''': mouse,
+        r'''keyboard''': keyboard,
+        r'''gamepad''': gamepad,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ControlSectionInfo {
+  const ControlSectionInfo({
+    required this.ifAoa,
+  });
+  factory ControlSectionInfo.fromJson(Map<String, dynamic> json) {
+    return ControlSectionInfo(
+      ifAoa: (json['if_aoa'] ?? '').toString(),
+    );
+  }
+  final String ifAoa;
+  Map<String, Object> get _content => {
+        r'''if_aoa''': ifAoa,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ControlSectionMouse {
+  const ControlSectionMouse({
+    required this.title,
+    required this.mode,
+    required this.mouseHover,
+  });
+  factory ControlSectionMouse.fromJson(Map<String, dynamic> json) {
+    return ControlSectionMouse(
+      title: (json['title'] ?? '').toString(),
+      mode: ControlSectionMouseMode.fromJson(
+          (json['mode'] as Map).cast<String, dynamic>()),
+      mouseHover: ControlSectionMouseMouseHover.fromJson(
+          (json['mouse_hover'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String title;
+  final ControlSectionMouseMode mode;
+
+  final ControlSectionMouseMouseHover mouseHover;
+
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''mode''': mode,
+        r'''mouse_hover''': mouseHover,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ControlSectionMouseMode {
+  const ControlSectionMouseMode({
+    required this.label,
+    required this.info,
+  });
+  factory ControlSectionMouseMode.fromJson(Map<String, dynamic> json) {
+    return ControlSectionMouseMode(
+      label: (json['label'] ?? '').toString(),
+      info: ControlSectionMouseModeInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final ControlSectionMouseModeInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ControlSectionMouseModeInfo {
+  const ControlSectionMouseModeInfo({
+    required this.default$,
+    required String Function({required String command}) alt,
+  }) : _alt = alt;
+  factory ControlSectionMouseModeInfo.fromJson(Map<String, dynamic> json) {
+    return ControlSectionMouseModeInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: ({required String command}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${command}', command)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String default$;
+  String alt({required String command}) => _alt(command: command);
+
+  final String Function({required String command}) _alt;
+
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ControlSectionMouseMouseHover {
+  const ControlSectionMouseMouseHover({
+    required this.label,
+    required this.info,
+  });
+  factory ControlSectionMouseMouseHover.fromJson(Map<String, dynamic> json) {
+    return ControlSectionMouseMouseHover(
+      label: (json['label'] ?? '').toString(),
+      info: ControlSectionMouseMouseHoverInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final ControlSectionMouseMouseHoverInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ControlSectionMouseMouseHoverInfo {
+  const ControlSectionMouseMouseHoverInfo({
+    required this.default$,
+    required this.alt,
+    required this.blocked,
+  });
+  factory ControlSectionMouseMouseHoverInfo.fromJson(
+      Map<String, dynamic> json) {
+    return ControlSectionMouseMouseHoverInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: (json['alt'] ?? '').toString(),
+      blocked: (json['blocked'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String alt;
+  final String blocked;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+        r'''blocked''': blocked,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ControlSectionKeyboard {
+  const ControlSectionKeyboard({
+    required this.title,
+    required this.mode,
+    required this.keyRepeat,
+  });
+  factory ControlSectionKeyboard.fromJson(Map<String, dynamic> json) {
+    return ControlSectionKeyboard(
+      title: (json['title'] ?? '').toString(),
+      mode: ControlSectionKeyboardMode.fromJson(
+          (json['mode'] as Map).cast<String, dynamic>()),
+      keyRepeat: ControlSectionKeyboardKeyRepeat.fromJson(
+          (json['key_repeat'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String title;
+  final ControlSectionKeyboardMode mode;
+
+  final ControlSectionKeyboardKeyRepeat keyRepeat;
+
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''mode''': mode,
+        r'''key_repeat''': keyRepeat,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ControlSectionKeyboardMode {
+  const ControlSectionKeyboardMode({
+    required this.label,
+    required this.info,
+  });
+  factory ControlSectionKeyboardMode.fromJson(Map<String, dynamic> json) {
+    return ControlSectionKeyboardMode(
+      label: (json['label'] ?? '').toString(),
+      info: ControlSectionKeyboardModeInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final ControlSectionKeyboardModeInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ControlSectionKeyboardModeInfo {
+  const ControlSectionKeyboardModeInfo({
+    required this.default$,
+    required String Function({required String command}) alt,
+  }) : _alt = alt;
+  factory ControlSectionKeyboardModeInfo.fromJson(Map<String, dynamic> json) {
+    return ControlSectionKeyboardModeInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: ({required String command}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${command}', command)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String default$;
+  String alt({required String command}) => _alt(command: command);
+
+  final String Function({required String command}) _alt;
+
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ControlSectionKeyboardKeyRepeat {
+  const ControlSectionKeyboardKeyRepeat({
+    required this.label,
+    required this.info,
+  });
+  factory ControlSectionKeyboardKeyRepeat.fromJson(Map<String, dynamic> json) {
+    return ControlSectionKeyboardKeyRepeat(
+      label: (json['label'] ?? '').toString(),
+      info: ControlSectionKeyboardKeyRepeatInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final ControlSectionKeyboardKeyRepeatInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ControlSectionKeyboardKeyRepeatInfo {
+  const ControlSectionKeyboardKeyRepeatInfo({
+    required this.default$,
+    required this.alt,
+    required this.blocked,
+  });
+  factory ControlSectionKeyboardKeyRepeatInfo.fromJson(
+      Map<String, dynamic> json) {
+    return ControlSectionKeyboardKeyRepeatInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: (json['alt'] ?? '').toString(),
+      blocked: (json['blocked'] ?? '').toString(),
+    );
+  }
+  final String default$;
+  final String alt;
+  final String blocked;
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+        r'''blocked''': blocked,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ControlSectionGamepad {
+  const ControlSectionGamepad({
+    required this.title,
+    required this.mode,
+  });
+  factory ControlSectionGamepad.fromJson(Map<String, dynamic> json) {
+    return ControlSectionGamepad(
+      title: (json['title'] ?? '').toString(),
+      mode: ControlSectionGamepadMode.fromJson(
+          (json['mode'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String title;
+  final ControlSectionGamepadMode mode;
+
+  Map<String, Object> get _content => {
+        r'''title''': title,
+        r'''mode''': mode,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ControlSectionGamepadMode {
+  const ControlSectionGamepadMode({
+    required this.label,
+    required this.info,
+  });
+  factory ControlSectionGamepadMode.fromJson(Map<String, dynamic> json) {
+    return ControlSectionGamepadMode(
+      label: (json['label'] ?? '').toString(),
+      info: ControlSectionGamepadModeInfo.fromJson(
+          (json['info'] as Map).cast<String, dynamic>()),
+    );
+  }
+  final String label;
+  final ControlSectionGamepadModeInfo info;
+
+  Map<String, Object> get _content => {
+        r'''label''': label,
+        r'''info''': info,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
+class ControlSectionGamepadModeInfo {
+  const ControlSectionGamepadModeInfo({
+    required this.default$,
+    required String Function({required String command}) alt,
+  }) : _alt = alt;
+  factory ControlSectionGamepadModeInfo.fromJson(Map<String, dynamic> json) {
+    return ControlSectionGamepadModeInfo(
+      default$: (json['default'] ?? '').toString(),
+      alt: ({required String command}) => (json['alt'] ?? '')
+          .toString()
+          .replaceAll(r'${command}', command)
+          .replaceAll(_variableRegExp, ''),
+    );
+  }
+  final String default$;
+  String alt({required String command}) => _alt(command: command);
+
+  final String Function({required String command}) _alt;
+
+  Map<String, Object> get _content => {
+        r'''default''': default$,
+        r'''alt''': alt,
+      };
+  T getContent<T>(String key) {
+    final Object? value = _content[key];
+    if (value is T) {
+      return value;
+    }
+    throw ArgumentError('Not found content for the key $key with type $T');
+  }
+
+  Map<String, Object> get content => _content;
+
+  List<Object> get contentList => _content.values.toList();
+
+  int get length => _content.length;
+
+  Object? operator [](Object? key) {
+    final Object? value = _content[key];
+    if (value == null && key is String) {
+      final int? index = int.tryParse(key);
+      if (index == null || index >= contentList.length || index < 0) {
+        return null;
+      }
+
+      return contentList[index];
+    }
+    return value;
+  }
+}
+
 class AddFlags {
   const AddFlags({
     required this.title,
@@ -8893,6 +9640,7 @@ class LocalizationMessages {
     required this.appSection,
     required this.deviceSection,
     required this.windowSection,
+    required this.controlSection,
     required this.addFlags,
     required this.connectLoc,
     required this.testConfigLoc,
@@ -8955,6 +9703,8 @@ class LocalizationMessages {
           (json['device_section'] as Map).cast<String, dynamic>()),
       windowSection: WindowSection.fromJson(
           (json['window_section'] as Map).cast<String, dynamic>()),
+      controlSection: ControlSection.fromJson(
+          (json['control_section'] as Map).cast<String, dynamic>()),
       addFlags:
           AddFlags.fromJson((json['add_flags'] as Map).cast<String, dynamic>()),
       connectLoc: ConnectLoc.fromJson(
@@ -9035,6 +9785,8 @@ class LocalizationMessages {
 
   final WindowSection windowSection;
 
+  final ControlSection controlSection;
+
   final AddFlags addFlags;
 
   final ConnectLoc connectLoc;
@@ -9095,6 +9847,7 @@ class LocalizationMessages {
         r'''app_section''': appSection,
         r'''device_section''': deviceSection,
         r'''window_section''': windowSection,
+        r'''control_section''': controlSection,
         r'''add_flags''': addFlags,
         r'''connect_loc''': connectLoc,
         r'''test_config_loc''': testConfigLoc,
@@ -9144,2198 +9897,6 @@ class LocalizationMessages {
   }
 }
 
-LocalizationMessages get ms => LocalizationMessages(
-      homeLoc: HomeLoc(
-        title: 'Laman Utama',
-        devices: HomeLocDevices(
-          label: ({required String count}) =>
-              '''Peranti yang Disambungkan (${count})''',
-        ),
-      ),
-      deviceTileLoc: DeviceTileLoc(
-        runningInstances: ({required String count}) =>
-            '''Sedang Berjalan (${count})''',
-        context: DeviceTileLocContext(
-          disconnect: 'Putuskan Sambungan',
-          toWireless: 'Ke Tanpa Wayar',
-          stopRunning: 'Hentikan scrcpy yang sedang berjalan',
-          scrcpy: 'Scrcpy',
-          all: 'Semua',
-          allScrcpy: 'Hentikan semua scrcpy',
-          manage: 'Urus',
-        ),
-      ),
-      loungeLoc: LoungeLoc(
-        controls: LoungeLocControls(
-          label: 'Kawalan',
-        ),
-        pinnedApps: LoungeLocPinnedApps(
-          label: 'Aplikasi disemat',
-        ),
-        launcher: LoungeLocLauncher(
-          label: 'Pelancar Aplikasi',
-        ),
-        running: LoungeLocRunning(
-          label: ({required String count}) =>
-              '''Instans sedang berjalan (${count})''',
-        ),
-        appTile: LoungeLocAppTile(
-          contextMenu: LoungeLocAppTileContextMenu(
-            pin: ({required String config}) => '''Pin pada ${config}''',
-            unpin: 'Buang pin',
-            forceClose: 'Paksa tutup & mula',
-            andStart: (
-                    {required String configuration, required String config}) =>
-                '''Pada ${config}''',
-            selectConfig: 'Pilih konfigurasi dahulu',
-            startOn: ({required String config}) => '''Mula pada ${config}''',
-            withOverrides: 'Mula dengan pengubahsuaian',
-            packageName: 'Nama pakej',
-            resetIcon: 'Set semula ikon',
-          ),
-          sections: LoungeLocAppTileSections(
-            pinned: 'Disemat',
-            apps: 'Aplikasi',
-          ),
-          missingIcon: ({required String count}) => '''Tiada ikon (${count})''',
-        ),
-        placeholders: LoungeLocPlaceholders(
-          config: 'Pilih konfigurasi',
-          app: 'Pilih aplikasi',
-          search: '''Tekan '/' untuk mencari''',
-        ),
-        tooltip: LoungeLocTooltip(
-          missingConfig: ({required String config}) =>
-              '''Konfigurasi tiada: ${config}''',
-          pin: 'Pin pasangan aplikasi/konfigurasi',
-          onConfig: ({required String config}) => '''Pada: ${config}''',
-          hideAppName: 'Sembunyikan nama aplikasi',
-          showAppName: 'Tunjukkan nama aplikasi',
-        ),
-        info: LoungeLocInfo(
-          emptySearch: 'Tiada aplikasi ditemui',
-          emptyPin: 'Tiada Aplikasi Disemat',
-          emptyInstance: 'Tiada Instans Sedang Berjalan',
-        ),
-      ),
-      iconExtractorDisclaimerLoc: IconExtractorDisclaimerLoc(
-        title: 'Penafian',
-        contents: IconExtractorDisclaimerLocContents(
-          p1: 'Ini adalah ciri percubaan, dengan beberapa batasan:',
-          l1: 'Menarik apk boleh mengambil masa yang lama, bergantung pada saiz apk.',
-          l2: 'Ikon suai tidak disokong, mengakibatkan ikon hilang.',
-          l3: 'Ikon yang diekstrak mungkin beresolusi lebih rendah.',
-        ),
-      ),
-      configLoc: ConfigLoc(
-        label: ({required String count}) => '''Konfigurasi (${count})''',
-        new$: 'Cipta',
-        select: 'Pilih konfigurasi',
-        details: 'Tunjukkan butiran',
-        start: 'Mula',
-        empty: 'Tiada konfigurasi ditemui',
-      ),
-      noDeviceDialogLoc: NoDeviceDialogLoc(
-        title: 'Peranti',
-        contentsEdit:
-            '''Tiada peranti dipilih. \nPilih peranti untuk mengedit konfigurasi scrcpy.''',
-        contentsStart:
-            '''Tiada peranti dipilih. \nPilih peranti untuk memulakan scrcpy.''',
-        contentsNew:
-            '''Tiada peranti dipilih. \nPilih peranti untuk mencipta konfigurasi scrcpy.''',
-      ),
-      noConfigDialogLoc: NoConfigDialogLoc(
-        title: 'Konfigurasi',
-        contents:
-            '''Tiada konfigurasi dipilih.\nPilih konfigurasi scrcpy untuk dimulakan.''',
-      ),
-      deleteConfigDialogLoc: DeleteConfigDialogLoc(
-        title: 'Sahkan',
-        contents: ({required String configname}) => '''Padam ${configname}?''',
-      ),
-      deviceSettingsLoc: DeviceSettingsLoc(
-        title: 'Tetapan Peranti',
-        info: 'Maklumat',
-        refresh: 'Muat Semula Maklumat',
-        rename: DeviceSettingsLocRename(
-          label: 'Namakan Semula',
-          info: 'Tekan [Enter] untuk menggunakan nama',
-        ),
-        autoConnect: DeviceSettingsLocAutoConnect(
-          label: 'Sambungan-automatik',
-          info: 'Sambung peranti tanpa wayar secara automatik',
-        ),
-        onConnected: DeviceSettingsLocOnConnected(
-          label: 'Semasa Disambungkan',
-          info:
-              'Mulakan (1) scrcpy dengan konfigurasi yang dipilih semasa sambungan peranti',
-        ),
-        doNothing: 'Jangan buat apa-apa',
-        scrcpyInfo: DeviceSettingsLocScrcpyInfo(
-          fetching: 'Mendapatkan maklumat scrcpy',
-          label: 'Maklumat Scrcpy',
-          name: ({required String name}) => '''Nama: ${name}''',
-          id: ({required String id}) => '''ID: ${id}''',
-          model: ({required String model}) => '''Model: ${model}''',
-          version: ({required String version}) =>
-              '''Versi Android: ${version}''',
-          displays: ({required String count}) => '''Paparan (${count})''',
-          cameras: ({required String count}) => '''Kamera (${count})''',
-          videoEnc: ({required String count}) =>
-              '''Pengekod video (${count})''',
-          audioEnc: ({required String count}) =>
-              '''Pengekod audio (${count})''',
-        ),
-      ),
-      configManagerLoc: ConfigManagerLoc(
-        title: 'Pengurus Konfigurasi',
-      ),
-      configScreenLoc: ConfigScreenLoc(
-        title: 'Tetapan Konfigurasi',
-        connectionLost: 'Sambungan ke peranti terputus',
-        similarExist: ({required String configName}) =>
-            '''Salinan daripada ${configName}''',
-      ),
-      logScreenLoc: LogScreenLoc(
-        title: 'Log Ujian',
-        dialog: LogScreenLocDialog(
-          title: 'Perintah',
-        ),
-      ),
-      renameSection: RenameSection(
-        title: 'Namakan Semula',
-      ),
-      modeSection: ModeSection(
-        title: 'Mod',
-        saveFolder: ModeSectionSaveFolder(
-          label: 'Folder Simpan',
-          info: '''menambah laluan simpan ke '--record=laluan_simpan/fail' ''',
-        ),
-        mainMode: ModeSectionMainMode(
-          label: 'Mod',
-          mirror: 'Cermin',
-          record: 'Rakam',
-          info: ModeSectionMainModeInfo(
-            default$: 'cermin atau rakam, tiada bendera untuk cermin',
-            alt: '''menggunakan bendera '--record=' ''',
-          ),
-        ),
-        scrcpyMode: ModeSectionScrcpyMode(
-          both: 'Audio + video',
-          audioOnly: 'Audio sahaja',
-          videoOnly: 'Video sahaja',
-          info: ModeSectionScrcpyModeInfo(
-            default$: 'lalai kepada kedua-duanya, tiada bendera',
-            alt: ({required String command}) =>
-                '''menggunakan bendera '${command}' ''',
-          ),
-        ),
-      ),
-      videoSection: VideoSection(
-        title: 'Video',
-        displays: VideoSectionDisplays(
-          label: 'Paparan',
-          info: VideoSectionDisplaysInfo(
-            default$: 'lalai kepada yang pertama tersedia, tiada bendera',
-            alt: '''menggunakan bendera '--display-id=' ''',
-          ),
-          virtual: VideoSectionDisplaysVirtual(
-            label: 'Tetapan Paparan Maya',
-            newDisplay: VideoSectionDisplaysVirtualNewDisplay(
-              label: 'Paparan Baru',
-              info: VideoSectionDisplaysVirtualNewDisplayInfo(
-                alt: '''menggunakan bendera '--new-display' ''',
-              ),
-            ),
-            resolution: VideoSectionDisplaysVirtualResolution(
-              label: 'Resolusi',
-              info: VideoSectionDisplaysVirtualResolutionInfo(
-                default$: 'lalai kepada resolusi peranti',
-                alt: ({required String res}) =>
-                    '''menambah resolusi ke bendera '--new-display=${res}' ''',
-              ),
-            ),
-            dpi: VideoSectionDisplaysVirtualDpi(
-              label: 'DPI',
-              info: VideoSectionDisplaysVirtualDpiInfo(
-                default$: 'lalai kepada DPI peranti',
-                alt: ({required String res, required String dpi}) =>
-                    '''menambah DPI ke bendera '--new-display=${res}/${dpi}' ''',
-              ),
-            ),
-            deco: VideoSectionDisplaysVirtualDeco(
-              label: 'Lumpuhkan Hiasan Sistem',
-              info: VideoSectionDisplaysVirtualDecoInfo(
-                default$: 'lalai dengan hiasan sistem',
-                alt: '''menggunakan bendera '--no-vd-system-decorations' ''',
-              ),
-            ),
-            preserve: VideoSectionDisplaysVirtualPreserve(
-              label: 'Kekalkan Aplikasi',
-              info: VideoSectionDisplaysVirtualPreserveInfo(
-                default$:
-                    'aplikasi dimusnahkan secara lalai apabila sesi scrcpy berakhir',
-                alt:
-                    '''pindahkan aplikasi ke paparan utama apabila sesi berakhir; menggunakan bendera '--no-vd-destroy-content' ''',
-              ),
-            ),
-          ),
-        ),
-        codec: VideoSectionCodec(
-          label: 'Codec',
-          info: VideoSectionCodecInfo(
-            default$: 'lalai kepada h264, tiada bendera',
-            alt: ({required String codec}) =>
-                '''menggunakan bendera '--video-codec=${codec}' ''',
-          ),
-        ),
-        encoder: VideoSectionEncoder(
-          label: 'Pengekod',
-          info: VideoSectionEncoderInfo(
-            default$: 'lalai kepada yang pertama tersedia, tiada bendera',
-            alt: ({required String encoder}) =>
-                '''menggunakan bendera '--video-encoder=${encoder}' ''',
-          ),
-        ),
-        format: VideoSectionFormat(
-          label: 'Format',
-          info: VideoSectionFormatInfo(
-            default$: ({required String format}) =>
-                '''menambah format ke '--record=laluan_simpan/fail${format}' "''',
-          ),
-        ),
-        bitrate: VideoSectionBitrate(
-          label: 'Kadar Bit',
-          info: VideoSectionBitrateInfo(
-            default$: 'lalai kepada 8M, tiada bendera',
-            alt: ({required String bitrate}) =>
-                '''menggunakan bendera '--video-bit-rate=${bitrate}M' ''',
-          ),
-        ),
-        fpsLimit: VideoSectionFpsLimit(
-          label: 'Had FPS',
-          info: VideoSectionFpsLimitInfo(
-            default$: 'tiada bendera melainkan ditetapkan',
-            alt: ({required String fps}) =>
-                '''menggunakan bendera '--max-fps=${fps}' ''',
-          ),
-        ),
-        resolutionScale: VideoSectionResolutionScale(
-          label: 'Skala Resolusi',
-          info: VideoSectionResolutionScaleInfo(
-            default$:
-                'dikira berdasarkan resolusi peranti, tiada bendera melainkan ditetapkan',
-            alt: ({required String size}) =>
-                '''menggunakan bendera '--max-size=${size}' ''',
-          ),
-        ),
-      ),
-      audioSection: AudioSection(
-        title: 'Audio',
-        duplicate: AudioSectionDuplicate(
-          label: 'Gandakan Audio',
-          info: AudioSectionDuplicateInfo(
-            default$: 'hanya untuk Android 13 dan ke atas',
-            alt: '''menggunakan bendera '--audio-dup' ''',
-          ),
-        ),
-        source: AudioSectionSource(
-          label: 'Sumber',
-          info: AudioSectionSourceInfo(
-            default$: 'lalai kepada output, tiada bendera',
-            alt: ({required String source}) =>
-                '''menggunakan bendera '${source}' ''',
-            inCaseOfDup:
-                '''tersirat kepada 'Main Semula' dengan '--audio-dup', tiada bendera''',
-          ),
-        ),
-        codec: AudioSectionCodec(
-          label: 'Codec',
-          info: AudioSectionCodecInfo(
-            default$: 'lalai kepada opus, tiada bendera',
-            alt: ({required String codec}) =>
-                '''menggunakan bendera '--audio-codec=${codec}' ''',
-            isAudioOnly: ({required String format, required String codec}) =>
-                '''Format: ${format}, memerlukan Codec: ${codec}''',
-          ),
-        ),
-        encoder: AudioSectionEncoder(
-          label: 'Pengekod',
-          info: AudioSectionEncoderInfo(
-            default$: 'lalai kepada yang pertama tersedia, tiada bendera',
-            alt: ({required String encoder}) =>
-                '''menggunakan bendera '--audio-encoder=${encoder}' ''',
-          ),
-        ),
-        format: AudioSectionFormat(
-          label: 'Format',
-          info: AudioSectionFormatInfo(
-            default$: ({required String format}) =>
-                '''menambah format ke '--record=laluan_simpan/fail.${format}' "''',
-          ),
-        ),
-        bitrate: AudioSectionBitrate(
-          label: 'Kadar Bit',
-          info: AudioSectionBitrateInfo(
-            default$: 'lalai kepada 128k, tiada bendera',
-            alt: ({required String bitrate}) =>
-                '''menggunakan bendera '--audio-bit-rate=${bitrate}K' ''',
-          ),
-        ),
-      ),
-      appSection: AppSection(
-        title: 'Mulakan Aplikasi',
-        select: AppSectionSelect(
-          label: 'Pilih Aplikasi',
-          info: AppSectionSelectInfo(
-            alt: ({required String app}) =>
-                '''menggunakan bendera '--start-app=${app}' ''',
-            fc: ({required String app}) =>
-                '''menggunakan bendera '--start-app=+${app}' ''',
-          ),
-        ),
-        forceClose: AppSectionForceClose(
-          label: 'Paksa Tutup Aplikasi Sebelum Memulakan',
-          info: AppSectionForceCloseInfo(
-            alt: '''awalkan nama pakej aplikasi dengan '+' ''',
-          ),
-        ),
-      ),
-      deviceSection: DeviceSection(
-        title: 'Peranti',
-        stayAwake: DeviceSectionStayAwake(
-          label: 'Kekal Berjaga',
-          info: DeviceSectionStayAwakeInfo(
-            default$:
-                'menghalang peranti daripada tidur, hanya berfungsi dengan sambungan USB',
-            alt: '''menggunakan bendera '--stay-awake' ''',
-          ),
-        ),
-        showTouches: DeviceSectionShowTouches(
-          label: 'Tunjukkan Sentuhan',
-          info: DeviceSectionShowTouchesInfo(
-            default$:
-                'menunjukkan sentuhan jari, hanya berfungsi dengan sentuhan fizikal pada peranti',
-            alt: '''menggunakan bendera '--show-touches' ''',
-          ),
-        ),
-        offDisplayStart: DeviceSectionOffDisplayStart(
-          label: 'Matikan Paparan Semasa Mula',
-          info: DeviceSectionOffDisplayStartInfo(
-            default$: 'matikan paparan peranti, semasa permulaan scrcpy',
-            alt: '''menggunakan bendera '--turn-screen-off' ''',
-          ),
-        ),
-        offDisplayExit: DeviceSectionOffDisplayExit(
-          label: 'Matikan Paparan Semasa Keluar',
-          info: DeviceSectionOffDisplayExitInfo(
-            default$: 'matikan paparan peranti, semasa keluar scrcpy',
-            alt: '''menggunakan bendera '--power-off-on-close' ''',
-          ),
-        ),
-        screensaver: DeviceSectionScreensaver(
-          label: 'Lumpuhkan Penjimat Skrin (HOST)',
-          info: DeviceSectionScreensaverInfo(
-            default$: 'lumpuhkan penjimat skrin',
-            alt: '''menggunakan bendera '--disable-screensaver' ''',
-          ),
-        ),
-      ),
-      windowSection: WindowSection(
-        title: 'Tetingkap',
-        hideWindow: WindowSectionHideWindow(
-          label: 'Sembunyikan Tetingkap',
-          info: WindowSectionHideWindowInfo(
-            default$: 'mulakan scrcpy tanpa tetingkap',
-            alt: '''menggunakan bendera '--no-window' ''',
-          ),
-        ),
-        borderless: WindowSectionBorderless(
-          label: 'Tanpa Sempadan',
-          info: WindowSectionBorderlessInfo(
-            default$: 'lumpuhkan hiasan tetingkap',
-            alt: '''menggunakan bendera '--window-borderless' ''',
-          ),
-        ),
-        alwaysOnTop: WindowSectionAlwaysOnTop(
-          label: 'Sentiasa di Atas',
-          info: WindowSectionAlwaysOnTopInfo(
-            default$: 'tetingkap scrcpy sentiasa di atas',
-            alt: '''menggunakan bendera '--always-on-top' ''',
-          ),
-        ),
-        timeLimit: WindowSectionTimeLimit(
-          label: 'Had Masa',
-          info: WindowSectionTimeLimitInfo(
-            default$: 'mengehadkan sesi scrcpy, dalam saat',
-            alt: ({required String time}) =>
-                '''menggunakan bendera '--time-limit=${time}' ''',
-          ),
-        ),
-      ),
-      addFlags: AddFlags(
-        title: 'Bendera Tambahan',
-        add: 'Tambah',
-        info: 'elakkan menggunakan bendera yang sudah menjadi pilihan',
-      ),
-      connectLoc: ConnectLoc(
-        title: 'Sambung',
-        withIp: ConnectLocWithIp(
-          label: 'Sambung dengan IP',
-          connect: 'Sambung',
-          connected: ({required String to}) => '''Disambungkan ke ${to}''',
-        ),
-        withMdns: ConnectLocWithMdns(
-          label: ({required String count}) => '''Peranti MDNS (${count})''',
-          info: ConnectLocWithMdnsInfo(
-            i1: 'Pastikan peranti anda dipasangkan dengan PC anda.',
-            i2: 'Jika peranti anda tidak muncul, cuba matikan dan hidupkan ADB Tanpa Wayar.',
-            i3: 'Peranti MDNS biasanya akan bersambung secara automatik jika dipasangkan.',
-          ),
-        ),
-        qrPair: ConnectLocQrPair(
-          label: 'Pemasangan QR',
-          pair: 'Pasangkan Peranti',
-          status: ConnectLocQrPairStatus(
-            cancelled: 'Pemasangan Dibatalkan',
-            success: 'Pemasangan Berjaya',
-            failed: 'Pemasangan Gagal',
-          ),
-          progress: ConnectLocQrPairProgress(
-            scan: '',
-            found: '',
-            awaiting: ({required String attempt}) => '',
-          ),
-        ),
-        unauthenticated: ConnectLocUnauthenticated(
-          info: ConnectLocUnauthenticatedInfo(
-            i1: 'Semak telefon anda.',
-            i2: 'Klik benarkan penyahpepijatan.',
-          ),
-        ),
-        failed: ConnectLocFailed(
-          info: ConnectLocFailedInfo(
-            i1: 'Pastikan peranti anda dipasangkan dengan PC anda.',
-            i2: 'Jika tidak, cuba matikan dan hidupkan Adb tanpa wayar.',
-            i3: 'Jika tidak dipasangkan: ',
-            i4: '1. Gunakan tetingkap pemasangan (butang kanan atas)',
-            i5: '2. Palamkan peranti anda ke PC anda, benarkan penyahpepijatan, dan cuba lagi.',
-          ),
-        ),
-      ),
-      testConfigLoc: TestConfigLoc(
-        title: 'Uji Konfigurasi',
-        preview: 'Pratonton Perintah',
-      ),
-      scrcpyManagerLoc: ScrcpyManagerLoc(
-        title: 'Pengurus Scrcpy',
-        check: 'Semak Kemas Kini',
-        current: ScrcpyManagerLocCurrent(
-          label: 'Semasa',
-          inUse: 'Digunakan',
-        ),
-        exec: ScrcpyManagerLocExec(
-          label: 'Buka Lokasi Boleh Laku',
-          info: 'Ubah suai dengan berhati-hati',
-        ),
-        infoPopup: ScrcpyManagerLocInfoPopup(
-          noUpdate: 'Tiada kemas kini tersedia',
-          error: 'Ralat menyemak kemas kini',
-        ),
-        updater: ScrcpyManagerLocUpdater(
-          label: 'Versi Baru Tersedia',
-          newVersion: 'Versi Baru',
-        ),
-      ),
-      settingsLoc: SettingsLoc(
-        title: 'Tetapan',
-        looks: SettingsLocLooks(
-          label: 'Penampilan',
-          mode: SettingsLocLooksMode(
-            label: 'Mod tema',
-            value: SettingsLocLooksModeValue(
-              dark: 'Gelap',
-              light: 'Cerah',
-              system: 'Sistem',
-            ),
-          ),
-          oldScheme: SettingsLocLooksOldScheme(
-            label: 'Guna skema warna Shadcn',
-          ),
-          cornerRadius: SettingsLocLooksCornerRadius(
-            label: 'Jejari sudut',
-          ),
-          accentColor: SettingsLocLooksAccentColor(
-            label: 'Warna aksen',
-          ),
-          tintLevel: SettingsLocLooksTintLevel(
-            label: 'Tahap warna',
-          ),
-          dimness: SettingsLocLooksDimness(
-            label: 'Keredupan',
-          ),
-          brightness: SettingsLocLooksBrightness(
-            label: 'Kecerahan',
-          ),
-          surfaceOpacity: SettingsLocLooksSurfaceOpacity(
-            label: 'Kelegapan permukaan',
-            info: 'Dikenalpasti penyebab UI berkelip di Linux',
-          ),
-          surfaceBlur: SettingsLocLooksSurfaceBlur(
-            label: 'Kekaburan permukaan',
-            info: 'Dikenalpasti penyebab UI berkelip di Linux',
-          ),
-        ),
-        behavior: SettingsLocBehavior(
-          label: 'Tingkah Laku Aplikasi',
-          language: SettingsLocBehaviorLanguage(
-            label: 'Bahasa',
-            info: 'Sesetengah bahasa dijana oleh AI',
-          ),
-          minimize: SettingsLocBehaviorMinimize(
-            label: 'Minimumkan',
-            value: SettingsLocBehaviorMinimizeValue(
-              tray: 'ke dulang',
-              taskbar: 'ke bar tugas',
-            ),
-          ),
-          windowSize: SettingsLocBehaviorWindowSize(
-            label: 'Ingat saiz tetingkap',
-            info: 'Ingat saiz tetingkap semasa keluar',
-          ),
-          autoArrange: SettingsLocBehaviorAutoArrange(
-            label: 'Susun automatik tetingkap scrcpy',
-            info: 'Susun tetingkap scrcpy secara automatik semasa mula',
-          ),
-          windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
-            label: 'Nisbah ketinggian tetingkap ke skrin',
-            labelShort: 'Tinggi %',
-            info:
-                'Nisbah ketinggian tetingkap scrcpy kepada ketinggian skrin utama. Min: 0.4, Maks: 1.0, Lalai: 0.88',
-          ),
-          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
-            label: 'Langkau mula-automatik jika sudah berjalan',
-            info:
-                'Apabila peranti disambungkan dan scrcpy ditetapkan untuk dimulakan secara automatik, jangan mulakannya jika sudah ada tikaian yang berjalan untuk peranti itu.',
-          ),
-          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
-            label: 'Tikaian baru menggantikan tikaian sedia ada',
-            info:
-                'Apabila menjalankan tikaian baru scrcpy secara manual, semua tikaian sedia ada untuk peranti yang sama dihentikan.',
-          ),
-        ),
-      ),
-      companionLoc: CompanionLoc(
-        title: 'Pendamping',
-        server: CompanionLocServer(
-          label: 'Konfigurasi Pelayan',
-          status: 'Status',
-          endpoint: CompanionLocServerEndpoint(
-            label: 'Titik akhir pelayan',
-          ),
-          name: CompanionLocServerName(
-            label: 'Nama pelayan',
-            info: 'Lalai: Scrcpy GUI',
-          ),
-          port: CompanionLocServerPort(
-            label: 'Port pelayan',
-            info: 'Lalai: 8080',
-          ),
-          secret: CompanionLocServerSecret(
-            label: 'Kunci API Pelayan',
-          ),
-          autoStart: CompanionLocServerAutoStart(
-            label: 'Mulakan pelayan semasa pelancaran',
-          ),
-        ),
-        client: CompanionLocClient(
-          clients: ({required String count}) => '''Disambungkan (${count})''',
-          blocked: ({required String count}) => '''Disekat (${count})''',
-          noClient: 'Tiada klien disambungkan',
-          noBlocked: 'Tiada klien disekat',
-        ),
-        qr: 'Imbas kod QR daripada aplikasi pendamping',
-      ),
-      aboutLoc: AboutLoc(
-        title: 'Perihal',
-        version: 'Versi',
-        author: 'Penulis',
-        credits: 'Penghargaan',
-      ),
-      quitDialogLoc: QuitDialogLoc(
-        title: 'Keluar dari GUI scrcpy?',
-        killRunning: QuitDialogLocKillRunning(
-          label: 'Hentikan instans yang sedang berjalan?',
-          info: ({required String count}) =>
-              '''${count} instans scrcpy. Instans tanpa tetingkap akan tetap dihentikan.''',
-        ),
-        disconnect: QuitDialogLocDisconnect(
-          label: 'Putuskan Sambungan ADB Tanpa Wayar?',
-          info: ({required String count}) => '''${count} peranti''',
-        ),
-      ),
-      disconnectDialogLoc: DisconnectDialogLoc(
-        title: ({required String name}) => '''Putuskan Sambungan ${name}?''',
-        hasRunning: DisconnectDialogLocHasRunning(
-          label: ({required String name, required String count}) =>
-              '''${name} mempunyai ${count} instans scrcpy yang sedang berjalan''',
-          info:
-              'Memutuskan sambungan akan menghentikan instans scrcpy yang sedang berjalan.',
-        ),
-      ),
-      closeDialogLoc: CloseDialogLoc(
-        notAllowed: 'Tidak Dibenarkan!',
-        overwrite: 'Timpa?',
-        nameExist: 'Nama sudah wujud!',
-        save: 'Simpan konfigurasi?',
-        commandPreview: 'Pratonton Perintah:',
-        name: 'Nama:',
-      ),
-      unsavedChangeDialogLoc: UnsavedChangeDialogLoc(
-        title: 'Sahkan keluar?',
-        contents: 'Perubahan yang tidak disimpan akan hilang.',
-      ),
-      serverDisclaimerLoc: ServerDisclaimerLoc(
-        title: 'Maklumat',
-        contents:
-            '''Amaran Keselamatan: Server pendamping menggunakan sambungan tidak disulitkan.\n\nHanya mulakan server jika anda disambungkan ke rangkaian peribadi yang anda percayai, seperti Wi-Fi rumah anda.''',
-      ),
-      ipHistoryLoc: IpHistoryLoc(
-        title: 'Sejarah',
-        empty: 'Tiada Sejarah',
-      ),
-      buttonLabelLoc: ButtonLabelLoc(
-        ok: 'OK',
-        confirm: 'Sahkan',
-        close: 'Tutup',
-        cancel: 'Batal',
-        stop: 'Hentikan',
-        testConfig: 'Uji Konfigurasi',
-        update: 'Kemas Kini',
-        info: 'Maklumat',
-        selectAll: 'Pilih Semua',
-        quit: 'Keluar',
-        discard: 'Buang',
-        overwrite: 'Timpa',
-        save: 'Simpan',
-        clear: 'Kosongkan',
-        delete: 'Padam',
-        serverAgree: 'Saya faham, mulakan pelayan',
-        reorder: 'Susun semula',
-        stopAll: 'Hentikan Semua',
-        filter: 'Tapis',
-        edit: 'Ubah',
-        override: 'Ubahsuai',
-        dontShowAgain: 'Jangan Tunjuk Lagi',
-        sponsor: 'Taja',
-        extractIcons: 'Ekstrak Ikon',
-      ),
-      statusLoc: StatusLoc(
-        failed: 'Gagal',
-        unauth: 'Tidak Disahkan',
-        error: 'Ralat',
-        latest: 'Terkini',
-        closing: 'Menutup',
-        copied: 'Disalin',
-        running: 'Sedang berjalan',
-        stopped: 'Dihentikan',
-        gettingInfo: 'Mendapatkan Maklumat',
-        noDevicesFound: 'Tiada peranti ditemui',
-      ),
-      commonLoc: CommonLoc(
-        default$: 'Lalai',
-        yes: 'Ya',
-        no: 'Tidak',
-        bundled: 'Dibundel',
-      ),
-      colorSchemeNameLoc: ColorSchemeNameLoc(
-        blue: 'Biru',
-        gray: 'Kelabu',
-        green: 'Hijau',
-        neutral: 'Neutral',
-        orange: 'Jingga',
-        red: 'Merah',
-        rose: 'Merah Jambu',
-        slate: 'Batu Tulis',
-        stone: 'Batu',
-        violet: 'Ungu',
-        yellow: 'Kuning',
-        zinc: 'Zink',
-      ),
-      configFiltersLoc: ConfigFiltersLoc(
-        label: ConfigFiltersLocLabel(
-          withApp: 'Dengan aplikasi',
-          virt: 'Paparan maya',
-        ),
-      ),
-      configOverrideLoc: ConfigOverrideLoc(
-        record: ConfigOverrideLocRecord(
-          label: 'Rakam',
-          openFolder: 'Buka Folder',
-        ),
-        landscape: ConfigOverrideLocLandscape(
-          label: 'Lanskap',
-          info: 'Hanya untuk paparan maya',
-        ),
-        mute: ConfigOverrideLocMute(
-          label: 'Senyap',
-        ),
-      ),
-      autoArrangeOriginLoc: AutoArrangeOriginLoc(
-        title: 'Susun-Automatik',
-        alignments: 'Penjajaran',
-        off: 'Matikan',
-        topLeft: 'Atas Kiri',
-        topRight: 'Atas Kanan',
-        centerLeft: 'Tengah Kiri',
-        centerRight: 'Tengah Kanan',
-        bottomLeft: 'Bawah Kiri',
-        bottomRight: 'Bawah Kanan',
-      ),
-    );
-LocalizationMessages get ja => LocalizationMessages(
-      homeLoc: HomeLoc(
-        title: 'ホーム',
-        devices: HomeLocDevices(
-          label: ({required String count}) => '''接続中のデバイス (${count})''',
-        ),
-      ),
-      deviceTileLoc: DeviceTileLoc(
-        runningInstances: ({required String count}) => '''実行中 (${count})''',
-        context: DeviceTileLocContext(
-          disconnect: '切断',
-          toWireless: 'ワイヤレスへ',
-          stopRunning: '実行中のscrcpyを停止',
-          scrcpy: 'Scrcpy',
-          all: 'すべて',
-          allScrcpy: 'すべてのscrcpyを強制終了',
-          manage: '管理',
-        ),
-      ),
-      loungeLoc: LoungeLoc(
-        controls: LoungeLocControls(
-          label: '操作',
-        ),
-        pinnedApps: LoungeLocPinnedApps(
-          label: 'ピン留めされたアプリ',
-        ),
-        launcher: LoungeLocLauncher(
-          label: 'アプリランチャー',
-        ),
-        running: LoungeLocRunning(
-          label: ({required String count}) => '''実行中のインスタンス (${count})''',
-        ),
-        appTile: LoungeLocAppTile(
-          contextMenu: LoungeLocAppTileContextMenu(
-            pin: ({required String config}) => '''${config} にピン留め''',
-            unpin: 'ピン留めを外す',
-            forceClose: '強制終了して開始',
-            andStart: (
-                    {required String configuration, required String config}) =>
-                '''${config} で''',
-            selectConfig: 'まず設定を選択してください',
-            startOn: ({required String config}) => '''${config} で開始''',
-            withOverrides: 'オーバーライドして開始',
-            packageName: 'パッケージ名',
-            resetIcon: 'アイコンをリセット',
-          ),
-          sections: LoungeLocAppTileSections(
-            pinned: 'ピン留め済み',
-            apps: 'アプリ',
-          ),
-          missingIcon: ({required String count}) => '''見つからないアイコン (${count})''',
-        ),
-        placeholders: LoungeLocPlaceholders(
-          config: '設定を選択',
-          app: 'アプリを選択',
-          search: '「/」を押して検索',
-        ),
-        tooltip: LoungeLocTooltip(
-          missingConfig: ({required String config}) =>
-              '''見つからない設定: ${config}''',
-          pin: 'アプリ/設定ペアをピン留め',
-          onConfig: ({required String config}) => '''設定: ${config}''',
-          hideAppName: 'アプリ名を非表示',
-          showAppName: 'アプリ名を表示',
-        ),
-        info: LoungeLocInfo(
-          emptySearch: 'アプリが見つかりません',
-          emptyPin: 'ピン留めされたアプリはありません',
-          emptyInstance: '実行中のインスタンスはありません',
-        ),
-      ),
-      iconExtractorDisclaimerLoc: IconExtractorDisclaimerLoc(
-        title: '免責事項',
-        contents: IconExtractorDisclaimerLocContents(
-          p1: 'これは実験的な機能であり、いくつかの制限があります：',
-          l1: 'apkのサイズによっては、apkのプルに時間がかかることがあります。',
-          l2: 'アダプティブアイコンはサポートされていないため、アイコンが欠落します。',
-          l3: '抽出されたアイコンは解像度が低い場合があります。',
-        ),
-      ),
-      configLoc: ConfigLoc(
-        label: ({required String count}) => '''設定 (${count})''',
-        new$: '作成',
-        select: '設定を選択',
-        details: '詳細を表示',
-        start: '開始',
-        empty: '設定が見つかりません',
-      ),
-      noDeviceDialogLoc: NoDeviceDialogLoc(
-        title: 'デバイス',
-        contentsEdit: '''デバイスが選択されていません。\nscrcpy設定を編集するにはデバイスを選択してください。''',
-        contentsStart: '''デバイスが選択されていません。\nscrcpyを開始するにはデバイスを選択してください。''',
-        contentsNew: '''デバイスが選択されていません。\nscrcpy設定を作成するにはデバイスを選択してください。''',
-      ),
-      noConfigDialogLoc: NoConfigDialogLoc(
-        title: '設定',
-        contents: '''設定が選択されていません。\n開始するscrcpy設定を選択してください。''',
-      ),
-      deleteConfigDialogLoc: DeleteConfigDialogLoc(
-        title: '確認',
-        contents: ({required String configname}) => '''${configname}を削除しますか？''',
-      ),
-      deviceSettingsLoc: DeviceSettingsLoc(
-        title: 'デバイス設定',
-        info: '情報',
-        refresh: '情報を更新',
-        rename: DeviceSettingsLocRename(
-          label: '名前を変更',
-          info: '[Enter]を押して名前を適用',
-        ),
-        autoConnect: DeviceSettingsLocAutoConnect(
-          label: '自動接続',
-          info: 'ワイヤレスデバイスを自動接続',
-        ),
-        onConnected: DeviceSettingsLocOnConnected(
-          label: '接続時',
-          info: 'デバイス接続時に選択した設定でscrcpyを(1)開始',
-        ),
-        doNothing: '何もしない',
-        scrcpyInfo: DeviceSettingsLocScrcpyInfo(
-          fetching: 'scrcpy情報を取得中',
-          label: 'Scrcpy情報',
-          name: ({required String name}) => '''名前: ${name}''',
-          id: ({required String id}) => '''ID: ${id}''',
-          model: ({required String model}) => '''モデル: ${model}''',
-          version: ({required String version}) =>
-              '''Androidバージョン: ${version}''',
-          displays: ({required String count}) => '''ディスプレイ (${count})''',
-          cameras: ({required String count}) => '''カメラ (${count})''',
-          videoEnc: ({required String count}) => '''ビデオエンコーダー (${count})''',
-          audioEnc: ({required String count}) => '''オーディオエンコーダー (${count})''',
-        ),
-      ),
-      configManagerLoc: ConfigManagerLoc(
-        title: '設定マネージャー',
-      ),
-      configScreenLoc: ConfigScreenLoc(
-        title: 'コンフィグ設定',
-        connectionLost: 'デバイスへの接続が失われました',
-        similarExist: ({required String configName}) => '''${configName}の複製''',
-      ),
-      logScreenLoc: LogScreenLoc(
-        title: 'テストログ',
-        dialog: LogScreenLocDialog(
-          title: 'コマンド',
-        ),
-      ),
-      renameSection: RenameSection(
-        title: '名前を変更',
-      ),
-      modeSection: ModeSection(
-        title: 'モード',
-        saveFolder: ModeSectionSaveFolder(
-          label: '保存フォルダー',
-          info: '''保存パスを'--record=保存パス/ファイル'に追加します''',
-        ),
-        mainMode: ModeSectionMainMode(
-          label: 'モード',
-          mirror: 'ミラー',
-          record: '録画',
-          info: ModeSectionMainModeInfo(
-            default$: 'ミラーまたは録画、ミラーにはフラグなし',
-            alt: ''''--record='フラグを使用''',
-          ),
-        ),
-        scrcpyMode: ModeSectionScrcpyMode(
-          both: '音声 + 映像',
-          audioOnly: '音声のみ',
-          videoOnly: '映像のみ',
-          info: ModeSectionScrcpyModeInfo(
-            default$: 'デフォルトは両方、フラグなし',
-            alt: ({required String command}) => ''''${command}'フラグを使用''',
-          ),
-        ),
-      ),
-      videoSection: VideoSection(
-        title: '映像',
-        displays: VideoSectionDisplays(
-          label: 'ディスプレイ',
-          info: VideoSectionDisplaysInfo(
-            default$: 'デフォルトは利用可能な最初のもの、フラグなし',
-            alt: ''''--display-id='フラグを使用''',
-          ),
-          virtual: VideoSectionDisplaysVirtual(
-            label: '仮想ディスプレイ設定',
-            newDisplay: VideoSectionDisplaysVirtualNewDisplay(
-              label: '新しいディスプレイ',
-              info: VideoSectionDisplaysVirtualNewDisplayInfo(
-                alt: ''''--new-display'フラグを使用''',
-              ),
-            ),
-            resolution: VideoSectionDisplaysVirtualResolution(
-              label: '解像度',
-              info: VideoSectionDisplaysVirtualResolutionInfo(
-                default$: 'デバイスの解像度にデフォルト設定',
-                alt: ({required String res}) =>
-                    '''解像度を'--new-display=${res}'フラグに追加''',
-              ),
-            ),
-            dpi: VideoSectionDisplaysVirtualDpi(
-              label: 'DPI',
-              info: VideoSectionDisplaysVirtualDpiInfo(
-                default$: 'デバイスのDPIにデフォルト設定',
-                alt: ({required String res, required String dpi}) =>
-                    '''DPIを'--new-display=${res}/${dpi}'フラグに追加''',
-              ),
-            ),
-            deco: VideoSectionDisplaysVirtualDeco(
-              label: 'システム装飾を無効化',
-              info: VideoSectionDisplaysVirtualDecoInfo(
-                default$: 'デフォルトはシステム装飾あり',
-                alt: ''''--no-vd-system-decorations'フラグを使用''',
-              ),
-            ),
-            preserve: VideoSectionDisplaysVirtualPreserve(
-              label: 'アプリを維持',
-              info: VideoSectionDisplaysVirtualPreserveInfo(
-                default$: 'scrcpyセッション終了時にアプリはデフォルトで破棄されます',
-                alt:
-                    '''セッション終了時にアプリをメインディスプレイに移動; '--no-vd-destroy-content'フラグを使用''',
-              ),
-            ),
-          ),
-        ),
-        codec: VideoSectionCodec(
-          label: 'コーデック',
-          info: VideoSectionCodecInfo(
-            default$: 'デフォルトはh264、フラグなし',
-            alt: ({required String codec}) =>
-                ''''--video-codec=${codec}'フラグを使用''',
-          ),
-        ),
-        encoder: VideoSectionEncoder(
-          label: 'エンコーダー',
-          info: VideoSectionEncoderInfo(
-            default$: 'デフォルトは利用可能な最初のもの、フラグなし',
-            alt: ({required String encoder}) =>
-                ''''--video-encoder=${encoder}'フラグを使用''',
-          ),
-        ),
-        format: VideoSectionFormat(
-          label: 'フォーマット',
-          info: VideoSectionFormatInfo(
-            default$: ({required String format}) =>
-                '''フォーマットを'--record=保存パス/ファイル${format}'に追加"''',
-          ),
-        ),
-        bitrate: VideoSectionBitrate(
-          label: 'ビットレート',
-          info: VideoSectionBitrateInfo(
-            default$: 'デフォルトは8M、フラグなし',
-            alt: ({required String bitrate}) =>
-                ''''--video-bit-rate=${bitrate}M'フラグを使用''',
-          ),
-        ),
-        fpsLimit: VideoSectionFpsLimit(
-          label: 'FPS制限',
-          info: VideoSectionFpsLimitInfo(
-            default$: '設定されない限りフラグなし',
-            alt: ({required String fps}) => ''''--max-fps=${fps}'フラグを使用''',
-          ),
-        ),
-        resolutionScale: VideoSectionResolutionScale(
-          label: '解像度スケール',
-          info: VideoSectionResolutionScaleInfo(
-            default$: 'デバイスの解像度に基づいて計算、設定されない限りフラグなし',
-            alt: ({required String size}) => ''''--max-size=${size}'フラグを使用''',
-          ),
-        ),
-      ),
-      audioSection: AudioSection(
-        title: '音声',
-        duplicate: AudioSectionDuplicate(
-          label: '音声を複製',
-          info: AudioSectionDuplicateInfo(
-            default$: 'Android 13以上のみ',
-            alt: ''''--audio-dup' フラグを使用''',
-          ),
-        ),
-        source: AudioSectionSource(
-          label: 'ソース',
-          info: AudioSectionSourceInfo(
-            default$: 'デフォルトは出力、フラグなし',
-            alt: ({required String source}) => ''''${source}'フラグを使用''',
-            inCaseOfDup: ''''--audio-dup' で'再生'に暗黙的に設定、フラグなし''',
-          ),
-        ),
-        codec: AudioSectionCodec(
-          label: 'コーデック',
-          info: AudioSectionCodecInfo(
-            default$: 'デフォルトはopus、フラグなし',
-            alt: ({required String codec}) =>
-                ''''--audio-codec=${codec}'フラグを使用''',
-            isAudioOnly: ({required String format, required String codec}) =>
-                '''フォーマット: ${format}、コーデック: ${codec}が必要''',
-          ),
-        ),
-        encoder: AudioSectionEncoder(
-          label: 'エンコーダー',
-          info: AudioSectionEncoderInfo(
-            default$: 'デフォルトは利用可能な最初のもの、フラグなし',
-            alt: ({required String encoder}) =>
-                ''''--audio-encoder=${encoder}'フラグを使用''',
-          ),
-        ),
-        format: AudioSectionFormat(
-          label: 'フォーマット',
-          info: AudioSectionFormatInfo(
-            default$: ({required String format}) =>
-                '''フォーマットを'--record=保存パス/ファイル.${format}'に追加"''',
-          ),
-        ),
-        bitrate: AudioSectionBitrate(
-          label: 'ビットレート',
-          info: AudioSectionBitrateInfo(
-            default$: 'デフォルトは128k、フラグなし',
-            alt: ({required String bitrate}) =>
-                ''''--audio-bit-rate=${bitrate}K'フラグを使用''',
-          ),
-        ),
-      ),
-      appSection: AppSection(
-        title: 'アプリを起動',
-        select: AppSectionSelect(
-          label: 'アプリを選択',
-          info: AppSectionSelectInfo(
-            alt: ({required String app}) => ''''--start-app=${app}'フラグを使用''',
-            fc: ({required String app}) => ''''--start-app=+${app}'フラグを使用''',
-          ),
-        ),
-        forceClose: AppSectionForceClose(
-          label: '起動前にアプリを強制終了',
-          info: AppSectionForceCloseInfo(
-            alt: '''アプリのパッケージ名の前に'+'を付ける''',
-          ),
-        ),
-      ),
-      deviceSection: DeviceSection(
-        title: 'デバイス',
-        stayAwake: DeviceSectionStayAwake(
-          label: 'スリープしない',
-          info: DeviceSectionStayAwakeInfo(
-            default$: 'デバイスのスリープを防止、USB接続時のみ動作',
-            alt: ''''--stay-awake'フラグを使用''',
-          ),
-        ),
-        showTouches: DeviceSectionShowTouches(
-          label: 'タッチを表示',
-          info: DeviceSectionShowTouchesInfo(
-            default$: '指のタッチを表示、デバイスでの物理的なタッチのみ動作',
-            alt: ''''--show-touches'フラグを使用''',
-          ),
-        ),
-        offDisplayStart: DeviceSectionOffDisplayStart(
-          label: '起動時にディスプレイをオフ',
-          info: DeviceSectionOffDisplayStartInfo(
-            default$: 'scrcpy起動時にデバイスのディスプレイをオフにする',
-            alt: ''''--turn-screen-off'フラグを使用''',
-          ),
-        ),
-        offDisplayExit: DeviceSectionOffDisplayExit(
-          label: '終了時にディスプレイをオフ',
-          info: DeviceSectionOffDisplayExitInfo(
-            default$: 'scrcpy終了時にデバイスのディスプレイをオフにする',
-            alt: ''''--power-off-on-close'フラグを使用''',
-          ),
-        ),
-        screensaver: DeviceSectionScreensaver(
-          label: 'スクリーンセーバーを無効化 (ホスト)',
-          info: DeviceSectionScreensaverInfo(
-            default$: 'スクリーンセーバーを無効化',
-            alt: ''''--disable-screensaver'フラグを使用''',
-          ),
-        ),
-      ),
-      windowSection: WindowSection(
-        title: 'ウィンドウ',
-        hideWindow: WindowSectionHideWindow(
-          label: 'ウィンドウを非表示',
-          info: WindowSectionHideWindowInfo(
-            default$: 'ウィンドウなしでscrcpyを起動',
-            alt: ''''--no-window'フラグを使用''',
-          ),
-        ),
-        borderless: WindowSectionBorderless(
-          label: 'ボーダーレス',
-          info: WindowSectionBorderlessInfo(
-            default$: 'ウィンドウの装飾を無効化',
-            alt: ''''--window-borderless'フラグを使用''',
-          ),
-        ),
-        alwaysOnTop: WindowSectionAlwaysOnTop(
-          label: '常に手前に表示',
-          info: WindowSectionAlwaysOnTopInfo(
-            default$: 'scrcpyウィンドウを常に手前に表示',
-            alt: ''''--always-on-top'フラグを使用''',
-          ),
-        ),
-        timeLimit: WindowSectionTimeLimit(
-          label: '時間制限',
-          info: WindowSectionTimeLimitInfo(
-            default$: 'scrcpyセッションを制限（秒単位）',
-            alt: ({required String time}) => ''''--time-limit=${time}'フラグを使用''',
-          ),
-        ),
-      ),
-      addFlags: AddFlags(
-        title: '追加フラグ',
-        add: '追加',
-        info: 'すでにオプションとして存在するフラグの使用は避けてください',
-      ),
-      connectLoc: ConnectLoc(
-        title: '接続',
-        withIp: ConnectLocWithIp(
-          label: 'IPで接続',
-          connect: '接続',
-          connected: ({required String to}) => '''${to}に接続済み''',
-        ),
-        withMdns: ConnectLocWithMdns(
-          label: ({required String count}) => '''MDNSデバイス (${count})''',
-          info: ConnectLocWithMdnsInfo(
-            i1: 'デバイスがPCとペアリングされていることを確認してください。',
-            i2: 'デバイスが表示されない場合は、ワイヤレスADBをオフにしてからオンにしてみてください。',
-            i3: 'MDNSデバイスは通常、ペアリングされていれば自動的に接続されます。',
-          ),
-        ),
-        qrPair: ConnectLocQrPair(
-          label: 'QRペアリング',
-          pair: 'デバイスをペアリング',
-          status: ConnectLocQrPairStatus(
-            cancelled: 'ペアリングがキャンセルされました',
-            success: 'ペアリングに成功しました',
-            failed: 'ペアリングに失敗しました',
-          ),
-          progress: ConnectLocQrPairProgress(
-            scan: '',
-            found: '',
-            awaiting: ({required String attempt}) => '',
-          ),
-        ),
-        unauthenticated: ConnectLocUnauthenticated(
-          info: ConnectLocUnauthenticatedInfo(
-            i1: 'スマートフォンを確認してください。',
-            i2: 'デバッグを許可をクリックしてください。',
-          ),
-        ),
-        failed: ConnectLocFailed(
-          info: ConnectLocFailedInfo(
-            i1: 'デバイスがPCとペアリングされていることを確認してください。',
-            i2: 'そうでない場合は、ワイヤレスAdbをオフにしてからオンにしてみてください。',
-            i3: 'ペアリングされていない場合: ',
-            i4: '1. ペアリングウィンドウを使用（右上のボタン）',
-            i5: '2. デバイスをPCに接続し、デバッグを許可して再試行してください。',
-          ),
-        ),
-      ),
-      testConfigLoc: TestConfigLoc(
-        title: '設定をテスト',
-        preview: 'コマンドプレビュー',
-      ),
-      scrcpyManagerLoc: ScrcpyManagerLoc(
-        title: 'Scrcpyマネージャー',
-        check: '更新を確認',
-        current: ScrcpyManagerLocCurrent(
-          label: '現在',
-          inUse: '使用中',
-        ),
-        exec: ScrcpyManagerLocExec(
-          label: '実行ファイルの場所を開く',
-          info: '注意して変更してください',
-        ),
-        infoPopup: ScrcpyManagerLocInfoPopup(
-          noUpdate: '利用可能な更新はありません',
-          error: '更新の確認中にエラーが発生しました',
-        ),
-        updater: ScrcpyManagerLocUpdater(
-          label: '新しいバージョンが利用可能です',
-          newVersion: '新バージョン',
-        ),
-      ),
-      settingsLoc: SettingsLoc(
-        title: '設定',
-        looks: SettingsLocLooks(
-          label: '外観',
-          mode: SettingsLocLooksMode(
-            label: 'テーマモード',
-            value: SettingsLocLooksModeValue(
-              dark: 'ダーク',
-              light: 'ライト',
-              system: 'システム',
-            ),
-          ),
-          oldScheme: SettingsLocLooksOldScheme(
-            label: 'Shadcnカラースキームを使用',
-          ),
-          cornerRadius: SettingsLocLooksCornerRadius(
-            label: '角の半径',
-          ),
-          accentColor: SettingsLocLooksAccentColor(
-            label: 'アクセントカラー',
-          ),
-          tintLevel: SettingsLocLooksTintLevel(
-            label: '色合いのレベル',
-          ),
-          dimness: SettingsLocLooksDimness(
-            label: '薄暗さ',
-          ),
-          brightness: SettingsLocLooksBrightness(
-            label: '明るさ',
-          ),
-          surfaceOpacity: SettingsLocLooksSurfaceOpacity(
-            label: '表面の不透明度',
-            info: 'Linuxでちらつきを引き起こすことが知られています',
-          ),
-          surfaceBlur: SettingsLocLooksSurfaceBlur(
-            label: '表面のぼかし',
-            info: 'Linuxでちらつきを引き起こすことが知られています',
-          ),
-        ),
-        behavior: SettingsLocBehavior(
-          label: 'アプリの動作',
-          language: SettingsLocBehaviorLanguage(
-            label: '言語',
-            info: '一部の言語はAIによって生成されています',
-          ),
-          minimize: SettingsLocBehaviorMinimize(
-            label: '閉じる時に最小化',
-            value: SettingsLocBehaviorMinimizeValue(
-              tray: 'トレイへ',
-              taskbar: 'タスクバーへ',
-            ),
-          ),
-          windowSize: SettingsLocBehaviorWindowSize(
-            label: 'ウィンドウサイズを記憶',
-            info: '終了時にウィンドウサイズを記憶',
-          ),
-          autoArrange: SettingsLocBehaviorAutoArrange(
-            label: 'scrcpyウィンドウの自動配置',
-            info: '起動時にscrcpyウィンドウを自動的に配置',
-          ),
-          windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
-            label: 'ウィンドウと画面の高さの比率',
-            labelShort: '高さ %',
-            info:
-                'scrcpyウィンドウの高さとプライマリスクリーンの高さの比率。最小: 0.4, 最大: 1.0, デフォルト: 0.88',
-          ),
-          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
-            label: '実行中の場合は自動起動をスキップ',
-            info:
-                'デバイスが接続され、scrcpyが自動的に起動するように設定されている場合、そのデバイスに対してすでにインスタンスが実行中であれば起動しません。',
-          ),
-          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
-            label: '新しいインスタンスが既存のインスタンスを置き換える',
-            info: 'scrcpyの新しいインスタンスを手動で実行すると、同じデバイスの既存のすべてのインスタンスが停止します。',
-          ),
-        ),
-      ),
-      companionLoc: CompanionLoc(
-        title: 'コンパニオン',
-        server: CompanionLocServer(
-          label: 'サーバー設定',
-          status: 'ステータス',
-          endpoint: CompanionLocServerEndpoint(
-            label: 'サーバーエンドポイント',
-          ),
-          name: CompanionLocServerName(
-            label: 'サーバー名',
-            info: 'デフォルト: Scrcpy GUI',
-          ),
-          port: CompanionLocServerPort(
-            label: 'サーバーポート',
-            info: 'デフォルト: 8080',
-          ),
-          secret: CompanionLocServerSecret(
-            label: 'サーバーAPIキー',
-          ),
-          autoStart: CompanionLocServerAutoStart(
-            label: '起動時にサーバーを開始',
-          ),
-        ),
-        client: CompanionLocClient(
-          clients: ({required String count}) => '''接続中 (${count})''',
-          blocked: ({required String count}) => '''ブロック済み (${count})''',
-          noClient: '接続中のクライアントなし',
-          noBlocked: 'ブロック済みのクライアントなし',
-        ),
-        qr: 'コンパニオンアプリからQRコードをスキャン',
-      ),
-      aboutLoc: AboutLoc(
-        title: '概要',
-        version: 'バージョン',
-        author: '作成者',
-        credits: 'クレジット',
-      ),
-      quitDialogLoc: QuitDialogLoc(
-        title: 'Scrcpy GUIを終了しますか？',
-        killRunning: QuitDialogLocKillRunning(
-          label: '実行中のプロセスを終了しますか？',
-          info: ({required String count}) =>
-              '''${count} 個のscrcpy。ウィンドウのないインスタンスは、とにかく停止されます。''',
-        ),
-        disconnect: QuitDialogLocDisconnect(
-          label: 'ワイヤレスADBを切断しますか？',
-          info: ({required String count}) => '''${count} 台のデバイス''',
-        ),
-      ),
-      disconnectDialogLoc: DisconnectDialogLoc(
-        title: ({required String name}) => '''${name}を切断しますか？''',
-        hasRunning: DisconnectDialogLocHasRunning(
-          label: ({required String name, required String count}) =>
-              '''${name}には実行中のscrcpyが${count}個あります''',
-          info: '切断するとscrcpyが終了します',
-        ),
-      ),
-      closeDialogLoc: CloseDialogLoc(
-        notAllowed: '許可されていません！',
-        overwrite: '上書きしますか？',
-        nameExist: '名前はすでに存在します！',
-        save: '設定を保存しますか？',
-        commandPreview: 'コマンドプレビュー:',
-        name: '名前:',
-      ),
-      unsavedChangeDialogLoc: UnsavedChangeDialogLoc(
-        title: '終了を確認しますか？',
-        contents: '保存されていない変更は失われます。',
-      ),
-      serverDisclaimerLoc: ServerDisclaimerLoc(
-        title: '免責事項',
-        contents:
-            '''セキュリティ警告: コンパニオンサーバーは暗号化されていない接続を使用します。\n\n自宅のWi-Fiなど、信頼できるプライベートネットワークに接続している場合にのみサーバーを起動してください。''',
-      ),
-      ipHistoryLoc: IpHistoryLoc(
-        title: '履歴',
-        empty: '履歴なし',
-      ),
-      buttonLabelLoc: ButtonLabelLoc(
-        ok: 'OK',
-        confirm: '確認',
-        close: '閉じる',
-        cancel: 'キャンセル',
-        stop: '停止',
-        testConfig: '設定をテスト',
-        update: '更新',
-        info: '情報',
-        selectAll: 'すべて選択',
-        quit: '終了',
-        discard: '破棄',
-        overwrite: '上書き',
-        save: '保存',
-        clear: 'クリア',
-        delete: '削除',
-        serverAgree: '理解しました、サーバーを開始',
-        reorder: '並べ替え',
-        stopAll: '全て停止',
-        filter: 'フィルター',
-        edit: '編集',
-        override: 'オーバーライド',
-        dontShowAgain: '再表示しない',
-        sponsor: 'スポンサー',
-        extractIcons: 'アイコンを抽出',
-      ),
-      statusLoc: StatusLoc(
-        failed: '失敗',
-        unauth: '未認証',
-        error: 'エラー',
-        latest: '最新',
-        closing: '閉じています',
-        copied: 'コピーしました',
-        running: '実行中',
-        stopped: '停止済み',
-        gettingInfo: '情報を取得中',
-        noDevicesFound: 'デバイスが見つかりません',
-      ),
-      commonLoc: CommonLoc(
-        default$: 'デフォルト',
-        yes: 'はい',
-        no: 'いいえ',
-        bundled: 'バンドル版',
-      ),
-      colorSchemeNameLoc: ColorSchemeNameLoc(
-        blue: '青',
-        gray: 'グレー',
-        green: '緑',
-        neutral: 'ニュートラル',
-        orange: 'オレンジ',
-        red: '赤',
-        rose: 'ローズ',
-        slate: 'スレート',
-        stone: 'ストーン',
-        violet: 'バイオレット',
-        yellow: 'イエロー',
-        zinc: 'ジンク',
-      ),
-      configFiltersLoc: ConfigFiltersLoc(
-        label: ConfigFiltersLocLabel(
-          withApp: 'アプリあり',
-          virt: '仮想ディスプレイ',
-        ),
-      ),
-      configOverrideLoc: ConfigOverrideLoc(
-        record: ConfigOverrideLocRecord(
-          label: '録画',
-          openFolder: 'フォルダーを開く',
-        ),
-        landscape: ConfigOverrideLocLandscape(
-          label: '横向き',
-          info: '仮想ディスプレイのみ',
-        ),
-        mute: ConfigOverrideLocMute(
-          label: 'ミュート',
-        ),
-      ),
-      autoArrangeOriginLoc: AutoArrangeOriginLoc(
-        title: '自動配置',
-        alignments: '配置',
-        off: 'オフ',
-        topLeft: '左上',
-        topRight: '右上',
-        centerLeft: '中央左',
-        centerRight: '中央右',
-        bottomLeft: '左下',
-        bottomRight: '右下',
-      ),
-    );
-LocalizationMessages get zh => LocalizationMessages(
-      homeLoc: HomeLoc(
-        title: '首页',
-        devices: HomeLocDevices(
-          label: ({required String count}) => '''已连接设备 (${count})''',
-        ),
-      ),
-      deviceTileLoc: DeviceTileLoc(
-        runningInstances: ({required String count}) => '''运行中 (${count})''',
-        context: DeviceTileLocContext(
-          disconnect: '断开连接',
-          toWireless: '通过无线连接',
-          stopRunning: '停止运行 scrcpy',
-          scrcpy: 'Scrcpy',
-          all: '全部',
-          allScrcpy: '停止所有 scrcpy',
-          manage: '管理',
-        ),
-      ),
-      loungeLoc: LoungeLoc(
-        controls: LoungeLocControls(
-          label: '控制',
-        ),
-        pinnedApps: LoungeLocPinnedApps(
-          label: '固定应用',
-        ),
-        launcher: LoungeLocLauncher(
-          label: '应用启动器',
-        ),
-        running: LoungeLocRunning(
-          label: ({required String count}) => '''运行实例 (${count})''',
-        ),
-        appTile: LoungeLocAppTile(
-          contextMenu: LoungeLocAppTileContextMenu(
-            pin: ({required String config}) => '''在 ${config} 上固定''',
-            unpin: '取消固定',
-            forceClose: '强制关闭并启动',
-            andStart: (
-                    {required String configuration, required String config}) =>
-                '''在 ${configuration} 上''',
-            selectConfig: '请先选择配置',
-            startOn: ({required String config}) => '''在 ${config} 上启动''',
-            withOverrides: '使用覆盖启动',
-            packageName: '包名',
-            resetIcon: '重置图标',
-          ),
-          sections: LoungeLocAppTileSections(
-            pinned: '已固定',
-            apps: '应用',
-          ),
-          missingIcon: ({required String count}) => '''缺失图标 (${count})''',
-        ),
-        placeholders: LoungeLocPlaceholders(
-          config: '选择配置',
-          app: '选择应用',
-          search: '''按 '/' 搜索''',
-        ),
-        tooltip: LoungeLocTooltip(
-          missingConfig: ({required String config}) => '''缺失配置: ${config}''',
-          pin: '固定应用/配置对',
-          onConfig: ({required String config}) => '''在: ${config}''',
-          hideAppName: '隐藏应用名称',
-          showAppName: '显示应用名称',
-        ),
-        info: LoungeLocInfo(
-          emptySearch: '未找到应用',
-          emptyPin: '无固定应用',
-          emptyInstance: '无运行实例',
-        ),
-      ),
-      iconExtractorDisclaimerLoc: IconExtractorDisclaimerLoc(
-        title: '免责声明',
-        contents: IconExtractorDisclaimerLocContents(
-          p1: '这是一个实验性功能，存在一些限制：',
-          l1: '拉取apk可能需要很长时间，具体取决于apk的大小。',
-          l2: '不支持自适应图标，导致图标丢失。',
-          l3: '提取的图标分辨率可能较低。',
-        ),
-      ),
-      configLoc: ConfigLoc(
-        label: ({required String count}) => '''配置 (${count})''',
-        new$: '创建',
-        select: '选择配置',
-        details: '显示详情',
-        start: '启动',
-        empty: '未找到配置',
-      ),
-      noDeviceDialogLoc: NoDeviceDialogLoc(
-        title: '设备',
-        contentsEdit: '''未选择设备。\n选择设备以编辑 scrcpy 配置。''',
-        contentsStart: '''未选择设备。\n选择设备以启动 scrcpy。''',
-        contentsNew: '''未选择设备。\n选择设备以创建 scrcpy 配置。''',
-      ),
-      noConfigDialogLoc: NoConfigDialogLoc(
-        title: '配置',
-        contents: '''未选择配置。\n选择 scrcpy 配置以启动。''',
-      ),
-      deleteConfigDialogLoc: DeleteConfigDialogLoc(
-        title: '确认',
-        contents: ({required String configname}) => '''删除 ${configname}？''',
-      ),
-      deviceSettingsLoc: DeviceSettingsLoc(
-        title: '设备设置',
-        info: '信息',
-        refresh: '刷新信息',
-        rename: DeviceSettingsLocRename(
-          label: '重命名',
-          info: '按 [Enter] 应用名称',
-        ),
-        autoConnect: DeviceSettingsLocAutoConnect(
-          label: '自动连接',
-          info: '自动连接无线设备',
-        ),
-        onConnected: DeviceSettingsLocOnConnected(
-          label: '连接时',
-          info: '设备连接时使用选定配置启动 (1) scrcpy',
-        ),
-        doNothing: '不执行任何操作',
-        scrcpyInfo: DeviceSettingsLocScrcpyInfo(
-          fetching: '获取 scrcpy 信息',
-          label: 'Scrcpy 信息',
-          name: ({required String name}) => '''名称: ${name}''',
-          id: ({required String id}) => '''ID: ${id}''',
-          model: ({required String model}) => '''型号: ${model}''',
-          version: ({required String version}) => '''Android 版本: ${version}''',
-          displays: ({required String count}) => '''显示器 (${count})''',
-          cameras: ({required String count}) => '''摄像头 (${count})''',
-          videoEnc: ({required String count}) => '''视频编码器 (${count})''',
-          audioEnc: ({required String count}) => '''音频编码器 (${count})''',
-        ),
-      ),
-      configManagerLoc: ConfigManagerLoc(
-        title: '配置管理器',
-      ),
-      configScreenLoc: ConfigScreenLoc(
-        title: '配置设置',
-        connectionLost: '与设备连接丢失',
-        similarExist: ({required String configName}) => '''${configName} 的副本''',
-      ),
-      logScreenLoc: LogScreenLoc(
-        title: '测试日志',
-        dialog: LogScreenLocDialog(
-          title: '命令',
-        ),
-      ),
-      renameSection: RenameSection(
-        title: '重命名',
-      ),
-      modeSection: ModeSection(
-        title: '模式',
-        saveFolder: ModeSectionSaveFolder(
-          label: '保存文件夹',
-          info: '''将保存路径附加到 '--record=savepath/file' ''',
-        ),
-        mainMode: ModeSectionMainMode(
-          label: '模式',
-          mirror: '镜像',
-          record: '录制',
-          info: ModeSectionMainModeInfo(
-            default$: '镜像或录制，镜像无需标志',
-            alt: '''使用 '--record=' 标志''',
-          ),
-        ),
-        scrcpyMode: ModeSectionScrcpyMode(
-          both: '音频 + 视频',
-          audioOnly: '仅音频',
-          videoOnly: '仅视频',
-          info: ModeSectionScrcpyModeInfo(
-            default$: '默认为两者，无需标志',
-            alt: ({required String command}) => '''使用 '${command}' 标志''',
-          ),
-        ),
-      ),
-      videoSection: VideoSection(
-        title: '视频',
-        displays: VideoSectionDisplays(
-          label: '显示器',
-          info: VideoSectionDisplaysInfo(
-            default$: '默认为第一个可用，无需标志',
-            alt: '''使用 '--display-id=' 标志''',
-          ),
-          virtual: VideoSectionDisplaysVirtual(
-            label: '虚拟显示器设置',
-            newDisplay: VideoSectionDisplaysVirtualNewDisplay(
-              label: '新显示器',
-              info: VideoSectionDisplaysVirtualNewDisplayInfo(
-                alt: '''使用 '--new-display' 标志''',
-              ),
-            ),
-            resolution: VideoSectionDisplaysVirtualResolution(
-              label: '分辨率',
-              info: VideoSectionDisplaysVirtualResolutionInfo(
-                default$: '默认为设备分辨率',
-                alt: ({required String res}) =>
-                    '''将分辨率附加到 '--new-display=${res}' 标志''',
-              ),
-            ),
-            dpi: VideoSectionDisplaysVirtualDpi(
-              label: 'DPI',
-              info: VideoSectionDisplaysVirtualDpiInfo(
-                default$: '默认为设备 DPI',
-                alt: ({required String res, required String dpi}) =>
-                    '''将 DPI 附加到 '--new-display=${res}/${dpi}' 标志''',
-              ),
-            ),
-            deco: VideoSectionDisplaysVirtualDeco(
-              label: '禁用系统装饰',
-              info: VideoSectionDisplaysVirtualDecoInfo(
-                default$: '默认启用系统装饰',
-                alt: '''使用 '--no-vd-system-decorations' 标志''',
-              ),
-            ),
-            preserve: VideoSectionDisplaysVirtualPreserve(
-              label: '保留应用',
-              info: VideoSectionDisplaysVirtualPreserveInfo(
-                default$: 'scrcpy 会话结束时应用默认被销毁',
-                alt: '''会话结束时将应用移动到主显示器；使用 '--no-vd-destroy-content' 标志''',
-              ),
-            ),
-          ),
-        ),
-        codec: VideoSectionCodec(
-          label: '编解码器',
-          info: VideoSectionCodecInfo(
-            default$: '默认为 h264，无需标志',
-            alt: ({required String codec}) =>
-                '''使用 '--video-codec=${codec}' 标志''',
-          ),
-        ),
-        encoder: VideoSectionEncoder(
-          label: '编码器',
-          info: VideoSectionEncoderInfo(
-            default$: '默认为第一个可用，无需标志',
-            alt: ({required String encoder}) =>
-                '''使用 '--video-encoder=${encoder}' 标志''',
-          ),
-        ),
-        format: VideoSectionFormat(
-          label: '格式',
-          info: VideoSectionFormatInfo(
-            default$: ({required String format}) =>
-                '''将格式附加到 --record=savepath/file${format}''',
-          ),
-        ),
-        bitrate: VideoSectionBitrate(
-          label: '比特率',
-          info: VideoSectionBitrateInfo(
-            default$: '默认为 8M，无需标志',
-            alt: ({required String bitrate}) =>
-                '''使用 '--video-bit-rate=${bitrate}M' 标志''',
-          ),
-        ),
-        fpsLimit: VideoSectionFpsLimit(
-          label: 'FPS 限制',
-          info: VideoSectionFpsLimitInfo(
-            default$: '除非设置否则无需标志',
-            alt: ({required String fps}) => '''使用 '--max-fps=${fps}' 标志''',
-          ),
-        ),
-        resolutionScale: VideoSectionResolutionScale(
-          label: '分辨率缩放',
-          info: VideoSectionResolutionScaleInfo(
-            default$: '基于设备分辨率计算，除非设置否则无需标志',
-            alt: ({required String size}) => '''使用 '--max-size=${size}' 标志''',
-          ),
-        ),
-      ),
-      audioSection: AudioSection(
-        title: '音频',
-        duplicate: AudioSectionDuplicate(
-          label: '重复音频',
-          info: AudioSectionDuplicateInfo(
-            default$: '仅适用于 Android 13 及以上版本',
-            alt: '''使用 '--audio-dup' 标志''',
-          ),
-        ),
-        source: AudioSectionSource(
-          label: '源',
-          info: AudioSectionSourceInfo(
-            default$: '默认为输出，无需标志',
-            alt: ({required String source}) => '''使用 '${source}' 标志''',
-            inCaseOfDup: '''使用 '--audio-dup' 时隐含为 '播放'，无需标志''',
-          ),
-        ),
-        codec: AudioSectionCodec(
-          label: '编解码器',
-          info: AudioSectionCodecInfo(
-            default$: '默认为 opus，无需标志',
-            alt: ({required String codec}) =>
-                '''使用 '--audio-codec=${codec}' 标志''',
-            isAudioOnly: ({required String format, required String codec}) =>
-                '''格式: ${format}，需要编解码器: ${codec}''',
-          ),
-        ),
-        encoder: AudioSectionEncoder(
-          label: '编码器',
-          info: AudioSectionEncoderInfo(
-            default$: '默认为第一个可用，无需标志',
-            alt: ({required String encoder}) =>
-                '''使用 '--audio-encoder=${encoder}' 标志''',
-          ),
-        ),
-        format: AudioSectionFormat(
-          label: '格式',
-          info: AudioSectionFormatInfo(
-            default$: ({required String format}) =>
-                '''将格式附加到 '--record=savepath/file.${format}' ''',
-          ),
-        ),
-        bitrate: AudioSectionBitrate(
-          label: '比特率',
-          info: AudioSectionBitrateInfo(
-            default$: '默认为 128k，无需标志',
-            alt: ({required String bitrate}) =>
-                '''使用 '--audio-bit-rate=${bitrate}K' 标志''',
-          ),
-        ),
-      ),
-      appSection: AppSection(
-        title: '启动应用',
-        select: AppSectionSelect(
-          label: '选择应用',
-          info: AppSectionSelectInfo(
-            alt: ({required String app}) => '''使用 '--start-app=${app}' 标志''',
-            fc: ({required String app}) => '''使用 '--start-app=+${app}' 标志''',
-          ),
-        ),
-        forceClose: AppSectionForceClose(
-          label: '启动前强制关闭应用',
-          info: AppSectionForceCloseInfo(
-            alt: '''在应用包名前添加 '+' ''',
-          ),
-        ),
-      ),
-      deviceSection: DeviceSection(
-        title: '设备',
-        stayAwake: DeviceSectionStayAwake(
-          label: '保持唤醒',
-          info: DeviceSectionStayAwakeInfo(
-            default$: '防止设备休眠，仅适用于 USB 连接',
-            alt: '''使用 '--stay-awake' 标志''',
-          ),
-        ),
-        showTouches: DeviceSectionShowTouches(
-          label: '显示触摸',
-          info: DeviceSectionShowTouchesInfo(
-            default$: '显示手指触摸，仅适用于设备上的物理触摸',
-            alt: '''使用 '--show-touches' 标志''',
-          ),
-        ),
-        offDisplayStart: DeviceSectionOffDisplayStart(
-          label: '启动时关闭显示器',
-          info: DeviceSectionOffDisplayStartInfo(
-            default$: 'scrcpy 启动时关闭设备显示器',
-            alt: '''使用 '--turn-screen-off' 标志''',
-          ),
-        ),
-        offDisplayExit: DeviceSectionOffDisplayExit(
-          label: '退出时关闭显示器',
-          info: DeviceSectionOffDisplayExitInfo(
-            default$: 'scrcpy 退出时关闭设备显示器',
-            alt: '''使用 '--power-off-on-close' 标志''',
-          ),
-        ),
-        screensaver: DeviceSectionScreensaver(
-          label: '禁用屏保 (主机)',
-          info: DeviceSectionScreensaverInfo(
-            default$: '禁用屏保',
-            alt: '''使用 '--disable-screensaver' 标志''',
-          ),
-        ),
-      ),
-      windowSection: WindowSection(
-        title: '窗口',
-        hideWindow: WindowSectionHideWindow(
-          label: '隐藏窗口',
-          info: WindowSectionHideWindowInfo(
-            default$: '启动 scrcpy 时不显示窗口',
-            alt: '''使用 '--no-window' 标志''',
-          ),
-        ),
-        borderless: WindowSectionBorderless(
-          label: '无边框',
-          info: WindowSectionBorderlessInfo(
-            default$: '禁用窗口装饰',
-            alt: '''使用 '--window-borderless' 标志''',
-          ),
-        ),
-        alwaysOnTop: WindowSectionAlwaysOnTop(
-          label: '始终置顶',
-          info: WindowSectionAlwaysOnTopInfo(
-            default$: 'scrcpy 窗口始终置顶',
-            alt: '''使用 '--always-on-top' 标志''',
-          ),
-        ),
-        timeLimit: WindowSectionTimeLimit(
-          label: '时间限制',
-          info: WindowSectionTimeLimitInfo(
-            default$: '限制 scrcpy 会话，以秒为单位',
-            alt: ({required String time}) => '''使用 '--time-limit=${time}' 标志''',
-          ),
-        ),
-      ),
-      addFlags: AddFlags(
-        title: '附加标志',
-        add: '添加',
-        info: '避免使用已作为选项提供的标志。',
-      ),
-      connectLoc: ConnectLoc(
-        title: '连接',
-        withIp: ConnectLocWithIp(
-          label: '通过 IP 连接',
-          connect: '连接',
-          connected: ({required String to}) => '''已连接到 ${to}''',
-        ),
-        withMdns: ConnectLocWithMdns(
-          label: ({required String count}) => '''MDNS 设备 (${count})''',
-          info: ConnectLocWithMdnsInfo(
-            i1: '确保您的设备已与 PC 配对。',
-            i2: '如果您的设备未显示，请尝试关闭并重新打开无线 ADB。',
-            i3: '如果已配对，MDNS 设备通常会自动连接。',
-          ),
-        ),
-        qrPair: ConnectLocQrPair(
-          label: '二维码配对',
-          pair: '配对设备',
-          status: ConnectLocQrPairStatus(
-            cancelled: '配对已取消',
-            success: '配对成功',
-            failed: '配对失败',
-          ),
-          progress: ConnectLocQrPairProgress(
-            scan: '',
-            found: '',
-            awaiting: ({required String attempt}) => '',
-          ),
-        ),
-        unauthenticated: ConnectLocUnauthenticated(
-          info: ConnectLocUnauthenticatedInfo(
-            i1: '检查您的手机。',
-            i2: '点击允许调试。',
-          ),
-        ),
-        failed: ConnectLocFailed(
-          info: ConnectLocFailedInfo(
-            i1: '确保您的设备已与 PC 配对。',
-            i2: '否则，请尝试关闭并重新打开无线 ADB。',
-            i3: '如果未配对:',
-            i4: '1. 使用配对窗口 (右上角按钮)',
-            i5: '2. 将设备插入 PC，允许调试，然后重试。',
-          ),
-        ),
-      ),
-      testConfigLoc: TestConfigLoc(
-        title: '测试配置',
-        preview: '命令预览',
-      ),
-      scrcpyManagerLoc: ScrcpyManagerLoc(
-        title: 'Scrcpy 管理器',
-        check: '检查更新',
-        current: ScrcpyManagerLocCurrent(
-          label: '当前',
-          inUse: '使用中',
-        ),
-        exec: ScrcpyManagerLocExec(
-          label: '打开可执行文件位置',
-          info: '谨慎修改',
-        ),
-        infoPopup: ScrcpyManagerLocInfoPopup(
-          noUpdate: '无可用更新',
-          error: '检查更新时出错',
-        ),
-        updater: ScrcpyManagerLocUpdater(
-          label: '有新版本可用',
-          newVersion: '新版本',
-        ),
-      ),
-      settingsLoc: SettingsLoc(
-        title: '设置',
-        looks: SettingsLocLooks(
-          label: '外观',
-          mode: SettingsLocLooksMode(
-            label: '主题模式',
-            value: SettingsLocLooksModeValue(
-              dark: '深色',
-              light: '浅色',
-              system: '系统',
-            ),
-          ),
-          oldScheme: SettingsLocLooksOldScheme(
-            label: '使用 Shadcn 配色方案',
-          ),
-          cornerRadius: SettingsLocLooksCornerRadius(
-            label: '圆角半径',
-          ),
-          accentColor: SettingsLocLooksAccentColor(
-            label: '强调色',
-          ),
-          tintLevel: SettingsLocLooksTintLevel(
-            label: '色调级别',
-          ),
-          dimness: SettingsLocLooksDimness(
-            label: '暗度',
-          ),
-          brightness: SettingsLocLooksBrightness(
-            label: '亮度',
-          ),
-          surfaceOpacity: SettingsLocLooksSurfaceOpacity(
-            label: '表面透明度',
-            info: '在 Linux 中已知会导致闪烁',
-          ),
-          surfaceBlur: SettingsLocLooksSurfaceBlur(
-            label: '表面模糊',
-            info: '在 Linux 中已知会导致闪烁',
-          ),
-        ),
-        behavior: SettingsLocBehavior(
-          label: '应用行为',
-          language: SettingsLocBehaviorLanguage(
-            label: '语言',
-            info: '某些语言是机器翻译的，可能包含错误。',
-          ),
-          minimize: SettingsLocBehaviorMinimize(
-            label: '最小化',
-            value: SettingsLocBehaviorMinimizeValue(
-              tray: '到系统托盘',
-              taskbar: '到任务栏',
-            ),
-          ),
-          windowSize: SettingsLocBehaviorWindowSize(
-            label: '记住窗口大小',
-            info: '退出时记住窗口大小',
-          ),
-          autoArrange: SettingsLocBehaviorAutoArrange(
-            label: '自动排列 scrcpy 窗口',
-            info: '启动时自动排列 scrcpy 窗口',
-          ),
-          windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
-            label: '窗口到屏幕高度比例',
-            labelShort: '高度 %',
-            info: 'scrcpy 窗口高度与主屏幕高度的比例。最小: 0.4，最大: 1.0，默认: 0.88',
-          ),
-          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
-            label: '如果已在运行则跳过自动启动',
-            info: '当设备连接且scrcpy设置为自动启动时，如果该设备已有实例在运行，则不启动。',
-          ),
-          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
-            label: '新实例替换现有实例',
-            info: '当手动运行scrcpy的新实例时，将停止同一设备的所有现有实例。',
-          ),
-        ),
-      ),
-      companionLoc: CompanionLoc(
-        title: '伴侣应用',
-        server: CompanionLocServer(
-          label: '设置服务器',
-          status: '状态',
-          endpoint: CompanionLocServerEndpoint(
-            label: '服务器端点',
-          ),
-          name: CompanionLocServerName(
-            label: '服务器名称',
-            info: '默认: Scrcpy GUI',
-          ),
-          port: CompanionLocServerPort(
-            label: '服务器端口',
-            info: '默认: 8080',
-          ),
-          secret: CompanionLocServerSecret(
-            label: '服务器 API 密钥',
-          ),
-          autoStart: CompanionLocServerAutoStart(
-            label: '启动时启动服务器',
-          ),
-        ),
-        client: CompanionLocClient(
-          clients: ({required String count}) => '''已连接 (${count})''',
-          blocked: ({required String count}) => '''已阻止 (${count})''',
-          noClient: '无客户端连接',
-          noBlocked: '无已阻止的客户端',
-        ),
-        qr: '从伴侣应用扫描二维码',
-      ),
-      aboutLoc: AboutLoc(
-        title: '关于',
-        version: '版本',
-        author: '作者',
-        credits: '致谢',
-      ),
-      quitDialogLoc: QuitDialogLoc(
-        title: '退出 Scrcpy GUI？',
-        killRunning: QuitDialogLocKillRunning(
-          label: '停止运行实例？',
-          info: ({required String count}) =>
-              '''${count} 个 scrcpy 实例。无窗口的实例将被停止。''',
-        ),
-        disconnect: QuitDialogLocDisconnect(
-          label: '断开无线 ADB？',
-          info: ({required String count}) => '''${count} 个设备''',
-        ),
-      ),
-      disconnectDialogLoc: DisconnectDialogLoc(
-        title: ({required String name}) => '''断开 ${name}？''',
-        hasRunning: DisconnectDialogLocHasRunning(
-          label: ({required String name, required String count}) =>
-              '''${name} 有 ${count} 个运行中的 scrcpy 实例''',
-          info: '断开连接将停止运行中的 scrcpy 实例。',
-        ),
-      ),
-      closeDialogLoc: CloseDialogLoc(
-        notAllowed: '不允许！',
-        overwrite: '覆盖？',
-        nameExist: '名称已存在！',
-        save: '保存配置？',
-        commandPreview: '命令预览:',
-        name: '名称:',
-      ),
-      unsavedChangeDialogLoc: UnsavedChangeDialogLoc(
-        title: '确认退出？',
-        contents: '未保存的更改将丢失。',
-      ),
-      serverDisclaimerLoc: ServerDisclaimerLoc(
-        title: '免责声明',
-        contents:
-            '''安全警告: 伴侣服务器使用未加密连接。\n\n仅当您连接到您信任的私有网络（如家庭 Wi-Fi）时才启动服务器。''',
-      ),
-      ipHistoryLoc: IpHistoryLoc(
-        title: '历史记录',
-        empty: '无历史记录',
-      ),
-      buttonLabelLoc: ButtonLabelLoc(
-        ok: '确定',
-        confirm: '确认',
-        close: '关闭',
-        cancel: '取消',
-        stop: '停止',
-        testConfig: '测试配置',
-        update: '更新',
-        info: '信息',
-        selectAll: '全选',
-        quit: '退出',
-        discard: '丢弃',
-        overwrite: '覆盖',
-        save: '保存',
-        clear: '清除',
-        delete: '删除',
-        serverAgree: '我理解，启动服务器',
-        reorder: '重新排序',
-        stopAll: '全部停止',
-        filter: '筛选',
-        edit: '编辑',
-        override: '覆盖',
-        dontShowAgain: '不再显示',
-        sponsor: '赞助',
-        extractIcons: '提取图标',
-      ),
-      statusLoc: StatusLoc(
-        failed: '失败',
-        unauth: '未授权',
-        error: '错误',
-        latest: '最新',
-        closing: '正在关闭',
-        copied: '已复制',
-        running: '运行中',
-        stopped: '已停止',
-        gettingInfo: '正在获取信息',
-        noDevicesFound: '未找到设备',
-      ),
-      commonLoc: CommonLoc(
-        default$: '默认',
-        yes: '是',
-        no: '否',
-        bundled: '捆绑',
-      ),
-      colorSchemeNameLoc: ColorSchemeNameLoc(
-        blue: '蓝色',
-        gray: '灰色',
-        green: '绿色',
-        neutral: '中性',
-        orange: '橙色',
-        red: '红色',
-        rose: '玫瑰色',
-        slate: '石板色',
-        stone: '石头色',
-        violet: '紫色',
-        yellow: '黄色',
-        zinc: '锌色',
-      ),
-      configFiltersLoc: ConfigFiltersLoc(
-        label: ConfigFiltersLocLabel(
-          withApp: '带应用',
-          virt: '虚拟显示器',
-        ),
-      ),
-      configOverrideLoc: ConfigOverrideLoc(
-        record: ConfigOverrideLocRecord(
-          label: '录制',
-          openFolder: '打开文件夹',
-        ),
-        landscape: ConfigOverrideLocLandscape(
-          label: '横屏',
-          info: '仅适用于虚拟显示器',
-        ),
-        mute: ConfigOverrideLocMute(
-          label: '静音',
-        ),
-      ),
-      autoArrangeOriginLoc: AutoArrangeOriginLoc(
-        title: '自动排列',
-        alignments: '对齐',
-        off: '关闭',
-        topLeft: '左上',
-        topRight: '右上',
-        centerLeft: '中左',
-        centerRight: '中右',
-        bottomLeft: '左下',
-        bottomRight: '右下',
-      ),
-    );
 LocalizationMessages get en => LocalizationMessages(
       homeLoc: HomeLoc(
         title: 'Home',
@@ -11763,6 +10324,59 @@ LocalizationMessages get en => LocalizationMessages(
           ),
         ),
       ),
+      controlSection: ControlSection(
+        title: 'Control',
+        info: ControlSectionInfo(
+          ifAoa: '(USB only)',
+        ),
+        mouse: ControlSectionMouse(
+          title: 'Mouse',
+          mode: ControlSectionMouseMode(
+            label: 'Mouse mode',
+            info: ControlSectionMouseModeInfo(
+              default$: 'defaults to sdk, no flag',
+              alt: ({required String command}) => '''uses '${command}' flag''',
+            ),
+          ),
+          mouseHover: ControlSectionMouseMouseHover(
+            label: 'Disable mouse hover',
+            info: ControlSectionMouseMouseHoverInfo(
+              default$: 'disable mouse hover effect',
+              alt: '''uses '--no-mouse-hover' flag''',
+              blocked: 'only for sdk mode',
+            ),
+          ),
+        ),
+        keyboard: ControlSectionKeyboard(
+          title: 'Keyboard',
+          mode: ControlSectionKeyboardMode(
+            label: 'Keyboard mode',
+            info: ControlSectionKeyboardModeInfo(
+              default$: 'defaults to sdk, no flag',
+              alt: ({required String command}) => '''uses '${command}' flag''',
+            ),
+          ),
+          keyRepeat: ControlSectionKeyboardKeyRepeat(
+            label: 'Disable key repeat',
+            info: ControlSectionKeyboardKeyRepeatInfo(
+              default$:
+                  'prevent forwarding repeated key events when holding down a key',
+              alt: '''uses '--no-key-repeat' flag''',
+              blocked: 'only for sdk mode',
+            ),
+          ),
+        ),
+        gamepad: ControlSectionGamepad(
+          title: 'Gamepad',
+          mode: ControlSectionGamepadMode(
+            label: 'Gamepad mode',
+            info: ControlSectionGamepadModeInfo(
+              default$: 'disabled by default, no flag',
+              alt: ({required String command}) => '''uses '${command}' flag''',
+            ),
+          ),
+        ),
+      ),
       addFlags: AddFlags(
         title: 'Additional Flags',
         add: 'Add',
@@ -12082,755 +10696,6 @@ LocalizationMessages get en => LocalizationMessages(
         centerRight: 'Center Right',
         bottomLeft: 'Bottom Left',
         bottomRight: 'Bottom Right',
-      ),
-    );
-LocalizationMessages get it => LocalizationMessages(
-      homeLoc: HomeLoc(
-        title: 'Home',
-        devices: HomeLocDevices(
-          label: ({required String count}) =>
-              '''Dispositivi Connessi (${count})''',
-        ),
-      ),
-      deviceTileLoc: DeviceTileLoc(
-        runningInstances: ({required String count}) =>
-            '''In esecuzione (${count})''',
-        context: DeviceTileLocContext(
-          disconnect: 'Disconnetti',
-          toWireless: 'A wireless',
-          stopRunning: 'Arresta scrcpy in esecuzione',
-          scrcpy: 'Scrcpy',
-          all: 'Tutti',
-          allScrcpy: 'Termina tutti gli scrcpy',
-          manage: 'Gestisci',
-        ),
-      ),
-      loungeLoc: LoungeLoc(
-        controls: LoungeLocControls(
-          label: 'Controlli',
-        ),
-        pinnedApps: LoungeLocPinnedApps(
-          label: 'App bloccate',
-        ),
-        launcher: LoungeLocLauncher(
-          label: 'Avvio App',
-        ),
-        running: LoungeLocRunning(
-          label: ({required String count}) =>
-              '''Istanze in esecuzione (${count})''',
-        ),
-        appTile: LoungeLocAppTile(
-          contextMenu: LoungeLocAppTileContextMenu(
-            pin: ({required String config}) => '''Blocca su ${config}''',
-            unpin: 'Sblocca',
-            forceClose: 'Forza chiusura e avvia',
-            andStart: (
-                    {required String configuration, required String config}) =>
-                '''Su ${config}''',
-            selectConfig: 'Seleziona prima una configurazione',
-            startOn: ({required String config}) => '''Avvia su ${config}''',
-            withOverrides: 'Avvia con override',
-            packageName: 'Nome pacchetto',
-            resetIcon: 'Reimposta icona',
-          ),
-          sections: LoungeLocAppTileSections(
-            pinned: 'Bloccate',
-            apps: 'App',
-          ),
-          missingIcon: ({required String count}) =>
-              '''Icone mancanti (${count})''',
-        ),
-        placeholders: LoungeLocPlaceholders(
-          config: 'Seleziona configurazione',
-          app: 'Seleziona app',
-          search: '''Premi '/' per cercare''',
-        ),
-        tooltip: LoungeLocTooltip(
-          missingConfig: ({required String config}) =>
-              '''Configurazione mancante: ${config}''',
-          pin: 'Blocca coppia app/configurazione',
-          onConfig: ({required String config}) => '''Su: ${config}''',
-          hideAppName: 'Nascondi nome app',
-          showAppName: 'Mostra nome app',
-        ),
-        info: LoungeLocInfo(
-          emptySearch: 'Nessuna app trovata',
-          emptyPin: 'Nessuna App Bloccata',
-          emptyInstance: 'Nessuna Istanza in Esecuzione',
-        ),
-      ),
-      iconExtractorDisclaimerLoc: IconExtractorDisclaimerLoc(
-        title: 'Disclaimer',
-        contents: IconExtractorDisclaimerLocContents(
-          p1: 'Questa è una funzione sperimentale, con una serie di limitazioni:',
-          l1: '''L'estrazione dell'apk può richiedere molto tempo, a seconda delle dimensioni dell'apk.''',
-          l2: 'Le icone adattive non sono supportate, causando la mancanza di icone.',
-          l3: 'Le icone estratte potrebbero avere una risoluzione inferiore.',
-        ),
-      ),
-      configLoc: ConfigLoc(
-        label: ({required String count}) => '''Configurazioni (${count})''',
-        new$: 'Crea',
-        select: 'Seleziona una configurazione',
-        details: 'Mostra dettagli',
-        start: 'Avvia',
-        empty: 'Nessuna configurazione trovata',
-      ),
-      noDeviceDialogLoc: NoDeviceDialogLoc(
-        title: 'Dispositivo',
-        contentsEdit:
-            '''Nessun dispositivo selezionato. \nSeleziona un dispositivo per modificare la configurazione di scrcpy.''',
-        contentsStart:
-            '''Nessun dispositivo selezionato. \nSeleziona un dispositivo per avviare scrcpy.''',
-        contentsNew:
-            '''Nessun dispositivo selezionato. \nSeleziona un dispositivo per creare la configurazione di scrcpy.''',
-      ),
-      noConfigDialogLoc: NoConfigDialogLoc(
-        title: 'Configurazione',
-        contents:
-            '''Nessuna configurazione selezionata.\nSeleziona una configurazione di scrcpy da avviare.''',
-      ),
-      deleteConfigDialogLoc: DeleteConfigDialogLoc(
-        title: 'Conferma',
-        contents: ({required String configname}) =>
-            '''Eliminare ${configname}?''',
-      ),
-      deviceSettingsLoc: DeviceSettingsLoc(
-        title: 'Impostazioni Dispositivo',
-        info: 'Info',
-        refresh: 'Aggiorna info',
-        rename: DeviceSettingsLocRename(
-          label: 'Rinomina',
-          info: 'Premi [Invio] per applicare il nome',
-        ),
-        autoConnect: DeviceSettingsLocAutoConnect(
-          label: 'Auto-connessione',
-          info: 'Connetti automaticamente il dispositivo wireless',
-        ),
-        onConnected: DeviceSettingsLocOnConnected(
-          label: 'Alla connessione',
-          info:
-              'Avvia (1) scrcpy con la configurazione selezionata alla connessione del dispositivo',
-        ),
-        doNothing: 'Non fare nulla',
-        scrcpyInfo: DeviceSettingsLocScrcpyInfo(
-          fetching: 'Recupero informazioni scrcpy',
-          label: 'Informazioni Scrcpy',
-          name: ({required String name}) => '''Nome: ${name}''',
-          id: ({required String id}) => '''ID: ${id}''',
-          model: ({required String model}) => '''Modello: ${model}''',
-          version: ({required String version}) =>
-              '''Versione Android: ${version}''',
-          displays: ({required String count}) => '''Display (${count})''',
-          cameras: ({required String count}) => '''Fotocamere (${count})''',
-          videoEnc: ({required String count}) => '''Encoder video (${count})''',
-          audioEnc: ({required String count}) => '''Encoder audio (${count})''',
-        ),
-      ),
-      configManagerLoc: ConfigManagerLoc(
-        title: 'Gestore Configurazioni',
-      ),
-      configScreenLoc: ConfigScreenLoc(
-        title: 'Impostazioni Configurazione',
-        connectionLost: 'Connessione al dispositivo persa',
-        similarExist: ({required String configName}) =>
-            '''Duplicato di ${configName}''',
-      ),
-      logScreenLoc: LogScreenLoc(
-        title: 'Log di Test',
-        dialog: LogScreenLocDialog(
-          title: 'Comando',
-        ),
-      ),
-      renameSection: RenameSection(
-        title: 'Rinomina',
-      ),
-      modeSection: ModeSection(
-        title: 'Modalità',
-        saveFolder: ModeSectionSaveFolder(
-          label: 'Cartella di salvataggio',
-          info:
-              '''aggiunge il percorso di salvataggio a '--record=percorso_salvataggio/file' ''',
-        ),
-        mainMode: ModeSectionMainMode(
-          label: 'Modalità',
-          mirror: 'Mirror',
-          record: 'Registra',
-          info: ModeSectionMainModeInfo(
-            default$: 'mirror o registra, nessun flag per mirror',
-            alt: '''usa il flag '--record=' ''',
-          ),
-        ),
-        scrcpyMode: ModeSectionScrcpyMode(
-          both: 'Audio + video',
-          audioOnly: 'Solo audio',
-          videoOnly: 'Solo video',
-          info: ModeSectionScrcpyModeInfo(
-            default$: 'predefinito su entrambi, nessun flag',
-            alt: ({required String command}) => '''usa il flag '${command}' ''',
-          ),
-        ),
-      ),
-      videoSection: VideoSection(
-        title: 'Video',
-        displays: VideoSectionDisplays(
-          label: 'Display',
-          info: VideoSectionDisplaysInfo(
-            default$: 'predefinito sul primo disponibile, nessun flag',
-            alt: '''usa il flag '--display-id=' ''',
-          ),
-          virtual: VideoSectionDisplaysVirtual(
-            label: 'Impostazioni display virtuale',
-            newDisplay: VideoSectionDisplaysVirtualNewDisplay(
-              label: 'Nuovo display',
-              info: VideoSectionDisplaysVirtualNewDisplayInfo(
-                alt: '''usa il flag '--new-display' ''',
-              ),
-            ),
-            resolution: VideoSectionDisplaysVirtualResolution(
-              label: 'Risoluzione',
-              info: VideoSectionDisplaysVirtualResolutionInfo(
-                default$: 'predefinito sulla risoluzione del dispositivo',
-                alt: ({required String res}) =>
-                    '''aggiunge la risoluzione al flag '--new-display=${res}' ''',
-              ),
-            ),
-            dpi: VideoSectionDisplaysVirtualDpi(
-              label: 'DPI',
-              info: VideoSectionDisplaysVirtualDpiInfo(
-                default$: 'predefinito sul DPI del dispositivo',
-                alt: ({required String res, required String dpi}) =>
-                    '''aggiunge il DPI al flag '--new-display=${res}/${dpi}' ''',
-              ),
-            ),
-            deco: VideoSectionDisplaysVirtualDeco(
-              label: 'Disabilita decorazioni di sistema',
-              info: VideoSectionDisplaysVirtualDecoInfo(
-                default$: 'predefinito con decorazioni di sistema',
-                alt: '''usa il flag '--no-vd-system-decorations' ''',
-              ),
-            ),
-            preserve: VideoSectionDisplaysVirtualPreserve(
-              label: 'Mantieni app',
-              info: VideoSectionDisplaysVirtualPreserveInfo(
-                default$:
-                    'le app vengono distrutte per impostazione predefinita quando una sessione scrcpy termina',
-                alt:
-                    '''sposta l'app sul display principale al termine della sessione; usa il flag '--no-vd-destroy-content' ''',
-              ),
-            ),
-          ),
-        ),
-        codec: VideoSectionCodec(
-          label: 'Codec',
-          info: VideoSectionCodecInfo(
-            default$: 'predefinito su h264, nessun flag',
-            alt: ({required String codec}) =>
-                '''usa il flag '--video-codec=${codec}' ''',
-          ),
-        ),
-        encoder: VideoSectionEncoder(
-          label: 'Encoder',
-          info: VideoSectionEncoderInfo(
-            default$: 'predefinito sul primo disponibile, nessun flag',
-            alt: ({required String encoder}) =>
-                '''usa il flag '--video-encoder=${encoder}' ''',
-          ),
-        ),
-        format: VideoSectionFormat(
-          label: 'Formato',
-          info: VideoSectionFormatInfo(
-            default$: ({required String format}) =>
-                '''aggiunge il formato a '--record=percorso_salvataggio/file${format}' "''',
-          ),
-        ),
-        bitrate: VideoSectionBitrate(
-          label: 'Bitrate',
-          info: VideoSectionBitrateInfo(
-            default$: 'predefinito su 8M, nessun flag',
-            alt: ({required String bitrate}) =>
-                '''usa il flag '--video-bit-rate=${bitrate}M' ''',
-          ),
-        ),
-        fpsLimit: VideoSectionFpsLimit(
-          label: 'Limite FPS',
-          info: VideoSectionFpsLimitInfo(
-            default$: 'nessun flag a meno che non sia impostato',
-            alt: ({required String fps}) =>
-                '''usa il flag '--max-fps=${fps}' ''',
-          ),
-        ),
-        resolutionScale: VideoSectionResolutionScale(
-          label: 'Scala risoluzione',
-          info: VideoSectionResolutionScaleInfo(
-            default$:
-                'calcolata in base alla risoluzione del dispositivo, nessun flag a meno che non sia impostato',
-            alt: ({required String size}) =>
-                '''usa il flag '--max-size=${size}' ''',
-          ),
-        ),
-      ),
-      audioSection: AudioSection(
-        title: 'Audio',
-        duplicate: AudioSectionDuplicate(
-          label: 'Duplica audio',
-          info: AudioSectionDuplicateInfo(
-            default$: 'solo per Android 13 e versioni successive',
-            alt: '''usa il flag '--audio-dup' ''',
-          ),
-        ),
-        source: AudioSectionSource(
-          label: 'Sorgente',
-          info: AudioSectionSourceInfo(
-            default$: 'predefinito su output, nessun flag',
-            alt: ({required String source}) => '''usa il flag '${source}' ''',
-            inCaseOfDup:
-                '''implicito su 'Riproduzione' con '--audio-dup', nessun flag''',
-          ),
-        ),
-        codec: AudioSectionCodec(
-          label: 'Codec',
-          info: AudioSectionCodecInfo(
-            default$: 'predefinito su opus, nessun flag',
-            alt: ({required String codec}) =>
-                '''usa il flag '--audio-codec=${codec}' ''',
-            isAudioOnly: ({required String format, required String codec}) =>
-                '''Formato: ${format}, richiede Codec: ${codec}''',
-          ),
-        ),
-        encoder: AudioSectionEncoder(
-          label: 'Encoder',
-          info: AudioSectionEncoderInfo(
-            default$: 'predefinito sul primo disponibile, nessun flag',
-            alt: ({required String encoder}) =>
-                '''usa il flag '--audio-encoder=${encoder}' ''',
-          ),
-        ),
-        format: AudioSectionFormat(
-          label: 'Formato',
-          info: AudioSectionFormatInfo(
-            default$: ({required String format}) =>
-                '''aggiunge il formato a '--record=percorso_salvataggio/file.${format}' "''',
-          ),
-        ),
-        bitrate: AudioSectionBitrate(
-          label: 'Bitrate',
-          info: AudioSectionBitrateInfo(
-            default$: 'predefinito su 128k, nessun flag',
-            alt: ({required String bitrate}) =>
-                '''usa il flag '--audio-bit-rate=${bitrate}K' ''',
-          ),
-        ),
-      ),
-      appSection: AppSection(
-        title: 'Avvia app',
-        select: AppSectionSelect(
-          label: '''Seleziona un'app''',
-          info: AppSectionSelectInfo(
-            alt: ({required String app}) =>
-                '''usa il flag '--start-app=${app}' ''',
-            fc: ({required String app}) =>
-                '''usa il flag '--start-app=+${app}' ''',
-          ),
-        ),
-        forceClose: AppSectionForceClose(
-          label: '''Forza chiusura app prima dell'avvio''',
-          info: AppSectionForceCloseInfo(
-            alt: '''anteponi il nome del pacchetto dell'app con '+' ''',
-          ),
-        ),
-      ),
-      deviceSection: DeviceSection(
-        title: 'Dispositivo',
-        stayAwake: DeviceSectionStayAwake(
-          label: 'Mantieni attivo',
-          info: DeviceSectionStayAwakeInfo(
-            default$:
-                'impedisce al dispositivo di andare in sospensione, funziona solo con connessione USB',
-            alt: '''usa il flag '--stay-awake' ''',
-          ),
-        ),
-        showTouches: DeviceSectionShowTouches(
-          label: 'Mostra tocchi',
-          info: DeviceSectionShowTouchesInfo(
-            default$:
-                'mostra i tocchi delle dita, funziona solo con tocchi fisici sul dispositivo',
-            alt: '''usa il flag '--show-touches' ''',
-          ),
-        ),
-        offDisplayStart: DeviceSectionOffDisplayStart(
-          label: '''Spegni display all'avvio''',
-          info: DeviceSectionOffDisplayStartInfo(
-            default$:
-                '''spegne il display del dispositivo, all'avvio di scrcpy''',
-            alt: '''usa il flag '--turn-screen-off' ''',
-          ),
-        ),
-        offDisplayExit: DeviceSectionOffDisplayExit(
-          label: '''Spegni display all'uscita''',
-          info: DeviceSectionOffDisplayExitInfo(
-            default$:
-                '''spegne il display del dispositivo, all'uscita di scrcpy''',
-            alt: '''usa il flag '--power-off-on-close' ''',
-          ),
-        ),
-        screensaver: DeviceSectionScreensaver(
-          label: 'Disabilita screensaver (HOST)',
-          info: DeviceSectionScreensaverInfo(
-            default$: 'disabilita lo screensaver',
-            alt: '''usa il flag '--disable-screensaver' ''',
-          ),
-        ),
-      ),
-      windowSection: WindowSection(
-        title: 'Finestra',
-        hideWindow: WindowSectionHideWindow(
-          label: 'Nascondi finestra',
-          info: WindowSectionHideWindowInfo(
-            default$: 'avvia scrcpy senza finestra',
-            alt: '''usa il flag '--no-window' ''',
-          ),
-        ),
-        borderless: WindowSectionBorderless(
-          label: 'Senza bordi',
-          info: WindowSectionBorderlessInfo(
-            default$: 'disabilita le decorazioni della finestra',
-            alt: '''usa il flag '--window-borderless' ''',
-          ),
-        ),
-        alwaysOnTop: WindowSectionAlwaysOnTop(
-          label: 'Sempre in primo piano',
-          info: WindowSectionAlwaysOnTopInfo(
-            default$: 'finestra scrcpy sempre in primo piano',
-            alt: '''usa il flag '--always-on-top' ''',
-          ),
-        ),
-        timeLimit: WindowSectionTimeLimit(
-          label: 'Limite di tempo',
-          info: WindowSectionTimeLimitInfo(
-            default$: 'limita la sessione scrcpy, in secondi',
-            alt: ({required String time}) =>
-                '''usa il flag '--time-limit=${time}' ''',
-          ),
-        ),
-      ),
-      addFlags: AddFlags(
-        title: 'Flag Aggiuntivi',
-        add: 'Aggiungi',
-        info: '''evitare di usare flag che sono già un'opzione''',
-      ),
-      connectLoc: ConnectLoc(
-        title: 'Connetti',
-        withIp: ConnectLocWithIp(
-          label: 'Connetti con IP',
-          connect: 'Connetti',
-          connected: ({required String to}) => '''Connesso a ${to}''',
-        ),
-        withMdns: ConnectLocWithMdns(
-          label: ({required String count}) => '''Dispositivi MDNS (${count})''',
-          info: ConnectLocWithMdnsInfo(
-            i1: 'Assicurati che il tuo dispositivo sia associato al tuo PC.',
-            i2: 'Se il tuo dispositivo non viene visualizzato, prova a disattivare e riattivare ADB wireless.',
-            i3: 'I dispositivi MDNS di solito si connettono automaticamente se associati.',
-          ),
-        ),
-        qrPair: ConnectLocQrPair(
-          label: 'Associazione QR',
-          pair: 'Associa dispositivo',
-          status: ConnectLocQrPairStatus(
-            cancelled: 'Associazione annullata',
-            success: 'Associazione riuscita',
-            failed: 'Associazione fallita',
-          ),
-          progress: ConnectLocQrPairProgress(
-            scan: '',
-            found: '',
-            awaiting: ({required String attempt}) => '',
-          ),
-        ),
-        unauthenticated: ConnectLocUnauthenticated(
-          info: ConnectLocUnauthenticatedInfo(
-            i1: 'Controlla il tuo telefono.',
-            i2: 'Clicca su consenti debug.',
-          ),
-        ),
-        failed: ConnectLocFailed(
-          info: ConnectLocFailedInfo(
-            i1: 'Assicurati che il tuo dispositivo sia associato al tuo PC.',
-            i2: 'Altrimenti, prova a disattivare e riattivare Adb wireless.',
-            i3: 'Se non associato: ',
-            i4: '1. Usa la finestra di associazione (pulsante in alto a destra)',
-            i5: '2. Collega il tuo dispositivo al PC, consenti il debug e riprova.',
-          ),
-        ),
-      ),
-      testConfigLoc: TestConfigLoc(
-        title: 'Prova Configurazione',
-        preview: 'Anteprima comando',
-      ),
-      scrcpyManagerLoc: ScrcpyManagerLoc(
-        title: 'Gestione Scrcpy',
-        check: 'Controlla Aggiornamenti',
-        current: ScrcpyManagerLocCurrent(
-          label: 'Corrente',
-          inUse: 'In uso',
-        ),
-        exec: ScrcpyManagerLocExec(
-          label: 'Apri percorso eseguibile',
-          info: 'Modificare con attenzione',
-        ),
-        infoPopup: ScrcpyManagerLocInfoPopup(
-          noUpdate: 'Nessun aggiornamento disponibile',
-          error: 'Errore durante il controllo degli aggiornamenti',
-        ),
-        updater: ScrcpyManagerLocUpdater(
-          label: 'Nuova versione disponibile',
-          newVersion: 'Nuova versione',
-        ),
-      ),
-      settingsLoc: SettingsLoc(
-        title: 'Impostazioni',
-        looks: SettingsLocLooks(
-          label: 'Aspetto',
-          mode: SettingsLocLooksMode(
-            label: 'Modalità tema',
-            value: SettingsLocLooksModeValue(
-              dark: 'Scuro',
-              light: 'Chiaro',
-              system: 'Sistema',
-            ),
-          ),
-          oldScheme: SettingsLocLooksOldScheme(
-            label: 'Usa schema colori Shadcn',
-          ),
-          cornerRadius: SettingsLocLooksCornerRadius(
-            label: 'Raggio angoli',
-          ),
-          accentColor: SettingsLocLooksAccentColor(
-            label: '''Colore d'accento''',
-          ),
-          tintLevel: SettingsLocLooksTintLevel(
-            label: 'Livello tinta',
-          ),
-          dimness: SettingsLocLooksDimness(
-            label: 'Oscuramento',
-          ),
-          brightness: SettingsLocLooksBrightness(
-            label: 'Luminosità',
-          ),
-          surfaceOpacity: SettingsLocLooksSurfaceOpacity(
-            label: 'Opacità superficie',
-            info: 'Noto per causare sfarfallio su Linux',
-          ),
-          surfaceBlur: SettingsLocLooksSurfaceBlur(
-            label: 'Sfocatura superficie',
-            info: 'Noto per causare sfarfallio su Linux',
-          ),
-        ),
-        behavior: SettingsLocBehavior(
-          label: 'Comportamento App',
-          language: SettingsLocBehaviorLanguage(
-            label: 'Lingua',
-            info: '''Alcune lingue sono generate dall'IA''',
-          ),
-          minimize: SettingsLocBehaviorMinimize(
-            label: 'Minimizza',
-            value: SettingsLocBehaviorMinimizeValue(
-              tray: 'a icona',
-              taskbar: 'a barra delle applicazioni',
-            ),
-          ),
-          windowSize: SettingsLocBehaviorWindowSize(
-            label: 'Ricorda dimensioni finestra',
-            info: '''Ricorda le dimensioni della finestra all'uscita''',
-          ),
-          autoArrange: SettingsLocBehaviorAutoArrange(
-            label: 'Disponi automaticamente finestre scrcpy',
-            info: '''Disponi automaticamente le finestre di scrcpy all'avvio''',
-          ),
-          windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
-            label: 'Rapporto altezza finestra/schermo',
-            labelShort: 'Altezza %',
-            info:
-                '''Rapporto tra l'altezza della finestra di scrcpy e l'altezza dello schermo primario. Min: 0.4, Max: 1.0, Predefinito: 0.88''',
-          ),
-          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
-            label: 'Salta avvio automatico se già in esecuzione',
-            info:
-                '''Quando un dispositivo è connesso e scrcpy è impostato per l'avvio automatico, non avviarlo se è già in esecuzione un'istanza per quel dispositivo.''',
-          ),
-          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
-            label: 'Le nuove istanze sostituiscono quelle esistenti',
-            info:
-                'Quando si esegue manualmente una nuova istanza di scrcpy, tutte le istanze esistenti per lo stesso dispositivo vengono arrestate.',
-          ),
-        ),
-      ),
-      companionLoc: CompanionLoc(
-        title: 'Companion',
-        server: CompanionLocServer(
-          label: 'Impostazione Server',
-          status: 'Stato',
-          endpoint: CompanionLocServerEndpoint(
-            label: 'Endpoint server',
-          ),
-          name: CompanionLocServerName(
-            label: 'Nome server',
-            info: 'Predefinito: Scrcpy GUI',
-          ),
-          port: CompanionLocServerPort(
-            label: 'Porta server',
-            info: 'Predefinito: 8080',
-          ),
-          secret: CompanionLocServerSecret(
-            label: 'Chiave API del server',
-          ),
-          autoStart: CompanionLocServerAutoStart(
-            label: '''Avvia server all'avvio''',
-          ),
-        ),
-        client: CompanionLocClient(
-          clients: ({required String count}) => '''Connessi (${count})''',
-          blocked: ({required String count}) => '''Bloccati (${count})''',
-          noClient: 'Nessun client connesso',
-          noBlocked: 'Nessun client bloccato',
-        ),
-        qr: '''Scansiona il codice QR dall'app companion''',
-      ),
-      aboutLoc: AboutLoc(
-        title: 'Informazioni',
-        version: 'Versione',
-        author: 'Autore',
-        credits: 'Crediti',
-      ),
-      quitDialogLoc: QuitDialogLoc(
-        title: 'Uscire da Scrcpy GUI?',
-        killRunning: QuitDialogLocKillRunning(
-          label: 'Arrestare le istanze in esecuzione?',
-          info: ({required String count}) =>
-              '''${count} istanza(e) di scrcpy. Le istanze senza finestra verranno arrestate comunque.''',
-        ),
-        disconnect: QuitDialogLocDisconnect(
-          label: 'Disconnettere ADB wireless?',
-          info: ({required String count}) => '''${count} dispositivo(i)''',
-        ),
-      ),
-      disconnectDialogLoc: DisconnectDialogLoc(
-        title: ({required String name}) => '''Disconnettere ${name}?''',
-        hasRunning: DisconnectDialogLocHasRunning(
-          label: ({required String name, required String count}) =>
-              '''${name} ha ${count} scrcpy(s) in esecuzione''',
-          info: 'La disconnessione terminerà gli scrcpy(s)',
-        ),
-      ),
-      closeDialogLoc: CloseDialogLoc(
-        notAllowed: 'Non consentito!',
-        overwrite: 'Sovrascrivere?',
-        nameExist: 'Nome già esistente!',
-        save: 'Salvare configurazione?',
-        commandPreview: 'Anteprima comando:',
-        name: 'Nome:',
-      ),
-      unsavedChangeDialogLoc: UnsavedChangeDialogLoc(
-        title: '''Confermare l'uscita?''',
-        contents: 'Le modifiche non salvate andranno perse.',
-      ),
-      serverDisclaimerLoc: ServerDisclaimerLoc(
-        title: 'Avviso',
-        contents:
-            '''Avviso di sicurezza: Il server companion utilizza una connessione non crittografata.\n\nAvvia il server solo se sei connesso a una rete privata di cui ti fidi, come il tuo Wi-Fi domestico.''',
-      ),
-      ipHistoryLoc: IpHistoryLoc(
-        title: 'Cronologia',
-        empty: 'Nessuna cronologia',
-      ),
-      buttonLabelLoc: ButtonLabelLoc(
-        ok: 'OK',
-        confirm: 'Conferma',
-        close: 'Chiudi',
-        cancel: 'Annulla',
-        stop: 'Ferma',
-        testConfig: 'Prova Configurazione',
-        update: 'Aggiorna',
-        info: 'Info',
-        selectAll: 'Seleziona tutto',
-        quit: 'Esci',
-        discard: 'Scarta',
-        overwrite: 'Sovrascrivi',
-        save: 'Salva',
-        clear: 'Cancella',
-        delete: 'Elimina',
-        serverAgree: 'Capisco, avvia server',
-        reorder: 'Riordina',
-        stopAll: 'Ferma Tutto',
-        filter: 'Filtra',
-        edit: 'Modifica',
-        override: 'Ignora',
-        dontShowAgain: 'Non Mostrare Più',
-        sponsor: 'Sponsorizza',
-        extractIcons: 'Estrai icone',
-      ),
-      statusLoc: StatusLoc(
-        failed: 'Fallito',
-        unauth: 'Non autenticato',
-        error: 'Errore',
-        latest: 'Ultimo',
-        closing: 'Chiusura in corso',
-        copied: 'Copiato',
-        running: 'In esecuzione',
-        stopped: 'Fermato',
-        gettingInfo: 'Recupero Informazioni',
-        noDevicesFound: 'Nessun dispositivo trovato',
-      ),
-      commonLoc: CommonLoc(
-        default$: 'Predefinito',
-        yes: 'Sì',
-        no: 'No',
-        bundled: 'Incluso',
-      ),
-      colorSchemeNameLoc: ColorSchemeNameLoc(
-        blue: 'Blu',
-        gray: 'Grigio',
-        green: 'Verde',
-        neutral: 'Neutro',
-        orange: 'Arancione',
-        red: 'Rosso',
-        rose: 'Rosa',
-        slate: 'Ardesia',
-        stone: 'Pietra',
-        violet: 'Viola',
-        yellow: 'Giallo',
-        zinc: 'Zinco',
-      ),
-      configFiltersLoc: ConfigFiltersLoc(
-        label: ConfigFiltersLocLabel(
-          withApp: 'Con app',
-          virt: 'Display virtuale',
-        ),
-      ),
-      configOverrideLoc: ConfigOverrideLoc(
-        record: ConfigOverrideLocRecord(
-          label: 'Registra',
-          openFolder: 'Apri Cartella',
-        ),
-        landscape: ConfigOverrideLocLandscape(
-          label: 'Orizzontale',
-          info: 'Solo per display virtuale',
-        ),
-        mute: ConfigOverrideLocMute(
-          label: 'Silenzia',
-        ),
-      ),
-      autoArrangeOriginLoc: AutoArrangeOriginLoc(
-        title: 'Disposizione Automatica',
-        alignments: 'Allineamenti',
-        off: 'Spento',
-        topLeft: 'In Alto a Sinistra',
-        topRight: 'In Alto a Destra',
-        centerLeft: 'Centro a Sinistra',
-        centerRight: 'Centro a Destra',
-        bottomLeft: 'In Basso a Sinistra',
-        bottomRight: 'In Basso a Destra',
       ),
     );
 LocalizationMessages get es => LocalizationMessages(
@@ -13266,6 +11131,62 @@ LocalizationMessages get es => LocalizationMessages(
           ),
         ),
       ),
+      controlSection: ControlSection(
+        title: 'Control',
+        info: ControlSectionInfo(
+          ifAoa: '(Solo USB)',
+        ),
+        mouse: ControlSectionMouse(
+          title: 'Ratón',
+          mode: ControlSectionMouseMode(
+            label: 'Modo de ratón',
+            info: ControlSectionMouseModeInfo(
+              default$: 'por defecto sdk, sin indicador',
+              alt: ({required String command}) =>
+                  '''usa el indicador '${command}' ''',
+            ),
+          ),
+          mouseHover: ControlSectionMouseMouseHover(
+            label: 'Desactivar hover del ratón',
+            info: ControlSectionMouseMouseHoverInfo(
+              default$: 'desactiva el efecto hover del ratón',
+              alt: '''usa el indicador '--no-mouse-hover' ''',
+              blocked: 'solo para modo sdk',
+            ),
+          ),
+        ),
+        keyboard: ControlSectionKeyboard(
+          title: 'Teclado',
+          mode: ControlSectionKeyboardMode(
+            label: 'Modo de teclado',
+            info: ControlSectionKeyboardModeInfo(
+              default$: 'por defecto sdk, sin indicador',
+              alt: ({required String command}) =>
+                  '''usa el indicador '${command}' ''',
+            ),
+          ),
+          keyRepeat: ControlSectionKeyboardKeyRepeat(
+            label: 'Desactivar repetición de tecla',
+            info: ControlSectionKeyboardKeyRepeatInfo(
+              default$:
+                  'evita el envío de eventos de tecla repetidos al mantener presionada una tecla',
+              alt: '''usa el indicador '--no-key-repeat' ''',
+              blocked: 'solo para modo sdk',
+            ),
+          ),
+        ),
+        gamepad: ControlSectionGamepad(
+          title: 'Mando',
+          mode: ControlSectionGamepadMode(
+            label: 'Modo de mando',
+            info: ControlSectionGamepadModeInfo(
+              default$: 'desactivado por defecto, sin indicador',
+              alt: ({required String command}) =>
+                  '''usa el indicador '${command}' ''',
+            ),
+          ),
+        ),
+      ),
       addFlags: AddFlags(
         title: 'Indicadores Adicionales',
         add: 'Añadir',
@@ -13585,6 +11506,3167 @@ LocalizationMessages get es => LocalizationMessages(
         centerRight: 'Centro Derecha',
         bottomLeft: 'Abajo Izquierda',
         bottomRight: 'Abajo Derecha',
+      ),
+    );
+LocalizationMessages get it => LocalizationMessages(
+      homeLoc: HomeLoc(
+        title: 'Home',
+        devices: HomeLocDevices(
+          label: ({required String count}) =>
+              '''Dispositivi Connessi (${count})''',
+        ),
+      ),
+      deviceTileLoc: DeviceTileLoc(
+        runningInstances: ({required String count}) =>
+            '''In esecuzione (${count})''',
+        context: DeviceTileLocContext(
+          disconnect: 'Disconnetti',
+          toWireless: 'A wireless',
+          stopRunning: 'Arresta scrcpy in esecuzione',
+          scrcpy: 'Scrcpy',
+          all: 'Tutti',
+          allScrcpy: 'Termina tutti gli scrcpy',
+          manage: 'Gestisci',
+        ),
+      ),
+      loungeLoc: LoungeLoc(
+        controls: LoungeLocControls(
+          label: 'Controlli',
+        ),
+        pinnedApps: LoungeLocPinnedApps(
+          label: 'App bloccate',
+        ),
+        launcher: LoungeLocLauncher(
+          label: 'Avvio App',
+        ),
+        running: LoungeLocRunning(
+          label: ({required String count}) =>
+              '''Istanze in esecuzione (${count})''',
+        ),
+        appTile: LoungeLocAppTile(
+          contextMenu: LoungeLocAppTileContextMenu(
+            pin: ({required String config}) => '''Blocca su ${config}''',
+            unpin: 'Sblocca',
+            forceClose: 'Forza chiusura e avvia',
+            andStart: (
+                    {required String configuration, required String config}) =>
+                '''Su ${config}''',
+            selectConfig: 'Seleziona prima una configurazione',
+            startOn: ({required String config}) => '''Avvia su ${config}''',
+            withOverrides: 'Avvia con override',
+            packageName: 'Nome pacchetto',
+            resetIcon: 'Reimposta icona',
+          ),
+          sections: LoungeLocAppTileSections(
+            pinned: 'Bloccate',
+            apps: 'App',
+          ),
+          missingIcon: ({required String count}) =>
+              '''Icone mancanti (${count})''',
+        ),
+        placeholders: LoungeLocPlaceholders(
+          config: 'Seleziona configurazione',
+          app: 'Seleziona app',
+          search: '''Premi '/' per cercare''',
+        ),
+        tooltip: LoungeLocTooltip(
+          missingConfig: ({required String config}) =>
+              '''Configurazione mancante: ${config}''',
+          pin: 'Blocca coppia app/configurazione',
+          onConfig: ({required String config}) => '''Su: ${config}''',
+          hideAppName: 'Nascondi nome app',
+          showAppName: 'Mostra nome app',
+        ),
+        info: LoungeLocInfo(
+          emptySearch: 'Nessuna app trovata',
+          emptyPin: 'Nessuna App Bloccata',
+          emptyInstance: 'Nessuna Istanza in Esecuzione',
+        ),
+      ),
+      iconExtractorDisclaimerLoc: IconExtractorDisclaimerLoc(
+        title: 'Disclaimer',
+        contents: IconExtractorDisclaimerLocContents(
+          p1: 'Questa è una funzione sperimentale, con una serie di limitazioni:',
+          l1: '''L'estrazione dell'apk può richiedere molto tempo, a seconda delle dimensioni dell'apk.''',
+          l2: 'Le icone adattive non sono supportate, causando la mancanza di icone.',
+          l3: 'Le icone estratte potrebbero avere una risoluzione inferiore.',
+        ),
+      ),
+      configLoc: ConfigLoc(
+        label: ({required String count}) => '''Configurazioni (${count})''',
+        new$: 'Crea',
+        select: 'Seleziona una configurazione',
+        details: 'Mostra dettagli',
+        start: 'Avvia',
+        empty: 'Nessuna configurazione trovata',
+      ),
+      noDeviceDialogLoc: NoDeviceDialogLoc(
+        title: 'Dispositivo',
+        contentsEdit:
+            '''Nessun dispositivo selezionato. \nSeleziona un dispositivo per modificare la configurazione di scrcpy.''',
+        contentsStart:
+            '''Nessun dispositivo selezionato. \nSeleziona un dispositivo per avviare scrcpy.''',
+        contentsNew:
+            '''Nessun dispositivo selezionato. \nSeleziona un dispositivo per creare la configurazione di scrcpy.''',
+      ),
+      noConfigDialogLoc: NoConfigDialogLoc(
+        title: 'Configurazione',
+        contents:
+            '''Nessuna configurazione selezionata.\nSeleziona una configurazione di scrcpy da avviare.''',
+      ),
+      deleteConfigDialogLoc: DeleteConfigDialogLoc(
+        title: 'Conferma',
+        contents: ({required String configname}) =>
+            '''Eliminare ${configname}?''',
+      ),
+      deviceSettingsLoc: DeviceSettingsLoc(
+        title: 'Impostazioni Dispositivo',
+        info: 'Info',
+        refresh: 'Aggiorna info',
+        rename: DeviceSettingsLocRename(
+          label: 'Rinomina',
+          info: 'Premi [Invio] per applicare il nome',
+        ),
+        autoConnect: DeviceSettingsLocAutoConnect(
+          label: 'Auto-connessione',
+          info: 'Connetti automaticamente il dispositivo wireless',
+        ),
+        onConnected: DeviceSettingsLocOnConnected(
+          label: 'Alla connessione',
+          info:
+              'Avvia (1) scrcpy con la configurazione selezionata alla connessione del dispositivo',
+        ),
+        doNothing: 'Non fare nulla',
+        scrcpyInfo: DeviceSettingsLocScrcpyInfo(
+          fetching: 'Recupero informazioni scrcpy',
+          label: 'Informazioni Scrcpy',
+          name: ({required String name}) => '''Nome: ${name}''',
+          id: ({required String id}) => '''ID: ${id}''',
+          model: ({required String model}) => '''Modello: ${model}''',
+          version: ({required String version}) =>
+              '''Versione Android: ${version}''',
+          displays: ({required String count}) => '''Display (${count})''',
+          cameras: ({required String count}) => '''Fotocamere (${count})''',
+          videoEnc: ({required String count}) => '''Encoder video (${count})''',
+          audioEnc: ({required String count}) => '''Encoder audio (${count})''',
+        ),
+      ),
+      configManagerLoc: ConfigManagerLoc(
+        title: 'Gestore Configurazioni',
+      ),
+      configScreenLoc: ConfigScreenLoc(
+        title: 'Impostazioni Configurazione',
+        connectionLost: 'Connessione al dispositivo persa',
+        similarExist: ({required String configName}) =>
+            '''Duplicato di ${configName}''',
+      ),
+      logScreenLoc: LogScreenLoc(
+        title: 'Log di Test',
+        dialog: LogScreenLocDialog(
+          title: 'Comando',
+        ),
+      ),
+      renameSection: RenameSection(
+        title: 'Rinomina',
+      ),
+      modeSection: ModeSection(
+        title: 'Modalità',
+        saveFolder: ModeSectionSaveFolder(
+          label: 'Cartella di salvataggio',
+          info:
+              '''aggiunge il percorso di salvataggio a '--record=percorso_salvataggio/file' ''',
+        ),
+        mainMode: ModeSectionMainMode(
+          label: 'Modalità',
+          mirror: 'Mirror',
+          record: 'Registra',
+          info: ModeSectionMainModeInfo(
+            default$: 'mirror o registra, nessun flag per mirror',
+            alt: '''usa il flag '--record=' ''',
+          ),
+        ),
+        scrcpyMode: ModeSectionScrcpyMode(
+          both: 'Audio + video',
+          audioOnly: 'Solo audio',
+          videoOnly: 'Solo video',
+          info: ModeSectionScrcpyModeInfo(
+            default$: 'predefinito su entrambi, nessun flag',
+            alt: ({required String command}) => '''usa il flag '${command}' ''',
+          ),
+        ),
+      ),
+      videoSection: VideoSection(
+        title: 'Video',
+        displays: VideoSectionDisplays(
+          label: 'Display',
+          info: VideoSectionDisplaysInfo(
+            default$: 'predefinito sul primo disponibile, nessun flag',
+            alt: '''usa il flag '--display-id=' ''',
+          ),
+          virtual: VideoSectionDisplaysVirtual(
+            label: 'Impostazioni display virtuale',
+            newDisplay: VideoSectionDisplaysVirtualNewDisplay(
+              label: 'Nuovo display',
+              info: VideoSectionDisplaysVirtualNewDisplayInfo(
+                alt: '''usa il flag '--new-display' ''',
+              ),
+            ),
+            resolution: VideoSectionDisplaysVirtualResolution(
+              label: 'Risoluzione',
+              info: VideoSectionDisplaysVirtualResolutionInfo(
+                default$: 'predefinito sulla risoluzione del dispositivo',
+                alt: ({required String res}) =>
+                    '''aggiunge la risoluzione al flag '--new-display=${res}' ''',
+              ),
+            ),
+            dpi: VideoSectionDisplaysVirtualDpi(
+              label: 'DPI',
+              info: VideoSectionDisplaysVirtualDpiInfo(
+                default$: 'predefinito sul DPI del dispositivo',
+                alt: ({required String res, required String dpi}) =>
+                    '''aggiunge il DPI al flag '--new-display=${res}/${dpi}' ''',
+              ),
+            ),
+            deco: VideoSectionDisplaysVirtualDeco(
+              label: 'Disabilita decorazioni di sistema',
+              info: VideoSectionDisplaysVirtualDecoInfo(
+                default$: 'predefinito con decorazioni di sistema',
+                alt: '''usa il flag '--no-vd-system-decorations' ''',
+              ),
+            ),
+            preserve: VideoSectionDisplaysVirtualPreserve(
+              label: 'Mantieni app',
+              info: VideoSectionDisplaysVirtualPreserveInfo(
+                default$:
+                    'le app vengono distrutte per impostazione predefinita quando una sessione scrcpy termina',
+                alt:
+                    '''sposta l'app sul display principale al termine della sessione; usa il flag '--no-vd-destroy-content' ''',
+              ),
+            ),
+          ),
+        ),
+        codec: VideoSectionCodec(
+          label: 'Codec',
+          info: VideoSectionCodecInfo(
+            default$: 'predefinito su h264, nessun flag',
+            alt: ({required String codec}) =>
+                '''usa il flag '--video-codec=${codec}' ''',
+          ),
+        ),
+        encoder: VideoSectionEncoder(
+          label: 'Encoder',
+          info: VideoSectionEncoderInfo(
+            default$: 'predefinito sul primo disponibile, nessun flag',
+            alt: ({required String encoder}) =>
+                '''usa il flag '--video-encoder=${encoder}' ''',
+          ),
+        ),
+        format: VideoSectionFormat(
+          label: 'Formato',
+          info: VideoSectionFormatInfo(
+            default$: ({required String format}) =>
+                '''aggiunge il formato a '--record=percorso_salvataggio/file${format}' "''',
+          ),
+        ),
+        bitrate: VideoSectionBitrate(
+          label: 'Bitrate',
+          info: VideoSectionBitrateInfo(
+            default$: 'predefinito su 8M, nessun flag',
+            alt: ({required String bitrate}) =>
+                '''usa il flag '--video-bit-rate=${bitrate}M' ''',
+          ),
+        ),
+        fpsLimit: VideoSectionFpsLimit(
+          label: 'Limite FPS',
+          info: VideoSectionFpsLimitInfo(
+            default$: 'nessun flag a meno che non sia impostato',
+            alt: ({required String fps}) =>
+                '''usa il flag '--max-fps=${fps}' ''',
+          ),
+        ),
+        resolutionScale: VideoSectionResolutionScale(
+          label: 'Scala risoluzione',
+          info: VideoSectionResolutionScaleInfo(
+            default$:
+                'calcolata in base alla risoluzione del dispositivo, nessun flag a meno che non sia impostato',
+            alt: ({required String size}) =>
+                '''usa il flag '--max-size=${size}' ''',
+          ),
+        ),
+      ),
+      audioSection: AudioSection(
+        title: 'Audio',
+        duplicate: AudioSectionDuplicate(
+          label: 'Duplica audio',
+          info: AudioSectionDuplicateInfo(
+            default$: 'solo per Android 13 e versioni successive',
+            alt: '''usa il flag '--audio-dup' ''',
+          ),
+        ),
+        source: AudioSectionSource(
+          label: 'Sorgente',
+          info: AudioSectionSourceInfo(
+            default$: 'predefinito su output, nessun flag',
+            alt: ({required String source}) => '''usa il flag '${source}' ''',
+            inCaseOfDup:
+                '''implicito su 'Riproduzione' con '--audio-dup', nessun flag''',
+          ),
+        ),
+        codec: AudioSectionCodec(
+          label: 'Codec',
+          info: AudioSectionCodecInfo(
+            default$: 'predefinito su opus, nessun flag',
+            alt: ({required String codec}) =>
+                '''usa il flag '--audio-codec=${codec}' ''',
+            isAudioOnly: ({required String format, required String codec}) =>
+                '''Formato: ${format}, richiede Codec: ${codec}''',
+          ),
+        ),
+        encoder: AudioSectionEncoder(
+          label: 'Encoder',
+          info: AudioSectionEncoderInfo(
+            default$: 'predefinito sul primo disponibile, nessun flag',
+            alt: ({required String encoder}) =>
+                '''usa il flag '--audio-encoder=${encoder}' ''',
+          ),
+        ),
+        format: AudioSectionFormat(
+          label: 'Formato',
+          info: AudioSectionFormatInfo(
+            default$: ({required String format}) =>
+                '''aggiunge il formato a '--record=percorso_salvataggio/file.${format}' "''',
+          ),
+        ),
+        bitrate: AudioSectionBitrate(
+          label: 'Bitrate',
+          info: AudioSectionBitrateInfo(
+            default$: 'predefinito su 128k, nessun flag',
+            alt: ({required String bitrate}) =>
+                '''usa il flag '--audio-bit-rate=${bitrate}K' ''',
+          ),
+        ),
+      ),
+      appSection: AppSection(
+        title: 'Avvia app',
+        select: AppSectionSelect(
+          label: '''Seleziona un'app''',
+          info: AppSectionSelectInfo(
+            alt: ({required String app}) =>
+                '''usa il flag '--start-app=${app}' ''',
+            fc: ({required String app}) =>
+                '''usa il flag '--start-app=+${app}' ''',
+          ),
+        ),
+        forceClose: AppSectionForceClose(
+          label: '''Forza chiusura app prima dell'avvio''',
+          info: AppSectionForceCloseInfo(
+            alt: '''anteponi il nome del pacchetto dell'app con '+' ''',
+          ),
+        ),
+      ),
+      deviceSection: DeviceSection(
+        title: 'Dispositivo',
+        stayAwake: DeviceSectionStayAwake(
+          label: 'Mantieni attivo',
+          info: DeviceSectionStayAwakeInfo(
+            default$:
+                'impedisce al dispositivo di andare in sospensione, funziona solo con connessione USB',
+            alt: '''usa il flag '--stay-awake' ''',
+          ),
+        ),
+        showTouches: DeviceSectionShowTouches(
+          label: 'Mostra tocchi',
+          info: DeviceSectionShowTouchesInfo(
+            default$:
+                'mostra i tocchi delle dita, funziona solo con tocchi fisici sul dispositivo',
+            alt: '''usa il flag '--show-touches' ''',
+          ),
+        ),
+        offDisplayStart: DeviceSectionOffDisplayStart(
+          label: '''Spegni display all'avvio''',
+          info: DeviceSectionOffDisplayStartInfo(
+            default$:
+                '''spegne il display del dispositivo, all'avvio di scrcpy''',
+            alt: '''usa il flag '--turn-screen-off' ''',
+          ),
+        ),
+        offDisplayExit: DeviceSectionOffDisplayExit(
+          label: '''Spegni display all'uscita''',
+          info: DeviceSectionOffDisplayExitInfo(
+            default$:
+                '''spegne il display del dispositivo, all'uscita di scrcpy''',
+            alt: '''usa il flag '--power-off-on-close' ''',
+          ),
+        ),
+        screensaver: DeviceSectionScreensaver(
+          label: 'Disabilita screensaver (HOST)',
+          info: DeviceSectionScreensaverInfo(
+            default$: 'disabilita lo screensaver',
+            alt: '''usa il flag '--disable-screensaver' ''',
+          ),
+        ),
+      ),
+      windowSection: WindowSection(
+        title: 'Finestra',
+        hideWindow: WindowSectionHideWindow(
+          label: 'Nascondi finestra',
+          info: WindowSectionHideWindowInfo(
+            default$: 'avvia scrcpy senza finestra',
+            alt: '''usa il flag '--no-window' ''',
+          ),
+        ),
+        borderless: WindowSectionBorderless(
+          label: 'Senza bordi',
+          info: WindowSectionBorderlessInfo(
+            default$: 'disabilita le decorazioni della finestra',
+            alt: '''usa il flag '--window-borderless' ''',
+          ),
+        ),
+        alwaysOnTop: WindowSectionAlwaysOnTop(
+          label: 'Sempre in primo piano',
+          info: WindowSectionAlwaysOnTopInfo(
+            default$: 'finestra scrcpy sempre in primo piano',
+            alt: '''usa il flag '--always-on-top' ''',
+          ),
+        ),
+        timeLimit: WindowSectionTimeLimit(
+          label: 'Limite di tempo',
+          info: WindowSectionTimeLimitInfo(
+            default$: 'limita la sessione scrcpy, in secondi',
+            alt: ({required String time}) =>
+                '''usa il flag '--time-limit=${time}' ''',
+          ),
+        ),
+      ),
+      controlSection: ControlSection(
+        title: 'Controllo',
+        info: ControlSectionInfo(
+          ifAoa: '(Solo USB)',
+        ),
+        mouse: ControlSectionMouse(
+          title: 'Mouse',
+          mode: ControlSectionMouseMode(
+            label: 'Modalità mouse',
+            info: ControlSectionMouseModeInfo(
+              default$: 'predefinito sdk, nessun flag',
+              alt: ({required String command}) =>
+                  '''usa il flag '${command}' ''',
+            ),
+          ),
+          mouseHover: ControlSectionMouseMouseHover(
+            label: 'Disabilita hover del mouse',
+            info: ControlSectionMouseMouseHoverInfo(
+              default$: '''disabilita l'effetto hover del mouse''',
+              alt: '''usa il flag '--no-mouse-hover' ''',
+              blocked: 'solo per la modalità sdk',
+            ),
+          ),
+        ),
+        keyboard: ControlSectionKeyboard(
+          title: 'Tastiera',
+          mode: ControlSectionKeyboardMode(
+            label: 'Modalità tastiera',
+            info: ControlSectionKeyboardModeInfo(
+              default$: 'predefinito sdk, nessun flag',
+              alt: ({required String command}) =>
+                  '''usa il flag '${command}' ''',
+            ),
+          ),
+          keyRepeat: ControlSectionKeyboardKeyRepeat(
+            label: 'Disabilita ripetizione tasti',
+            info: ControlSectionKeyboardKeyRepeatInfo(
+              default$:
+                  '''impedisce l'inoltro di eventi di tasti ripetuti quando si tiene premuto un tasto''',
+              alt: '''usa il flag '--no-key-repeat' ''',
+              blocked: 'solo per la modalità sdk',
+            ),
+          ),
+        ),
+        gamepad: ControlSectionGamepad(
+          title: 'Gamepad',
+          mode: ControlSectionGamepadMode(
+            label: 'Modalità gamepad',
+            info: ControlSectionGamepadModeInfo(
+              default$:
+                  'disabilitato per impostazione predefinita, nessun flag',
+              alt: ({required String command}) =>
+                  '''usa il flag '${command}' ''',
+            ),
+          ),
+        ),
+      ),
+      addFlags: AddFlags(
+        title: 'Flag Aggiuntivi',
+        add: 'Aggiungi',
+        info: '''evitare di usare flag che sono già un'opzione''',
+      ),
+      connectLoc: ConnectLoc(
+        title: 'Connetti',
+        withIp: ConnectLocWithIp(
+          label: 'Connetti con IP',
+          connect: 'Connetti',
+          connected: ({required String to}) => '''Connesso a ${to}''',
+        ),
+        withMdns: ConnectLocWithMdns(
+          label: ({required String count}) => '''Dispositivi MDNS (${count})''',
+          info: ConnectLocWithMdnsInfo(
+            i1: 'Assicurati che il tuo dispositivo sia associato al tuo PC.',
+            i2: 'Se il tuo dispositivo non viene visualizzato, prova a disattivare e riattivare ADB wireless.',
+            i3: 'I dispositivi MDNS di solito si connettono automaticamente se associati.',
+          ),
+        ),
+        qrPair: ConnectLocQrPair(
+          label: 'Associazione QR',
+          pair: 'Associa dispositivo',
+          status: ConnectLocQrPairStatus(
+            cancelled: 'Associazione annullata',
+            success: 'Associazione riuscita',
+            failed: 'Associazione fallita',
+          ),
+          progress: ConnectLocQrPairProgress(
+            scan: '',
+            found: '',
+            awaiting: ({required String attempt}) => '',
+          ),
+        ),
+        unauthenticated: ConnectLocUnauthenticated(
+          info: ConnectLocUnauthenticatedInfo(
+            i1: 'Controlla il tuo telefono.',
+            i2: 'Clicca su consenti debug.',
+          ),
+        ),
+        failed: ConnectLocFailed(
+          info: ConnectLocFailedInfo(
+            i1: 'Assicurati che il tuo dispositivo sia associato al tuo PC.',
+            i2: 'Altrimenti, prova a disattivare e riattivare Adb wireless.',
+            i3: 'Se non associato: ',
+            i4: '1. Usa la finestra di associazione (pulsante in alto a destra)',
+            i5: '2. Collega il tuo dispositivo al PC, consenti il debug e riprova.',
+          ),
+        ),
+      ),
+      testConfigLoc: TestConfigLoc(
+        title: 'Prova Configurazione',
+        preview: 'Anteprima comando',
+      ),
+      scrcpyManagerLoc: ScrcpyManagerLoc(
+        title: 'Gestione Scrcpy',
+        check: 'Controlla Aggiornamenti',
+        current: ScrcpyManagerLocCurrent(
+          label: 'Corrente',
+          inUse: 'In uso',
+        ),
+        exec: ScrcpyManagerLocExec(
+          label: 'Apri percorso eseguibile',
+          info: 'Modificare con attenzione',
+        ),
+        infoPopup: ScrcpyManagerLocInfoPopup(
+          noUpdate: 'Nessun aggiornamento disponibile',
+          error: 'Errore durante il controllo degli aggiornamenti',
+        ),
+        updater: ScrcpyManagerLocUpdater(
+          label: 'Nuova versione disponibile',
+          newVersion: 'Nuova versione',
+        ),
+      ),
+      settingsLoc: SettingsLoc(
+        title: 'Impostazioni',
+        looks: SettingsLocLooks(
+          label: 'Aspetto',
+          mode: SettingsLocLooksMode(
+            label: 'Modalità tema',
+            value: SettingsLocLooksModeValue(
+              dark: 'Scuro',
+              light: 'Chiaro',
+              system: 'Sistema',
+            ),
+          ),
+          oldScheme: SettingsLocLooksOldScheme(
+            label: 'Usa schema colori Shadcn',
+          ),
+          cornerRadius: SettingsLocLooksCornerRadius(
+            label: 'Raggio angoli',
+          ),
+          accentColor: SettingsLocLooksAccentColor(
+            label: '''Colore d'accento''',
+          ),
+          tintLevel: SettingsLocLooksTintLevel(
+            label: 'Livello tinta',
+          ),
+          dimness: SettingsLocLooksDimness(
+            label: 'Oscuramento',
+          ),
+          brightness: SettingsLocLooksBrightness(
+            label: 'Luminosità',
+          ),
+          surfaceOpacity: SettingsLocLooksSurfaceOpacity(
+            label: 'Opacità superficie',
+            info: 'Noto per causare sfarfallio su Linux',
+          ),
+          surfaceBlur: SettingsLocLooksSurfaceBlur(
+            label: 'Sfocatura superficie',
+            info: 'Noto per causare sfarfallio su Linux',
+          ),
+        ),
+        behavior: SettingsLocBehavior(
+          label: 'Comportamento App',
+          language: SettingsLocBehaviorLanguage(
+            label: 'Lingua',
+            info: '''Alcune lingue sono generate dall'IA''',
+          ),
+          minimize: SettingsLocBehaviorMinimize(
+            label: 'Minimizza',
+            value: SettingsLocBehaviorMinimizeValue(
+              tray: 'a icona',
+              taskbar: 'a barra delle applicazioni',
+            ),
+          ),
+          windowSize: SettingsLocBehaviorWindowSize(
+            label: 'Ricorda dimensioni finestra',
+            info: '''Ricorda le dimensioni della finestra all'uscita''',
+          ),
+          autoArrange: SettingsLocBehaviorAutoArrange(
+            label: 'Disponi automaticamente finestre scrcpy',
+            info: '''Disponi automaticamente le finestre di scrcpy all'avvio''',
+          ),
+          windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
+            label: 'Rapporto altezza finestra/schermo',
+            labelShort: 'Altezza %',
+            info:
+                '''Rapporto tra l'altezza della finestra di scrcpy e l'altezza dello schermo primario. Min: 0.4, Max: 1.0, Predefinito: 0.88''',
+          ),
+          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
+            label: 'Salta avvio automatico se già in esecuzione',
+            info:
+                '''Quando un dispositivo è connesso e scrcpy è impostato per l'avvio automatico, non avviarlo se è già in esecuzione un'istanza per quel dispositivo.''',
+          ),
+          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
+            label: 'Le nuove istanze sostituiscono quelle esistenti',
+            info:
+                'Quando si esegue manualmente una nuova istanza di scrcpy, tutte le istanze esistenti per lo stesso dispositivo vengono arrestate.',
+          ),
+        ),
+      ),
+      companionLoc: CompanionLoc(
+        title: 'Companion',
+        server: CompanionLocServer(
+          label: 'Impostazione Server',
+          status: 'Stato',
+          endpoint: CompanionLocServerEndpoint(
+            label: 'Endpoint server',
+          ),
+          name: CompanionLocServerName(
+            label: 'Nome server',
+            info: 'Predefinito: Scrcpy GUI',
+          ),
+          port: CompanionLocServerPort(
+            label: 'Porta server',
+            info: 'Predefinito: 8080',
+          ),
+          secret: CompanionLocServerSecret(
+            label: 'Chiave API del server',
+          ),
+          autoStart: CompanionLocServerAutoStart(
+            label: '''Avvia server all'avvio''',
+          ),
+        ),
+        client: CompanionLocClient(
+          clients: ({required String count}) => '''Connessi (${count})''',
+          blocked: ({required String count}) => '''Bloccati (${count})''',
+          noClient: 'Nessun client connesso',
+          noBlocked: 'Nessun client bloccato',
+        ),
+        qr: '''Scansiona il codice QR dall'app companion''',
+      ),
+      aboutLoc: AboutLoc(
+        title: 'Informazioni',
+        version: 'Versione',
+        author: 'Autore',
+        credits: 'Crediti',
+      ),
+      quitDialogLoc: QuitDialogLoc(
+        title: 'Uscire da Scrcpy GUI?',
+        killRunning: QuitDialogLocKillRunning(
+          label: 'Arrestare le istanze in esecuzione?',
+          info: ({required String count}) =>
+              '''${count} istanza(e) di scrcpy. Le istanze senza finestra verranno arrestate comunque.''',
+        ),
+        disconnect: QuitDialogLocDisconnect(
+          label: 'Disconnettere ADB wireless?',
+          info: ({required String count}) => '''${count} dispositivo(i)''',
+        ),
+      ),
+      disconnectDialogLoc: DisconnectDialogLoc(
+        title: ({required String name}) => '''Disconnettere ${name}?''',
+        hasRunning: DisconnectDialogLocHasRunning(
+          label: ({required String name, required String count}) =>
+              '''${name} ha ${count} scrcpy(s) in esecuzione''',
+          info: 'La disconnessione terminerà gli scrcpy(s)',
+        ),
+      ),
+      closeDialogLoc: CloseDialogLoc(
+        notAllowed: 'Non consentito!',
+        overwrite: 'Sovrascrivere?',
+        nameExist: 'Nome già esistente!',
+        save: 'Salvare configurazione?',
+        commandPreview: 'Anteprima comando:',
+        name: 'Nome:',
+      ),
+      unsavedChangeDialogLoc: UnsavedChangeDialogLoc(
+        title: '''Confermare l'uscita?''',
+        contents: 'Le modifiche non salvate andranno perse.',
+      ),
+      serverDisclaimerLoc: ServerDisclaimerLoc(
+        title: 'Avviso',
+        contents:
+            '''Avviso di sicurezza: Il server companion utilizza una connessione non crittografata.\n\nAvvia il server solo se sei connesso a una rete privata di cui ti fidi, come il tuo Wi-Fi domestico.''',
+      ),
+      ipHistoryLoc: IpHistoryLoc(
+        title: 'Cronologia',
+        empty: 'Nessuna cronologia',
+      ),
+      buttonLabelLoc: ButtonLabelLoc(
+        ok: 'OK',
+        confirm: 'Conferma',
+        close: 'Chiudi',
+        cancel: 'Annulla',
+        stop: 'Ferma',
+        testConfig: 'Prova Configurazione',
+        update: 'Aggiorna',
+        info: 'Info',
+        selectAll: 'Seleziona tutto',
+        quit: 'Esci',
+        discard: 'Scarta',
+        overwrite: 'Sovrascrivi',
+        save: 'Salva',
+        clear: 'Cancella',
+        delete: 'Elimina',
+        serverAgree: 'Capisco, avvia server',
+        reorder: 'Riordina',
+        stopAll: 'Ferma Tutto',
+        filter: 'Filtra',
+        edit: 'Modifica',
+        override: 'Ignora',
+        dontShowAgain: 'Non Mostrare Più',
+        sponsor: 'Sponsorizza',
+        extractIcons: 'Estrai icone',
+      ),
+      statusLoc: StatusLoc(
+        failed: 'Fallito',
+        unauth: 'Non autenticato',
+        error: 'Errore',
+        latest: 'Ultimo',
+        closing: 'Chiusura in corso',
+        copied: 'Copiato',
+        running: 'In esecuzione',
+        stopped: 'Fermato',
+        gettingInfo: 'Recupero Informazioni',
+        noDevicesFound: 'Nessun dispositivo trovato',
+      ),
+      commonLoc: CommonLoc(
+        default$: 'Predefinito',
+        yes: 'Sì',
+        no: 'No',
+        bundled: 'Incluso',
+      ),
+      colorSchemeNameLoc: ColorSchemeNameLoc(
+        blue: 'Blu',
+        gray: 'Grigio',
+        green: 'Verde',
+        neutral: 'Neutro',
+        orange: 'Arancione',
+        red: 'Rosso',
+        rose: 'Rosa',
+        slate: 'Ardesia',
+        stone: 'Pietra',
+        violet: 'Viola',
+        yellow: 'Giallo',
+        zinc: 'Zinco',
+      ),
+      configFiltersLoc: ConfigFiltersLoc(
+        label: ConfigFiltersLocLabel(
+          withApp: 'Con app',
+          virt: 'Display virtuale',
+        ),
+      ),
+      configOverrideLoc: ConfigOverrideLoc(
+        record: ConfigOverrideLocRecord(
+          label: 'Registra',
+          openFolder: 'Apri Cartella',
+        ),
+        landscape: ConfigOverrideLocLandscape(
+          label: 'Orizzontale',
+          info: 'Solo per display virtuale',
+        ),
+        mute: ConfigOverrideLocMute(
+          label: 'Silenzia',
+        ),
+      ),
+      autoArrangeOriginLoc: AutoArrangeOriginLoc(
+        title: 'Disposizione Automatica',
+        alignments: 'Allineamenti',
+        off: 'Spento',
+        topLeft: 'In Alto a Sinistra',
+        topRight: 'In Alto a Destra',
+        centerLeft: 'Centro a Sinistra',
+        centerRight: 'Centro a Destra',
+        bottomLeft: 'In Basso a Sinistra',
+        bottomRight: 'In Basso a Destra',
+      ),
+    );
+LocalizationMessages get ja => LocalizationMessages(
+      homeLoc: HomeLoc(
+        title: 'ホーム',
+        devices: HomeLocDevices(
+          label: ({required String count}) => '''接続中のデバイス (${count})''',
+        ),
+      ),
+      deviceTileLoc: DeviceTileLoc(
+        runningInstances: ({required String count}) => '''実行中 (${count})''',
+        context: DeviceTileLocContext(
+          disconnect: '切断',
+          toWireless: 'ワイヤレスへ',
+          stopRunning: '実行中のscrcpyを停止',
+          scrcpy: 'Scrcpy',
+          all: 'すべて',
+          allScrcpy: 'すべてのscrcpyを強制終了',
+          manage: '管理',
+        ),
+      ),
+      loungeLoc: LoungeLoc(
+        controls: LoungeLocControls(
+          label: '操作',
+        ),
+        pinnedApps: LoungeLocPinnedApps(
+          label: 'ピン留めされたアプリ',
+        ),
+        launcher: LoungeLocLauncher(
+          label: 'アプリランチャー',
+        ),
+        running: LoungeLocRunning(
+          label: ({required String count}) => '''実行中のインスタンス (${count})''',
+        ),
+        appTile: LoungeLocAppTile(
+          contextMenu: LoungeLocAppTileContextMenu(
+            pin: ({required String config}) => '''${config} にピン留め''',
+            unpin: 'ピン留めを外す',
+            forceClose: '強制終了して開始',
+            andStart: (
+                    {required String configuration, required String config}) =>
+                '''${config} で''',
+            selectConfig: 'まず設定を選択してください',
+            startOn: ({required String config}) => '''${config} で開始''',
+            withOverrides: 'オーバーライドして開始',
+            packageName: 'パッケージ名',
+            resetIcon: 'アイコンをリセット',
+          ),
+          sections: LoungeLocAppTileSections(
+            pinned: 'ピン留め済み',
+            apps: 'アプリ',
+          ),
+          missingIcon: ({required String count}) => '''見つからないアイコン (${count})''',
+        ),
+        placeholders: LoungeLocPlaceholders(
+          config: '設定を選択',
+          app: 'アプリを選択',
+          search: '「/」を押して検索',
+        ),
+        tooltip: LoungeLocTooltip(
+          missingConfig: ({required String config}) =>
+              '''見つからない設定: ${config}''',
+          pin: 'アプリ/設定ペアをピン留め',
+          onConfig: ({required String config}) => '''設定: ${config}''',
+          hideAppName: 'アプリ名を非表示',
+          showAppName: 'アプリ名を表示',
+        ),
+        info: LoungeLocInfo(
+          emptySearch: 'アプリが見つかりません',
+          emptyPin: 'ピン留めされたアプリはありません',
+          emptyInstance: '実行中のインスタンスはありません',
+        ),
+      ),
+      iconExtractorDisclaimerLoc: IconExtractorDisclaimerLoc(
+        title: '免責事項',
+        contents: IconExtractorDisclaimerLocContents(
+          p1: 'これは実験的な機能であり、いくつかの制限があります：',
+          l1: 'apkのサイズによっては、apkのプルに時間がかかることがあります。',
+          l2: 'アダプティブアイコンはサポートされていないため、アイコンが欠落します。',
+          l3: '抽出されたアイコンは解像度が低い場合があります。',
+        ),
+      ),
+      configLoc: ConfigLoc(
+        label: ({required String count}) => '''設定 (${count})''',
+        new$: '作成',
+        select: '設定を選択',
+        details: '詳細を表示',
+        start: '開始',
+        empty: '設定が見つかりません',
+      ),
+      noDeviceDialogLoc: NoDeviceDialogLoc(
+        title: 'デバイス',
+        contentsEdit: '''デバイスが選択されていません。\nscrcpy設定を編集するにはデバイスを選択してください。''',
+        contentsStart: '''デバイスが選択されていません。\nscrcpyを開始するにはデバイスを選択してください。''',
+        contentsNew: '''デバイスが選択されていません。\nscrcpy設定を作成するにはデバイスを選択してください。''',
+      ),
+      noConfigDialogLoc: NoConfigDialogLoc(
+        title: '設定',
+        contents: '''設定が選択されていません。\n開始するscrcpy設定を選択してください。''',
+      ),
+      deleteConfigDialogLoc: DeleteConfigDialogLoc(
+        title: '確認',
+        contents: ({required String configname}) => '''${configname}を削除しますか？''',
+      ),
+      deviceSettingsLoc: DeviceSettingsLoc(
+        title: 'デバイス設定',
+        info: '情報',
+        refresh: '情報を更新',
+        rename: DeviceSettingsLocRename(
+          label: '名前を変更',
+          info: '[Enter]を押して名前を適用',
+        ),
+        autoConnect: DeviceSettingsLocAutoConnect(
+          label: '自動接続',
+          info: 'ワイヤレスデバイスを自動接続',
+        ),
+        onConnected: DeviceSettingsLocOnConnected(
+          label: '接続時',
+          info: 'デバイス接続時に選択した設定でscrcpyを(1)開始',
+        ),
+        doNothing: '何もしない',
+        scrcpyInfo: DeviceSettingsLocScrcpyInfo(
+          fetching: 'scrcpy情報を取得中',
+          label: 'Scrcpy情報',
+          name: ({required String name}) => '''名前: ${name}''',
+          id: ({required String id}) => '''ID: ${id}''',
+          model: ({required String model}) => '''モデル: ${model}''',
+          version: ({required String version}) =>
+              '''Androidバージョン: ${version}''',
+          displays: ({required String count}) => '''ディスプレイ (${count})''',
+          cameras: ({required String count}) => '''カメラ (${count})''',
+          videoEnc: ({required String count}) => '''ビデオエンコーダー (${count})''',
+          audioEnc: ({required String count}) => '''オーディオエンコーダー (${count})''',
+        ),
+      ),
+      configManagerLoc: ConfigManagerLoc(
+        title: '設定マネージャー',
+      ),
+      configScreenLoc: ConfigScreenLoc(
+        title: 'コンフィグ設定',
+        connectionLost: 'デバイスへの接続が失われました',
+        similarExist: ({required String configName}) => '''${configName}の複製''',
+      ),
+      logScreenLoc: LogScreenLoc(
+        title: 'テストログ',
+        dialog: LogScreenLocDialog(
+          title: 'コマンド',
+        ),
+      ),
+      renameSection: RenameSection(
+        title: '名前を変更',
+      ),
+      modeSection: ModeSection(
+        title: 'モード',
+        saveFolder: ModeSectionSaveFolder(
+          label: '保存フォルダー',
+          info: '''保存パスを'--record=保存パス/ファイル'に追加します''',
+        ),
+        mainMode: ModeSectionMainMode(
+          label: 'モード',
+          mirror: 'ミラー',
+          record: '録画',
+          info: ModeSectionMainModeInfo(
+            default$: 'ミラーまたは録画、ミラーにはフラグなし',
+            alt: ''''--record='フラグを使用''',
+          ),
+        ),
+        scrcpyMode: ModeSectionScrcpyMode(
+          both: '音声 + 映像',
+          audioOnly: '音声のみ',
+          videoOnly: '映像のみ',
+          info: ModeSectionScrcpyModeInfo(
+            default$: 'デフォルトは両方、フラグなし',
+            alt: ({required String command}) => ''''${command}'フラグを使用''',
+          ),
+        ),
+      ),
+      videoSection: VideoSection(
+        title: '映像',
+        displays: VideoSectionDisplays(
+          label: 'ディスプレイ',
+          info: VideoSectionDisplaysInfo(
+            default$: 'デフォルトは利用可能な最初のもの、フラグなし',
+            alt: ''''--display-id='フラグを使用''',
+          ),
+          virtual: VideoSectionDisplaysVirtual(
+            label: '仮想ディスプレイ設定',
+            newDisplay: VideoSectionDisplaysVirtualNewDisplay(
+              label: '新しいディスプレイ',
+              info: VideoSectionDisplaysVirtualNewDisplayInfo(
+                alt: ''''--new-display'フラグを使用''',
+              ),
+            ),
+            resolution: VideoSectionDisplaysVirtualResolution(
+              label: '解像度',
+              info: VideoSectionDisplaysVirtualResolutionInfo(
+                default$: 'デバイスの解像度にデフォルト設定',
+                alt: ({required String res}) =>
+                    '''解像度を'--new-display=${res}'フラグに追加''',
+              ),
+            ),
+            dpi: VideoSectionDisplaysVirtualDpi(
+              label: 'DPI',
+              info: VideoSectionDisplaysVirtualDpiInfo(
+                default$: 'デバイスのDPIにデフォルト設定',
+                alt: ({required String res, required String dpi}) =>
+                    '''DPIを'--new-display=${res}/${dpi}'フラグに追加''',
+              ),
+            ),
+            deco: VideoSectionDisplaysVirtualDeco(
+              label: 'システム装飾を無効化',
+              info: VideoSectionDisplaysVirtualDecoInfo(
+                default$: 'デフォルトはシステム装飾あり',
+                alt: ''''--no-vd-system-decorations'フラグを使用''',
+              ),
+            ),
+            preserve: VideoSectionDisplaysVirtualPreserve(
+              label: 'アプリを維持',
+              info: VideoSectionDisplaysVirtualPreserveInfo(
+                default$: 'scrcpyセッション終了時にアプリはデフォルトで破棄されます',
+                alt:
+                    '''セッション終了時にアプリをメインディスプレイに移動; '--no-vd-destroy-content'フラグを使用''',
+              ),
+            ),
+          ),
+        ),
+        codec: VideoSectionCodec(
+          label: 'コーデック',
+          info: VideoSectionCodecInfo(
+            default$: 'デフォルトはh264、フラグなし',
+            alt: ({required String codec}) =>
+                ''''--video-codec=${codec}'フラグを使用''',
+          ),
+        ),
+        encoder: VideoSectionEncoder(
+          label: 'エンコーダー',
+          info: VideoSectionEncoderInfo(
+            default$: 'デフォルトは利用可能な最初のもの、フラグなし',
+            alt: ({required String encoder}) =>
+                ''''--video-encoder=${encoder}'フラグを使用''',
+          ),
+        ),
+        format: VideoSectionFormat(
+          label: 'フォーマット',
+          info: VideoSectionFormatInfo(
+            default$: ({required String format}) =>
+                '''フォーマットを'--record=保存パス/ファイル${format}'に追加"''',
+          ),
+        ),
+        bitrate: VideoSectionBitrate(
+          label: 'ビットレート',
+          info: VideoSectionBitrateInfo(
+            default$: 'デフォルトは8M、フラグなし',
+            alt: ({required String bitrate}) =>
+                ''''--video-bit-rate=${bitrate}M'フラグを使用''',
+          ),
+        ),
+        fpsLimit: VideoSectionFpsLimit(
+          label: 'FPS制限',
+          info: VideoSectionFpsLimitInfo(
+            default$: '設定されない限りフラグなし',
+            alt: ({required String fps}) => ''''--max-fps=${fps}'フラグを使用''',
+          ),
+        ),
+        resolutionScale: VideoSectionResolutionScale(
+          label: '解像度スケール',
+          info: VideoSectionResolutionScaleInfo(
+            default$: 'デバイスの解像度に基づいて計算、設定されない限りフラグなし',
+            alt: ({required String size}) => ''''--max-size=${size}'フラグを使用''',
+          ),
+        ),
+      ),
+      audioSection: AudioSection(
+        title: '音声',
+        duplicate: AudioSectionDuplicate(
+          label: '音声を複製',
+          info: AudioSectionDuplicateInfo(
+            default$: 'Android 13以上のみ',
+            alt: ''''--audio-dup' フラグを使用''',
+          ),
+        ),
+        source: AudioSectionSource(
+          label: 'ソース',
+          info: AudioSectionSourceInfo(
+            default$: 'デフォルトは出力、フラグなし',
+            alt: ({required String source}) => ''''${source}'フラグを使用''',
+            inCaseOfDup: ''''--audio-dup' で'再生'に暗黙的に設定、フラグなし''',
+          ),
+        ),
+        codec: AudioSectionCodec(
+          label: 'コーデック',
+          info: AudioSectionCodecInfo(
+            default$: 'デフォルトはopus、フラグなし',
+            alt: ({required String codec}) =>
+                ''''--audio-codec=${codec}'フラグを使用''',
+            isAudioOnly: ({required String format, required String codec}) =>
+                '''フォーマット: ${format}、コーデック: ${codec}が必要''',
+          ),
+        ),
+        encoder: AudioSectionEncoder(
+          label: 'エンコーダー',
+          info: AudioSectionEncoderInfo(
+            default$: 'デフォルトは利用可能な最初のもの、フラグなし',
+            alt: ({required String encoder}) =>
+                ''''--audio-encoder=${encoder}'フラグを使用''',
+          ),
+        ),
+        format: AudioSectionFormat(
+          label: 'フォーマット',
+          info: AudioSectionFormatInfo(
+            default$: ({required String format}) =>
+                '''フォーマットを'--record=保存パス/ファイル.${format}'に追加"''',
+          ),
+        ),
+        bitrate: AudioSectionBitrate(
+          label: 'ビットレート',
+          info: AudioSectionBitrateInfo(
+            default$: 'デフォルトは128k、フラグなし',
+            alt: ({required String bitrate}) =>
+                ''''--audio-bit-rate=${bitrate}K'フラグを使用''',
+          ),
+        ),
+      ),
+      appSection: AppSection(
+        title: 'アプリを起動',
+        select: AppSectionSelect(
+          label: 'アプリを選択',
+          info: AppSectionSelectInfo(
+            alt: ({required String app}) => ''''--start-app=${app}'フラグを使用''',
+            fc: ({required String app}) => ''''--start-app=+${app}'フラグを使用''',
+          ),
+        ),
+        forceClose: AppSectionForceClose(
+          label: '起動前にアプリを強制終了',
+          info: AppSectionForceCloseInfo(
+            alt: '''アプリのパッケージ名の前に'+'を付ける''',
+          ),
+        ),
+      ),
+      deviceSection: DeviceSection(
+        title: 'デバイス',
+        stayAwake: DeviceSectionStayAwake(
+          label: 'スリープしない',
+          info: DeviceSectionStayAwakeInfo(
+            default$: 'デバイスのスリープを防止、USB接続時のみ動作',
+            alt: ''''--stay-awake'フラグを使用''',
+          ),
+        ),
+        showTouches: DeviceSectionShowTouches(
+          label: 'タッチを表示',
+          info: DeviceSectionShowTouchesInfo(
+            default$: '指のタッチを表示、デバイスでの物理的なタッチのみ動作',
+            alt: ''''--show-touches'フラグを使用''',
+          ),
+        ),
+        offDisplayStart: DeviceSectionOffDisplayStart(
+          label: '起動時にディスプレイをオフ',
+          info: DeviceSectionOffDisplayStartInfo(
+            default$: 'scrcpy起動時にデバイスのディスプレイをオフにする',
+            alt: ''''--turn-screen-off'フラグを使用''',
+          ),
+        ),
+        offDisplayExit: DeviceSectionOffDisplayExit(
+          label: '終了時にディスプレイをオフ',
+          info: DeviceSectionOffDisplayExitInfo(
+            default$: 'scrcpy終了時にデバイスのディスプレイをオフにする',
+            alt: ''''--power-off-on-close'フラグを使用''',
+          ),
+        ),
+        screensaver: DeviceSectionScreensaver(
+          label: 'スクリーンセーバーを無効化 (ホスト)',
+          info: DeviceSectionScreensaverInfo(
+            default$: 'スクリーンセーバーを無効化',
+            alt: ''''--disable-screensaver'フラグを使用''',
+          ),
+        ),
+      ),
+      windowSection: WindowSection(
+        title: 'ウィンドウ',
+        hideWindow: WindowSectionHideWindow(
+          label: 'ウィンドウを非表示',
+          info: WindowSectionHideWindowInfo(
+            default$: 'ウィンドウなしでscrcpyを起動',
+            alt: ''''--no-window'フラグを使用''',
+          ),
+        ),
+        borderless: WindowSectionBorderless(
+          label: 'ボーダーレス',
+          info: WindowSectionBorderlessInfo(
+            default$: 'ウィンドウの装飾を無効化',
+            alt: ''''--window-borderless'フラグを使用''',
+          ),
+        ),
+        alwaysOnTop: WindowSectionAlwaysOnTop(
+          label: '常に手前に表示',
+          info: WindowSectionAlwaysOnTopInfo(
+            default$: 'scrcpyウィンドウを常に手前に表示',
+            alt: ''''--always-on-top'フラグを使用''',
+          ),
+        ),
+        timeLimit: WindowSectionTimeLimit(
+          label: '時間制限',
+          info: WindowSectionTimeLimitInfo(
+            default$: 'scrcpyセッションを制限（秒単位）',
+            alt: ({required String time}) => ''''--time-limit=${time}'フラグを使用''',
+          ),
+        ),
+      ),
+      controlSection: ControlSection(
+        title: '操作',
+        info: ControlSectionInfo(
+          ifAoa: '(USBのみ)',
+        ),
+        mouse: ControlSectionMouse(
+          title: 'マウス',
+          mode: ControlSectionMouseMode(
+            label: 'マウスモード',
+            info: ControlSectionMouseModeInfo(
+              default$: 'デフォルトはsdk、フラグなし',
+              alt: ({required String command}) => ''''${command}' フラグを使用''',
+            ),
+          ),
+          mouseHover: ControlSectionMouseMouseHover(
+            label: 'マウスホバーを無効にする',
+            info: ControlSectionMouseMouseHoverInfo(
+              default$: 'マウスホバー効果を無効にする',
+              alt: ''''--no-mouse-hover'フラグを使用''',
+              blocked: 'sdkモードのみ',
+            ),
+          ),
+        ),
+        keyboard: ControlSectionKeyboard(
+          title: 'キーボード',
+          mode: ControlSectionKeyboardMode(
+            label: 'キーボードモード',
+            info: ControlSectionKeyboardModeInfo(
+              default$: 'デフォルトはsdk、フラグなし',
+              alt: ({required String command}) => ''''${command}' フラグを使用''',
+            ),
+          ),
+          keyRepeat: ControlSectionKeyboardKeyRepeat(
+            label: 'キーリピートを無効にする',
+            info: ControlSectionKeyboardKeyRepeatInfo(
+              default$: 'キーを長押ししたときに繰り返しキーイベントが転送されないようにする',
+              alt: ''''--no-key-repeat'フラグを使用''',
+              blocked: 'sdkモードのみ',
+            ),
+          ),
+        ),
+        gamepad: ControlSectionGamepad(
+          title: 'ゲームパッド',
+          mode: ControlSectionGamepadMode(
+            label: 'ゲームパッドモード',
+            info: ControlSectionGamepadModeInfo(
+              default$: 'デフォルトで無効、フラグなし',
+              alt: ({required String command}) => ''''${command}' フラグを使用''',
+            ),
+          ),
+        ),
+      ),
+      addFlags: AddFlags(
+        title: '追加フラグ',
+        add: '追加',
+        info: 'すでにオプションとして存在するフラグの使用は避けてください',
+      ),
+      connectLoc: ConnectLoc(
+        title: '接続',
+        withIp: ConnectLocWithIp(
+          label: 'IPで接続',
+          connect: '接続',
+          connected: ({required String to}) => '''${to}に接続済み''',
+        ),
+        withMdns: ConnectLocWithMdns(
+          label: ({required String count}) => '''MDNSデバイス (${count})''',
+          info: ConnectLocWithMdnsInfo(
+            i1: 'デバイスがPCとペアリングされていることを確認してください。',
+            i2: 'デバイスが表示されない場合は、ワイヤレスADBをオフにしてからオンにしてみてください。',
+            i3: 'MDNSデバイスは通常、ペアリングされていれば自動的に接続されます。',
+          ),
+        ),
+        qrPair: ConnectLocQrPair(
+          label: 'QRペアリング',
+          pair: 'デバイスをペアリング',
+          status: ConnectLocQrPairStatus(
+            cancelled: 'ペアリングがキャンセルされました',
+            success: 'ペアリングに成功しました',
+            failed: 'ペアリングに失敗しました',
+          ),
+          progress: ConnectLocQrPairProgress(
+            scan: '',
+            found: '',
+            awaiting: ({required String attempt}) => '',
+          ),
+        ),
+        unauthenticated: ConnectLocUnauthenticated(
+          info: ConnectLocUnauthenticatedInfo(
+            i1: 'スマートフォンを確認してください。',
+            i2: 'デバッグを許可をクリックしてください。',
+          ),
+        ),
+        failed: ConnectLocFailed(
+          info: ConnectLocFailedInfo(
+            i1: 'デバイスがPCとペアリングされていることを確認してください。',
+            i2: 'そうでない場合は、ワイヤレスAdbをオフにしてからオンにしてみてください。',
+            i3: 'ペアリングされていない場合: ',
+            i4: '1. ペアリングウィンドウを使用（右上のボタン）',
+            i5: '2. デバイスをPCに接続し、デバッグを許可して再試行してください。',
+          ),
+        ),
+      ),
+      testConfigLoc: TestConfigLoc(
+        title: '設定をテスト',
+        preview: 'コマンドプレビュー',
+      ),
+      scrcpyManagerLoc: ScrcpyManagerLoc(
+        title: 'Scrcpyマネージャー',
+        check: '更新を確認',
+        current: ScrcpyManagerLocCurrent(
+          label: '現在',
+          inUse: '使用中',
+        ),
+        exec: ScrcpyManagerLocExec(
+          label: '実行ファイルの場所を開く',
+          info: '注意して変更してください',
+        ),
+        infoPopup: ScrcpyManagerLocInfoPopup(
+          noUpdate: '利用可能な更新はありません',
+          error: '更新の確認中にエラーが発生しました',
+        ),
+        updater: ScrcpyManagerLocUpdater(
+          label: '新しいバージョンが利用可能です',
+          newVersion: '新バージョン',
+        ),
+      ),
+      settingsLoc: SettingsLoc(
+        title: '設定',
+        looks: SettingsLocLooks(
+          label: '外観',
+          mode: SettingsLocLooksMode(
+            label: 'テーマモード',
+            value: SettingsLocLooksModeValue(
+              dark: 'ダーク',
+              light: 'ライト',
+              system: 'システム',
+            ),
+          ),
+          oldScheme: SettingsLocLooksOldScheme(
+            label: 'Shadcnカラースキームを使用',
+          ),
+          cornerRadius: SettingsLocLooksCornerRadius(
+            label: '角の半径',
+          ),
+          accentColor: SettingsLocLooksAccentColor(
+            label: 'アクセントカラー',
+          ),
+          tintLevel: SettingsLocLooksTintLevel(
+            label: '色合いのレベル',
+          ),
+          dimness: SettingsLocLooksDimness(
+            label: '薄暗さ',
+          ),
+          brightness: SettingsLocLooksBrightness(
+            label: '明るさ',
+          ),
+          surfaceOpacity: SettingsLocLooksSurfaceOpacity(
+            label: '表面の不透明度',
+            info: 'Linuxでちらつきを引き起こすことが知られています',
+          ),
+          surfaceBlur: SettingsLocLooksSurfaceBlur(
+            label: '表面のぼかし',
+            info: 'Linuxでちらつきを引き起こすことが知られています',
+          ),
+        ),
+        behavior: SettingsLocBehavior(
+          label: 'アプリの動作',
+          language: SettingsLocBehaviorLanguage(
+            label: '言語',
+            info: '一部の言語はAIによって生成されています',
+          ),
+          minimize: SettingsLocBehaviorMinimize(
+            label: '閉じる時に最小化',
+            value: SettingsLocBehaviorMinimizeValue(
+              tray: 'トレイへ',
+              taskbar: 'タスクバーへ',
+            ),
+          ),
+          windowSize: SettingsLocBehaviorWindowSize(
+            label: 'ウィンドウサイズを記憶',
+            info: '終了時にウィンドウサイズを記憶',
+          ),
+          autoArrange: SettingsLocBehaviorAutoArrange(
+            label: 'scrcpyウィンドウの自動配置',
+            info: '起動時にscrcpyウィンドウを自動的に配置',
+          ),
+          windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
+            label: 'ウィンドウと画面の高さの比率',
+            labelShort: '高さ %',
+            info:
+                'scrcpyウィンドウの高さとプライマリスクリーンの高さの比率。最小: 0.4, 最大: 1.0, デフォルト: 0.88',
+          ),
+          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
+            label: '実行中の場合は自動起動をスキップ',
+            info:
+                'デバイスが接続され、scrcpyが自動的に起動するように設定されている場合、そのデバイスに対してすでにインスタンスが実行中であれば起動しません。',
+          ),
+          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
+            label: '新しいインスタンスが既存のインスタンスを置き換える',
+            info: 'scrcpyの新しいインスタンスを手動で実行すると、同じデバイスの既存のすべてのインスタンスが停止します。',
+          ),
+        ),
+      ),
+      companionLoc: CompanionLoc(
+        title: 'コンパニオン',
+        server: CompanionLocServer(
+          label: 'サーバー設定',
+          status: 'ステータス',
+          endpoint: CompanionLocServerEndpoint(
+            label: 'サーバーエンドポイント',
+          ),
+          name: CompanionLocServerName(
+            label: 'サーバー名',
+            info: 'デフォルト: Scrcpy GUI',
+          ),
+          port: CompanionLocServerPort(
+            label: 'サーバーポート',
+            info: 'デフォルト: 8080',
+          ),
+          secret: CompanionLocServerSecret(
+            label: 'サーバーAPIキー',
+          ),
+          autoStart: CompanionLocServerAutoStart(
+            label: '起動時にサーバーを開始',
+          ),
+        ),
+        client: CompanionLocClient(
+          clients: ({required String count}) => '''接続中 (${count})''',
+          blocked: ({required String count}) => '''ブロック済み (${count})''',
+          noClient: '接続中のクライアントなし',
+          noBlocked: 'ブロック済みのクライアントなし',
+        ),
+        qr: 'コンパニオンアプリからQRコードをスキャン',
+      ),
+      aboutLoc: AboutLoc(
+        title: '概要',
+        version: 'バージョン',
+        author: '作成者',
+        credits: 'クレジット',
+      ),
+      quitDialogLoc: QuitDialogLoc(
+        title: 'Scrcpy GUIを終了しますか？',
+        killRunning: QuitDialogLocKillRunning(
+          label: '実行中のプロセスを終了しますか？',
+          info: ({required String count}) =>
+              '''${count} 個のscrcpy。ウィンドウのないインスタンスは、とにかく停止されます。''',
+        ),
+        disconnect: QuitDialogLocDisconnect(
+          label: 'ワイヤレスADBを切断しますか？',
+          info: ({required String count}) => '''${count} 台のデバイス''',
+        ),
+      ),
+      disconnectDialogLoc: DisconnectDialogLoc(
+        title: ({required String name}) => '''${name}を切断しますか？''',
+        hasRunning: DisconnectDialogLocHasRunning(
+          label: ({required String name, required String count}) =>
+              '''${name}には実行中のscrcpyが${count}個あります''',
+          info: '切断するとscrcpyが終了します',
+        ),
+      ),
+      closeDialogLoc: CloseDialogLoc(
+        notAllowed: '許可されていません！',
+        overwrite: '上書きしますか？',
+        nameExist: '名前はすでに存在します！',
+        save: '設定を保存しますか？',
+        commandPreview: 'コマンドプレビュー:',
+        name: '名前:',
+      ),
+      unsavedChangeDialogLoc: UnsavedChangeDialogLoc(
+        title: '終了を確認しますか？',
+        contents: '保存されていない変更は失われます。',
+      ),
+      serverDisclaimerLoc: ServerDisclaimerLoc(
+        title: '免責事項',
+        contents:
+            '''セキュリティ警告: コンパニオンサーバーは暗号化されていない接続を使用します。\n\n自宅のWi-Fiなど、信頼できるプライベートネットワークに接続している場合にのみサーバーを起動してください。''',
+      ),
+      ipHistoryLoc: IpHistoryLoc(
+        title: '履歴',
+        empty: '履歴なし',
+      ),
+      buttonLabelLoc: ButtonLabelLoc(
+        ok: 'OK',
+        confirm: '確認',
+        close: '閉じる',
+        cancel: 'キャンセル',
+        stop: '停止',
+        testConfig: '設定をテスト',
+        update: '更新',
+        info: '情報',
+        selectAll: 'すべて選択',
+        quit: '終了',
+        discard: '破棄',
+        overwrite: '上書き',
+        save: '保存',
+        clear: 'クリア',
+        delete: '削除',
+        serverAgree: '理解しました、サーバーを開始',
+        reorder: '並べ替え',
+        stopAll: '全て停止',
+        filter: 'フィルター',
+        edit: '編集',
+        override: 'オーバーライド',
+        dontShowAgain: '再表示しない',
+        sponsor: 'スポンサー',
+        extractIcons: 'アイコンを抽出',
+      ),
+      statusLoc: StatusLoc(
+        failed: '失敗',
+        unauth: '未認証',
+        error: 'エラー',
+        latest: '最新',
+        closing: '閉じています',
+        copied: 'コピーしました',
+        running: '実行中',
+        stopped: '停止済み',
+        gettingInfo: '情報を取得中',
+        noDevicesFound: 'デバイスが見つかりません',
+      ),
+      commonLoc: CommonLoc(
+        default$: 'デフォルト',
+        yes: 'はい',
+        no: 'いいえ',
+        bundled: 'バンドル版',
+      ),
+      colorSchemeNameLoc: ColorSchemeNameLoc(
+        blue: '青',
+        gray: 'グレー',
+        green: '緑',
+        neutral: 'ニュートラル',
+        orange: 'オレンジ',
+        red: '赤',
+        rose: 'ローズ',
+        slate: 'スレート',
+        stone: 'ストーン',
+        violet: 'バイオレット',
+        yellow: 'イエロー',
+        zinc: 'ジンク',
+      ),
+      configFiltersLoc: ConfigFiltersLoc(
+        label: ConfigFiltersLocLabel(
+          withApp: 'アプリあり',
+          virt: '仮想ディスプレイ',
+        ),
+      ),
+      configOverrideLoc: ConfigOverrideLoc(
+        record: ConfigOverrideLocRecord(
+          label: '録画',
+          openFolder: 'フォルダーを開く',
+        ),
+        landscape: ConfigOverrideLocLandscape(
+          label: '横向き',
+          info: '仮想ディスプレイのみ',
+        ),
+        mute: ConfigOverrideLocMute(
+          label: 'ミュート',
+        ),
+      ),
+      autoArrangeOriginLoc: AutoArrangeOriginLoc(
+        title: '自動配置',
+        alignments: '配置',
+        off: 'オフ',
+        topLeft: '左上',
+        topRight: '右上',
+        centerLeft: '中央左',
+        centerRight: '中央右',
+        bottomLeft: '左下',
+        bottomRight: '右下',
+      ),
+    );
+LocalizationMessages get ms => LocalizationMessages(
+      homeLoc: HomeLoc(
+        title: 'Laman Utama',
+        devices: HomeLocDevices(
+          label: ({required String count}) =>
+              '''Peranti yang Disambungkan (${count})''',
+        ),
+      ),
+      deviceTileLoc: DeviceTileLoc(
+        runningInstances: ({required String count}) =>
+            '''Sedang Berjalan (${count})''',
+        context: DeviceTileLocContext(
+          disconnect: 'Putuskan Sambungan',
+          toWireless: 'Ke Tanpa Wayar',
+          stopRunning: 'Hentikan scrcpy yang sedang berjalan',
+          scrcpy: 'Scrcpy',
+          all: 'Semua',
+          allScrcpy: 'Hentikan semua scrcpy',
+          manage: 'Urus',
+        ),
+      ),
+      loungeLoc: LoungeLoc(
+        controls: LoungeLocControls(
+          label: 'Kawalan',
+        ),
+        pinnedApps: LoungeLocPinnedApps(
+          label: 'Aplikasi disemat',
+        ),
+        launcher: LoungeLocLauncher(
+          label: 'Pelancar Aplikasi',
+        ),
+        running: LoungeLocRunning(
+          label: ({required String count}) =>
+              '''Instans sedang berjalan (${count})''',
+        ),
+        appTile: LoungeLocAppTile(
+          contextMenu: LoungeLocAppTileContextMenu(
+            pin: ({required String config}) => '''Pin pada ${config}''',
+            unpin: 'Buang pin',
+            forceClose: 'Paksa tutup & mula',
+            andStart: (
+                    {required String configuration, required String config}) =>
+                '''Pada ${config}''',
+            selectConfig: 'Pilih konfigurasi dahulu',
+            startOn: ({required String config}) => '''Mula pada ${config}''',
+            withOverrides: 'Mula dengan pengubahsuaian',
+            packageName: 'Nama pakej',
+            resetIcon: 'Set semula ikon',
+          ),
+          sections: LoungeLocAppTileSections(
+            pinned: 'Disemat',
+            apps: 'Aplikasi',
+          ),
+          missingIcon: ({required String count}) => '''Tiada ikon (${count})''',
+        ),
+        placeholders: LoungeLocPlaceholders(
+          config: 'Pilih konfigurasi',
+          app: 'Pilih aplikasi',
+          search: '''Tekan '/' untuk mencari''',
+        ),
+        tooltip: LoungeLocTooltip(
+          missingConfig: ({required String config}) =>
+              '''Konfigurasi tiada: ${config}''',
+          pin: 'Pin pasangan aplikasi/konfigurasi',
+          onConfig: ({required String config}) => '''Pada: ${config}''',
+          hideAppName: 'Sembunyikan nama aplikasi',
+          showAppName: 'Tunjukkan nama aplikasi',
+        ),
+        info: LoungeLocInfo(
+          emptySearch: 'Tiada aplikasi ditemui',
+          emptyPin: 'Tiada Aplikasi Disemat',
+          emptyInstance: 'Tiada Instans Sedang Berjalan',
+        ),
+      ),
+      iconExtractorDisclaimerLoc: IconExtractorDisclaimerLoc(
+        title: 'Penafian',
+        contents: IconExtractorDisclaimerLocContents(
+          p1: 'Ini adalah ciri percubaan, dengan beberapa batasan:',
+          l1: 'Menarik apk boleh mengambil masa yang lama, bergantung pada saiz apk.',
+          l2: 'Ikon suai tidak disokong, mengakibatkan ikon hilang.',
+          l3: 'Ikon yang diekstrak mungkin beresolusi lebih rendah.',
+        ),
+      ),
+      configLoc: ConfigLoc(
+        label: ({required String count}) => '''Konfigurasi (${count})''',
+        new$: 'Cipta',
+        select: 'Pilih konfigurasi',
+        details: 'Tunjukkan butiran',
+        start: 'Mula',
+        empty: 'Tiada konfigurasi ditemui',
+      ),
+      noDeviceDialogLoc: NoDeviceDialogLoc(
+        title: 'Peranti',
+        contentsEdit:
+            '''Tiada peranti dipilih. \nPilih peranti untuk mengedit konfigurasi scrcpy.''',
+        contentsStart:
+            '''Tiada peranti dipilih. \nPilih peranti untuk memulakan scrcpy.''',
+        contentsNew:
+            '''Tiada peranti dipilih. \nPilih peranti untuk mencipta konfigurasi scrcpy.''',
+      ),
+      noConfigDialogLoc: NoConfigDialogLoc(
+        title: 'Konfigurasi',
+        contents:
+            '''Tiada konfigurasi dipilih.\nPilih konfigurasi scrcpy untuk dimulakan.''',
+      ),
+      deleteConfigDialogLoc: DeleteConfigDialogLoc(
+        title: 'Sahkan',
+        contents: ({required String configname}) => '''Padam ${configname}?''',
+      ),
+      deviceSettingsLoc: DeviceSettingsLoc(
+        title: 'Tetapan Peranti',
+        info: 'Maklumat',
+        refresh: 'Muat Semula Maklumat',
+        rename: DeviceSettingsLocRename(
+          label: 'Namakan Semula',
+          info: 'Tekan [Enter] untuk menggunakan nama',
+        ),
+        autoConnect: DeviceSettingsLocAutoConnect(
+          label: 'Sambungan-automatik',
+          info: 'Sambung peranti tanpa wayar secara automatik',
+        ),
+        onConnected: DeviceSettingsLocOnConnected(
+          label: 'Semasa Disambungkan',
+          info:
+              'Mulakan (1) scrcpy dengan konfigurasi yang dipilih semasa sambungan peranti',
+        ),
+        doNothing: 'Jangan buat apa-apa',
+        scrcpyInfo: DeviceSettingsLocScrcpyInfo(
+          fetching: 'Mendapatkan maklumat scrcpy',
+          label: 'Maklumat Scrcpy',
+          name: ({required String name}) => '''Nama: ${name}''',
+          id: ({required String id}) => '''ID: ${id}''',
+          model: ({required String model}) => '''Model: ${model}''',
+          version: ({required String version}) =>
+              '''Versi Android: ${version}''',
+          displays: ({required String count}) => '''Paparan (${count})''',
+          cameras: ({required String count}) => '''Kamera (${count})''',
+          videoEnc: ({required String count}) =>
+              '''Pengekod video (${count})''',
+          audioEnc: ({required String count}) =>
+              '''Pengekod audio (${count})''',
+        ),
+      ),
+      configManagerLoc: ConfigManagerLoc(
+        title: 'Pengurus Konfigurasi',
+      ),
+      configScreenLoc: ConfigScreenLoc(
+        title: 'Tetapan Konfigurasi',
+        connectionLost: 'Sambungan ke peranti terputus',
+        similarExist: ({required String configName}) =>
+            '''Salinan daripada ${configName}''',
+      ),
+      logScreenLoc: LogScreenLoc(
+        title: 'Log Ujian',
+        dialog: LogScreenLocDialog(
+          title: 'Perintah',
+        ),
+      ),
+      renameSection: RenameSection(
+        title: 'Namakan Semula',
+      ),
+      modeSection: ModeSection(
+        title: 'Mod',
+        saveFolder: ModeSectionSaveFolder(
+          label: 'Folder Simpan',
+          info: '''menambah laluan simpan ke '--record=laluan_simpan/fail' ''',
+        ),
+        mainMode: ModeSectionMainMode(
+          label: 'Mod',
+          mirror: 'Cermin',
+          record: 'Rakam',
+          info: ModeSectionMainModeInfo(
+            default$: 'cermin atau rakam, tiada bendera untuk cermin',
+            alt: '''menggunakan bendera '--record=' ''',
+          ),
+        ),
+        scrcpyMode: ModeSectionScrcpyMode(
+          both: 'Audio + video',
+          audioOnly: 'Audio sahaja',
+          videoOnly: 'Video sahaja',
+          info: ModeSectionScrcpyModeInfo(
+            default$: 'lalai kepada kedua-duanya, tiada bendera',
+            alt: ({required String command}) =>
+                '''menggunakan bendera '${command}' ''',
+          ),
+        ),
+      ),
+      videoSection: VideoSection(
+        title: 'Video',
+        displays: VideoSectionDisplays(
+          label: 'Paparan',
+          info: VideoSectionDisplaysInfo(
+            default$: 'lalai kepada yang pertama tersedia, tiada bendera',
+            alt: '''menggunakan bendera '--display-id=' ''',
+          ),
+          virtual: VideoSectionDisplaysVirtual(
+            label: 'Tetapan Paparan Maya',
+            newDisplay: VideoSectionDisplaysVirtualNewDisplay(
+              label: 'Paparan Baru',
+              info: VideoSectionDisplaysVirtualNewDisplayInfo(
+                alt: '''menggunakan bendera '--new-display' ''',
+              ),
+            ),
+            resolution: VideoSectionDisplaysVirtualResolution(
+              label: 'Resolusi',
+              info: VideoSectionDisplaysVirtualResolutionInfo(
+                default$: 'lalai kepada resolusi peranti',
+                alt: ({required String res}) =>
+                    '''menambah resolusi ke bendera '--new-display=${res}' ''',
+              ),
+            ),
+            dpi: VideoSectionDisplaysVirtualDpi(
+              label: 'DPI',
+              info: VideoSectionDisplaysVirtualDpiInfo(
+                default$: 'lalai kepada DPI peranti',
+                alt: ({required String res, required String dpi}) =>
+                    '''menambah DPI ke bendera '--new-display=${res}/${dpi}' ''',
+              ),
+            ),
+            deco: VideoSectionDisplaysVirtualDeco(
+              label: 'Lumpuhkan Hiasan Sistem',
+              info: VideoSectionDisplaysVirtualDecoInfo(
+                default$: 'lalai dengan hiasan sistem',
+                alt: '''menggunakan bendera '--no-vd-system-decorations' ''',
+              ),
+            ),
+            preserve: VideoSectionDisplaysVirtualPreserve(
+              label: 'Kekalkan Aplikasi',
+              info: VideoSectionDisplaysVirtualPreserveInfo(
+                default$:
+                    'aplikasi dimusnahkan secara lalai apabila sesi scrcpy berakhir',
+                alt:
+                    '''pindahkan aplikasi ke paparan utama apabila sesi berakhir; menggunakan bendera '--no-vd-destroy-content' ''',
+              ),
+            ),
+          ),
+        ),
+        codec: VideoSectionCodec(
+          label: 'Codec',
+          info: VideoSectionCodecInfo(
+            default$: 'lalai kepada h264, tiada bendera',
+            alt: ({required String codec}) =>
+                '''menggunakan bendera '--video-codec=${codec}' ''',
+          ),
+        ),
+        encoder: VideoSectionEncoder(
+          label: 'Pengekod',
+          info: VideoSectionEncoderInfo(
+            default$: 'lalai kepada yang pertama tersedia, tiada bendera',
+            alt: ({required String encoder}) =>
+                '''menggunakan bendera '--video-encoder=${encoder}' ''',
+          ),
+        ),
+        format: VideoSectionFormat(
+          label: 'Format',
+          info: VideoSectionFormatInfo(
+            default$: ({required String format}) =>
+                '''menambah format ke '--record=laluan_simpan/fail${format}' "''',
+          ),
+        ),
+        bitrate: VideoSectionBitrate(
+          label: 'Kadar Bit',
+          info: VideoSectionBitrateInfo(
+            default$: 'lalai kepada 8M, tiada bendera',
+            alt: ({required String bitrate}) =>
+                '''menggunakan bendera '--video-bit-rate=${bitrate}M' ''',
+          ),
+        ),
+        fpsLimit: VideoSectionFpsLimit(
+          label: 'Had FPS',
+          info: VideoSectionFpsLimitInfo(
+            default$: 'tiada bendera melainkan ditetapkan',
+            alt: ({required String fps}) =>
+                '''menggunakan bendera '--max-fps=${fps}' ''',
+          ),
+        ),
+        resolutionScale: VideoSectionResolutionScale(
+          label: 'Skala Resolusi',
+          info: VideoSectionResolutionScaleInfo(
+            default$:
+                'dikira berdasarkan resolusi peranti, tiada bendera melainkan ditetapkan',
+            alt: ({required String size}) =>
+                '''menggunakan bendera '--max-size=${size}' ''',
+          ),
+        ),
+      ),
+      audioSection: AudioSection(
+        title: 'Audio',
+        duplicate: AudioSectionDuplicate(
+          label: 'Gandakan Audio',
+          info: AudioSectionDuplicateInfo(
+            default$: 'hanya untuk Android 13 dan ke atas',
+            alt: '''menggunakan bendera '--audio-dup' ''',
+          ),
+        ),
+        source: AudioSectionSource(
+          label: 'Sumber',
+          info: AudioSectionSourceInfo(
+            default$: 'lalai kepada output, tiada bendera',
+            alt: ({required String source}) =>
+                '''menggunakan bendera '${source}' ''',
+            inCaseOfDup:
+                '''tersirat kepada 'Main Semula' dengan '--audio-dup', tiada bendera''',
+          ),
+        ),
+        codec: AudioSectionCodec(
+          label: 'Codec',
+          info: AudioSectionCodecInfo(
+            default$: 'lalai kepada opus, tiada bendera',
+            alt: ({required String codec}) =>
+                '''menggunakan bendera '--audio-codec=${codec}' ''',
+            isAudioOnly: ({required String format, required String codec}) =>
+                '''Format: ${format}, memerlukan Codec: ${codec}''',
+          ),
+        ),
+        encoder: AudioSectionEncoder(
+          label: 'Pengekod',
+          info: AudioSectionEncoderInfo(
+            default$: 'lalai kepada yang pertama tersedia, tiada bendera',
+            alt: ({required String encoder}) =>
+                '''menggunakan bendera '--audio-encoder=${encoder}' ''',
+          ),
+        ),
+        format: AudioSectionFormat(
+          label: 'Format',
+          info: AudioSectionFormatInfo(
+            default$: ({required String format}) =>
+                '''menambah format ke '--record=laluan_simpan/fail.${format}' "''',
+          ),
+        ),
+        bitrate: AudioSectionBitrate(
+          label: 'Kadar Bit',
+          info: AudioSectionBitrateInfo(
+            default$: 'lalai kepada 128k, tiada bendera',
+            alt: ({required String bitrate}) =>
+                '''menggunakan bendera '--audio-bit-rate=${bitrate}K' ''',
+          ),
+        ),
+      ),
+      appSection: AppSection(
+        title: 'Mulakan Aplikasi',
+        select: AppSectionSelect(
+          label: 'Pilih Aplikasi',
+          info: AppSectionSelectInfo(
+            alt: ({required String app}) =>
+                '''menggunakan bendera '--start-app=${app}' ''',
+            fc: ({required String app}) =>
+                '''menggunakan bendera '--start-app=+${app}' ''',
+          ),
+        ),
+        forceClose: AppSectionForceClose(
+          label: 'Paksa Tutup Aplikasi Sebelum Memulakan',
+          info: AppSectionForceCloseInfo(
+            alt: '''awalkan nama pakej aplikasi dengan '+' ''',
+          ),
+        ),
+      ),
+      deviceSection: DeviceSection(
+        title: 'Peranti',
+        stayAwake: DeviceSectionStayAwake(
+          label: 'Kekal Berjaga',
+          info: DeviceSectionStayAwakeInfo(
+            default$:
+                'menghalang peranti daripada tidur, hanya berfungsi dengan sambungan USB',
+            alt: '''menggunakan bendera '--stay-awake' ''',
+          ),
+        ),
+        showTouches: DeviceSectionShowTouches(
+          label: 'Tunjukkan Sentuhan',
+          info: DeviceSectionShowTouchesInfo(
+            default$:
+                'menunjukkan sentuhan jari, hanya berfungsi dengan sentuhan fizikal pada peranti',
+            alt: '''menggunakan bendera '--show-touches' ''',
+          ),
+        ),
+        offDisplayStart: DeviceSectionOffDisplayStart(
+          label: 'Matikan Paparan Semasa Mula',
+          info: DeviceSectionOffDisplayStartInfo(
+            default$: 'matikan paparan peranti, semasa permulaan scrcpy',
+            alt: '''menggunakan bendera '--turn-screen-off' ''',
+          ),
+        ),
+        offDisplayExit: DeviceSectionOffDisplayExit(
+          label: 'Matikan Paparan Semasa Keluar',
+          info: DeviceSectionOffDisplayExitInfo(
+            default$: 'matikan paparan peranti, semasa keluar scrcpy',
+            alt: '''menggunakan bendera '--power-off-on-close' ''',
+          ),
+        ),
+        screensaver: DeviceSectionScreensaver(
+          label: 'Lumpuhkan Penjimat Skrin (HOST)',
+          info: DeviceSectionScreensaverInfo(
+            default$: 'lumpuhkan penjimat skrin',
+            alt: '''menggunakan bendera '--disable-screensaver' ''',
+          ),
+        ),
+      ),
+      windowSection: WindowSection(
+        title: 'Tetingkap',
+        hideWindow: WindowSectionHideWindow(
+          label: 'Sembunyikan Tetingkap',
+          info: WindowSectionHideWindowInfo(
+            default$: 'mulakan scrcpy tanpa tetingkap',
+            alt: '''menggunakan bendera '--no-window' ''',
+          ),
+        ),
+        borderless: WindowSectionBorderless(
+          label: 'Tanpa Sempadan',
+          info: WindowSectionBorderlessInfo(
+            default$: 'lumpuhkan hiasan tetingkap',
+            alt: '''menggunakan bendera '--window-borderless' ''',
+          ),
+        ),
+        alwaysOnTop: WindowSectionAlwaysOnTop(
+          label: 'Sentiasa di Atas',
+          info: WindowSectionAlwaysOnTopInfo(
+            default$: 'tetingkap scrcpy sentiasa di atas',
+            alt: '''menggunakan bendera '--always-on-top' ''',
+          ),
+        ),
+        timeLimit: WindowSectionTimeLimit(
+          label: 'Had Masa',
+          info: WindowSectionTimeLimitInfo(
+            default$: 'mengehadkan sesi scrcpy, dalam saat',
+            alt: ({required String time}) =>
+                '''menggunakan bendera '--time-limit=${time}' ''',
+          ),
+        ),
+      ),
+      controlSection: ControlSection(
+        title: 'Kawalan',
+        info: ControlSectionInfo(
+          ifAoa: '(USB sahaja)',
+        ),
+        mouse: ControlSectionMouse(
+          title: 'Tetikus',
+          mode: ControlSectionMouseMode(
+            label: 'Mod tetikus',
+            info: ControlSectionMouseModeInfo(
+              default$: 'lalai kepada sdk, tiada bendera',
+              alt: ({required String command}) =>
+                  '''menggunakan bendera '${command}' ''',
+            ),
+          ),
+          mouseHover: ControlSectionMouseMouseHover(
+            label: 'Lumpuhkan hover tetikus',
+            info: ControlSectionMouseMouseHoverInfo(
+              default$: 'lumpuhkan kesan hover tetikus',
+              alt: '''menggunakan bendera '--no-mouse-hover' ''',
+              blocked: 'hanya untuk mod sdk',
+            ),
+          ),
+        ),
+        keyboard: ControlSectionKeyboard(
+          title: 'Papan Kekunci',
+          mode: ControlSectionKeyboardMode(
+            label: 'Mod papan kekunci',
+            info: ControlSectionKeyboardModeInfo(
+              default$: 'lalai kepada sdk, tiada bendera',
+              alt: ({required String command}) =>
+                  '''menggunakan bendera ${command} ''',
+            ),
+          ),
+          keyRepeat: ControlSectionKeyboardKeyRepeat(
+            label: 'Lumpuhkan ulangan kekunci',
+            info: ControlSectionKeyboardKeyRepeatInfo(
+              default$:
+                  'menghalang penghantaran peristiwa kekunci berulang apabila menahan kekunci',
+              alt: '''menggunakan bendera '--no-key-repeat' ''',
+              blocked: 'hanya untuk mod sdk',
+            ),
+          ),
+        ),
+        gamepad: ControlSectionGamepad(
+          title: 'Pad Permainan',
+          mode: ControlSectionGamepadMode(
+            label: 'Mod pad permainan',
+            info: ControlSectionGamepadModeInfo(
+              default$: 'dilumpuhkan secara lalai, tiada bendera',
+              alt: ({required String command}) =>
+                  '''menggunakan bendera ${command} ''',
+            ),
+          ),
+        ),
+      ),
+      addFlags: AddFlags(
+        title: 'Bendera Tambahan',
+        add: 'Tambah',
+        info: 'elakkan menggunakan bendera yang sudah menjadi pilihan',
+      ),
+      connectLoc: ConnectLoc(
+        title: 'Sambung',
+        withIp: ConnectLocWithIp(
+          label: 'Sambung dengan IP',
+          connect: 'Sambung',
+          connected: ({required String to}) => '''Disambungkan ke ${to}''',
+        ),
+        withMdns: ConnectLocWithMdns(
+          label: ({required String count}) => '''Peranti MDNS (${count})''',
+          info: ConnectLocWithMdnsInfo(
+            i1: 'Pastikan peranti anda dipasangkan dengan PC anda.',
+            i2: 'Jika peranti anda tidak muncul, cuba matikan dan hidupkan ADB Tanpa Wayar.',
+            i3: 'Peranti MDNS biasanya akan bersambung secara automatik jika dipasangkan.',
+          ),
+        ),
+        qrPair: ConnectLocQrPair(
+          label: 'Pemasangan QR',
+          pair: 'Pasangkan Peranti',
+          status: ConnectLocQrPairStatus(
+            cancelled: 'Pemasangan Dibatalkan',
+            success: 'Pemasangan Berjaya',
+            failed: 'Pemasangan Gagal',
+          ),
+          progress: ConnectLocQrPairProgress(
+            scan: '',
+            found: '',
+            awaiting: ({required String attempt}) => '',
+          ),
+        ),
+        unauthenticated: ConnectLocUnauthenticated(
+          info: ConnectLocUnauthenticatedInfo(
+            i1: 'Semak telefon anda.',
+            i2: 'Klik benarkan penyahpepijatan.',
+          ),
+        ),
+        failed: ConnectLocFailed(
+          info: ConnectLocFailedInfo(
+            i1: 'Pastikan peranti anda dipasangkan dengan PC anda.',
+            i2: 'Jika tidak, cuba matikan dan hidupkan Adb tanpa wayar.',
+            i3: 'Jika tidak dipasangkan: ',
+            i4: '1. Gunakan tetingkap pemasangan (butang kanan atas)',
+            i5: '2. Palamkan peranti anda ke PC anda, benarkan penyahpepijatan, dan cuba lagi.',
+          ),
+        ),
+      ),
+      testConfigLoc: TestConfigLoc(
+        title: 'Uji Konfigurasi',
+        preview: 'Pratonton Perintah',
+      ),
+      scrcpyManagerLoc: ScrcpyManagerLoc(
+        title: 'Pengurus Scrcpy',
+        check: 'Semak Kemas Kini',
+        current: ScrcpyManagerLocCurrent(
+          label: 'Semasa',
+          inUse: 'Digunakan',
+        ),
+        exec: ScrcpyManagerLocExec(
+          label: 'Buka Lokasi Boleh Laku',
+          info: 'Ubah suai dengan berhati-hati',
+        ),
+        infoPopup: ScrcpyManagerLocInfoPopup(
+          noUpdate: 'Tiada kemas kini tersedia',
+          error: 'Ralat menyemak kemas kini',
+        ),
+        updater: ScrcpyManagerLocUpdater(
+          label: 'Versi Baru Tersedia',
+          newVersion: 'Versi Baru',
+        ),
+      ),
+      settingsLoc: SettingsLoc(
+        title: 'Tetapan',
+        looks: SettingsLocLooks(
+          label: 'Penampilan',
+          mode: SettingsLocLooksMode(
+            label: 'Mod tema',
+            value: SettingsLocLooksModeValue(
+              dark: 'Gelap',
+              light: 'Cerah',
+              system: 'Sistem',
+            ),
+          ),
+          oldScheme: SettingsLocLooksOldScheme(
+            label: 'Guna skema warna Shadcn',
+          ),
+          cornerRadius: SettingsLocLooksCornerRadius(
+            label: 'Jejari sudut',
+          ),
+          accentColor: SettingsLocLooksAccentColor(
+            label: 'Warna aksen',
+          ),
+          tintLevel: SettingsLocLooksTintLevel(
+            label: 'Tahap warna',
+          ),
+          dimness: SettingsLocLooksDimness(
+            label: 'Keredupan',
+          ),
+          brightness: SettingsLocLooksBrightness(
+            label: 'Kecerahan',
+          ),
+          surfaceOpacity: SettingsLocLooksSurfaceOpacity(
+            label: 'Kelegapan permukaan',
+            info: 'Dikenalpasti penyebab UI berkelip di Linux',
+          ),
+          surfaceBlur: SettingsLocLooksSurfaceBlur(
+            label: 'Kekaburan permukaan',
+            info: 'Dikenalpasti penyebab UI berkelip di Linux',
+          ),
+        ),
+        behavior: SettingsLocBehavior(
+          label: 'Tingkah Laku Aplikasi',
+          language: SettingsLocBehaviorLanguage(
+            label: 'Bahasa',
+            info: 'Sesetengah bahasa dijana oleh AI',
+          ),
+          minimize: SettingsLocBehaviorMinimize(
+            label: 'Minimumkan',
+            value: SettingsLocBehaviorMinimizeValue(
+              tray: 'ke dulang',
+              taskbar: 'ke bar tugas',
+            ),
+          ),
+          windowSize: SettingsLocBehaviorWindowSize(
+            label: 'Ingat saiz tetingkap',
+            info: 'Ingat saiz tetingkap semasa keluar',
+          ),
+          autoArrange: SettingsLocBehaviorAutoArrange(
+            label: 'Susun automatik tetingkap scrcpy',
+            info: 'Susun tetingkap scrcpy secara automatik semasa mula',
+          ),
+          windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
+            label: 'Nisbah ketinggian tetingkap ke skrin',
+            labelShort: 'Tinggi %',
+            info:
+                'Nisbah ketinggian tetingkap scrcpy kepada ketinggian skrin utama. Min: 0.4, Maks: 1.0, Lalai: 0.88',
+          ),
+          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
+            label: 'Langkau mula-automatik jika sudah berjalan',
+            info:
+                'Apabila peranti disambungkan dan scrcpy ditetapkan untuk dimulakan secara automatik, jangan mulakannya jika sudah ada tikaian yang berjalan untuk peranti itu.',
+          ),
+          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
+            label: 'Tikaian baru menggantikan tikaian sedia ada',
+            info:
+                'Apabila menjalankan tikaian baru scrcpy secara manual, semua tikaian sedia ada untuk peranti yang sama dihentikan.',
+          ),
+        ),
+      ),
+      companionLoc: CompanionLoc(
+        title: 'Pendamping',
+        server: CompanionLocServer(
+          label: 'Konfigurasi Pelayan',
+          status: 'Status',
+          endpoint: CompanionLocServerEndpoint(
+            label: 'Titik akhir pelayan',
+          ),
+          name: CompanionLocServerName(
+            label: 'Nama pelayan',
+            info: 'Lalai: Scrcpy GUI',
+          ),
+          port: CompanionLocServerPort(
+            label: 'Port pelayan',
+            info: 'Lalai: 8080',
+          ),
+          secret: CompanionLocServerSecret(
+            label: 'Kunci API Pelayan',
+          ),
+          autoStart: CompanionLocServerAutoStart(
+            label: 'Mulakan pelayan semasa pelancaran',
+          ),
+        ),
+        client: CompanionLocClient(
+          clients: ({required String count}) => '''Disambungkan (${count})''',
+          blocked: ({required String count}) => '''Disekat (${count})''',
+          noClient: 'Tiada klien disambungkan',
+          noBlocked: 'Tiada klien disekat',
+        ),
+        qr: 'Imbas kod QR daripada aplikasi pendamping',
+      ),
+      aboutLoc: AboutLoc(
+        title: 'Perihal',
+        version: 'Versi',
+        author: 'Penulis',
+        credits: 'Penghargaan',
+      ),
+      quitDialogLoc: QuitDialogLoc(
+        title: 'Keluar dari GUI scrcpy?',
+        killRunning: QuitDialogLocKillRunning(
+          label: 'Hentikan instans yang sedang berjalan?',
+          info: ({required String count}) =>
+              '''${count} instans scrcpy. Instans tanpa tetingkap akan tetap dihentikan.''',
+        ),
+        disconnect: QuitDialogLocDisconnect(
+          label: 'Putuskan Sambungan ADB Tanpa Wayar?',
+          info: ({required String count}) => '''${count} peranti''',
+        ),
+      ),
+      disconnectDialogLoc: DisconnectDialogLoc(
+        title: ({required String name}) => '''Putuskan Sambungan ${name}?''',
+        hasRunning: DisconnectDialogLocHasRunning(
+          label: ({required String name, required String count}) =>
+              '''${name} mempunyai ${count} instans scrcpy yang sedang berjalan''',
+          info:
+              'Memutuskan sambungan akan menghentikan instans scrcpy yang sedang berjalan.',
+        ),
+      ),
+      closeDialogLoc: CloseDialogLoc(
+        notAllowed: 'Tidak Dibenarkan!',
+        overwrite: 'Timpa?',
+        nameExist: 'Nama sudah wujud!',
+        save: 'Simpan konfigurasi?',
+        commandPreview: 'Pratonton Perintah:',
+        name: 'Nama:',
+      ),
+      unsavedChangeDialogLoc: UnsavedChangeDialogLoc(
+        title: 'Sahkan keluar?',
+        contents: 'Perubahan yang tidak disimpan akan hilang.',
+      ),
+      serverDisclaimerLoc: ServerDisclaimerLoc(
+        title: 'Maklumat',
+        contents:
+            '''Amaran Keselamatan: Server pendamping menggunakan sambungan tidak disulitkan.\n\nHanya mulakan server jika anda disambungkan ke rangkaian peribadi yang anda percayai, seperti Wi-Fi rumah anda.''',
+      ),
+      ipHistoryLoc: IpHistoryLoc(
+        title: 'Sejarah',
+        empty: 'Tiada Sejarah',
+      ),
+      buttonLabelLoc: ButtonLabelLoc(
+        ok: 'OK',
+        confirm: 'Sahkan',
+        close: 'Tutup',
+        cancel: 'Batal',
+        stop: 'Hentikan',
+        testConfig: 'Uji Konfigurasi',
+        update: 'Kemas Kini',
+        info: 'Maklumat',
+        selectAll: 'Pilih Semua',
+        quit: 'Keluar',
+        discard: 'Buang',
+        overwrite: 'Timpa',
+        save: 'Simpan',
+        clear: 'Kosongkan',
+        delete: 'Padam',
+        serverAgree: 'Saya faham, mulakan pelayan',
+        reorder: 'Susun semula',
+        stopAll: 'Hentikan Semua',
+        filter: 'Tapis',
+        edit: 'Ubah',
+        override: 'Ubahsuai',
+        dontShowAgain: 'Jangan Tunjuk Lagi',
+        sponsor: 'Taja',
+        extractIcons: 'Ekstrak Ikon',
+      ),
+      statusLoc: StatusLoc(
+        failed: 'Gagal',
+        unauth: 'Tidak Disahkan',
+        error: 'Ralat',
+        latest: 'Terkini',
+        closing: 'Menutup',
+        copied: 'Disalin',
+        running: 'Sedang berjalan',
+        stopped: 'Dihentikan',
+        gettingInfo: 'Mendapatkan Maklumat',
+        noDevicesFound: 'Tiada peranti ditemui',
+      ),
+      commonLoc: CommonLoc(
+        default$: 'Lalai',
+        yes: 'Ya',
+        no: 'Tidak',
+        bundled: 'Dibundel',
+      ),
+      colorSchemeNameLoc: ColorSchemeNameLoc(
+        blue: 'Biru',
+        gray: 'Kelabu',
+        green: 'Hijau',
+        neutral: 'Neutral',
+        orange: 'Jingga',
+        red: 'Merah',
+        rose: 'Merah Jambu',
+        slate: 'Batu Tulis',
+        stone: 'Batu',
+        violet: 'Ungu',
+        yellow: 'Kuning',
+        zinc: 'Zink',
+      ),
+      configFiltersLoc: ConfigFiltersLoc(
+        label: ConfigFiltersLocLabel(
+          withApp: 'Dengan aplikasi',
+          virt: 'Paparan maya',
+        ),
+      ),
+      configOverrideLoc: ConfigOverrideLoc(
+        record: ConfigOverrideLocRecord(
+          label: 'Rakam',
+          openFolder: 'Buka Folder',
+        ),
+        landscape: ConfigOverrideLocLandscape(
+          label: 'Lanskap',
+          info: 'Hanya untuk paparan maya',
+        ),
+        mute: ConfigOverrideLocMute(
+          label: 'Senyap',
+        ),
+      ),
+      autoArrangeOriginLoc: AutoArrangeOriginLoc(
+        title: 'Susun-Automatik',
+        alignments: 'Penjajaran',
+        off: 'Matikan',
+        topLeft: 'Atas Kiri',
+        topRight: 'Atas Kanan',
+        centerLeft: 'Tengah Kiri',
+        centerRight: 'Tengah Kanan',
+        bottomLeft: 'Bawah Kiri',
+        bottomRight: 'Bawah Kanan',
+      ),
+    );
+LocalizationMessages get zh => LocalizationMessages(
+      homeLoc: HomeLoc(
+        title: '首页',
+        devices: HomeLocDevices(
+          label: ({required String count}) => '''已连接设备 (${count})''',
+        ),
+      ),
+      deviceTileLoc: DeviceTileLoc(
+        runningInstances: ({required String count}) => '''运行中 (${count})''',
+        context: DeviceTileLocContext(
+          disconnect: '断开连接',
+          toWireless: '通过无线连接',
+          stopRunning: '停止运行 scrcpy',
+          scrcpy: 'Scrcpy',
+          all: '全部',
+          allScrcpy: '停止所有 scrcpy',
+          manage: '管理',
+        ),
+      ),
+      loungeLoc: LoungeLoc(
+        controls: LoungeLocControls(
+          label: '控制',
+        ),
+        pinnedApps: LoungeLocPinnedApps(
+          label: '固定应用',
+        ),
+        launcher: LoungeLocLauncher(
+          label: '应用启动器',
+        ),
+        running: LoungeLocRunning(
+          label: ({required String count}) => '''运行实例 (${count})''',
+        ),
+        appTile: LoungeLocAppTile(
+          contextMenu: LoungeLocAppTileContextMenu(
+            pin: ({required String config}) => '''在 ${config} 上固定''',
+            unpin: '取消固定',
+            forceClose: '强制关闭并启动',
+            andStart: (
+                    {required String configuration, required String config}) =>
+                '''在 ${configuration} 上''',
+            selectConfig: '请先选择配置',
+            startOn: ({required String config}) => '''在 ${config} 上启动''',
+            withOverrides: '使用覆盖启动',
+            packageName: '包名',
+            resetIcon: '重置图标',
+          ),
+          sections: LoungeLocAppTileSections(
+            pinned: '已固定',
+            apps: '应用',
+          ),
+          missingIcon: ({required String count}) => '''缺失图标 (${count})''',
+        ),
+        placeholders: LoungeLocPlaceholders(
+          config: '选择配置',
+          app: '选择应用',
+          search: '''按 '/' 搜索''',
+        ),
+        tooltip: LoungeLocTooltip(
+          missingConfig: ({required String config}) => '''缺失配置: ${config}''',
+          pin: '固定应用/配置对',
+          onConfig: ({required String config}) => '''在: ${config}''',
+          hideAppName: '隐藏应用名称',
+          showAppName: '显示应用名称',
+        ),
+        info: LoungeLocInfo(
+          emptySearch: '未找到应用',
+          emptyPin: '无固定应用',
+          emptyInstance: '无运行实例',
+        ),
+      ),
+      iconExtractorDisclaimerLoc: IconExtractorDisclaimerLoc(
+        title: '免责声明',
+        contents: IconExtractorDisclaimerLocContents(
+          p1: '这是一个实验性功能，存在一些限制：',
+          l1: '拉取apk可能需要很长时间，具体取决于apk的大小。',
+          l2: '不支持自适应图标，导致图标丢失。',
+          l3: '提取的图标分辨率可能较低。',
+        ),
+      ),
+      configLoc: ConfigLoc(
+        label: ({required String count}) => '''配置 (${count})''',
+        new$: '创建',
+        select: '选择配置',
+        details: '显示详情',
+        start: '启动',
+        empty: '未找到配置',
+      ),
+      noDeviceDialogLoc: NoDeviceDialogLoc(
+        title: '设备',
+        contentsEdit: '''未选择设备。\n选择设备以编辑 scrcpy 配置。''',
+        contentsStart: '''未选择设备。\n选择设备以启动 scrcpy。''',
+        contentsNew: '''未选择设备。\n选择设备以创建 scrcpy 配置。''',
+      ),
+      noConfigDialogLoc: NoConfigDialogLoc(
+        title: '配置',
+        contents: '''未选择配置。\n选择 scrcpy 配置以启动。''',
+      ),
+      deleteConfigDialogLoc: DeleteConfigDialogLoc(
+        title: '确认',
+        contents: ({required String configname}) => '''删除 ${configname}？''',
+      ),
+      deviceSettingsLoc: DeviceSettingsLoc(
+        title: '设备设置',
+        info: '信息',
+        refresh: '刷新信息',
+        rename: DeviceSettingsLocRename(
+          label: '重命名',
+          info: '按 [Enter] 应用名称',
+        ),
+        autoConnect: DeviceSettingsLocAutoConnect(
+          label: '自动连接',
+          info: '自动连接无线设备',
+        ),
+        onConnected: DeviceSettingsLocOnConnected(
+          label: '连接时',
+          info: '设备连接时使用选定配置启动 (1) scrcpy',
+        ),
+        doNothing: '不执行任何操作',
+        scrcpyInfo: DeviceSettingsLocScrcpyInfo(
+          fetching: '获取 scrcpy 信息',
+          label: 'Scrcpy 信息',
+          name: ({required String name}) => '''名称: ${name}''',
+          id: ({required String id}) => '''ID: ${id}''',
+          model: ({required String model}) => '''型号: ${model}''',
+          version: ({required String version}) => '''Android 版本: ${version}''',
+          displays: ({required String count}) => '''显示器 (${count})''',
+          cameras: ({required String count}) => '''摄像头 (${count})''',
+          videoEnc: ({required String count}) => '''视频编码器 (${count})''',
+          audioEnc: ({required String count}) => '''音频编码器 (${count})''',
+        ),
+      ),
+      configManagerLoc: ConfigManagerLoc(
+        title: '配置管理器',
+      ),
+      configScreenLoc: ConfigScreenLoc(
+        title: '配置设置',
+        connectionLost: '与设备连接丢失',
+        similarExist: ({required String configName}) => '''${configName} 的副本''',
+      ),
+      logScreenLoc: LogScreenLoc(
+        title: '测试日志',
+        dialog: LogScreenLocDialog(
+          title: '命令',
+        ),
+      ),
+      renameSection: RenameSection(
+        title: '重命名',
+      ),
+      modeSection: ModeSection(
+        title: '模式',
+        saveFolder: ModeSectionSaveFolder(
+          label: '保存文件夹',
+          info: '''将保存路径附加到 '--record=savepath/file' ''',
+        ),
+        mainMode: ModeSectionMainMode(
+          label: '模式',
+          mirror: '镜像',
+          record: '录制',
+          info: ModeSectionMainModeInfo(
+            default$: '镜像或录制，镜像无需标志',
+            alt: '''使用 '--record=' 标志''',
+          ),
+        ),
+        scrcpyMode: ModeSectionScrcpyMode(
+          both: '音频 + 视频',
+          audioOnly: '仅音频',
+          videoOnly: '仅视频',
+          info: ModeSectionScrcpyModeInfo(
+            default$: '默认为两者，无需标志',
+            alt: ({required String command}) => '''使用 '${command}' 标志''',
+          ),
+        ),
+      ),
+      videoSection: VideoSection(
+        title: '视频',
+        displays: VideoSectionDisplays(
+          label: '显示器',
+          info: VideoSectionDisplaysInfo(
+            default$: '默认为第一个可用，无需标志',
+            alt: '''使用 '--display-id=' 标志''',
+          ),
+          virtual: VideoSectionDisplaysVirtual(
+            label: '虚拟显示器设置',
+            newDisplay: VideoSectionDisplaysVirtualNewDisplay(
+              label: '新显示器',
+              info: VideoSectionDisplaysVirtualNewDisplayInfo(
+                alt: '''使用 '--new-display' 标志''',
+              ),
+            ),
+            resolution: VideoSectionDisplaysVirtualResolution(
+              label: '分辨率',
+              info: VideoSectionDisplaysVirtualResolutionInfo(
+                default$: '默认为设备分辨率',
+                alt: ({required String res}) =>
+                    '''将分辨率附加到 '--new-display=${res}' 标志''',
+              ),
+            ),
+            dpi: VideoSectionDisplaysVirtualDpi(
+              label: 'DPI',
+              info: VideoSectionDisplaysVirtualDpiInfo(
+                default$: '默认为设备 DPI',
+                alt: ({required String res, required String dpi}) =>
+                    '''将 DPI 附加到 '--new-display=${res}/${dpi}' 标志''',
+              ),
+            ),
+            deco: VideoSectionDisplaysVirtualDeco(
+              label: '禁用系统装饰',
+              info: VideoSectionDisplaysVirtualDecoInfo(
+                default$: '默认启用系统装饰',
+                alt: '''使用 '--no-vd-system-decorations' 标志''',
+              ),
+            ),
+            preserve: VideoSectionDisplaysVirtualPreserve(
+              label: '保留应用',
+              info: VideoSectionDisplaysVirtualPreserveInfo(
+                default$: 'scrcpy 会话结束时应用默认被销毁',
+                alt: '''会话结束时将应用移动到主显示器；使用 '--no-vd-destroy-content' 标志''',
+              ),
+            ),
+          ),
+        ),
+        codec: VideoSectionCodec(
+          label: '编解码器',
+          info: VideoSectionCodecInfo(
+            default$: '默认为 h264，无需标志',
+            alt: ({required String codec}) =>
+                '''使用 '--video-codec=${codec}' 标志''',
+          ),
+        ),
+        encoder: VideoSectionEncoder(
+          label: '编码器',
+          info: VideoSectionEncoderInfo(
+            default$: '默认为第一个可用，无需标志',
+            alt: ({required String encoder}) =>
+                '''使用 '--video-encoder=${encoder}' 标志''',
+          ),
+        ),
+        format: VideoSectionFormat(
+          label: '格式',
+          info: VideoSectionFormatInfo(
+            default$: ({required String format}) =>
+                '''将格式附加到 --record=savepath/file${format}''',
+          ),
+        ),
+        bitrate: VideoSectionBitrate(
+          label: '比特率',
+          info: VideoSectionBitrateInfo(
+            default$: '默认为 8M，无需标志',
+            alt: ({required String bitrate}) =>
+                '''使用 '--video-bit-rate=${bitrate}M' 标志''',
+          ),
+        ),
+        fpsLimit: VideoSectionFpsLimit(
+          label: 'FPS 限制',
+          info: VideoSectionFpsLimitInfo(
+            default$: '除非设置否则无需标志',
+            alt: ({required String fps}) => '''使用 '--max-fps=${fps}' 标志''',
+          ),
+        ),
+        resolutionScale: VideoSectionResolutionScale(
+          label: '分辨率缩放',
+          info: VideoSectionResolutionScaleInfo(
+            default$: '基于设备分辨率计算，除非设置否则无需标志',
+            alt: ({required String size}) => '''使用 '--max-size=${size}' 标志''',
+          ),
+        ),
+      ),
+      audioSection: AudioSection(
+        title: '音频',
+        duplicate: AudioSectionDuplicate(
+          label: '重复音频',
+          info: AudioSectionDuplicateInfo(
+            default$: '仅适用于 Android 13 及以上版本',
+            alt: '''使用 '--audio-dup' 标志''',
+          ),
+        ),
+        source: AudioSectionSource(
+          label: '源',
+          info: AudioSectionSourceInfo(
+            default$: '默认为输出，无需标志',
+            alt: ({required String source}) => '''使用 '${source}' 标志''',
+            inCaseOfDup: '''使用 '--audio-dup' 时隐含为 '播放'，无需标志''',
+          ),
+        ),
+        codec: AudioSectionCodec(
+          label: '编解码器',
+          info: AudioSectionCodecInfo(
+            default$: '默认为 opus，无需标志',
+            alt: ({required String codec}) =>
+                '''使用 '--audio-codec=${codec}' 标志''',
+            isAudioOnly: ({required String format, required String codec}) =>
+                '''格式: ${format}，需要编解码器: ${codec}''',
+          ),
+        ),
+        encoder: AudioSectionEncoder(
+          label: '编码器',
+          info: AudioSectionEncoderInfo(
+            default$: '默认为第一个可用，无需标志',
+            alt: ({required String encoder}) =>
+                '''使用 '--audio-encoder=${encoder}' 标志''',
+          ),
+        ),
+        format: AudioSectionFormat(
+          label: '格式',
+          info: AudioSectionFormatInfo(
+            default$: ({required String format}) =>
+                '''将格式附加到 '--record=savepath/file.${format}' ''',
+          ),
+        ),
+        bitrate: AudioSectionBitrate(
+          label: '比特率',
+          info: AudioSectionBitrateInfo(
+            default$: '默认为 128k，无需标志',
+            alt: ({required String bitrate}) =>
+                '''使用 '--audio-bit-rate=${bitrate}K' 标志''',
+          ),
+        ),
+      ),
+      appSection: AppSection(
+        title: '启动应用',
+        select: AppSectionSelect(
+          label: '选择应用',
+          info: AppSectionSelectInfo(
+            alt: ({required String app}) => '''使用 '--start-app=${app}' 标志''',
+            fc: ({required String app}) => '''使用 '--start-app=+${app}' 标志''',
+          ),
+        ),
+        forceClose: AppSectionForceClose(
+          label: '启动前强制关闭应用',
+          info: AppSectionForceCloseInfo(
+            alt: '''在应用包名前添加 '+' ''',
+          ),
+        ),
+      ),
+      deviceSection: DeviceSection(
+        title: '设备',
+        stayAwake: DeviceSectionStayAwake(
+          label: '保持唤醒',
+          info: DeviceSectionStayAwakeInfo(
+            default$: '防止设备休眠，仅适用于 USB 连接',
+            alt: '''使用 '--stay-awake' 标志''',
+          ),
+        ),
+        showTouches: DeviceSectionShowTouches(
+          label: '显示触摸',
+          info: DeviceSectionShowTouchesInfo(
+            default$: '显示手指触摸，仅适用于设备上的物理触摸',
+            alt: '''使用 '--show-touches' 标志''',
+          ),
+        ),
+        offDisplayStart: DeviceSectionOffDisplayStart(
+          label: '启动时关闭显示器',
+          info: DeviceSectionOffDisplayStartInfo(
+            default$: 'scrcpy 启动时关闭设备显示器',
+            alt: '''使用 '--turn-screen-off' 标志''',
+          ),
+        ),
+        offDisplayExit: DeviceSectionOffDisplayExit(
+          label: '退出时关闭显示器',
+          info: DeviceSectionOffDisplayExitInfo(
+            default$: 'scrcpy 退出时关闭设备显示器',
+            alt: '''使用 '--power-off-on-close' 标志''',
+          ),
+        ),
+        screensaver: DeviceSectionScreensaver(
+          label: '禁用屏保 (主机)',
+          info: DeviceSectionScreensaverInfo(
+            default$: '禁用屏保',
+            alt: '''使用 '--disable-screensaver' 标志''',
+          ),
+        ),
+      ),
+      windowSection: WindowSection(
+        title: '窗口',
+        hideWindow: WindowSectionHideWindow(
+          label: '隐藏窗口',
+          info: WindowSectionHideWindowInfo(
+            default$: '启动 scrcpy 时不显示窗口',
+            alt: '''使用 '--no-window' 标志''',
+          ),
+        ),
+        borderless: WindowSectionBorderless(
+          label: '无边框',
+          info: WindowSectionBorderlessInfo(
+            default$: '禁用窗口装饰',
+            alt: '''使用 '--window-borderless' 标志''',
+          ),
+        ),
+        alwaysOnTop: WindowSectionAlwaysOnTop(
+          label: '始终置顶',
+          info: WindowSectionAlwaysOnTopInfo(
+            default$: 'scrcpy 窗口始终置顶',
+            alt: '''使用 '--always-on-top' 标志''',
+          ),
+        ),
+        timeLimit: WindowSectionTimeLimit(
+          label: '时间限制',
+          info: WindowSectionTimeLimitInfo(
+            default$: '限制 scrcpy 会话，以秒为单位',
+            alt: ({required String time}) => '''使用 '--time-limit=${time}' 标志''',
+          ),
+        ),
+      ),
+      controlSection: ControlSection(
+        title: '控制',
+        info: ControlSectionInfo(
+          ifAoa: '(仅限USB)',
+        ),
+        mouse: ControlSectionMouse(
+          title: '鼠标',
+          mode: ControlSectionMouseMode(
+            label: '鼠标模式',
+            info: ControlSectionMouseModeInfo(
+              default$: '默认为sdk，无标志',
+              alt: ({required String command}) =>
+                  '''使用 --mouse=${command} 标志''',
+            ),
+          ),
+          mouseHover: ControlSectionMouseMouseHover(
+            label: '禁用鼠标悬停',
+            info: ControlSectionMouseMouseHoverInfo(
+              default$: '禁用鼠标悬停效果',
+              alt: '''使用 '--no-mouse-hover' 标志''',
+              blocked: '仅适用于sdk模式',
+            ),
+          ),
+        ),
+        keyboard: ControlSectionKeyboard(
+          title: '键盘',
+          mode: ControlSectionKeyboardMode(
+            label: '键盘模式',
+            info: ControlSectionKeyboardModeInfo(
+              default$: '默认为sdk，无标志',
+              alt: ({required String command}) =>
+                  '''使用 --keyboard=${command} 标志''',
+            ),
+          ),
+          keyRepeat: ControlSectionKeyboardKeyRepeat(
+            label: '禁用按键重复',
+            info: ControlSectionKeyboardKeyRepeatInfo(
+              default$: '防止在按住某个键时转发重复的按键事件',
+              alt: '''使用 '--no-key-repeat' 标志''',
+              blocked: '仅适用于sdk模式',
+            ),
+          ),
+        ),
+        gamepad: ControlSectionGamepad(
+          title: '游戏手柄',
+          mode: ControlSectionGamepadMode(
+            label: '游戏手柄模式',
+            info: ControlSectionGamepadModeInfo(
+              default$: '默认禁用，无标志',
+              alt: ({required String command}) =>
+                  '''使用 --gamepad=${command} 标志''',
+            ),
+          ),
+        ),
+      ),
+      addFlags: AddFlags(
+        title: '附加标志',
+        add: '添加',
+        info: '避免使用已作为选项提供的标志。',
+      ),
+      connectLoc: ConnectLoc(
+        title: '连接',
+        withIp: ConnectLocWithIp(
+          label: '通过 IP 连接',
+          connect: '连接',
+          connected: ({required String to}) => '''已连接到 ${to}''',
+        ),
+        withMdns: ConnectLocWithMdns(
+          label: ({required String count}) => '''MDNS 设备 (${count})''',
+          info: ConnectLocWithMdnsInfo(
+            i1: '确保您的设备已与 PC 配对。',
+            i2: '如果您的设备未显示，请尝试关闭并重新打开无线 ADB。',
+            i3: '如果已配对，MDNS 设备通常会自动连接。',
+          ),
+        ),
+        qrPair: ConnectLocQrPair(
+          label: '二维码配对',
+          pair: '配对设备',
+          status: ConnectLocQrPairStatus(
+            cancelled: '配对已取消',
+            success: '配对成功',
+            failed: '配对失败',
+          ),
+          progress: ConnectLocQrPairProgress(
+            scan: '',
+            found: '',
+            awaiting: ({required String attempt}) => '',
+          ),
+        ),
+        unauthenticated: ConnectLocUnauthenticated(
+          info: ConnectLocUnauthenticatedInfo(
+            i1: '检查您的手机。',
+            i2: '点击允许调试。',
+          ),
+        ),
+        failed: ConnectLocFailed(
+          info: ConnectLocFailedInfo(
+            i1: '确保您的设备已与 PC 配对。',
+            i2: '否则，请尝试关闭并重新打开无线 ADB。',
+            i3: '如果未配对:',
+            i4: '1. 使用配对窗口 (右上角按钮)',
+            i5: '2. 将设备插入 PC，允许调试，然后重试。',
+          ),
+        ),
+      ),
+      testConfigLoc: TestConfigLoc(
+        title: '测试配置',
+        preview: '命令预览',
+      ),
+      scrcpyManagerLoc: ScrcpyManagerLoc(
+        title: 'Scrcpy 管理器',
+        check: '检查更新',
+        current: ScrcpyManagerLocCurrent(
+          label: '当前',
+          inUse: '使用中',
+        ),
+        exec: ScrcpyManagerLocExec(
+          label: '打开可执行文件位置',
+          info: '谨慎修改',
+        ),
+        infoPopup: ScrcpyManagerLocInfoPopup(
+          noUpdate: '无可用更新',
+          error: '检查更新时出错',
+        ),
+        updater: ScrcpyManagerLocUpdater(
+          label: '有新版本可用',
+          newVersion: '新版本',
+        ),
+      ),
+      settingsLoc: SettingsLoc(
+        title: '设置',
+        looks: SettingsLocLooks(
+          label: '外观',
+          mode: SettingsLocLooksMode(
+            label: '主题模式',
+            value: SettingsLocLooksModeValue(
+              dark: '深色',
+              light: '浅色',
+              system: '系统',
+            ),
+          ),
+          oldScheme: SettingsLocLooksOldScheme(
+            label: '使用 Shadcn 配色方案',
+          ),
+          cornerRadius: SettingsLocLooksCornerRadius(
+            label: '圆角半径',
+          ),
+          accentColor: SettingsLocLooksAccentColor(
+            label: '强调色',
+          ),
+          tintLevel: SettingsLocLooksTintLevel(
+            label: '色调级别',
+          ),
+          dimness: SettingsLocLooksDimness(
+            label: '暗度',
+          ),
+          brightness: SettingsLocLooksBrightness(
+            label: '亮度',
+          ),
+          surfaceOpacity: SettingsLocLooksSurfaceOpacity(
+            label: '表面透明度',
+            info: '在 Linux 中已知会导致闪烁',
+          ),
+          surfaceBlur: SettingsLocLooksSurfaceBlur(
+            label: '表面模糊',
+            info: '在 Linux 中已知会导致闪烁',
+          ),
+        ),
+        behavior: SettingsLocBehavior(
+          label: '应用行为',
+          language: SettingsLocBehaviorLanguage(
+            label: '语言',
+            info: '某些语言是机器翻译的，可能包含错误。',
+          ),
+          minimize: SettingsLocBehaviorMinimize(
+            label: '最小化',
+            value: SettingsLocBehaviorMinimizeValue(
+              tray: '到系统托盘',
+              taskbar: '到任务栏',
+            ),
+          ),
+          windowSize: SettingsLocBehaviorWindowSize(
+            label: '记住窗口大小',
+            info: '退出时记住窗口大小',
+          ),
+          autoArrange: SettingsLocBehaviorAutoArrange(
+            label: '自动排列 scrcpy 窗口',
+            info: '启动时自动排列 scrcpy 窗口',
+          ),
+          windowToScreenRatio: SettingsLocBehaviorWindowToScreenRatio(
+            label: '窗口到屏幕高度比例',
+            labelShort: '高度 %',
+            info: 'scrcpy 窗口高度与主屏幕高度的比例。最小: 0.4，最大: 1.0，默认: 0.88',
+          ),
+          skipAutoStart: SettingsLocBehaviorSkipAutoStart(
+            label: '如果已在运行则跳过自动启动',
+            info: '当设备连接且scrcpy设置为自动启动时，如果该设备已有实例在运行，则不启动。',
+          ),
+          newInstanceReplace: SettingsLocBehaviorNewInstanceReplace(
+            label: '新实例替换现有实例',
+            info: '当手动运行scrcpy的新实例时，将停止同一设备的所有现有实例。',
+          ),
+        ),
+      ),
+      companionLoc: CompanionLoc(
+        title: '伴侣应用',
+        server: CompanionLocServer(
+          label: '设置服务器',
+          status: '状态',
+          endpoint: CompanionLocServerEndpoint(
+            label: '服务器端点',
+          ),
+          name: CompanionLocServerName(
+            label: '服务器名称',
+            info: '默认: Scrcpy GUI',
+          ),
+          port: CompanionLocServerPort(
+            label: '服务器端口',
+            info: '默认: 8080',
+          ),
+          secret: CompanionLocServerSecret(
+            label: '服务器 API 密钥',
+          ),
+          autoStart: CompanionLocServerAutoStart(
+            label: '启动时启动服务器',
+          ),
+        ),
+        client: CompanionLocClient(
+          clients: ({required String count}) => '''已连接 (${count})''',
+          blocked: ({required String count}) => '''已阻止 (${count})''',
+          noClient: '无客户端连接',
+          noBlocked: '无已阻止的客户端',
+        ),
+        qr: '从伴侣应用扫描二维码',
+      ),
+      aboutLoc: AboutLoc(
+        title: '关于',
+        version: '版本',
+        author: '作者',
+        credits: '致谢',
+      ),
+      quitDialogLoc: QuitDialogLoc(
+        title: '退出 Scrcpy GUI？',
+        killRunning: QuitDialogLocKillRunning(
+          label: '停止运行实例？',
+          info: ({required String count}) =>
+              '''${count} 个 scrcpy 实例。无窗口的实例将被停止。''',
+        ),
+        disconnect: QuitDialogLocDisconnect(
+          label: '断开无线 ADB？',
+          info: ({required String count}) => '''${count} 个设备''',
+        ),
+      ),
+      disconnectDialogLoc: DisconnectDialogLoc(
+        title: ({required String name}) => '''断开 ${name}？''',
+        hasRunning: DisconnectDialogLocHasRunning(
+          label: ({required String name, required String count}) =>
+              '''${name} 有 ${count} 个运行中的 scrcpy 实例''',
+          info: '断开连接将停止运行中的 scrcpy 实例。',
+        ),
+      ),
+      closeDialogLoc: CloseDialogLoc(
+        notAllowed: '不允许！',
+        overwrite: '覆盖？',
+        nameExist: '名称已存在！',
+        save: '保存配置？',
+        commandPreview: '命令预览:',
+        name: '名称:',
+      ),
+      unsavedChangeDialogLoc: UnsavedChangeDialogLoc(
+        title: '确认退出？',
+        contents: '未保存的更改将丢失。',
+      ),
+      serverDisclaimerLoc: ServerDisclaimerLoc(
+        title: '免责声明',
+        contents:
+            '''安全警告: 伴侣服务器使用未加密连接。\n\n仅当您连接到您信任的私有网络（如家庭 Wi-Fi）时才启动服务器。''',
+      ),
+      ipHistoryLoc: IpHistoryLoc(
+        title: '历史记录',
+        empty: '无历史记录',
+      ),
+      buttonLabelLoc: ButtonLabelLoc(
+        ok: '确定',
+        confirm: '确认',
+        close: '关闭',
+        cancel: '取消',
+        stop: '停止',
+        testConfig: '测试配置',
+        update: '更新',
+        info: '信息',
+        selectAll: '全选',
+        quit: '退出',
+        discard: '丢弃',
+        overwrite: '覆盖',
+        save: '保存',
+        clear: '清除',
+        delete: '删除',
+        serverAgree: '我理解，启动服务器',
+        reorder: '重新排序',
+        stopAll: '全部停止',
+        filter: '筛选',
+        edit: '编辑',
+        override: '覆盖',
+        dontShowAgain: '不再显示',
+        sponsor: '赞助',
+        extractIcons: '提取图标',
+      ),
+      statusLoc: StatusLoc(
+        failed: '失败',
+        unauth: '未授权',
+        error: '错误',
+        latest: '最新',
+        closing: '正在关闭',
+        copied: '已复制',
+        running: '运行中',
+        stopped: '已停止',
+        gettingInfo: '正在获取信息',
+        noDevicesFound: '未找到设备',
+      ),
+      commonLoc: CommonLoc(
+        default$: '默认',
+        yes: '是',
+        no: '否',
+        bundled: '捆绑',
+      ),
+      colorSchemeNameLoc: ColorSchemeNameLoc(
+        blue: '蓝色',
+        gray: '灰色',
+        green: '绿色',
+        neutral: '中性',
+        orange: '橙色',
+        red: '红色',
+        rose: '玫瑰色',
+        slate: '石板色',
+        stone: '石头色',
+        violet: '紫色',
+        yellow: '黄色',
+        zinc: '锌色',
+      ),
+      configFiltersLoc: ConfigFiltersLoc(
+        label: ConfigFiltersLocLabel(
+          withApp: '带应用',
+          virt: '虚拟显示器',
+        ),
+      ),
+      configOverrideLoc: ConfigOverrideLoc(
+        record: ConfigOverrideLocRecord(
+          label: '录制',
+          openFolder: '打开文件夹',
+        ),
+        landscape: ConfigOverrideLocLandscape(
+          label: '横屏',
+          info: '仅适用于虚拟显示器',
+        ),
+        mute: ConfigOverrideLocMute(
+          label: '静音',
+        ),
+      ),
+      autoArrangeOriginLoc: AutoArrangeOriginLoc(
+        title: '自动排列',
+        alignments: '对齐',
+        off: '关闭',
+        topLeft: '左上',
+        topRight: '右上',
+        centerLeft: '中左',
+        centerRight: '中右',
+        bottomLeft: '左下',
+        bottomRight: '右下',
       ),
     );
 LocalizationMessages get pt_BR => LocalizationMessages(
@@ -14017,6 +15099,62 @@ LocalizationMessages get pt_BR => LocalizationMessages(
           ),
         ),
       ),
+      controlSection: ControlSection(
+        title: 'Controle',
+        info: ControlSectionInfo(
+          ifAoa: '(Apenas USB)',
+        ),
+        mouse: ControlSectionMouse(
+          title: 'Mouse',
+          mode: ControlSectionMouseMode(
+            label: 'Modo do mouse',
+            info: ControlSectionMouseModeInfo(
+              default$: 'padrão para sdk, sem flag',
+              alt: ({required String command}) =>
+                  '''usa a flag '${command}' ''',
+            ),
+          ),
+          mouseHover: ControlSectionMouseMouseHover(
+            label: 'Desativar mouse hover',
+            info: ControlSectionMouseMouseHoverInfo(
+              default$: 'desativa o efeito de mouse hover',
+              alt: '''usa a flag '--no-mouse-hover' ''',
+              blocked: 'apenas para o modo sdk',
+            ),
+          ),
+        ),
+        keyboard: ControlSectionKeyboard(
+          title: 'Teclado',
+          mode: ControlSectionKeyboardMode(
+            label: 'Modo do teclado',
+            info: ControlSectionKeyboardModeInfo(
+              default$: 'padrão para sdk, sem flag',
+              alt: ({required String command}) =>
+                  '''usa a flag '${command}' ''',
+            ),
+          ),
+          keyRepeat: ControlSectionKeyboardKeyRepeat(
+            label: 'Desativar repetição de tecla',
+            info: ControlSectionKeyboardKeyRepeatInfo(
+              default$:
+                  'impede o encaminhamento de eventos de teclas repetidas ao manter uma tecla pressionada',
+              alt: '''usa a flag '--no-key-repeat' ''',
+              blocked: 'apenas para o modo sdk',
+            ),
+          ),
+        ),
+        gamepad: ControlSectionGamepad(
+          title: 'Gamepad',
+          mode: ControlSectionGamepadMode(
+            label: 'Modo gamepad',
+            info: ControlSectionGamepadModeInfo(
+              default$: 'desativado por padrão, sem flag',
+              alt: ({required String command}) =>
+                  '''usa a flag '${command}' ''',
+            ),
+          ),
+        ),
+      ),
       addFlags: AddFlags(
         title: 'Flags Adicionais',
         add: 'Adicionar',
@@ -14340,12 +15478,12 @@ LocalizationMessages get pt_BR => LocalizationMessages(
       ),
     );
 Map<Locale, LocalizationMessages> get _languageMap => {
-      Locale('ms'): ms,
-      Locale('ja'): ja,
-      Locale('zh'): zh,
       Locale('en'): en,
-      Locale('it'): it,
       Locale('es'): es,
+      Locale('it'): it,
+      Locale('ja'): ja,
+      Locale('ms'): ms,
+      Locale('zh'): zh,
       Locale('pt', 'BR'): pt_BR,
     };
 
@@ -14501,14 +15639,14 @@ List<LocalizationsDelegate> localizationsDelegatesWithProviders(
   ];
 }
 
-// Supported locales: ms, ja, zh, en, it, es, pt_BR
+// Supported locales: en, es, it, ja, ms, zh, pt_BR
 List<Locale> get supportedLocales => [
-      Locale('ms'),
-      Locale('ja'),
-      Locale('zh'),
       Locale('en'),
-      Locale('it'),
       Locale('es'),
+      Locale('it'),
+      Locale('ja'),
+      Locale('ms'),
+      Locale('zh'),
       Locale('pt', 'BR'),
     ];
 

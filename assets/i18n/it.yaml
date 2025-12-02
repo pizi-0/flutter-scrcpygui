@@ -339,6 +339,44 @@ window_section:
       default: limita la sessione scrcpy, in secondi
       alt: "usa il flag '--time-limit=${time}' "
 
+control_section:
+  title: Controllo
+  info:
+    if_aoa: "(Solo USB)"
+  mouse:
+    title: Mouse
+    mode:
+      label: Modalità mouse
+      info:
+        default: predefinito sdk, nessun flag
+        alt: "usa il flag '${command}' "
+    mouse_hover:
+      label: Disabilita hover del mouse
+      info:
+        default: disabilita l'effetto hover del mouse
+        alt: "usa il flag '--no-mouse-hover' "
+        blocked: solo per la modalità sdk
+  keyboard:
+    title: Tastiera
+    mode:
+      label: Modalità tastiera
+      info:
+        default: predefinito sdk, nessun flag
+        alt: "usa il flag '${command}' "
+    key_repeat:
+      label: Disabilita ripetizione tasti
+      info:
+        default: impedisce l'inoltro di eventi di tasti ripetuti quando si tiene premuto un tasto
+        alt: "usa il flag '--no-key-repeat' "
+        blocked: solo per la modalità sdk
+  gamepad:
+    title: Gamepad
+    mode:
+      label: Modalità gamepad
+      info:
+        default: disabilitato per impostazione predefinita, nessun flag
+        alt: "usa il flag '${command}' "
+
 ### config screen > additional flags section
 add_flags:
   title: Flag Aggiuntivi

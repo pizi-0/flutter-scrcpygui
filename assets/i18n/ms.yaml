@@ -339,6 +339,44 @@ window_section:
       default: mengehadkan sesi scrcpy, dalam saat
       alt: "menggunakan bendera '--time-limit=${time}' "
 
+control_section:
+  title: Kawalan
+  info:
+    if_aoa: "(USB sahaja)"
+  mouse:
+    title: Tetikus
+    mode:
+      label: Mod tetikus
+      info:
+        default: lalai kepada sdk, tiada bendera
+        alt: "menggunakan bendera '${command}' "
+    mouse_hover:
+      label: Lumpuhkan hover tetikus
+      info:
+        default: lumpuhkan kesan hover tetikus
+        alt: "menggunakan bendera '--no-mouse-hover' "
+        blocked: hanya untuk mod sdk
+  keyboard:
+    title: Papan Kekunci
+    mode:
+      label: Mod papan kekunci
+      info:
+        default: lalai kepada sdk, tiada bendera
+        alt: "menggunakan bendera ${command} "
+    key_repeat:
+      label: Lumpuhkan ulangan kekunci
+      info:
+        default: menghalang penghantaran peristiwa kekunci berulang apabila menahan kekunci
+        alt: "menggunakan bendera '--no-key-repeat' "
+        blocked: hanya untuk mod sdk
+  gamepad:
+    title: Pad Permainan
+    mode:
+      label: Mod pad permainan
+      info:
+        default: dilumpuhkan secara lalai, tiada bendera
+        alt: "menggunakan bendera ${command} "
+
 ### config screen > additional flags section
 add_flags:
   title: Bendera Tambahan

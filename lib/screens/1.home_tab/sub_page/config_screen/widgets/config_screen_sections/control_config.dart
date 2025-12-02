@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:localization/localization.dart';
 import 'package:scrcpygui/models/scrcpy_related/scrcpy_enum.dart';
 import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/widgets/config_tiles.dart';
@@ -16,10 +17,12 @@ class _ControlConfigState extends ConsumerState<ControlConfig> {
   @override
   Widget build(BuildContext context) {
     final selectedConfig = ref.watch(configScreenConfig)!;
+    final showInfo = ref.watch(configScreenShowInfo);
+
     final theme = Theme.of(context);
 
     return PgSectionCard(
-      label: 'Control',
+      label: el.controlSection.title,
       children: [
         OutlinedContainer(
           backgroundColor: theme.colorScheme.accent,
@@ -29,11 +32,16 @@ class _ControlConfigState extends ConsumerState<ControlConfig> {
             spacing: 8,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Label(child: Text(' Mouse').small),
+              Label(child: Text(' ${el.controlSection.mouse.title}').small),
               PgSectionCard(
                 children: [
                   ConfigCustom(
-                    title: 'Mouse mode',
+                    title: el.controlSection.mouse.mode.label,
+                    subtitle: selectedConfig.controlOptions.mouseMode ==
+                            MouseMode.sdk
+                        ? el.controlSection.mouse.mode.info.default$
+                        : "${el.controlSection.mouse.mode.info.alt(command: selectedConfig.controlOptions.mouseMode.command)} ${selectedConfig.controlOptions.mouseMode == MouseMode.aoa ? el.controlSection.info.ifAoa : ''}",
+                    showinfo: showInfo,
                     dimTitle: false,
                     child: Select(
                       onChanged: (value) {
@@ -55,7 +63,16 @@ class _ControlConfigState extends ConsumerState<ControlConfig> {
                   ),
                   Divider(),
                   ConfigCustom(
-                    title: 'Disable mouse hover effect',
+                    title: el.controlSection.mouse.mouseHover.label,
+                    subtitle: selectedConfig.controlOptions.mouseMode !=
+                            MouseMode.sdk
+                        ? el.controlSection.mouse.mouseHover.info.blocked
+                        : selectedConfig.controlOptions.mouseNoHover
+                            ? el.controlSection.mouse.mouseHover.info.alt
+                            : el.controlSection.mouse.mouseHover.info.default$,
+                    showinfo: showInfo ||
+                        selectedConfig.controlOptions.mouseMode !=
+                            MouseMode.sdk,
                     childExpand: false,
                     dimTitle: selectedConfig.controlOptions.mouseMode !=
                         MouseMode.sdk,
@@ -75,12 +92,17 @@ class _ControlConfigState extends ConsumerState<ControlConfig> {
                   ),
                 ],
               ),
-              Label(child: Text(' Keyboard').small),
+              Label(child: Text(' ${el.controlSection.keyboard.title}}').small),
               PgSectionCard(
                 children: [
                   ConfigCustom(
-                    title: 'Keyboard mode',
+                    title: el.controlSection.keyboard.mode.label,
                     dimTitle: false,
+                    subtitle: selectedConfig.controlOptions.keyboardMode ==
+                            KeyboardMode.sdk
+                        ? el.controlSection.keyboard.mode.info.default$
+                        : "${el.controlSection.keyboard.mode.info.alt(command: selectedConfig.controlOptions.keyboardMode.command)} ${selectedConfig.controlOptions.keyboardMode == KeyboardMode.aoa ? el.controlSection.info.ifAoa : ''}",
+                    showinfo: showInfo,
                     child: Select(
                       value: selectedConfig.controlOptions.keyboardMode,
                       onChanged: (value) => ref
@@ -99,7 +121,17 @@ class _ControlConfigState extends ConsumerState<ControlConfig> {
                   ),
                   Divider(),
                   ConfigCustom(
-                    title: 'Disable key repeat',
+                    title: el.controlSection.keyboard.keyRepeat.label,
+                    subtitle: selectedConfig.controlOptions.keyboardMode !=
+                            KeyboardMode.sdk
+                        ? el.controlSection.keyboard.keyRepeat.info.blocked
+                        : selectedConfig.controlOptions.keyboardDisableRepeat
+                            ? el.controlSection.keyboard.keyRepeat.info.alt
+                            : el.controlSection.keyboard.keyRepeat.info
+                                .default$,
+                    showinfo: showInfo ||
+                        selectedConfig.controlOptions.keyboardMode !=
+                            KeyboardMode.sdk,
                     childExpand: false,
                     dimTitle: selectedConfig.controlOptions.keyboardMode !=
                         KeyboardMode.sdk,
@@ -118,17 +150,22 @@ class _ControlConfigState extends ConsumerState<ControlConfig> {
                   ),
                 ],
               ),
-              Label(child: Text(' Gamepad').small),
+              Label(child: Text(' ${el.controlSection.gamepad.title}').small),
               PgSectionCard(
                 children: [
                   ConfigCustom(
-                    title: 'Gamepad mode',
+                    title: el.controlSection.gamepad.mode.label,
                     dimTitle: false,
+                    subtitle: selectedConfig.controlOptions.gamepadMode ==
+                            GamepadMode.disabled
+                        ? el.controlSection.gamepad.mode.info.default$
+                        : "${el.controlSection.gamepad.mode.info.alt(command: selectedConfig.controlOptions.gamepadMode.command)} ${selectedConfig.controlOptions.gamepadMode == GamepadMode.aoa ? el.controlSection.info.ifAoa : ''}",
+                    showinfo: showInfo,
                     child: Select(
                       onChanged: (value) => ref
                           .read(configScreenConfig.notifier)
                           .setControlConfig(gamepadMode: value),
-                      value: GamepadMode.disabled,
+                      value: selectedConfig.controlOptions.gamepadMode,
                       popup: SelectPopup(
                         items: SelectItemList(
                           children: GamepadMode.values
