@@ -164,6 +164,10 @@ class _ServerSettingsState extends ConsumerState<ServerSettings> {
                   children: [
                     Expanded(
                       child: Select(
+                        popupWidthConstraint: PopoverConstraint.intrinsic,
+                        popoverAnchorAlignment: AlignmentDirectional(0.2, 1),
+                        popupConstraints:
+                            BoxConstraints(maxWidth: 180, minWidth: 180),
                         onChanged: (value) => _onChangeAdapter(value),
                         filled: !isServerRunning,
                         enabled: interfaces.isNotEmpty && !isServerRunning,
