@@ -37,3 +37,5 @@ const PKEY_APPGRID_SETTINGS = 'appgrid-settings';
 const PKEY_EIFA_VERSION = 'eifa-version';
 
 const PKEY_HIDE_ICON_EXTRACTOR_DISCLAIMER = 'hide-icon-extractor-disclaimer';
+
+const PKEY_HOTKEY = 'hotkey_db';

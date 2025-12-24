@@ -6,6 +6,7 @@ import 'package:scrcpygui/widgets/custom_ui/pg_scaffold.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../providers/settings_provider.dart';
+import 'widgets/shortcut_section.dart';
 import 'widgets/theme_section.dart';
 
 class SettingsTab extends ConsumerStatefulWidget {
@@ -26,6 +27,7 @@ class _SettingsTabState extends ConsumerState<SettingsTab> {
       children: const [
         ThemeSection(),
         BehaviourSection(),
+        ShortcutSection(),
       ],
     );
   }
