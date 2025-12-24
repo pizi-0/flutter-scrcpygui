@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   encrypt_decrypt_plus
+  hotkey_manager_linux
   irondash_engine_context
   screen_retriever_linux
   super_native_extensions

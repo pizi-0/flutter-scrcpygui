@@ -8,6 +8,7 @@
 
 #include <bonsoir_windows/bonsoir_windows_plugin_c_api.h>
 #include <encrypt_decrypt_plus/encrypt_decrypt_plus_plugin_c_api.h>
+#include <hotkey_manager_windows/hotkey_manager_windows_plugin_c_api.h>
 #include <irondash_engine_context/irondash_engine_context_plugin_c_api.h>
 #include <msvcredist/msvcredist_plugin_c_api.h>
 #include <screen_retriever_windows/screen_retriever_windows_plugin_c_api.h>
@@ -21,6 +22,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("BonsoirWindowsPluginCApi"));
   EncryptDecryptPlusPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("EncryptDecryptPlusPluginCApi"));
+  HotkeyManagerWindowsPluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("HotkeyManagerWindowsPluginCApi"));
   IrondashEngineContextPluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("IrondashEngineContextPluginCApi"));
   MsvcredistPluginCApiRegisterWithRegistrar(
