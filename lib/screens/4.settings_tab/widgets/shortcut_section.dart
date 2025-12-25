@@ -5,7 +5,7 @@ import 'package:scrcpygui/screens/4.settings_tab/widgets/add_custom_shortcut_dia
 import 'package:scrcpygui/screens/4.settings_tab/widgets/change_combination_dialog.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/keyboard_shortcut/keyboard_shortcuts.dart';
-import 'package:scrcpygui/utils/keyboard_shortcut/utils.dart';
+import 'package:scrcpygui/utils/keyboard_shortcut/shortcut_utils.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
