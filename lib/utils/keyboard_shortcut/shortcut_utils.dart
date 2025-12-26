@@ -21,8 +21,9 @@ class ShortcutUtils {
     await hotKeyManager.unregisterAll();
 
     final shortcuts = await _loadShortcutFromDb();
+    final disabled = await Db.getDisabledShortcutIds();
 
-    for (var s in shortcuts) {
+    for (var s in shortcuts.where((sc) => !disabled.contains(sc.id))) {
       debugPrint('Registering hotkey: ${s.hotKey.toJson()}');
       await hotKeyManager.register(
         s.hotKey,
@@ -31,15 +32,16 @@ class ShortcutUtils {
     }
 
     ref.read(keyboardShortcutProvider.notifier).setShortcuts(shortcuts);
+    ref
+        .read(disabledKeyboardShortcutProvider.notifier)
+        .setDisabledShortcut(disabled);
   }
 
   static Future<void> addShortcut(WidgetRef ref, Shortcut shortcut) async {
     debugPrint('Adding hotkey: ${shortcut.hotKey.toJson()}');
     await hotKeyManager.register(
       shortcut.hotKey,
-      keyDownHandler: (hotKey) async {
-        await _getActionForHotkey(ref, shortcut);
-      },
+      keyDownHandler: (hotKey) => _getActionForHotkey(ref, shortcut),
     );
 
     ref.read(keyboardShortcutProvider.notifier).addShortcut(shortcut);
@@ -54,24 +56,67 @@ class ShortcutUtils {
     await Db.saveShortcuts(ref.read(keyboardShortcutProvider));
   }
 
-  static Future<void> modifyShortcut(WidgetRef ref, Shortcut shortcut) async {
-    debugPrint('Modifying hotkey: ${shortcut.hotKey.toJson()}');
-    await hotKeyManager.unregister(ref
-        .read(keyboardShortcutProvider)
-        .firstWhere((sc) => sc.id == shortcut.id)
-        .hotKey);
+  static Future<void> disableShortcut(WidgetRef ref, Shortcut shortcut) async {
+    debugPrint('Disabling hotkey: ${shortcut.hotKey.toJson()}');
+    final registered = hotKeyManager.registeredHotKeyList;
+
+    if (registered.contains(shortcut.hotKey)) {
+      debugPrint('Unregistering hotkey: ${shortcut.hotKey.toJson()}');
+      await hotKeyManager.unregister(shortcut.hotKey);
+    }
+
+    ref.read(disabledKeyboardShortcutProvider.notifier).add(shortcut.id);
+    ref.read(keyboardShortcutProvider.notifier).modifyShortcut(shortcut);
+
+    await Db.saveDisabledShortcutIds(
+        ref.read(disabledKeyboardShortcutProvider));
+  }
+
+  static Future<void> enableShortcut(WidgetRef ref, Shortcut shortcut) async {
+    debugPrint('Enabling hotkey: ${shortcut.hotKey.toJson()}');
+    await hotKeyManager.register(shortcut.hotKey,
+        keyDownHandler: (hotKey) => _getActionForHotkey(ref, shortcut));
+
+    ref.read(disabledKeyboardShortcutProvider.notifier).remove(shortcut.id);
+    ref.read(keyboardShortcutProvider.notifier).modifyShortcut(shortcut);
+
+    await Db.saveDisabledShortcutIds(
+        ref.read(disabledKeyboardShortcutProvider));
+  }
+
+  static Future<void> modifyShortcut(WidgetRef ref,
+      {required Shortcut newShortcut, required Shortcut oldShortcut}) async {
+    debugPrint(
+        'Modifying hotkey: ${oldShortcut.hotKey.toJson()} to ${newShortcut.hotKey.toJson()}');
+
+    final registered = hotKeyManager.registeredHotKeyList;
+
+    final shouldUnregister = registered.contains(oldShortcut.hotKey);
+
+    if (shouldUnregister) {
+      await hotKeyManager.unregister(ref
+          .read(keyboardShortcutProvider)
+          .firstWhere((sc) => sc.id == oldShortcut.id)
+          .hotKey);
+    }
 
     await hotKeyManager.register(
-      shortcut.hotKey,
-      keyDownHandler: (hotKey) => _getActionForHotkey(ref, shortcut),
+      newShortcut.hotKey,
+      keyDownHandler: (hotKey) => _getActionForHotkey(ref, newShortcut),
     );
 
-    ref.read(keyboardShortcutProvider.notifier).modifyShortcut(shortcut);
+    ref.read(keyboardShortcutProvider.notifier).modifyShortcut(newShortcut);
     await Db.saveShortcuts(ref.read(keyboardShortcutProvider));
   }
 
   static Future<void> resetShortcut(WidgetRef ref, Shortcut shortcut) async {
-    await hotKeyManager.unregister(shortcut.hotKey);
+    final registered = hotKeyManager.registeredHotKeyList;
+
+    final shouldUnregister = registered.contains(shortcut.hotKey);
+
+    if (shouldUnregister) {
+      await hotKeyManager.unregister(shortcut.hotKey);
+    }
 
     final toReset =
         defaultShortcuts.firstWhereOrNull((def) => def.id == shortcut.id);
@@ -83,7 +128,10 @@ class ShortcutUtils {
       );
 
       ref.read(keyboardShortcutProvider.notifier).modifyShortcut(toReset);
+      ref.read(disabledKeyboardShortcutProvider.notifier).remove(shortcut.id);
       await Db.saveShortcuts(ref.read(keyboardShortcutProvider));
+      await Db.saveDisabledShortcutIds(
+          ref.read(disabledKeyboardShortcutProvider));
     }
   }
 

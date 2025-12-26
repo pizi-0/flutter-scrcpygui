@@ -1,15 +1,21 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:scrcpygui/models/settings_model/shortcut.dart';
+import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/screens/4.settings_tab/widgets/add_custom_shortcut_dialog.dart';
 import 'package:scrcpygui/screens/4.settings_tab/widgets/change_combination_dialog.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:scrcpygui/utils/keyboard_shortcut/keyboard_shortcuts.dart';
+import 'package:scrcpygui/utils/keyboard_shortcut/shortcut_actions_ids.dart';
 import 'package:scrcpygui/utils/keyboard_shortcut/shortcut_utils.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../../providers/adb_provider.dart';
+import '../../../providers/config_provider.dart';
 import '../../../providers/keyboard_shortcut_provider.dart';
 
 class ShortcutSection extends ConsumerStatefulWidget {
@@ -21,9 +27,6 @@ class ShortcutSection extends ConsumerStatefulWidget {
 }
 
 class _ShortcutSectionState extends ConsumerState<ShortcutSection> {
-  BoxConstraints trailingConstraints =
-      BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30);
-
   @override
   Widget build(BuildContext context) {
     final shortcuts = ref.watch(keyboardShortcutProvider);
@@ -48,23 +51,26 @@ class _ShortcutSectionState extends ConsumerState<ShortcutSection> {
         ],
       ),
       children: [
-        PgListTile(
+        ShortcutWidget(
           title: 'Start scrcpy',
           subtitle: 'Starts scrcpy with the last used configuration',
-          showSubtitle: true,
-          trailing: KeyDisplay(shortcut: shortcuts[0]),
-          trailingConstraints: trailingConstraints,
+          shortcut: shortcuts[0],
         ),
         Divider(),
-        PgListTile(
+        ShortcutWidget(
           title: 'Stop last scrcpy',
           subtitle: 'Stops the last running scrcpy instance',
-          showSubtitle: true,
-          trailing: KeyDisplay(shortcut: shortcuts[1]),
-          trailingConstraints: trailingConstraints,
+          shortcut: shortcuts[1],
         ),
-        if (shortcuts.length > 2) ...[
-          Divider(),
+        if (shortcuts.length > defaultShortcuts.length) ...[
+          Row(
+            spacing: 16,
+            children: [
+              Expanded(child: Divider()),
+              Text('Custom').xSmall,
+              Expanded(child: Divider()),
+            ],
+          ),
           _buildUserDefinedShortcuts(shortcuts),
         ]
       ],
@@ -78,17 +84,75 @@ class _ShortcutSectionState extends ConsumerState<ShortcutSection> {
         .toList();
 
     return ListView.separated(
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          final shortcut = userDefinedShortcuts[index];
-          return PgListTile(
-            title: 'Start: ${shortcut.id}',
-            trailingConstraints: trailingConstraints,
-            trailing: KeyDisplay(shortcut: shortcut, userDefined: true),
-          );
-        },
-        separatorBuilder: (context, index) => Divider(),
-        itemCount: userDefinedShortcuts.length);
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        final shortcut = userDefinedShortcuts[index];
+        return ShortcutWidget(
+          shortcut: shortcut,
+        );
+      },
+      separatorBuilder: (context, index) => Divider(),
+      itemCount: userDefinedShortcuts.length,
+    );
+  }
+}
+
+class ShortcutWidget extends ConsumerStatefulWidget {
+  final String? title;
+  final String? subtitle;
+  final Shortcut shortcut;
+
+  const ShortcutWidget({
+    super.key,
+    this.title,
+    this.subtitle,
+    required this.shortcut,
+  });
+
+  @override
+  ConsumerState<ShortcutWidget> createState() => _ShortcutWidgetState();
+}
+
+class _ShortcutWidgetState extends ConsumerState<ShortcutWidget> {
+  BoxConstraints trailingConstraints =
+      BoxConstraints(minWidth: 180, maxWidth: 180, minHeight: 30);
+
+  @override
+  Widget build(BuildContext context) {
+    final disabled = ref
+        .watch(disabledKeyboardShortcutProvider)
+        .contains(widget.shortcut.id);
+
+    return PgListTile(
+      title: _getCustomTitle(),
+      dimTitle: disabled,
+      subtitle: widget.subtitle,
+      showSubtitle: true,
+      trailing: KeyDisplay(shortcut: widget.shortcut),
+      trailingConstraints: trailingConstraints,
+    );
+  }
+
+  String _getCustomTitle() {
+    switch (widget.shortcut.id) {
+      case HK_START_CUSTOM_CONFIG:
+        final connectedDevices = ref.read(adbProvider);
+        final allConfigs = ref.read(configsProvider);
+
+        final config = allConfigs.firstWhereOrNull(
+            (config) => config.id == widget.shortcut.extra?.configId);
+        final device = connectedDevices.firstWhereOrNull(
+            (device) => device.id == widget.shortcut.extra?.deviceId);
+
+        final info = ref
+            .read(infoProvider)
+            .firstWhereOrNull((info) => info.serialNo == device?.serialNo);
+
+        return 'Start: ${config?.configName} on ${info?.deviceName}';
+
+      default:
+        return widget.title ?? '';
+    }
   }
 }
 
@@ -107,36 +171,32 @@ class _KeyDisplayState extends ConsumerState<KeyDisplay> {
 
   @override
   Widget build(BuildContext context) {
-    final trigger = widget.shortcut.hotKey.logicalKey;
-    final alt =
-        widget.shortcut.hotKey.modifiers?.contains(HotKeyModifier.alt) ?? false;
-    final control =
-        widget.shortcut.hotKey.modifiers?.contains(HotKeyModifier.control) ??
-            false;
-    final meta =
-        widget.shortcut.hotKey.modifiers?.contains(HotKeyModifier.meta) ??
-            false;
-    final shift =
-        widget.shortcut.hotKey.modifiers?.contains(HotKeyModifier.shift) ??
-            false;
-
+    final theme = Theme.of(context);
     return Row(
+      spacing: 8,
       children: [
-        Expanded(
-          child: GhostButton(
-            density: ButtonDensity.compact,
-            onPressed: _modifyshortcut,
-            child: KeyboardDisplay.fromActivator(
-              activator: SingleActivator(
-                trigger,
-                alt: alt,
-                control: control,
-                meta: meta,
-                shift: shift,
+        GhostButton(
+          density: ButtonDensity.dense,
+          onPressed: _modifyshortcut,
+          child: Row(
+            spacing: 2,
+            children: [
+              for (HotKeyModifier modifier
+                  in widget.shortcut.hotKey.modifiers ?? [])
+                OutlinedContainer(
+                  borderRadius: theme.borderRadiusSm,
+                  padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                  child: Text(modifier.name.capitalize).xSmall,
+                ),
+              OutlinedContainer(
+                borderRadius: theme.borderRadiusSm,
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                child: Text(widget.shortcut.hotKey.physicalKey.keyLabel).xSmall,
               ),
-            ).xSmall,
+            ],
           ),
         ),
+        Spacer(),
         _trailingButton()
       ],
     );
@@ -165,7 +225,7 @@ class _KeyDisplayState extends ConsumerState<KeyDisplay> {
   }
 
   Future<void> _modifyshortcut() async {
-    Shortcut? shortcut = await showDialog(
+    final res = await showDialog(
       context: context,
       builder: (context) => ConstrainedBox(
         constraints:
@@ -174,8 +234,15 @@ class _KeyDisplayState extends ConsumerState<KeyDisplay> {
       ),
     );
 
-    if (shortcut != null) {
-      ShortcutUtils.modifyShortcut(ref, shortcut);
+    if (res is HKEditResult) {
+      await ShortcutUtils.modifyShortcut(ref,
+          newShortcut: res.shortcut, oldShortcut: widget.shortcut);
+
+      if (res.isDisabled) {
+        await ShortcutUtils.disableShortcut(ref, res.shortcut);
+      } else {
+        await ShortcutUtils.enableShortcut(ref, res.shortcut);
+      }
     }
   }
 }

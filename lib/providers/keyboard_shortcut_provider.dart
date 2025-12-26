@@ -35,3 +35,28 @@ class KeyboardShortcutNotifier extends Notifier<List<Shortcut>> {
 final keyboardShortcutProvider =
     NotifierProvider<KeyboardShortcutNotifier, List<Shortcut>>(
         () => KeyboardShortcutNotifier());
+
+class DisabledKeyboardShortcutNotifier extends Notifier<List<String>> {
+  @override
+  build() {
+    return [];
+  }
+
+  void setDisabledShortcut(List<String> disabledIds) {
+    state = disabledIds;
+  }
+
+  void add(String shortcutId) {
+    if (!state.contains(shortcutId)) {
+      state = [...state, shortcutId];
+    }
+  }
+
+  void remove(String shortcutId) {
+    state = [...state.where((sc) => sc != shortcutId)];
+  }
+}
+
+final disabledKeyboardShortcutProvider =
+    NotifierProvider<DisabledKeyboardShortcutNotifier, List<String>>(
+        () => DisabledKeyboardShortcutNotifier());

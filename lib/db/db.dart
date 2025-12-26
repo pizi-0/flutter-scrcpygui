@@ -321,4 +321,22 @@ class Db {
       return res.map((e) => Shortcut.fromJson(e)).toList();
     }
   }
+
+  static Future<void> saveDisabledShortcutIds(List<String> disabledIds) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setStringList(PKEY_HOTKEY_DISABLED, disabledIds);
+  }
+
+  static Future<List<String>> getDisabledShortcutIds() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final res = prefs.getStringList(PKEY_HOTKEY_DISABLED);
+
+    if (res == null) {
+      return [];
+    } else {
+      return res;
+    }
+  }
 }

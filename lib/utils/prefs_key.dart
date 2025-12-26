@@ -38,4 +38,6 @@ const PKEY_EIFA_VERSION = 'eifa-version';
 
 const PKEY_HIDE_ICON_EXTRACTOR_DISCLAIMER = 'hide-icon-extractor-disclaimer';
 
-const PKEY_HOTKEY = 'hotkey_db';
+const PKEY_HOTKEY = 'hotkeys';
+
+const PKEY_HOTKEY_DISABLED = 'disabled-hotkeys';
