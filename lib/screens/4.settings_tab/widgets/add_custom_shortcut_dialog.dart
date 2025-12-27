@@ -1,6 +1,15 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:scrcpygui/db/db.dart';
+import 'package:scrcpygui/models/adb_devices.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
+import 'package:scrcpygui/providers/adb_provider.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/utils/const.dart';
+import 'package:scrcpygui/widgets/config_tiles.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:string_extensions/string_extensions.dart';
 
 class AddCustomShortcutDialog extends ConsumerStatefulWidget {
   const AddCustomShortcutDialog({super.key});
@@ -12,8 +21,35 @@ class AddCustomShortcutDialog extends ConsumerStatefulWidget {
 
 class _AddCustomShortcutDialogState
     extends ConsumerState<AddCustomShortcutDialog> {
+  final StepperController controller = StepperController();
+  ShortcutAction selectedAction = ShortcutAction.startScrcpy;
+  ScrcpyConfig? config;
+  AdbDevices? device;
+  List<ScrcpyConfig> availableConfigs = [];
+  ScrcpyConfig lastUsedConfig = defaultMirror;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) async {
+        lastUsedConfig = (await Db.getLastUsedConfig(ref)) ?? defaultMirror;
+        availableConfigs = ref.read(configsProvider);
+        setState(() {});
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final connectedDevices = ref.watch(adbProvider);
+
     return ConstrainedBox(
       constraints:
           BoxConstraints(maxWidth: sectionWidth, minWidth: sectionWidth),
@@ -22,8 +58,155 @@ class _AddCustomShortcutDialogState
         content: ConstrainedBox(
           constraints:
               BoxConstraints(maxWidth: sectionWidth, minWidth: sectionWidth),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: OutlinedContainer(
+            padding: EdgeInsets.all(8),
+            child: Stepper(
+              size: StepSize.small,
+              controller: controller,
+              steps: [
+                Step(
+                  title: Text('Action'),
+                  contentBuilder: (context) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      spacing: 8,
+                      children: [
+                        SizedBox(height: 8),
+                        ConfigCustom(
+                          title: 'Action',
+                          child: Select(
+                            value: selectedAction,
+                            onChanged: (value) =>
+                                setState(() => selectedAction = value!),
+                            popup: SelectPopup(
+                              items: SelectItemList(
+                                children: ShortcutAction.values
+                                    .map((e) => SelectItemButton(
+                                          value: e,
+                                          child: Text(e.name),
+                                        ))
+                                    .toList(),
+                              ),
+                            ).call,
+                            itemBuilder: (context, value) => Text(value.name),
+                          ),
+                        ),
+                        Divider(),
+                        ConfigCustom(
+                          title: 'Configuration',
+                          child: Row(
+                            spacing: 4,
+                            children: [
+                              Expanded(
+                                child: Select(
+                                  value: config,
+                                  onChanged: (value) =>
+                                      setState(() => config = value!),
+                                  placeholder: OverflowMarquee(
+                                      child: Text('Last used config')),
+                                  popup: SelectPopup(
+                                    items: SelectItemList(
+                                      children: [
+                                        ...availableConfigs.map((conf) =>
+                                            SelectItemButton(
+                                                value: conf,
+                                                child: Text(conf.configName)))
+                                      ],
+                                    ),
+                                  ).call,
+                                  itemBuilder: (context, value) =>
+                                      OverflowMarquee(
+                                          child: Text(value.configName)),
+                                ),
+                              ),
+                              if (config != null)
+                                IconButton.ghost(
+                                  density: ButtonDensity.iconDense,
+                                  icon: Icon(Icons.clear_rounded),
+                                  onPressed: () {
+                                    config = null;
+                                    setState(() {});
+                                  },
+                                ),
+                            ],
+                          ),
+                        ),
+                        Divider(),
+                        ConfigCustom(
+                          title: 'Device',
+                          child: Row(
+                            spacing: 4,
+                            children: [
+                              Expanded(
+                                child: Select(
+                                  onChanged: (value) =>
+                                      setState(() => device = value!),
+                                  value: device,
+                                  placeholder: Text('First device'),
+                                  popup: SelectPopup(
+                                    items: SelectItemList(
+                                      children: [
+                                        ...connectedDevices.map((dev) {
+                                          final info = ref.read(infoProvider);
+                                          final devInfo = info.firstWhereOrNull(
+                                              (i) =>
+                                                  i.serialNo == dev.serialNo);
+
+                                          return SelectItemButton(
+                                            value: dev,
+                                            child: Row(
+                                              spacing: 8,
+                                              children: [
+                                                isWireless(dev.id)
+                                                    ? Icon(Icons.wifi_rounded,
+                                                        size: 16)
+                                                    : Icon(Icons.usb_rounded,
+                                                        size: 16),
+                                                Text(devInfo?.deviceName ??
+                                                    dev.id),
+                                              ],
+                                            ),
+                                          );
+                                        })
+                                      ],
+                                    ),
+                                  ).call,
+                                  itemBuilder: (context, dev) {
+                                    final info = ref.read(infoProvider);
+                                    final devInfo = info.firstWhereOrNull(
+                                        (i) => i.serialNo == dev.serialNo);
+
+                                    return Row(
+                                      spacing: 8,
+                                      children: [
+                                        isWireless(dev.id)
+                                            ? Icon(Icons.wifi_rounded, size: 16)
+                                            : Icon(Icons.usb_rounded, size: 16),
+                                        Text(devInfo?.deviceName ?? dev.id),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                              if (device != null)
+                                IconButton.ghost(
+                                  density: ButtonDensity.iconDense,
+                                  icon: Icon(Icons.clear_rounded),
+                                  onPressed: () {
+                                    device = null;
+                                    setState(() {});
+                                  },
+                                ),
+                            ],
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                ),
+                Step(title: Text('Key Combination')),
+              ],
+            ),
           ),
         ),
         actions: [
@@ -37,4 +220,23 @@ class _AddCustomShortcutDialogState
       ),
     );
   }
+
+  bool isWireless(String id) {
+    return id.contains(':') || id.contains(adbMdns) || id.isIpv4;
+  }
+}
+
+abstract interface class StringEnum {
+  final String name;
+
+  const StringEnum(this.name);
+}
+
+enum ShortcutAction implements StringEnum {
+  startScrcpy('Start scrcpy'),
+  stopsScrcpy('Stop scrcpy');
+
+  @override
+  final String name;
+  const ShortcutAction(this.name);
 }
