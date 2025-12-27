@@ -44,7 +44,10 @@ class _ChangeShortcutCombState extends ConsumerState<ChangeShortcutComb> {
         ],
       ),
       content: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        spacing: 8,
         children: [
+          Text('Input new combination'),
           Center(
             child: OutlinedContainer(
               padding: EdgeInsets.all(16),

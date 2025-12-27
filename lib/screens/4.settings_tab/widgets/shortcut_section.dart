@@ -205,7 +205,7 @@ class _KeyDisplayState extends ConsumerState<KeyDisplay> {
   Widget _trailingButton() {
     if (!widget.userDefined) {
       if (defaultShortcuts
-          .where((def) => def.toJson() == widget.shortcut.toJson())
+          .where((def) => def.hotKey == widget.shortcut.hotKey)
           .isEmpty) {
         return IconButton.ghost(
           density: ButtonDensity.iconDense,
@@ -241,7 +241,11 @@ class _KeyDisplayState extends ConsumerState<KeyDisplay> {
       if (res.isDisabled) {
         await ShortcutUtils.disableShortcut(ref, res.shortcut);
       } else {
-        await ShortcutUtils.enableShortcut(ref, res.shortcut);
+        final registered = hotKeyManager.registeredHotKeyList;
+
+        if (!registered.contains(res.shortcut.hotKey)) {
+          await ShortcutUtils.enableShortcut(ref, res.shortcut);
+        }
       }
     }
   }
