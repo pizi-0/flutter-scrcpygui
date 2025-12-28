@@ -1,9 +1,7 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:scrcpygui/models/settings_model/shortcut.dart';
-import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/screens/4.settings_tab/widgets/add_custom_shortcut_dialog.dart';
 import 'package:scrcpygui/screens/4.settings_tab/widgets/change_combination_dialog.dart';
 import 'package:scrcpygui/utils/const.dart';
@@ -14,8 +12,6 @@ import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import '../../../providers/adb_provider.dart';
-import '../../../providers/config_provider.dart';
 import '../../../providers/keyboard_shortcut_provider.dart';
 
 class ShortcutSection extends ConsumerStatefulWidget {
@@ -136,19 +132,7 @@ class _ShortcutWidgetState extends ConsumerState<ShortcutWidget> {
   String _getCustomTitle() {
     switch (widget.shortcut.id) {
       case HK_START_CUSTOM_CONFIG:
-        final connectedDevices = ref.read(adbProvider);
-        final allConfigs = ref.read(configsProvider);
-
-        final config = allConfigs.firstWhereOrNull(
-            (config) => config.id == widget.shortcut.extra?.configId);
-        final device = connectedDevices.firstWhereOrNull(
-            (device) => device.id == widget.shortcut.extra?.deviceId);
-
-        final info = ref
-            .read(infoProvider)
-            .firstWhereOrNull((info) => info.serialNo == device?.serialNo);
-
-        return 'Start: ${config?.configName} on ${info?.deviceName}';
+        return 'Start custom';
 
       default:
         return widget.title ?? '';
@@ -203,7 +187,9 @@ class _KeyDisplayState extends ConsumerState<KeyDisplay> {
   }
 
   Widget _trailingButton() {
-    if (!widget.userDefined) {
+    if (defaultShortcuts
+        .where((sc) => sc.id != HK_START_SCRCPY || sc.id == HK_STOP_SCRCPY)
+        .isNotEmpty) {
       if (defaultShortcuts
           .where((def) => def.hotKey == widget.shortcut.hotKey)
           .isEmpty) {

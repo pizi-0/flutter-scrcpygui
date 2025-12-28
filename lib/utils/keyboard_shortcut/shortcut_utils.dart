@@ -2,18 +2,14 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:scrcpygui/models/settings_model/shortcut.dart';
-import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/keyboard_shortcut_provider.dart';
-import 'package:scrcpygui/providers/scrcpy_provider.dart';
-import 'package:scrcpygui/utils/const.dart';
-import 'package:scrcpygui/utils/keyboard_shortcut/shortcut_actions_ids.dart';
-import 'package:scrcpygui/utils/scrcpy_utils.dart';
+import 'package:scrcpygui/utils/tasks_runner.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import '../../db/db.dart';
-import '../../providers/adb_provider.dart';
 import 'keyboard_shortcuts.dart';
 
+// To prevent multiple shortcut actions running at the same time
 bool running = false;
 
 class ShortcutUtils {
@@ -139,41 +135,7 @@ class ShortcutUtils {
       WidgetRef ref, Shortcut shortcut) async {
     if (!running) {
       running = true;
-      final connectedDevices = ref.read(adbProvider);
-      final allConfigs = ref.read(configsProvider);
-      final selectedDevice =
-          ref.read(selectedDeviceProvider) ?? connectedDevices.firstOrNull;
-      final selectedConfig = ref.read(selectedConfigProvider) ?? defaultMirror;
-
-      switch (shortcut.hotKey.identifier) {
-        case HK_START_SCRCPY:
-          if (selectedDevice != null) {
-            await ScrcpyUtils.newInstance(ref,
-                selectedDevice: selectedDevice, selectedConfig: selectedConfig);
-          }
-
-        case HK_STOP_SCRCPY:
-          final runningInstance = ref.read(scrcpyInstanceProvider);
-
-          if (runningInstance.isNotEmpty) {
-            await ScrcpyUtils.killServer(runningInstance.last);
-          }
-        case HK_START_CUSTOM_CONFIG:
-          final customConfig = allConfigs.firstWhereOrNull(
-              (config) => config.id == shortcut.extra?.configId);
-          final customDevice = connectedDevices.firstWhereOrNull(
-                  (device) => device.id == shortcut.extra?.deviceId) ??
-              selectedDevice;
-
-          if (customConfig != null) {
-            await ScrcpyUtils.newInstance(ref,
-                selectedDevice: customDevice, selectedConfig: customConfig);
-          }
-
-        default:
-          null;
-      }
-
+      await TasksRunner.runTask(ref, tasks: shortcut.task);
       running = false;
     }
   }

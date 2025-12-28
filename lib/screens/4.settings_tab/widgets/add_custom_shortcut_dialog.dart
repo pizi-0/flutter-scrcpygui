@@ -22,7 +22,9 @@ class AddCustomShortcutDialog extends ConsumerStatefulWidget {
 class _AddCustomShortcutDialogState
     extends ConsumerState<AddCustomShortcutDialog> {
   final StepperController controller = StepperController();
-  ShortcutAction selectedAction = ShortcutAction.startScrcpy;
+  int currentStep = 0;
+  ShortcutAction selectedAction =
+      ShortcutAction(name: 'Start', action: ShortcutActionEnum.startScrcpy);
   ScrcpyConfig? config;
   AdbDevices? device;
   List<ScrcpyConfig> availableConfigs = [];
@@ -30,6 +32,7 @@ class _AddCustomShortcutDialogState
 
   @override
   void initState() {
+    controller.addListener(_onStepChange);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) async {
@@ -44,6 +47,11 @@ class _AddCustomShortcutDialogState
   void dispose() {
     controller.dispose();
     super.dispose();
+  }
+
+  void _onStepChange() {
+    currentStep = controller.value.currentStep;
+    setState(() {});
   }
 
   @override
@@ -76,142 +84,154 @@ class _AddCustomShortcutDialogState
                           title: 'Action',
                           child: Select(
                             value: selectedAction,
-                            onChanged: (value) =>
-                                setState(() => selectedAction = value!),
+                            onChanged: (value) => onActionSelection(value!),
                             popup: SelectPopup(
                               items: SelectItemList(
-                                children: ShortcutAction.values
-                                    .map((e) => SelectItemButton(
-                                          value: e,
-                                          child: Text(e.name),
-                                        ))
-                                    .toList(),
-                              ),
+                                  children: shortcutAction
+                                      .map((e) => SelectItemButton(
+                                          value: e, child: Text(e.name)))
+                                      .toList()),
                             ).call,
                             itemBuilder: (context, value) => Text(value.name),
                           ),
                         ),
                         Divider(),
-                        ConfigCustom(
-                          title: 'Configuration',
-                          child: Row(
-                            spacing: 4,
-                            children: [
-                              Expanded(
-                                child: Select(
-                                  value: config,
-                                  onChanged: (value) =>
-                                      setState(() => config = value!),
-                                  placeholder: OverflowMarquee(
-                                      child: Text('Last used config')),
-                                  popup: SelectPopup(
-                                    items: SelectItemList(
-                                      children: [
-                                        ...availableConfigs.map((conf) =>
-                                            SelectItemButton(
-                                                value: conf,
-                                                child: Text(conf.configName)))
-                                      ],
-                                    ),
-                                  ).call,
-                                  itemBuilder: (context, value) =>
-                                      OverflowMarquee(
-                                          child: Text(value.configName)),
+                        if (selectedAction.action ==
+                            ShortcutActionEnum.startScrcpy) ...[
+                          ConfigCustom(
+                            title: 'Configuration',
+                            child: Row(
+                              spacing: 4,
+                              children: [
+                                Expanded(
+                                  child: Select(
+                                    value: config,
+                                    onChanged: (value) =>
+                                        setState(() => config = value!),
+                                    placeholder: OverflowMarquee(
+                                        child: Text('Last used config')),
+                                    popup: SelectPopup(
+                                      items: SelectItemList(
+                                        children: [
+                                          ...availableConfigs.map((conf) =>
+                                              SelectItemButton(
+                                                  value: conf,
+                                                  child: Text(conf.configName)))
+                                        ],
+                                      ),
+                                    ).call,
+                                    itemBuilder: (context, value) =>
+                                        OverflowMarquee(
+                                            child: Text(value.configName)),
+                                  ),
                                 ),
-                              ),
-                              if (config != null)
-                                IconButton.ghost(
-                                  density: ButtonDensity.iconDense,
-                                  icon: Icon(Icons.clear_rounded),
-                                  onPressed: () {
-                                    config = null;
-                                    setState(() {});
-                                  },
-                                ),
-                            ],
+                                if (config != null)
+                                  IconButton.ghost(
+                                    density: ButtonDensity.iconDense,
+                                    icon: Icon(Icons.clear_rounded),
+                                    onPressed: () {
+                                      config = null;
+                                      setState(() {});
+                                    },
+                                  ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Divider(),
-                        ConfigCustom(
-                          title: 'Device',
-                          child: Row(
-                            spacing: 4,
-                            children: [
-                              Expanded(
-                                child: Select(
-                                  onChanged: (value) =>
-                                      setState(() => device = value!),
-                                  value: device,
-                                  placeholder: Text('First device'),
-                                  popup: SelectPopup(
-                                    items: SelectItemList(
-                                      children: [
-                                        ...connectedDevices.map((dev) {
-                                          final info = ref.read(infoProvider);
-                                          final devInfo = info.firstWhereOrNull(
-                                              (i) =>
-                                                  i.serialNo == dev.serialNo);
+                          Divider(),
+                          ConfigCustom(
+                            title: 'Device',
+                            child: Row(
+                              spacing: 4,
+                              children: [
+                                Expanded(
+                                  child: Select(
+                                    onChanged: (value) =>
+                                        setState(() => device = value!),
+                                    value: device,
+                                    placeholder: Text('First device'),
+                                    popup: SelectPopup(
+                                      items: SelectItemList(
+                                        children: [
+                                          ...connectedDevices.map((dev) {
+                                            final info = ref.read(infoProvider);
+                                            final devInfo =
+                                                info.firstWhereOrNull((i) =>
+                                                    i.serialNo == dev.serialNo);
 
-                                          return SelectItemButton(
-                                            value: dev,
-                                            child: Row(
-                                              spacing: 8,
-                                              children: [
-                                                isWireless(dev.id)
-                                                    ? Icon(Icons.wifi_rounded,
-                                                        size: 16)
-                                                    : Icon(Icons.usb_rounded,
-                                                        size: 16),
-                                                Text(devInfo?.deviceName ??
-                                                    dev.id),
-                                              ],
-                                            ),
-                                          );
-                                        })
-                                      ],
-                                    ),
-                                  ).call,
-                                  itemBuilder: (context, dev) {
-                                    final info = ref.read(infoProvider);
-                                    final devInfo = info.firstWhereOrNull(
-                                        (i) => i.serialNo == dev.serialNo);
+                                            return SelectItemButton(
+                                              value: dev,
+                                              child: Row(
+                                                spacing: 8,
+                                                children: [
+                                                  isWireless(dev.id)
+                                                      ? Icon(Icons.wifi_rounded,
+                                                          size: 16)
+                                                      : Icon(Icons.usb_rounded,
+                                                          size: 16),
+                                                  Text(devInfo?.deviceName ??
+                                                      dev.id),
+                                                ],
+                                              ),
+                                            );
+                                          })
+                                        ],
+                                      ),
+                                    ).call,
+                                    itemBuilder: (context, dev) {
+                                      final info = ref.read(infoProvider);
+                                      final devInfo = info.firstWhereOrNull(
+                                          (i) => i.serialNo == dev.serialNo);
 
-                                    return Row(
-                                      spacing: 8,
-                                      children: [
-                                        isWireless(dev.id)
-                                            ? Icon(Icons.wifi_rounded, size: 16)
-                                            : Icon(Icons.usb_rounded, size: 16),
-                                        Text(devInfo?.deviceName ?? dev.id),
-                                      ],
-                                    );
-                                  },
+                                      return Row(
+                                        spacing: 8,
+                                        children: [
+                                          isWireless(dev.id)
+                                              ? Icon(Icons.wifi_rounded,
+                                                  size: 16)
+                                              : Icon(Icons.usb_rounded,
+                                                  size: 16),
+                                          Text(devInfo?.deviceName ?? dev.id),
+                                        ],
+                                      );
+                                    },
+                                  ),
                                 ),
-                              ),
-                              if (device != null)
-                                IconButton.ghost(
-                                  density: ButtonDensity.iconDense,
-                                  icon: Icon(Icons.clear_rounded),
-                                  onPressed: () {
-                                    device = null;
-                                    setState(() {});
-                                  },
-                                ),
-                            ],
-                          ),
-                        )
+                                if (device != null)
+                                  IconButton.ghost(
+                                    density: ButtonDensity.iconDense,
+                                    icon: Icon(Icons.clear_rounded),
+                                    onPressed: () {
+                                      device = null;
+                                      setState(() {});
+                                    },
+                                  ),
+                              ],
+                            ),
+                          )
+                        ]
                       ],
                     );
                   },
                 ),
-                Step(title: Text('Key Combination')),
+                Step(title: Text('Keys')),
               ],
             ),
           ),
         ),
         actions: [
           Spacer(),
-          PrimaryButton(child: Text('Add')),
+          if (currentStep != 0)
+            SecondaryButton(
+              onPressed: controller.previousStep,
+              child: Text('Back'),
+            ),
+          if (currentStep < 1)
+            PrimaryButton(
+              onPressed: controller.nextStep,
+              child: Text('Next'),
+            ),
+          if (controller.value.currentStep == 1)
+            PrimaryButton(child: Text('Add')),
           SecondaryButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text('Cancel'),
@@ -221,22 +241,31 @@ class _AddCustomShortcutDialogState
     );
   }
 
+  void onActionSelection(ShortcutAction action) {
+    selectedAction = action;
+    config = null;
+    device = null;
+
+    setState(() {});
+  }
+
+  List<ShortcutAction> shortcutAction = [
+    ShortcutAction(name: 'Start', action: ShortcutActionEnum.startScrcpy),
+    ShortcutAction(name: 'Stop', action: ShortcutActionEnum.stopLastScrcpy),
+  ];
+
   bool isWireless(String id) {
     return id.contains(':') || id.contains(adbMdns) || id.isIpv4;
   }
 }
 
-abstract interface class StringEnum {
-  final String name;
-
-  const StringEnum(this.name);
+enum ShortcutActionEnum {
+  startScrcpy,
+  stopLastScrcpy,
 }
 
-enum ShortcutAction implements StringEnum {
-  startScrcpy('Start scrcpy'),
-  stopsScrcpy('Stop scrcpy');
-
-  @override
+class ShortcutAction {
   final String name;
-  const ShortcutAction(this.name);
+  final ShortcutActionEnum action;
+  const ShortcutAction({required this.name, required this.action});
 }

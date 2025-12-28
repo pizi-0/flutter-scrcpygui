@@ -75,7 +75,11 @@ class _ChangeShortcutCombState extends ConsumerState<ChangeShortcutComb> {
         PrimaryButton(
           onPressed: () => context.pop(HKEditResult(
               isDisabled: disabled,
-              shortcut: Shortcut(id: widget.shortcut.id, hotKey: recorded!))),
+              shortcut: Shortcut(
+                id: widget.shortcut.id,
+                hotKey: recorded!,
+                task: widget.shortcut.task,
+              ))),
           child: Text(el.buttonLabelLoc.save),
         ),
         SecondaryButton(

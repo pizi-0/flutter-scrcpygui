@@ -1,24 +1,27 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-
 import 'package:hotkey_manager/hotkey_manager.dart';
-
-import 'package:scrcpygui/models/settings_model/shortcut_extra.dart';
+import 'package:scrcpygui/models/tasks/task_model.dart';
 
 class Shortcut {
   final String id;
   final HotKey hotKey;
-  final ShortcutExtra? extra;
+  final Tasks task;
 
-  Shortcut({required this.id, required this.hotKey, this.extra});
+  Shortcut({
+    required this.id,
+    required this.hotKey,
+    required this.task,
+  });
   Shortcut copyWith({
+    String? id,
     HotKey? hotKey,
-    ShortcutExtra? extra,
+    Tasks? task,
   }) {
     return Shortcut(
-      id: id,
+      id: id ?? this.id,
       hotKey: hotKey ?? this.hotKey,
-      extra: extra ?? this.extra,
+      task: task ?? this.task,
     );
   }
 
@@ -26,17 +29,15 @@ class Shortcut {
     return <String, dynamic>{
       'id': id,
       'hotKey': hotKey.toJson(),
-      'extra': extra?.toMap(),
+      'task': task.toMap(),
     };
   }
 
   factory Shortcut.fromMap(Map<String, dynamic> map) {
     return Shortcut(
       id: map['id'] as String,
-      hotKey: HotKey.fromJson(map['hotKey'] as Map<String, dynamic>),
-      extra: map['extra'] != null
-          ? ShortcutExtra.fromMap(map['extra'] as Map<String, dynamic>)
-          : null,
+      hotKey: HotKey.fromJson(map['hotKey']),
+      task: Tasks.fromMap(map['task'] as Map<String, dynamic>),
     );
   }
 
@@ -49,9 +50,11 @@ class Shortcut {
   bool operator ==(covariant Shortcut other) {
     if (identical(this, other)) return true;
 
-    return other.id == id && other.hotKey == hotKey && other.extra == extra;
+    return other.id == id && other.hotKey == hotKey && other.task == task;
   }
 
   @override
-  int get hashCode => id.hashCode ^ hotKey.hashCode ^ extra.hashCode;
+  int get hashCode => id.hashCode ^ hotKey.hashCode ^ task.hashCode;
+  @override
+  String toString() => 'Shortcut(id: $id, hotKey: $hotKey, task: $task)';
 }
