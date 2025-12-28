@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+
 import 'package:scrcpygui/models/tasks/task_type_ids.dart';
 
 sealed class TaskType {
@@ -59,6 +60,18 @@ class StartScrcpyTask extends TaskType {
       serialNo: map['serialNo'] as String?,
     );
   }
+
+  StartScrcpyTask copyWith({
+    String? configId,
+    String? serialNo,
+    bool? preferWireless,
+  }) {
+    return StartScrcpyTask(
+      configId: configId ?? this.configId,
+      serialNo: serialNo ?? this.serialNo,
+      preferWireless: preferWireless ?? this.preferWireless,
+    );
+  }
 }
 
 class StopScrcpyTask extends TaskType {
@@ -80,6 +93,16 @@ class StopScrcpyTask extends TaskType {
     return StopScrcpyTask(
       deviceId: map['deviceId'] as String?,
       pid: map['pid'] as String?,
+    );
+  }
+
+  StopScrcpyTask copyWith({
+    String? deviceId,
+    String? pid,
+  }) {
+    return StopScrcpyTask(
+      deviceId: deviceId ?? this.deviceId,
+      pid: pid ?? this.pid,
     );
   }
 }
