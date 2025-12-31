@@ -60,7 +60,8 @@ enum ConnectionPref implements ConnectionPrefStringEnum {
   const ConnectionPref(this.name);
 }
 
-class AddShortcutDialogStateNotifier extends Notifier<AddShortcutDialogState> {
+class AddShortcutDialogStateNotifier
+    extends AutoDisposeNotifier<AddShortcutDialogState> {
   @override
   build() {
     return AddShortcutDialogState(
@@ -101,6 +102,6 @@ class AddShortcutDialogStateNotifier extends Notifier<AddShortcutDialogState> {
   }
 }
 
-final addShortcutDialogStateProvider =
-    NotifierProvider<AddShortcutDialogStateNotifier, AddShortcutDialogState>(
-        () => AddShortcutDialogStateNotifier());
+final addShortcutDialogStateProvider = AutoDisposeNotifierProvider<
+    AddShortcutDialogStateNotifier,
+    AddShortcutDialogState>(() => AddShortcutDialogStateNotifier());
