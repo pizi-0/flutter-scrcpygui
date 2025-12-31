@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:scrcpygui/models/tasks/task_model.dart';
+import 'package:scrcpygui/utils/extension.dart';
 
 class Shortcut {
   final String id;
@@ -50,11 +51,14 @@ class Shortcut {
   bool operator ==(covariant Shortcut other) {
     if (identical(this, other)) return true;
 
-    return other.id == id && other.hotKey == hotKey && other.task == task;
+    return other.id == id &&
+        other.hotKey.isEqualTo(hotKey) &&
+        other.task == task;
   }
 
   @override
-  int get hashCode => id.hashCode ^ hotKey.hashCode ^ task.hashCode;
+  int get hashCode => id.hashCode ^ hotKey.hash() ^ task.hashCode;
+
   @override
   String toString() => 'Shortcut(id: $id, hotKey: $hotKey, task: $task)';
 }

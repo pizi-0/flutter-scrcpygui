@@ -1,3 +1,4 @@
+import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 extension HexColor on Color {
@@ -123,5 +124,15 @@ extension AppVersionParsing on String {
       debugPrint('Error parsing version string: $this, Error: $e');
       return null;
     }
+  }
+}
+
+extension Equal on HotKey {
+  bool isEqualTo(HotKey hotKey) {
+    return hotKey.toJson().toString() == toJson().toString();
+  }
+
+  int hash() {
+    return toJson().toString().hashCode;
   }
 }

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:scrcpygui/models/tasks/task_type_ids.dart';
 
 sealed class TaskType {
@@ -30,6 +31,14 @@ sealed class TaskType {
         throw Exception('Unknown TaskType: $id');
     }
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TaskType && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 class StartScrcpyTask extends TaskType {
@@ -72,6 +81,20 @@ class StartScrcpyTask extends TaskType {
       preferWireless: preferWireless ?? this.preferWireless,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is StartScrcpyTask &&
+        other.configId == configId &&
+        other.serialNo == serialNo &&
+        other.preferWireless == preferWireless;
+  }
+
+  @override
+  int get hashCode =>
+      configId.hashCode ^ serialNo.hashCode ^ preferWireless.hashCode;
 }
 
 class StopScrcpyTask extends TaskType {
@@ -105,6 +128,18 @@ class StopScrcpyTask extends TaskType {
       pid: pid ?? this.pid,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is StopScrcpyTask &&
+        other.deviceId == deviceId &&
+        other.pid == pid;
+  }
+
+  @override
+  int get hashCode => deviceId.hashCode ^ pid.hashCode;
 }
 
 class ConnectWirelessTask extends TaskType {
@@ -126,6 +161,16 @@ class ConnectWirelessTask extends TaskType {
       deviceId: map['deviceId'] as String,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is ConnectWirelessTask && other.deviceId == deviceId;
+  }
+
+  @override
+  int get hashCode => deviceId.hashCode;
 }
 
 class DisconnectWirelessTask extends TaskType {
@@ -147,6 +192,16 @@ class DisconnectWirelessTask extends TaskType {
       deviceId: map['deviceId'] as String,
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is DisconnectWirelessTask && other.deviceId == deviceId;
+  }
+
+  @override
+  int get hashCode => deviceId.hashCode;
 }
 
 class RunAdbCommandTask extends TaskType {
@@ -171,4 +226,16 @@ class RunAdbCommandTask extends TaskType {
       commands: List<String>.from((map['commands'] as List)),
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is RunAdbCommandTask &&
+        other.deviceId == deviceId &&
+        listEquals(other.commands, commands);
+  }
+
+  @override
+  int get hashCode => deviceId.hashCode ^ Object.hashAll(commands);
 }

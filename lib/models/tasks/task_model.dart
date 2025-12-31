@@ -35,7 +35,7 @@ class Tasks {
     return Tasks(
       id: map['id'] as String,
       tasks: List<TaskType>.from(
-        (map['tasks'] as List<String>).map<TaskType>(
+        (map['tasks']).map<TaskType>(
           (x) => TaskType.fromJson(x),
         ),
       ),

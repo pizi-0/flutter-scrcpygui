@@ -156,6 +156,9 @@ class _KeyDisplayState extends ConsumerState<KeyDisplay> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    '{identifier: hotkey_start_scrcpy, key: {keyId: 122}, modifiers: [alt, shift], scope: system}';
+    '{identifier: hotkey_start_scrcpy, key: {keyId: 122}, modifiers: [alt, shift], scope: system}';
     return Row(
       spacing: 8,
       children: [
@@ -190,9 +193,7 @@ class _KeyDisplayState extends ConsumerState<KeyDisplay> {
     if (defaultShortcuts
         .where((sc) => sc.id != HK_START_SCRCPY || sc.id == HK_STOP_SCRCPY)
         .isNotEmpty) {
-      if (defaultShortcuts
-          .where((def) => def.hotKey == widget.shortcut.hotKey)
-          .isEmpty) {
+      if (defaultShortcuts.where((def) => def == widget.shortcut).isEmpty) {
         return IconButton.ghost(
           density: ButtonDensity.iconDense,
           icon: Icon(Icons.restore).iconSmall(),
