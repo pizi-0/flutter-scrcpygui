@@ -2,15 +2,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
+import 'package:scrcpygui/models/settings_model/shortcut.dart';
+import 'package:scrcpygui/models/tasks/task_model.dart';
+import 'package:scrcpygui/models/tasks/task_type_ids.dart';
 import 'package:scrcpygui/utils/const.dart';
 
 import '../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../models/tasks/task_type.dart';
 
 class AddShortcutDialogState {
+  final List<ToRun>? toRuns;
   final AdbDevices? device;
   final ScrcpyConfig? config;
-  final TaskType taskType;
+  final ToRun toRun;
   final int currentStep;
   final HotKey? hotKey;
   final ConnectionPref connectionPref;
@@ -18,7 +22,8 @@ class AddShortcutDialogState {
   AddShortcutDialogState({
     this.device,
     this.config,
-    required this.taskType,
+    this.toRuns,
+    required this.toRun,
     required this.currentStep,
     this.hotKey,
     this.connectionPref = ConnectionPref.noPreference,
@@ -27,7 +32,8 @@ class AddShortcutDialogState {
   AddShortcutDialogState copyWith({
     AdbDevices? device,
     ScrcpyConfig? config,
-    TaskType? taskType,
+    ToRun? toRun,
+    List<ToRun>? toRuns,
     int? currentStep,
     HotKey? hotKey,
     ConnectionPref? connectionPref,
@@ -35,7 +41,8 @@ class AddShortcutDialogState {
     return AddShortcutDialogState(
       device: device,
       config: config ?? this.config,
-      taskType: taskType ?? this.taskType,
+      toRun: toRun ?? this.toRun,
+      toRuns: toRuns ?? this.toRuns,
       currentStep: currentStep ?? this.currentStep,
       hotKey: hotKey ?? this.hotKey,
       connectionPref: connectionPref ?? this.connectionPref,
@@ -43,13 +50,13 @@ class AddShortcutDialogState {
   }
 }
 
-abstract interface class ConnectionPrefStringEnum {
+abstract interface class EnumWithString {
   final String name;
 
-  const ConnectionPrefStringEnum(this.name);
+  const EnumWithString(this.name);
 }
 
-enum ConnectionPref implements ConnectionPrefStringEnum {
+enum ConnectionPref implements EnumWithString {
   noPreference('Any'),
   preferWireless('Prefer Wireless'),
   preferWired('Prefer Wired');
@@ -67,7 +74,8 @@ class AddShortcutDialogStateNotifier
     return AddShortcutDialogState(
       device: null,
       config: defaultMirror,
-      taskType: StartScrcpyTask(),
+      toRun: StartScrcpyTask(),
+      toRuns: [],
       currentStep: 0,
     );
   }
@@ -76,9 +84,13 @@ class AddShortcutDialogStateNotifier
     state = state.copyWith(currentStep: step, device: state.device);
   }
 
-  void setTaskType(TaskType taskType) {
+  void setToRun(ToRun toRun) {
     state = state.copyWith(
-        taskType: taskType, device: null, config: defaultMirror, hotKey: null);
+        toRun: toRun, device: null, config: defaultMirror, hotKey: null);
+  }
+
+  void setToRuns(List<ToRun> toRuns) {
+    state = state.copyWith(toRuns: toRuns, device: null, hotKey: null);
   }
 
   void setConfig(ScrcpyConfig config) {
@@ -105,3 +117,41 @@ class AddShortcutDialogStateNotifier
 final addShortcutDialogStateProvider = AutoDisposeNotifierProvider<
     AddShortcutDialogStateNotifier,
     AddShortcutDialogState>(() => AddShortcutDialogStateNotifier());
+
+extension BuildShortcutFromDialogState on AddShortcutDialogState {
+  Shortcut? buildShortcut() {
+    if (hotKey == null) return null;
+
+    switch (toRun.taskId) {
+      case TaskId.startScrcpy:
+        final t = toRun as StartScrcpyTask;
+        final task = Tasks(
+          toRun: [
+            t.copyWith(
+                configId: config?.id,
+                serialNo: device?.serialNo,
+                preferWireless: connectionPref == ConnectionPref.preferWireless)
+          ],
+        );
+
+        return Shortcut(hotKey: hotKey!, task: task);
+
+      case TaskId.stopScrcpy:
+        final t = toRun as StopScrcpyTask;
+        final task = Tasks(
+          toRun: [t.copyWith(deviceId: device?.serialNo)],
+        );
+
+        return Shortcut(hotKey: hotKey!, task: task);
+
+      case TaskId.runTasksList:
+        if (toRuns == null) return null;
+        final task = Tasks(toRun: toRuns!);
+
+        return Shortcut(hotKey: hotKey!, task: task);
+
+      default:
+        return null;
+    }
+  }
+}

@@ -23,7 +23,7 @@ List<Shortcut> defaultShortcuts = [
     hotKey: defaultStartScrcpyHotKey,
     task: Tasks(
       id: HK_START_SCRCPY,
-      tasks: [
+      toRun: [
         StartScrcpyTask(),
       ],
     ),
@@ -33,7 +33,7 @@ List<Shortcut> defaultShortcuts = [
     hotKey: defaultStopScrcpyHotKey,
     task: Tasks(
       id: HK_STOP_SCRCPY,
-      tasks: [
+      toRun: [
         StopScrcpyTask(),
       ],
     ),

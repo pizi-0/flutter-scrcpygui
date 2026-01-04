@@ -13,8 +13,8 @@ import 'scrcpy_utils.dart';
 
 class TasksRunner {
   static Future<void> runTask(WidgetRef ref, {required Tasks tasks}) async {
-    for (final task in tasks.tasks) {
-      switch (task.id) {
+    for (final task in tasks.toRun) {
+      switch (task.taskId) {
         //
         case TaskId.startScrcpy:
           final t = task as StartScrcpyTask;

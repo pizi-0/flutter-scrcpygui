@@ -1,12 +1,14 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:scrcpygui/models/settings_model/shortcut.dart';
+import 'package:scrcpygui/models/tasks/task_type_ids.dart';
 import 'package:scrcpygui/screens/4.settings_tab/widgets/add_custom_shortcut_dialog.dart';
 import 'package:scrcpygui/screens/4.settings_tab/widgets/change_combination_dialog.dart';
 import 'package:scrcpygui/utils/const.dart';
+import 'package:scrcpygui/utils/extension.dart';
 import 'package:scrcpygui/utils/keyboard_shortcut/keyboard_shortcuts.dart';
-import 'package:scrcpygui/utils/keyboard_shortcut/shortcut_actions_ids.dart';
 import 'package:scrcpygui/utils/keyboard_shortcut/shortcut_utils.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
@@ -35,11 +37,15 @@ class _ShortcutSectionState extends ConsumerState<ShortcutSection> {
           IconButton.ghost(
             density: ButtonDensity.iconDense,
             icon: Icon(Icons.add_rounded),
-            onPressed: () {
-              showDialog(
+            onPressed: () async {
+              final shortcut = await showDialog(
                 context: context,
                 builder: (context) => AddCustomShortcutDialog(),
               );
+
+              if (shortcut != null) {
+                await ShortcutUtils.addShortcut(ref, shortcut);
+              }
             },
           ),
           SizedBox(height: 10, child: VerticalDivider()),
@@ -75,8 +81,7 @@ class _ShortcutSectionState extends ConsumerState<ShortcutSection> {
 
   Widget _buildUserDefinedShortcuts(List<Shortcut> shortcuts) {
     final userDefinedShortcuts = shortcuts
-        .where((sc) =>
-            defaultShortcuts.where((def) => def.hotKey == sc.hotKey).isEmpty)
+        .where((sc) => !defaultShortcuts.map((def) => def.id).contains(sc.id))
         .toList();
 
     return ListView.separated(
@@ -130,12 +135,20 @@ class _ShortcutWidgetState extends ConsumerState<ShortcutWidget> {
   }
 
   String _getCustomTitle() {
-    switch (widget.shortcut.id) {
-      case HK_START_CUSTOM_CONFIG:
-        return 'Start custom';
+    final task = widget.shortcut.task;
+
+    if (task.toRun.length > 1) {
+      return 'Run tasks list';
+    }
+
+    switch (task.toRun.first.taskId) {
+      case TaskId.startScrcpy:
+        return 'Start scrcpy custom';
+      case TaskId.stopScrcpy:
+        return TaskId.stopScrcpy;
 
       default:
-        return widget.title ?? '';
+        return widget.shortcut.id;
     }
   }
 }
@@ -157,8 +170,6 @@ class _KeyDisplayState extends ConsumerState<KeyDisplay> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    '{identifier: hotkey_start_scrcpy, key: {keyId: 122}, modifiers: [alt, shift], scope: system}';
-    '{identifier: hotkey_start_scrcpy, key: {keyId: 122}, modifiers: [alt, shift], scope: system}';
     return Row(
       spacing: 8,
       children: [
@@ -190,23 +201,22 @@ class _KeyDisplayState extends ConsumerState<KeyDisplay> {
   }
 
   Widget _trailingButton() {
-    if (defaultShortcuts
-        .where((sc) => sc.id != HK_START_SCRCPY || sc.id == HK_STOP_SCRCPY)
-        .isNotEmpty) {
-      if (defaultShortcuts.where((def) => def == widget.shortcut).isEmpty) {
+    final shortcut =
+        defaultShortcuts.firstWhereOrNull((sc) => sc.id == widget.shortcut.id);
+
+    if (shortcut != null) {
+      if (shortcut.hotKey.isEqualTo(widget.shortcut.hotKey)) {
+        return SizedBox.shrink();
+      } else {
         return IconButton.ghost(
-          density: ButtonDensity.iconDense,
-          icon: Icon(Icons.restore).iconSmall(),
+          icon: Icon(Icons.restore_rounded),
           onPressed: () => ShortcutUtils.resetShortcut(ref, widget.shortcut),
         );
       }
-
-      return SizedBox.shrink();
     } else {
       return IconButton.ghost(
-        density: ButtonDensity.iconDense,
-        icon: Icon(Icons.delete_outline_rounded).iconSmall(),
-        onPressed: () async {},
+        icon: Icon(Icons.delete_rounded),
+        onPressed: () => ShortcutUtils.removeShortcut(ref, widget.shortcut),
       );
     }
   }
@@ -230,7 +240,9 @@ class _KeyDisplayState extends ConsumerState<KeyDisplay> {
       } else {
         final registered = hotKeyManager.registeredHotKeyList;
 
-        if (!registered.contains(res.shortcut.hotKey)) {
+        if (registered
+            .where((r) => r.isEqualTo(res.shortcut.hotKey))
+            .isNotEmpty) {
           await ShortcutUtils.enableShortcut(ref, res.shortcut);
         }
       }

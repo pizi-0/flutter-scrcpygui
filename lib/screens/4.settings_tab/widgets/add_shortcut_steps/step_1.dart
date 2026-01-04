@@ -1,3 +1,4 @@
+import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:scrcpygui/screens/4.settings_tab/widget_state/add_custom_shortcut_state.dart';
@@ -20,7 +21,7 @@ class Step1 extends ConsumerStatefulWidget {
 
 class _Step1State extends ConsumerState<Step1> {
   List<ScrcpyConfig> availableConfigs = [];
-  List<TaskType> availableTasks = [
+  List<ToRun> availableTasks = [
     StartScrcpyTask(),
     StopScrcpyTask(),
   ];
@@ -52,21 +53,22 @@ class _Step1State extends ConsumerState<Step1> {
         ConfigCustom(
           title: 'Action',
           child: Select(
-            value: dialogState.taskType,
+            value: dialogState.toRun,
             onChanged: (value) => ref
                 .read(addShortcutDialogStateProvider.notifier)
-                .setTaskType(value!),
+                .setToRun(value!),
             popup: SelectPopup(
               items: SelectItemList(
                   children: availableTasks
-                      .map((e) => SelectItemButton(value: e, child: Text(e.id)))
+                      .map((e) =>
+                          SelectItemButton(value: e, child: Text(e.taskId)))
                       .toList()),
             ).call,
-            itemBuilder: (context, value) => Text(value.id),
+            itemBuilder: (context, value) => Text(value.taskId),
           ),
         ),
         Divider(),
-        if (dialogState.taskType is StartScrcpyTask) ...[
+        if (dialogState.toRun is StartScrcpyTask) ...[
           ConfigCustom(
             title: 'Configuration',
             child: Row(
@@ -107,7 +109,10 @@ class _Step1State extends ConsumerState<Step1> {
                         .read(addShortcutDialogStateProvider.notifier)
                         .setDevice(value!),
                     value: dialogState.device,
-                    placeholder: Text('First device'),
+                    placeholder: OverflowMarquee(
+                        duration: 1.5.seconds,
+                        delayDuration: 500.milliseconds,
+                        child: Text('Current selected device')),
                     popup: SelectPopup(
                       items: SelectItemList(
                         children: [
