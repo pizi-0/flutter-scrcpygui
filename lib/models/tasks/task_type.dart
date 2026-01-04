@@ -3,20 +3,26 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:scrcpygui/models/tasks/task_type_ids.dart';
+import 'package:uuid/uuid.dart';
 
-sealed class TaskType {
+sealed class ToRun {
   final String id;
-  const TaskType({required this.id});
+  final String taskId;
+
+  ToRun({
+    String? id,
+    required this.taskId,
+  }) : id = id ?? Uuid().v4();
 
   Map<String, dynamic> toMap();
 
   String toJson() => json.encode(toMap());
 
-  factory TaskType.fromJson(String source) {
+  factory ToRun.fromJson(String source) {
     final map = json.decode(source) as Map<String, dynamic>;
-    final id = map['id'] as String;
+    final taskId = map['taskId'] as String;
 
-    switch (id) {
+    switch (taskId) {
       case TaskId.startScrcpy:
         return StartScrcpyTask.fromMap(map);
       case TaskId.stopScrcpy:
@@ -28,20 +34,23 @@ sealed class TaskType {
       case TaskId.runAdbCommand:
         return RunAdbCommandTask.fromMap(map);
       default:
-        throw Exception('Unknown TaskType: $id');
+        throw Exception('Unknown ToRun: $taskId');
     }
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TaskType && runtimeType == other.runtimeType && id == other.id;
+      other is ToRun &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          taskId == other.taskId;
 
   @override
-  int get hashCode => id.hashCode;
+  int get hashCode => id.hashCode ^ taskId.hashCode;
 }
 
-class StartScrcpyTask extends TaskType {
+class StartScrcpyTask extends ToRun {
   final String? configId;
   final String? serialNo;
   final bool? preferWireless;
@@ -51,12 +60,12 @@ class StartScrcpyTask extends TaskType {
       this.configId,
       this.serialNo,
       this.preferWireless = false})
-      : super(id: TaskId.startScrcpy);
+      : super(taskId: TaskId.startScrcpy);
 
   @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
+      'taskId': taskId,
       'configId': configId,
       'serialNo': serialNo,
       'preferWireless': preferWireless,
@@ -97,16 +106,16 @@ class StartScrcpyTask extends TaskType {
       configId.hashCode ^ serialNo.hashCode ^ preferWireless.hashCode;
 }
 
-class StopScrcpyTask extends TaskType {
+class StopScrcpyTask extends ToRun {
   final String? deviceId;
   final String? pid;
 
-  StopScrcpyTask({this.deviceId, this.pid}) : super(id: TaskId.stopScrcpy);
+  StopScrcpyTask({this.deviceId, this.pid}) : super(taskId: TaskId.stopScrcpy);
 
   @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
+      'taskId': taskId,
       'deviceId': deviceId,
       'pid': pid,
     };
@@ -142,16 +151,16 @@ class StopScrcpyTask extends TaskType {
   int get hashCode => deviceId.hashCode ^ pid.hashCode;
 }
 
-class ConnectWirelessTask extends TaskType {
+class ConnectWirelessTask extends ToRun {
   final String deviceId;
 
   ConnectWirelessTask({required this.deviceId})
-      : super(id: TaskId.connectWireless);
+      : super(taskId: TaskId.connectWireless);
 
   @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
+      'taskId': taskId,
       'deviceId': deviceId,
     };
   }
@@ -173,16 +182,16 @@ class ConnectWirelessTask extends TaskType {
   int get hashCode => deviceId.hashCode;
 }
 
-class DisconnectWirelessTask extends TaskType {
+class DisconnectWirelessTask extends ToRun {
   final String deviceId;
 
   DisconnectWirelessTask({required this.deviceId})
-      : super(id: TaskId.disconnectWireless);
+      : super(taskId: TaskId.disconnectWireless);
 
   @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
+      'taskId': taskId,
       'deviceId': deviceId,
     };
   }
@@ -204,17 +213,17 @@ class DisconnectWirelessTask extends TaskType {
   int get hashCode => deviceId.hashCode;
 }
 
-class RunAdbCommandTask extends TaskType {
+class RunAdbCommandTask extends ToRun {
   final String deviceId;
   final List<String> commands;
 
   RunAdbCommandTask({required this.deviceId, required this.commands})
-      : super(id: TaskId.runAdbCommand);
+      : super(taskId: TaskId.runAdbCommand);
 
   @override
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'id': id,
+      'taskId': taskId,
       'deviceId': deviceId,
       'commands': commands,
     };
@@ -238,4 +247,40 @@ class RunAdbCommandTask extends TaskType {
 
   @override
   int get hashCode => deviceId.hashCode ^ Object.hashAll(commands);
+}
+
+class RunTasksList extends ToRun {
+  final List<ToRun> tasks;
+
+  RunTasksList({required this.tasks}) : super(taskId: TaskId.runTasksList);
+
+  @override
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'taskId': taskId,
+      'tasks': tasks.map((e) => e.toMap()).toList(),
+    };
+  }
+
+  factory RunTasksList.fromMap(Map<String, dynamic> map) {
+    return RunTasksList(
+      tasks: List<ToRun>.from(
+        (map['tasks'] as List).map(
+          (e) => ToRun.fromJson(
+            json.encode(e),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is RunTasksList && listEquals(other.tasks, tasks);
+  }
+
+  @override
+  int get hashCode => tasks.hashCode;
 }

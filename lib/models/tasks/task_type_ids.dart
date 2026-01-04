@@ -1,7 +1,8 @@
 class TaskId {
-  static const String startScrcpy = 'startScrcpy';
-  static const String stopScrcpy = 'stopScrcpy';
-  static const String connectWireless = 'connectWireless';
-  static const String disconnectWireless = 'disconnectWireless';
-  static const String runAdbCommand = 'runAdbCommand';
+  static const String startScrcpy = 'Start scrcpy';
+  static const String stopScrcpy = 'Stop scrcpy';
+  static const String connectWireless = 'Connect wireless';
+  static const String disconnectWireless = 'Disconnect wireless';
+  static const String runAdbCommand = 'Run ADB command';
+  static const String runTasksList = 'Run tasks list';
 }

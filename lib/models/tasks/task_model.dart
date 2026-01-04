@@ -2,41 +2,42 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
 
 import 'task_type.dart';
 
 class Tasks {
   final String id;
-  final List<TaskType> tasks;
+  final List<ToRun> toRun;
 
   Tasks({
-    required this.id,
-    required this.tasks,
-  });
+    String? id,
+    required this.toRun,
+  }) : id = id ?? Uuid().v4();
 
   Tasks copyWith({
     String? id,
-    List<TaskType>? tasks,
+    List<ToRun>? toRun,
   }) {
     return Tasks(
       id: id ?? this.id,
-      tasks: tasks ?? this.tasks,
+      toRun: toRun ?? this.toRun,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'tasks': tasks.map((x) => x.toJson()).toList(),
+      'toRun': toRun.map((x) => x.toJson()).toList(),
     };
   }
 
   factory Tasks.fromMap(Map<String, dynamic> map) {
     return Tasks(
       id: map['id'] as String,
-      tasks: List<TaskType>.from(
-        (map['tasks']).map<TaskType>(
-          (x) => TaskType.fromJson(x),
+      toRun: List<ToRun>.from(
+        (map['toRun']).map<ToRun>(
+          (x) => ToRun.fromJson(x),
         ),
       ),
     );
@@ -48,14 +49,14 @@ class Tasks {
       Tasks.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() => 'Tasks(id: $id, tasks: $tasks)';
+  String toString() => 'Tasks(id: $id, toRun: $toRun)';
   @override
   bool operator ==(covariant Tasks other) {
     if (identical(this, other)) return true;
 
-    return other.id == id && listEquals(other.tasks, tasks);
+    return other.id == id && listEquals(other.toRun, toRun);
   }
 
   @override
-  int get hashCode => id.hashCode ^ tasks.hashCode;
+  int get hashCode => id.hashCode ^ toRun.hashCode;
 }

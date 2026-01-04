@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:scrcpygui/models/tasks/task_model.dart';
 import 'package:scrcpygui/utils/extension.dart';
+import 'package:uuid/uuid.dart';
 
 class Shortcut {
   final String id;
@@ -10,10 +11,11 @@ class Shortcut {
   final Tasks task;
 
   Shortcut({
-    required this.id,
+    String? id,
     required this.hotKey,
     required this.task,
-  });
+  }) : id = id ?? Uuid().v4();
+
   Shortcut copyWith({
     String? id,
     HotKey? hotKey,
