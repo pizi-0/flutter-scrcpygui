@@ -238,13 +238,7 @@ class _KeyDisplayState extends ConsumerState<KeyDisplay> {
       if (res.isDisabled) {
         await ShortcutUtils.disableShortcut(ref, res.shortcut);
       } else {
-        final registered = hotKeyManager.registeredHotKeyList;
-
-        if (registered
-            .where((r) => r.isEqualTo(res.shortcut.hotKey))
-            .isNotEmpty) {
-          await ShortcutUtils.enableShortcut(ref, res.shortcut);
-        }
+        await ShortcutUtils.enableShortcut(ref, res.shortcut);
       }
     }
   }

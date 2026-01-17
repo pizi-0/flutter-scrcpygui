@@ -66,6 +66,7 @@ class ShortcutUtils {
 
     await Db.saveDisabledShortcutIds(
         ref.read(disabledKeyboardShortcutProvider));
+    await Db.saveShortcuts(ref.read(keyboardShortcutProvider));
   }
 
   static Future<void> enableShortcut(WidgetRef ref, Shortcut shortcut) async {
@@ -78,6 +79,7 @@ class ShortcutUtils {
 
     await Db.saveDisabledShortcutIds(
         ref.read(disabledKeyboardShortcutProvider));
+    await Db.saveShortcuts(ref.read(keyboardShortcutProvider));
   }
 
   static Future<void> modifyShortcut(WidgetRef ref,
@@ -95,14 +97,6 @@ class ShortcutUtils {
           .firstWhere((sc) => sc.id == oldShortcut.id)
           .hotKey);
     }
-
-    await hotKeyManager.register(
-      newShortcut.hotKey,
-      keyDownHandler: (hotKey) => _getActionForHotkey(ref, newShortcut),
-    );
-
-    ref.read(keyboardShortcutProvider.notifier).modifyShortcut(newShortcut);
-    await Db.saveShortcuts(ref.read(keyboardShortcutProvider));
   }
 
   static Future<void> resetShortcut(WidgetRef ref, Shortcut shortcut) async {
