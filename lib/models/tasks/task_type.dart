@@ -54,13 +54,15 @@ class StartScrcpyTask extends ToRun {
   final String? configId;
   final String? serialNo;
   final bool? preferWireless;
+  final bool? preferWired;
 
-  StartScrcpyTask(
-      {String type = TaskId.startScrcpy,
-      this.configId,
-      this.serialNo,
-      this.preferWireless = false})
-      : super(taskId: TaskId.startScrcpy);
+  StartScrcpyTask({
+    String type = TaskId.startScrcpy,
+    this.configId,
+    this.serialNo,
+    this.preferWireless = false,
+    this.preferWired = false,
+  }) : super(taskId: TaskId.startScrcpy);
 
   @override
   Map<String, dynamic> toMap() {
@@ -69,6 +71,7 @@ class StartScrcpyTask extends ToRun {
       'configId': configId,
       'serialNo': serialNo,
       'preferWireless': preferWireless,
+      'preferWired': preferWired,
     };
   }
 
@@ -76,6 +79,8 @@ class StartScrcpyTask extends ToRun {
     return StartScrcpyTask(
       configId: map['configId'] as String?,
       serialNo: map['serialNo'] as String?,
+      preferWireless: map['preferWireless'] as bool?,
+      preferWired: map['preferWired'] as bool?,
     );
   }
 
@@ -83,11 +88,22 @@ class StartScrcpyTask extends ToRun {
     String? configId,
     String? serialNo,
     bool? preferWireless,
+    bool? preferWired,
   }) {
     return StartScrcpyTask(
       configId: configId ?? this.configId,
       serialNo: serialNo ?? this.serialNo,
       preferWireless: preferWireless ?? this.preferWireless,
+      preferWired: preferWired ?? this.preferWired,
+    );
+  }
+
+  StartScrcpyTask resetDevice() {
+    return StartScrcpyTask(
+      configId: configId,
+      serialNo: null,
+      preferWireless: preferWireless,
+      preferWired: preferWired,
     );
   }
 
@@ -98,12 +114,16 @@ class StartScrcpyTask extends ToRun {
     return other is StartScrcpyTask &&
         other.configId == configId &&
         other.serialNo == serialNo &&
-        other.preferWireless == preferWireless;
+        other.preferWireless == preferWireless &&
+        other.preferWired == preferWired;
   }
 
   @override
   int get hashCode =>
-      configId.hashCode ^ serialNo.hashCode ^ preferWireless.hashCode;
+      configId.hashCode ^
+      serialNo.hashCode ^
+      preferWireless.hashCode ^
+      preferWired.hashCode;
 }
 
 class StopScrcpyTask extends ToRun {

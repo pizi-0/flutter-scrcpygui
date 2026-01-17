@@ -20,21 +20,27 @@ class TasksRunner {
           final t = task as StartScrcpyTask;
           final allConfigs = ref.read(configsProvider);
           final connectedDevices = ref.read(adbProvider);
+          final selectedDevice = ref.read(selectedDeviceProvider);
 
           final config =
               allConfigs.firstWhereOrNull((c) => c.id == t.configId) ??
                   defaultMirror;
 
-          final device = connectedDevices
-                  .where((c) => c.serialNo == t.serialNo)
-                  .firstWhereOrNull((c) {
-                if (t.preferWireless ?? false) {
-                  return isWireless(c.id);
-                } else {
-                  return !isWireless(c.id);
-                }
-              }) ??
-              connectedDevices.firstOrNull;
+          final device = t.serialNo != null
+              ? connectedDevices
+                  .where((d) => d.serialNo == t.serialNo)
+                  .firstWhereOrNull((d) {
+                  if (t.preferWireless ?? false) {
+                    return isWireless(d.id);
+                  }
+
+                  if (t.preferWired ?? false) {
+                    return !isWireless(d.id);
+                  }
+
+                  return true;
+                })
+              : selectedDevice ?? connectedDevices.firstOrNull;
 
           if (device != null) {
             await ScrcpyUtils.newInstance(ref,

@@ -92,6 +92,7 @@ class ShortcutUtils {
     final shouldUnregister = registered.contains(oldShortcut.hotKey);
 
     if (shouldUnregister) {
+      debugPrint('Unregistering old hotkey: ${oldShortcut.hotKey.toJson()}');
       await hotKeyManager.unregister(ref
           .read(keyboardShortcutProvider)
           .firstWhere((sc) => sc.id == oldShortcut.id)

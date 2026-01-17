@@ -28,7 +28,7 @@ class KeyboardShortcutNotifier extends Notifier<List<Shortcut>> {
   }
 
   void removeShortcut(Shortcut shortcut) {
-    state = state.where((sc) => sc.id != shortcut.id).toList();
+    state = [...state.where((sc) => sc.id != shortcut.id)];
   }
 }
 

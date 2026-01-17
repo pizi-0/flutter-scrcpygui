@@ -11,9 +11,15 @@ class Step2 extends ConsumerStatefulWidget {
 }
 
 class _Step2State extends ConsumerState<Step2> {
-  HotKey? recorded;
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final dialogState = ref.watch(addShortcutDialogStateProvider);
+
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -25,10 +31,14 @@ class _Step2State extends ConsumerState<Step2> {
           Divider(),
           Text('Enter your shortcut'),
           HotKeyRecorder(
+            initalHotKey:
+                dialogState.shortcut.hotKey == placeholderShortcut.hotKey
+                    ? null
+                    : dialogState.shortcut.hotKey,
             onHotKeyRecorded: (value) {
               ref
                   .read(addShortcutDialogStateProvider.notifier)
-                  .setHotKey(value);
+                  .setHotkey(value);
             },
           )
         ],

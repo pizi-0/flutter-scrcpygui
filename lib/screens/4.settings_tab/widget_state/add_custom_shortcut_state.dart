@@ -1,52 +1,69 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:collection/collection.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:scrcpygui/models/adb_devices.dart';
+import 'package:scrcpygui/models/scrcpy_related/scrcpy_config.dart';
 import 'package:scrcpygui/models/settings_model/shortcut.dart';
 import 'package:scrcpygui/models/tasks/task_model.dart';
 import 'package:scrcpygui/models/tasks/task_type_ids.dart';
-import 'package:scrcpygui/utils/const.dart';
+import 'package:uuid/uuid.dart';
 
-import '../../../models/scrcpy_related/scrcpy_config.dart';
 import '../../../models/tasks/task_type.dart';
+import '../../../providers/adb_provider.dart';
+import '../../../providers/config_provider.dart';
+import '../../../utils/const.dart';
 
 class AddShortcutDialogState {
-  final List<ToRun>? toRuns;
-  final AdbDevices? device;
-  final ScrcpyConfig? config;
-  final ToRun toRun;
   final int currentStep;
-  final HotKey? hotKey;
-  final ConnectionPref connectionPref;
+  final Shortcut shortcut;
 
   AddShortcutDialogState({
-    this.device,
-    this.config,
-    this.toRuns,
-    required this.toRun,
     required this.currentStep,
-    this.hotKey,
-    this.connectionPref = ConnectionPref.noPreference,
+    required this.shortcut,
   });
 
   AddShortcutDialogState copyWith({
-    AdbDevices? device,
-    ScrcpyConfig? config,
-    ToRun? toRun,
-    List<ToRun>? toRuns,
+    Shortcut? shortcut,
     int? currentStep,
-    HotKey? hotKey,
-    ConnectionPref? connectionPref,
   }) {
     return AddShortcutDialogState(
-      device: device,
-      config: config ?? this.config,
-      toRun: toRun ?? this.toRun,
-      toRuns: toRuns ?? this.toRuns,
       currentStep: currentStep ?? this.currentStep,
-      hotKey: hotKey ?? this.hotKey,
-      connectionPref: connectionPref ?? this.connectionPref,
+      shortcut: shortcut ?? this.shortcut,
     );
+  }
+
+  List<ToRun> get toRunList => shortcut.task.toRun;
+
+  ScrcpyConfig? getConfig(WidgetRef ref) {
+    final allConfigs = ref.watch(configsProvider);
+    final config = allConfigs.firstWhere(
+        (c) => c.id == (toRunList.first as StartScrcpyTask).configId,
+        orElse: () => defaultMirror);
+    return config;
+  }
+
+  AdbDevices? getDevice(WidgetRef ref) {
+    final allDevices = ref.watch(adbProvider);
+
+    final task = shortcut.task.toRun.first as StartScrcpyTask;
+
+    final dev = allDevices.firstWhereOrNull((d) => d.serialNo == task.serialNo);
+
+    return dev;
+  }
+
+  ConnectionPref getConnectionPref(WidgetRef ref) {
+    final task = shortcut.task.toRun.first as StartScrcpyTask;
+
+    final pref = (task.preferWireless ?? false)
+        ? ConnectionPref.preferWireless
+        : (task.preferWired ?? false)
+            ? ConnectionPref.preferWired
+            : ConnectionPref.noPreference;
+
+    return pref;
   }
 }
 
@@ -67,91 +84,122 @@ enum ConnectionPref implements EnumWithString {
   const ConnectionPref(this.name);
 }
 
-class AddShortcutDialogStateNotifier
-    extends AutoDisposeNotifier<AddShortcutDialogState> {
+class AddShortcutDialogStateNotifier extends Notifier<AddShortcutDialogState> {
   @override
   build() {
     return AddShortcutDialogState(
-      device: null,
-      config: defaultMirror,
-      toRun: StartScrcpyTask(),
-      toRuns: [],
       currentStep: 0,
+      shortcut: placeholderShortcut.copyWith(id: Uuid().v4()),
+    );
+  }
+
+  void reset() {
+    state = AddShortcutDialogState(
+      currentStep: 0,
+      shortcut: placeholderShortcut.copyWith(id: Uuid().v4()),
     );
   }
 
   void setStep(int step) {
-    state = state.copyWith(currentStep: step, device: state.device);
+    state = state.copyWith(currentStep: step);
   }
 
-  void setToRun(ToRun toRun) {
+  void setShortcut(Shortcut shortcut) {
+    state = state.copyWith(shortcut: shortcut);
+  }
+
+  void setToRunType(ToRun toRun) {
     state = state.copyWith(
-        toRun: toRun, device: null, config: defaultMirror, hotKey: null);
-  }
-
-  void setToRuns(List<ToRun> toRuns) {
-    state = state.copyWith(toRuns: toRuns, device: null, hotKey: null);
+        shortcut: state.shortcut.copyWith(task: Tasks(toRun: [toRun])));
   }
 
   void setConfig(ScrcpyConfig config) {
-    state = state.copyWith(config: config, device: state.device);
-  }
-
-  void setDevice(AdbDevices? device) {
-    state = state.copyWith(
-      device: device,
-      connectionPref:
-          device == null ? ConnectionPref.noPreference : state.connectionPref,
-    );
-  }
-
-  void setConnectionPref(ConnectionPref pref) {
-    state = state.copyWith(device: state.device, connectionPref: pref);
-  }
-
-  void setHotKey(HotKey hotKey) {
-    state = state.copyWith(hotKey: hotKey, device: state.device);
-  }
-}
-
-final addShortcutDialogStateProvider = AutoDisposeNotifierProvider<
-    AddShortcutDialogStateNotifier,
-    AddShortcutDialogState>(() => AddShortcutDialogStateNotifier());
-
-extension BuildShortcutFromDialogState on AddShortcutDialogState {
-  Shortcut? buildShortcut() {
-    if (hotKey == null) return null;
+    final toRun = state.shortcut.task.toRun.first;
 
     switch (toRun.taskId) {
       case TaskId.startScrcpy:
         final t = toRun as StartScrcpyTask;
-        final task = Tasks(
+        state = state.copyWith(
+            shortcut: state.shortcut.copyWith(
+                task: state.shortcut.task.copyWith(
           toRun: [
             t.copyWith(
-                configId: config?.id,
-                serialNo: device?.serialNo,
-                preferWireless: connectionPref == ConnectionPref.preferWireless)
+              configId: config.id,
+              serialNo: t.serialNo,
+              preferWireless: t.preferWireless,
+              preferWired: t.preferWired,
+            )
           ],
-        );
-
-        return Shortcut(hotKey: hotKey!, task: task);
-
-      case TaskId.stopScrcpy:
-        final t = toRun as StopScrcpyTask;
-        final task = Tasks(
-          toRun: [t.copyWith(deviceId: device?.serialNo)],
-        );
-
-        return Shortcut(hotKey: hotKey!, task: task);
-
-      case TaskId.runTasksList:
-        if (toRuns == null) return null;
-        final task = Tasks(toRun: toRuns!);
-
-        return Shortcut(hotKey: hotKey!, task: task);
+        )));
 
       default:
-        return null;
+    }
+  }
+
+  void setDevice(AdbDevices? device) {
+    final toRun = state.shortcut.task.toRun.first;
+
+    switch (toRun.taskId) {
+      case TaskId.startScrcpy:
+        final t = toRun as StartScrcpyTask;
+        StartScrcpyTask newT() {
+          if (device == null) {
+            return t.resetDevice();
+          } else {
+            return t.copyWith(
+              configId: t.configId,
+              serialNo: device.serialNo,
+              preferWireless: t.preferWireless,
+              preferWired: t.preferWired,
+            );
+          }
+        }
+
+        state = state.copyWith(
+            shortcut: state.shortcut.copyWith(
+                task: state.shortcut.task.copyWith(
+          toRun: [newT()],
+        )));
+
+      default:
+    }
+  }
+
+  void setHotkey(HotKey hotKey) {
+    state = state.copyWith(shortcut: state.shortcut.copyWith(hotKey: hotKey));
+  }
+
+  void setConnectionPrefs(ConnectionPref pref) {
+    final toRun = state.shortcut.task.toRun.first;
+
+    switch (toRun.taskId) {
+      case TaskId.startScrcpy:
+        final t = toRun as StartScrcpyTask;
+
+        state = state.copyWith(
+            shortcut: state.shortcut.copyWith(
+                task: state.shortcut.task.copyWith(toRun: [
+          t.copyWith(
+            preferWired: pref == ConnectionPref.preferWired,
+            preferWireless: pref == ConnectionPref.preferWireless,
+          )
+        ])));
+
+        break;
+      default:
     }
   }
 }
+
+final addShortcutDialogStateProvider =
+    NotifierProvider<AddShortcutDialogStateNotifier, AddShortcutDialogState>(
+        () => AddShortcutDialogStateNotifier());
+
+Shortcut placeholderShortcut = Shortcut(
+  hotKey: HotKey(key: LogicalKeyboardKey.keyA),
+  task: Tasks(
+    toRun: [
+      StartScrcpyTask(configId: defaultMirror.id),
+    ],
+  ),
+);

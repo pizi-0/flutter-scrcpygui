@@ -1,15 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:scrcpygui/models/tasks/task_model.dart';
 import 'package:scrcpygui/screens/4.settings_tab/widget_state/add_custom_shortcut_state.dart';
 import 'package:scrcpygui/screens/4.settings_tab/widgets/add_shortcut_steps/step_1.dart';
 import 'package:scrcpygui/screens/4.settings_tab/widgets/add_shortcut_steps/step_2.dart';
+import 'package:scrcpygui/screens/4.settings_tab/widgets/change_combination_dialog.dart';
 import 'package:scrcpygui/utils/const.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class AddCustomShortcutDialog extends ConsumerStatefulWidget {
-  final Tasks? tasks;
-  const AddCustomShortcutDialog({super.key, this.tasks});
+  const AddCustomShortcutDialog({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -19,11 +18,9 @@ class AddCustomShortcutDialog extends ConsumerStatefulWidget {
 class _AddCustomShortcutDialogState
     extends ConsumerState<AddCustomShortcutDialog> {
   final StepperController controller = StepperController();
-  Tasks? currentTasks;
 
   @override
   void initState() {
-    currentTasks ??= widget.tasks ?? Tasks(toRun: []);
     controller.addListener(_onStepChanged);
     super.initState();
   }
@@ -75,12 +72,12 @@ class _AddCustomShortcutDialogState
         ),
         actions: [
           Spacer(),
-          if (dialogState.currentStep != 0)
+          if (dialogState.currentStep > 0)
             SecondaryButton(
               onPressed: controller.previousStep,
               child: Text('Back'),
             ),
-          if (dialogState.currentStep < 1)
+          if (dialogState.currentStep == 0)
             PrimaryButton(
               onPressed: controller.nextStep,
               child: Text('Next'),
@@ -88,8 +85,8 @@ class _AddCustomShortcutDialogState
           if (controller.value.currentStep == 1)
             PrimaryButton(
               onPressed: () async {
-                final shortcut = dialogState.buildShortcut();
-                context.pop(shortcut);
+                context.pop(HKEditResult(
+                    isDisabled: false, shortcut: dialogState.shortcut));
               },
               child: Text('Add'),
             ),

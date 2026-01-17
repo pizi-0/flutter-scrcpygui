@@ -53,10 +53,10 @@ class _Step1State extends ConsumerState<Step1> {
         ConfigCustom(
           title: 'Action',
           child: Select(
-            value: dialogState.toRun,
+            value: dialogState.shortcut.task.toRun.first,
             onChanged: (value) => ref
                 .read(addShortcutDialogStateProvider.notifier)
-                .setToRun(value!),
+                .setToRunType(value!),
             popup: SelectPopup(
               items: SelectItemList(
                   children: availableTasks
@@ -68,7 +68,7 @@ class _Step1State extends ConsumerState<Step1> {
           ),
         ),
         Divider(),
-        if (dialogState.toRun is StartScrcpyTask) ...[
+        if (dialogState.shortcut.task.toRun.first is StartScrcpyTask) ...[
           ConfigCustom(
             title: 'Configuration',
             child: Row(
@@ -76,7 +76,7 @@ class _Step1State extends ConsumerState<Step1> {
               children: [
                 Expanded(
                   child: Select(
-                    value: dialogState.config,
+                    value: dialogState.getConfig(ref),
                     onChanged: (value) => ref
                         .read(addShortcutDialogStateProvider.notifier)
                         .setConfig(value!),
@@ -108,7 +108,7 @@ class _Step1State extends ConsumerState<Step1> {
                     onChanged: (value) => ref
                         .read(addShortcutDialogStateProvider.notifier)
                         .setDevice(value!),
-                    value: dialogState.device,
+                    value: dialogState.getDevice(ref),
                     placeholder: OverflowMarquee(
                         duration: 1.5.seconds,
                         delayDuration: 500.milliseconds,
@@ -148,7 +148,7 @@ class _Step1State extends ConsumerState<Step1> {
                     },
                   ),
                 ),
-                if (dialogState.device != null)
+                if (dialogState.getDevice(ref) != null)
                   IconButton.ghost(
                     density: ButtonDensity.iconDense,
                     icon: Icon(Icons.clear_rounded),
@@ -159,15 +159,15 @@ class _Step1State extends ConsumerState<Step1> {
               ],
             ),
           ),
-          if (dialogState.device != null) ...[
+          if (dialogState.getDevice(ref) != null) ...[
             Divider(),
             ConfigCustom(
               title: 'Connection Preference',
               child: Select(
-                value: dialogState.connectionPref,
+                value: dialogState.getConnectionPref(ref),
                 onChanged: (value) => ref
                     .read(addShortcutDialogStateProvider.notifier)
-                    .setConnectionPref(value!),
+                    .setConnectionPrefs(value!),
                 popup: SelectPopup(
                   items: SelectItemList(
                       children: ConnectionPref.values
