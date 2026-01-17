@@ -1,9 +1,13 @@
 import 'package:awesome_extensions/awesome_extensions.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:scrcpygui/models/settings_model/shortcut.dart';
 import 'package:scrcpygui/models/tasks/task_type_ids.dart';
+import 'package:scrcpygui/providers/config_provider.dart';
+import 'package:scrcpygui/providers/device_info_provider.dart';
+import 'package:scrcpygui/screens/4.settings_tab/widget_state/add_custom_shortcut_state.dart';
 import 'package:scrcpygui/screens/4.settings_tab/widgets/add_custom_shortcut_dialog.dart';
 import 'package:scrcpygui/screens/4.settings_tab/widgets/change_combination_dialog.dart';
 import 'package:scrcpygui/utils/const.dart';
@@ -14,6 +18,7 @@ import 'package:scrcpygui/widgets/custom_ui/pg_list_tile.dart';
 import 'package:scrcpygui/widgets/custom_ui/pg_section_card.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
+import '../../../models/tasks/task_type.dart';
 import '../../../providers/keyboard_shortcut_provider.dart';
 
 class ShortcutSection extends ConsumerStatefulWidget {
@@ -28,6 +33,7 @@ class _ShortcutSectionState extends ConsumerState<ShortcutSection> {
   @override
   Widget build(BuildContext context) {
     final shortcuts = ref.watch(keyboardShortcutProvider);
+    final disabledShortcuts = ref.watch(disabledKeyboardShortcutProvider);
 
     return PgSectionCard(
       label: 'Keyboard Shortcuts',
@@ -38,24 +44,40 @@ class _ShortcutSectionState extends ConsumerState<ShortcutSection> {
             density: ButtonDensity.iconDense,
             icon: Icon(Icons.add_rounded),
             onPressed: () async {
-              final shortcut = await showDialog(
+              final res = await showDialog(
                 context: context,
                 builder: (context) => AddCustomShortcutDialog(),
               );
 
-              if (shortcut != null) {
+              ref.read(addShortcutDialogStateProvider.notifier).reset();
+
+              if (res is HKEditResult) {
+                final shortcut = res.shortcut;
                 await ShortcutUtils.addShortcut(ref, shortcut);
               }
             },
           ),
           SizedBox(height: 10, child: VerticalDivider()),
-          Switch(value: false, onChanged: (value) {}),
+          Switch(
+            value: disabledShortcuts.length != shortcuts.length,
+            onChanged: (value) {
+              if (value) {
+                for (var sc in shortcuts) {
+                  ShortcutUtils.enableShortcut(ref, sc);
+                }
+              } else {
+                for (var sc in shortcuts) {
+                  ShortcutUtils.disableShortcut(ref, sc);
+                }
+              }
+            },
+          ),
         ],
       ),
       children: [
         ShortcutWidget(
           title: 'Start scrcpy',
-          subtitle: 'Starts scrcpy with the last used configuration',
+          subtitle: 'Starts Default (Mirror) on currently selected device',
           shortcut: shortcuts[0],
         ),
         Divider(),
@@ -86,11 +108,10 @@ class _ShortcutSectionState extends ConsumerState<ShortcutSection> {
 
     return ListView.separated(
       shrinkWrap: true,
+      primary: false,
       itemBuilder: (context, index) {
         final shortcut = userDefinedShortcuts[index];
-        return ShortcutWidget(
-          shortcut: shortcut,
-        );
+        return ShortcutWidget(shortcut: shortcut);
       },
       separatorBuilder: (context, index) => Divider(),
       itemCount: userDefinedShortcuts.length,
@@ -124,12 +145,15 @@ class _ShortcutWidgetState extends ConsumerState<ShortcutWidget> {
         .watch(disabledKeyboardShortcutProvider)
         .contains(widget.shortcut.id);
 
+    final userDefined =
+        !defaultShortcuts.map((def) => def.id).contains(widget.shortcut.id);
+
     return PgListTile(
-      title: _getCustomTitle(),
+      title: widget.title ?? _getCustomTitle(),
       dimTitle: disabled,
-      subtitle: widget.subtitle,
+      subtitle: widget.subtitle ?? _getCustomSubtitle(),
       showSubtitle: true,
-      trailing: KeyDisplay(shortcut: widget.shortcut),
+      trailing: KeyDisplay(shortcut: widget.shortcut, userDefined: userDefined),
       trailingConstraints: trailingConstraints,
     );
   }
@@ -151,6 +175,34 @@ class _ShortcutWidgetState extends ConsumerState<ShortcutWidget> {
         return widget.shortcut.id;
     }
   }
+
+  String _getCustomSubtitle() {
+    final task = widget.shortcut.task;
+    final allConfigs = ref.watch(configsProvider);
+    final savedDevice = ref.watch(infoProvider);
+
+    if (task.toRun.length > 1) {
+      return 'Runs ${task.toRun.length} tasks';
+    }
+
+    switch (task.toRun.first.taskId) {
+      case TaskId.startScrcpy:
+        final toRun = task.toRun.first as StartScrcpyTask;
+        final config =
+            allConfigs.firstWhereOrNull((conf) => conf.id == toRun.configId) ??
+                defaultMirror;
+
+        final device =
+            savedDevice.firstWhereOrNull((d) => d.serialNo == toRun.serialNo);
+
+        return 'Starts [${config.configName}] on [${device?.deviceName ?? device?.serialNo ?? 'currently selected device'}]';
+      case TaskId.stopScrcpy:
+        return 'Stops scrcpy instances';
+
+      default:
+        return '';
+    }
+  }
 }
 
 class KeyDisplay extends ConsumerStatefulWidget {
@@ -164,8 +216,6 @@ class KeyDisplay extends ConsumerStatefulWidget {
 }
 
 class _KeyDisplayState extends ConsumerState<KeyDisplay> {
-  HotKey? recorded;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -176,6 +226,24 @@ class _KeyDisplayState extends ConsumerState<KeyDisplay> {
         GhostButton(
           density: ButtonDensity.dense,
           onPressed: _modifyshortcut,
+          onSecondaryTapDown: (details) {
+            final data = ClipboardData(text: widget.shortcut.id);
+            Clipboard.setData(data);
+            showToast(
+              showDuration: 1.5.seconds,
+              context: context,
+              location: ToastLocation.bottomCenter,
+              builder: (context, overlay) => SurfaceCard(
+                child: Basic(
+                  title: Text('Copied shortcut ID to clipboard'),
+                  trailing: const Icon(
+                    Icons.check_circle_outline,
+                    color: Colors.lime,
+                  ),
+                ),
+              ),
+            );
+          },
           child: Row(
             spacing: 2,
             children: [
@@ -222,14 +290,32 @@ class _KeyDisplayState extends ConsumerState<KeyDisplay> {
   }
 
   Future<void> _modifyshortcut() async {
-    final res = await showDialog(
-      context: context,
-      builder: (context) => ConstrainedBox(
-        constraints:
-            BoxConstraints(maxWidth: sectionWidth, minWidth: sectionWidth),
-        child: ChangeShortcutComb(shortcut: widget.shortcut),
-      ),
-    );
+    dynamic res;
+
+    if (widget.userDefined) {
+      ref
+          .read(addShortcutDialogStateProvider.notifier)
+          .setShortcut(widget.shortcut);
+
+      res = await showDialog(
+        context: context,
+        builder: (context) => ConstrainedBox(
+          constraints:
+              BoxConstraints(maxWidth: sectionWidth, minWidth: sectionWidth),
+          child: AddCustomShortcutDialog(),
+        ),
+      );
+      ref.read(addShortcutDialogStateProvider.notifier).reset();
+    } else {
+      res = await showDialog(
+        context: context,
+        builder: (context) => ConstrainedBox(
+          constraints:
+              BoxConstraints(maxWidth: sectionWidth, minWidth: sectionWidth),
+          child: ChangeShortcutComb(shortcut: widget.shortcut),
+        ),
+      );
+    }
 
     if (res is HKEditResult) {
       await ShortcutUtils.modifyShortcut(ref,
