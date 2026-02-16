@@ -11,6 +11,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:awesome_extensions/awesome_extensions_dart.dart';
 import 'package:bonsoir/bonsoir.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:localization/localization.dart';
@@ -57,11 +58,16 @@ class _MainScreenState extends ConsumerState<MainScreen>
   Timer? runningInstancePingTimer;
   FocusNode node = FocusNode();
 
+  static const _lifecycleChannel = MethodChannel('app_lifecycle');
+
   @override
   void initState() {
     _init();
     windowManager.addListener(this);
     trayManager.addListener(this);
+    if (Platform.isMacOS) {
+      _lifecycleChannel.setMethodCallHandler(_handleLifecycleMethod);
+    }
     try {
       discovery = BonsoirDiscovery(type: adbMdns);
     } on Exception catch (e) {
@@ -71,8 +77,17 @@ class _MainScreenState extends ConsumerState<MainScreen>
     super.initState();
   }
 
+  Future<dynamic> _handleLifecycleMethod(MethodCall call) async {
+    if (call.method == 'quitRequested') {
+      await AppUtils.onAppCloseRequested(ref, context);
+    }
+  }
+
   @override
   void dispose() {
+    if (Platform.isMacOS) {
+      _lifecycleChannel.setMethodCallHandler(null);
+    }
     windowManager.removeListener(this);
     trayManager.removeListener(this);
     GoRouter.of(context)
