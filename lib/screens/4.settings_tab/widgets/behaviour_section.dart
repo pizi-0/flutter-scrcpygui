@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:awesome_extensions/awesome_extensions_dart.dart';
 import 'package:flutter/material.dart' show InkWell;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -88,37 +90,39 @@ class _BehaviourSectionState extends ConsumerState<BehaviourSection> {
             ),
           ),
         ),
-        const Divider(),
-        PgListTile(
-          title: el.settingsLoc.behavior.minimize.label,
-          trailing: ConstrainedBox(
-            constraints: const BoxConstraints(
-                minWidth: 180, maxWidth: 180, minHeight: 30),
-            child: Select(
-              filled: true,
-              value: minimizeDD(context)
-                  .firstWhere((act) => act.$1 == behaviour.minimizeAction),
-              onChanged: (act) async {
-                ref
-                    .read(settingsProvider.notifier)
-                    .changeMinimizeBehaviour(act!.$1);
+        if (!Platform.isMacOS) ...[
+          const Divider(),
+          PgListTile(
+            title: el.settingsLoc.behavior.minimize.label,
+            trailing: ConstrainedBox(
+              constraints: const BoxConstraints(
+                  minWidth: 180, maxWidth: 180, minHeight: 30),
+              child: Select(
+                filled: true,
+                value: minimizeDD(context)
+                    .firstWhere((act) => act.$1 == behaviour.minimizeAction),
+                onChanged: (act) async {
+                  ref
+                      .read(settingsProvider.notifier)
+                      .changeMinimizeBehaviour(act!.$1);
 
-                await Db.saveAppSettings(ref.read(settingsProvider));
-              },
-              itemBuilder: (context, value) => OverflowMarquee(
-                  duration: 5.seconds,
-                  delayDuration: 1.seconds,
-                  child: Text(value.$2)),
-              popup: SelectPopup(
-                items: SelectItemList(
-                    children: minimizeDD(context)
-                        .map((act) =>
-                            SelectItemButton(value: act, child: Text(act.$2)))
-                        .toList()),
-              ).call,
+                  await Db.saveAppSettings(ref.read(settingsProvider));
+                },
+                itemBuilder: (context, value) => OverflowMarquee(
+                    duration: 5.seconds,
+                    delayDuration: 1.seconds,
+                    child: Text(value.$2)),
+                popup: SelectPopup(
+                  items: SelectItemList(
+                      children: minimizeDD(context)
+                          .map((act) =>
+                              SelectItemButton(value: act, child: Text(act.$2)))
+                          .toList()),
+                ).call,
+              ),
             ),
           ),
-        ),
+        ],
         const Divider(),
         Column(
           children: [

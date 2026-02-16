@@ -104,22 +104,16 @@ class _MainScreenState extends ConsumerState<MainScreen>
   @override
   void onWindowEvent(String eventName) async {
     if (eventName == kWindowEventClose) {
-      await AppUtils.onAppCloseRequested(ref, context);
+      if (Platform.isMacOS) {
+        await windowManager.hide();
+        await TrayUtils.initTray(ref, context);
+      } else {
+        await AppUtils.onAppCloseRequested(ref, context);
+      }
     }
 
     if (eventName == kWindowEventResize) {
       await windowManager.setMinimumSize(const Size(500, 600));
-    }
-
-    if (Platform.isMacOS) {
-      if (eventName == kWindowEventEnterFullScreen) {
-        await windowManager.setTitleBarStyle(TitleBarStyle.normal);
-      }
-
-      if (eventName == kWindowEventLeaveFullScreen) {
-        await windowManager.setTitleBarStyle(TitleBarStyle.hidden,
-            windowButtonVisibility: false);
-      }
     }
 
     super.onWindowEvent(eventName);

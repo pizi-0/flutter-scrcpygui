@@ -45,7 +45,7 @@ void main() async {
     center: true,
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.hidden,
-    windowButtonVisibility: false,
+    windowButtonVisibility: Platform.isMacOS,
   );
 
   if (Platform.isWindows || Platform.isMacOS) {
