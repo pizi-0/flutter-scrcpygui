@@ -96,10 +96,7 @@ class TitleBar extends ConsumerWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (Platform.isMacOS) ...[
-            TitleBarButton(),
-            VerticalDivider(indent: 16, endIndent: 16),
-          ],
+          if (Platform.isMacOS) Gap(70),
           Expanded(
             child: DragToMoveArea(
               child: Row(
