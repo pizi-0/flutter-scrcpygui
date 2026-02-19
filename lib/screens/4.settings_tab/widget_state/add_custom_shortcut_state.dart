@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:io';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -166,7 +168,14 @@ class AddShortcutDialogStateNotifier extends Notifier<AddShortcutDialogState> {
   }
 
   void setHotkey(HotKey hotKey) {
-    state = state.copyWith(shortcut: state.shortcut.copyWith(hotKey: hotKey));
+    final adjusted = HotKey(
+      key: hotKey.physicalKey,
+      identifier: hotKey.identifier,
+      modifiers: hotKey.modifiers,
+      scope: Platform.isLinux ? HotKeyScope.inapp : HotKeyScope.system,
+    );
+
+    state = state.copyWith(shortcut: state.shortcut.copyWith(hotKey: adjusted));
   }
 
   void setConnectionPrefs(ConnectionPref pref) {
@@ -196,7 +205,10 @@ final addShortcutDialogStateProvider =
         () => AddShortcutDialogStateNotifier());
 
 Shortcut placeholderShortcut = Shortcut(
-  hotKey: HotKey(key: LogicalKeyboardKey.keyA),
+  hotKey: HotKey(
+    key: LogicalKeyboardKey.keyA,
+    scope: Platform.isLinux ? HotKeyScope.inapp : HotKeyScope.system,
+  ),
   task: Tasks(
     toRun: [
       StartScrcpyTask(configId: defaultMirror.id),

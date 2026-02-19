@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/services.dart';
 import 'package:hotkey_manager/hotkey_manager.dart';
 import 'package:scrcpygui/models/settings_model/shortcut.dart';
@@ -9,12 +11,14 @@ HotKey defaultStartScrcpyHotKey = HotKey(
   identifier: HK_START_SCRCPY,
   key: LogicalKeyboardKey.keyZ,
   modifiers: [HotKeyModifier.alt, HotKeyModifier.shift],
+  scope: Platform.isLinux ? HotKeyScope.inapp : HotKeyScope.system,
 );
 
 HotKey defaultStopScrcpyHotKey = HotKey(
   identifier: HK_STOP_SCRCPY,
   key: LogicalKeyboardKey.keyX,
   modifiers: [HotKeyModifier.alt, HotKeyModifier.shift],
+  scope: Platform.isLinux ? HotKeyScope.inapp : HotKeyScope.system,
 );
 
 List<Shortcut> defaultShortcuts = [
