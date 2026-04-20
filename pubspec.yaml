@@ -53,6 +53,7 @@ dependencies:
   go_transitions: ^0.8.1
   google_fonts: ^6.2.1
   hexcolor: ^3.0.1
+  hotkey_manager: ^0.2.3
   html: ^0.15.6
   http: ^1.4.0
   hugeicons: ^0.0.7

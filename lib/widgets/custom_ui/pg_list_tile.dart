@@ -73,7 +73,12 @@ class PgListTile extends ConsumerWidget {
                           ],
                   ),
                   content: content,
-                  trailing: trailing,
+                  trailing: trailingConstraints != null
+                      ? ConstrainedBox(
+                          constraints: trailingConstraints!,
+                          child: trailing,
+                        )
+                      : trailing,
                 ),
                 SizedBox.shrink(),
               ],

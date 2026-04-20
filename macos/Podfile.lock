@@ -9,6 +9,10 @@ PODS:
   - file_picker (0.0.1):
     - FlutterMacOS
   - FlutterMacOS (1.0.0)
+  - HotKey (0.2.1)
+  - hotkey_manager_macos (0.0.1):
+    - FlutterMacOS
+    - HotKey
   - irondash_engine_context (0.0.1):
     - FlutterMacOS
   - package_info_plus (0.0.1):
@@ -36,6 +40,7 @@ DEPENDENCIES:
   - encrypt_decrypt_plus (from `Flutter/ephemeral/.symlinks/plugins/encrypt_decrypt_plus/macos`)
   - file_picker (from `Flutter/ephemeral/.symlinks/plugins/file_picker/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
+  - hotkey_manager_macos (from `Flutter/ephemeral/.symlinks/plugins/hotkey_manager_macos/macos`)
   - irondash_engine_context (from `Flutter/ephemeral/.symlinks/plugins/irondash_engine_context/macos`)
   - package_info_plus (from `Flutter/ephemeral/.symlinks/plugins/package_info_plus/macos`)
   - path_provider_foundation (from `Flutter/ephemeral/.symlinks/plugins/path_provider_foundation/darwin`)
@@ -45,6 +50,10 @@ DEPENDENCIES:
   - tray_manager (from `Flutter/ephemeral/.symlinks/plugins/tray_manager/macos`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
   - window_manager (from `Flutter/ephemeral/.symlinks/plugins/window_manager/macos`)
+
+SPEC REPOS:
+  trunk:
+    - HotKey
 
 EXTERNAL SOURCES:
   bonsoir_darwin:
@@ -57,6 +66,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/file_picker/macos
   FlutterMacOS:
     :path: Flutter/ephemeral
+  hotkey_manager_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/hotkey_manager_macos/macos
   irondash_engine_context:
     :path: Flutter/ephemeral/.symlinks/plugins/irondash_engine_context/macos
   package_info_plus:
@@ -82,6 +93,8 @@ SPEC CHECKSUMS:
   encrypt_decrypt_plus: 62b1d4c745e51a2b936c94e06493d03a1138bb33
   file_picker: 7584aae6fa07a041af2b36a2655122d42f578c1a
   FlutterMacOS: d0db08ddef1a9af05a5ec4b724367152bb0500b1
+  HotKey: 400beb7caa29054ea8d864c96f5ba7e5b4852277
+  hotkey_manager_macos: a4317849af96d2430fa89944d3c58977ca089fbe
   irondash_engine_context: 893c7d96d20ce361d7e996f39d360c4c2f9869ba
   package_info_plus: f0052d280d17aa382b932f399edf32507174e870
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564

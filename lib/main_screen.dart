@@ -20,6 +20,7 @@ import 'package:scrcpygui/providers/config_provider.dart';
 import 'package:scrcpygui/providers/device_info_provider.dart';
 import 'package:scrcpygui/screens/1.home_tab/sub_page/config_screen/sub_page/log_screen/log_screen.dart';
 import 'package:scrcpygui/utils/app_utils.dart';
+import 'package:scrcpygui/utils/keyboard_shortcut/shortcut_utils.dart';
 import 'package:scrcpygui/utils/scrcpy_utils.dart';
 import 'package:scrcpygui/utils/server_utils_ws.dart';
 import 'package:scrcpygui/widgets/navigation_shell.dart';
@@ -192,6 +193,7 @@ class _MainScreenState extends ConsumerState<MainScreen>
         .addListener(_killTestInstance);
 
     WidgetsBinding.instance.addPostFrameCallback((a) async {
+      ShortcutUtils.registerAllShortcuts(ref);
       _startAutoDevicesPing();
       _startAutoLaunchConfig();
       _startRunningInstancePing();

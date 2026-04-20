@@ -7,6 +7,7 @@
 #include "generated_plugin_registrant.h"
 
 #include <encrypt_decrypt_plus/encrypt_decrypt_plus_plugin.h>
+#include <hotkey_manager_linux/hotkey_manager_linux_plugin.h>
 #include <irondash_engine_context/irondash_engine_context_plugin.h>
 #include <screen_retriever_linux/screen_retriever_linux_plugin.h>
 #include <super_native_extensions/super_native_extensions_plugin.h>
@@ -18,6 +19,9 @@ void fl_register_plugins(FlPluginRegistry* registry) {
   g_autoptr(FlPluginRegistrar) encrypt_decrypt_plus_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "EncryptDecryptPlusPlugin");
   encrypt_decrypt_plus_plugin_register_with_registrar(encrypt_decrypt_plus_registrar);
+  g_autoptr(FlPluginRegistrar) hotkey_manager_linux_registrar =
+      fl_plugin_registry_get_registrar_for_plugin(registry, "HotkeyManagerLinuxPlugin");
+  hotkey_manager_linux_plugin_register_with_registrar(hotkey_manager_linux_registrar);
   g_autoptr(FlPluginRegistrar) irondash_engine_context_registrar =
       fl_plugin_registry_get_registrar_for_plugin(registry, "IrondashEngineContextPlugin");
   irondash_engine_context_plugin_register_with_registrar(irondash_engine_context_registrar);

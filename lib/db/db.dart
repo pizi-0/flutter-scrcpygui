@@ -6,6 +6,8 @@ import 'package:scrcpygui/models/automation.dart';
 import 'package:scrcpygui/models/device_info_model.dart';
 import 'package:scrcpygui/models/settings_model/app_grid_settings.dart';
 import 'package:scrcpygui/models/settings_model/companion_server_settings.dart';
+import 'package:scrcpygui/models/settings_model/shortcut.dart';
+import 'package:scrcpygui/utils/keyboard_shortcut/keyboard_shortcuts.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -295,5 +297,46 @@ class Db {
     final prefs = await SharedPreferences.getInstance();
 
     prefs.setBool(PKEY_HIDE_ICON_EXTRACTOR_DISCLAIMER, true);
+  }
+
+  /*
+  kb shortcut db
+  */
+
+  static Future<void> saveShortcuts(List<Shortcut> shortcuts) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setStringList(
+        PKEY_HOTKEY, shortcuts.map((sc) => sc.toJson()).toList());
+  }
+
+  static Future<List<Shortcut>> getShortcuts() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final res = prefs.getStringList(PKEY_HOTKEY);
+
+    if (res == null) {
+      return defaultShortcuts;
+    } else {
+      return res.map((e) => Shortcut.fromJson(e)).toList();
+    }
+  }
+
+  static Future<void> saveDisabledShortcutIds(List<String> disabledIds) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prefs.setStringList(PKEY_HOTKEY_DISABLED, disabledIds);
+  }
+
+  static Future<List<String>> getDisabledShortcutIds() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final res = prefs.getStringList(PKEY_HOTKEY_DISABLED);
+
+    if (res == null) {
+      return [];
+    } else {
+      return res;
+    }
   }
 }
